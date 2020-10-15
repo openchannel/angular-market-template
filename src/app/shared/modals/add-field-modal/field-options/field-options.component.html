@@ -1,0 +1,27 @@
+<div>
+  <form [formGroup]="optionsForm">
+    <div class="form-group">
+      <oc-checkbox [(isChecked)]="isRequired" labelText="Required"></oc-checkbox>
+    </div>
+    <div class="form-group" *ngFor="let control of optionsForm.controls | keyvalue">
+      <ng-container *ngIf="control.key !== 'required' && control.key !== 'accept' && control.key !== 'hash'">
+        <oc-label [text]="control.key | camelCaseToNormal | titlecase">
+        </oc-label>
+        <oc-input [formControlName]="control.key"></oc-input>
+      </ng-container>
+      <ng-container *ngIf="control.key === 'accept'">
+        <oc-tags [availableTags]="fileExtensions"
+                 [(ngModel)]="extensionsResultArray"
+                 [ngModelOptions]="{standalone: true}"
+                 placeHolderDropBoxName="Select Accept Types"
+                 placeHolderInputName="Add Accept Types"
+                 title="Accept"></oc-tags>
+      </ng-container>
+      <ng-container *ngIf="control.key === 'hash'">
+        <oc-dropbox [items]="hashes"
+                    [(ngModel)]="resultHashes" placeHolder="Select Hash Values"
+                    [ngModelOptions]="{standalone: true}"></oc-dropbox>
+      </ng-container>
+    </div>
+  </form>
+</div>

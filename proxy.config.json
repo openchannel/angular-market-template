@@ -1,0 +1,16 @@
+{
+    "/api/*": {
+    "target": "https://stage1-philips-market-api-test.openchannel.io",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {"^/" : ""}
+    },    
+    "/oauth/*": {
+    "target": "https://stage1-philips-market-api-test.openchannel.io",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {"^/" : ""}
+    }
+}

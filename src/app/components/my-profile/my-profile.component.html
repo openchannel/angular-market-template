@@ -1,0 +1,30 @@
+<div class="bg-container bg-s py-7">
+    <div class="container">
+        <img src="assets/img/arrow-left.svg" alt="arrow-icon">
+        <a (click)="goBack()" class="font-m font-med pl-1 cursor-pointer" style="color: #537cfd ;">Back</a>
+        <h1 class="mt-3">My Profile</h1>
+    </div>
+</div>
+
+<div class="container container-s">
+    <div class="row">
+        <div class="col-md-3 pt-5 pl-0">
+            <ul class="list-unstyled">
+                <li>
+                    <a (click)="gotoPage('myProfile')"
+                        [ngClass]="{'active-link' : selectedPage === 'myProfile' }"> General </a>
+                </li>
+                <li>
+                    <a (click)="gotoPage('changePassword')"
+                        [ngClass]="{'active-link' : selectedPage === 'changePassword'}"> Password </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9 mb-8 pt-5 pl-1 pr-0">
+            <app-general-profile [(myProfile)]="myProfile" [(isProcessing)]="isProcessing" *ngIf='selectedPage === "myProfile"'></app-general-profile>
+            <app-change-password [(myProfile)]="myProfile" [(isProcessing)]="isProcessing" *ngIf='selectedPage === "changePassword"'>
+            </app-change-password>
+        </div>
+    </div>
+</div>
+<div class="divider mt-8"></div>

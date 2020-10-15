@@ -1,0 +1,18 @@
+<div class="forms-container mt-2">
+  <h3 class="p-2 forms-container-title">Forms</h3>
+  <section class="p-2">
+    <div class="mb-2 border-bottom-custom pb-2" *ngFor="let form of formJSONArray; let i = index">
+      <div class="align-items-center row mb-2">
+        <h6 class="col-sm-8 text-center">{{form.name}}</h6>
+        <oc-button text="Show Form" type="primary" class="btn-block col-sm-4" (click)="openFormModal(form)">
+        </oc-button>
+      </div>
+      <oc-button type="secondary" text="Show Form Submissions" [class]="'w-100'"
+                 (click)="changeActiveFormId(!expandTables[i], i)">
+      </oc-button>
+      <section class="mt-2">
+        <app-submissions-table [formId]="formJSONArray[i]?.formId" [expand]="expandTables[i]"></app-submissions-table>
+      </section>
+    </div>
+  </section>
+</div>

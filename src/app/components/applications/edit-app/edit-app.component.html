@@ -1,0 +1,77 @@
+<div class="bg-container bg-s py-7" [style.visibility]="isAppProcessing ? 'hidden':'visible'">
+    <div class="container">
+        <img src="assets/img/arrow-left.svg" alt="arrow-icon">
+        <a href="/app-developer" class="font-m font-med pl-1">Back to Manage Apps</a>
+        <h1 class="mt-3">{{appDetails.name}}</h1>
+    </div>
+</div>
+<div class="container app-container" [style.visibility]="isAppProcessing ? 'hidden':'visible'">
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="row app-manage-card">
+                <div class="col-md-9 pl-0">
+                    <div class="time-selection" [ngClass]="{
+                        active: period === 'month'
+                      }">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="month" value="month" name="name"
+                                [(ngModel)]="period" (ngModelChange)="getChartStatistics()">
+                            <label class="custom-control-label cursor-pointer" for="month">Month</label>
+                        </div>
+                    </div>
+                    <div class="time-selection" [ngClass]="{
+                        active: period ==='day'
+                      }">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="day" value="day" name="name"
+                                [(ngModel)]="period" (ngModelChange)="getChartStatistics()">
+                            <label class="custom-control-label cursor-pointer" for="day">Day</label>
+                        </div>
+    
+                    </div>
+    
+                </div>
+                <div class="col-md-3 oc-dropdown-toggle">
+                    <!-- <div class="time-selection active"> -->
+                    <div ngbDropdown class="d-inline-block">
+                        <button class="btn btn-secondary" id="dropdownBasic1"
+                            ngbDropdownToggle>{{ (selectedChartField == 'downloads' ? 'Downloads' :
+                            selectedChartField == 'views' ? 'Views' :
+                            selectedChartField == 'leads' ? 'Leads' : '')}}
+                        </button>
+                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                            <button value="downloads" ngbDropdownItem (click)="changeField('downloads')">Downloads</button>
+                            <button value="views" ngbDropdownItem (click)="changeField('views')">Views</button>
+                            <button value="leads" ngbDropdownItem (click)="changeField('leads')">Leads</button>
+                        </div>
+                    </div>
+    
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="my-3">
+                <oc-chart [labels]="labels" [dataSets]="dataSets" [count]="count" [countText]="countText" [downloadUrl]="downloadUrl"
+                    [name]="period" [random]="random"></oc-chart>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2" *ngIf="!isAppProcessing">
+        <div class="col-md-3">
+            <oc-app-status-details [appStatus]="appStatus"></oc-app-status-details>
+        </div>
+        <div class="col-md-9 ">
+            <div class="card app-detail-card">
+                <div class="card-header">
+                    App Details
+                </div>
+                <div class="card-body">
+                    <app-edit-app-detail [(appDetails)]=appDetails (saveOrSubmitApp)="gotoAppsList()"
+                        (cancelApp)="cancelNewApp()" [appStatus]="appStatus" [mode]="'edit'"></app-edit-app-detail>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="divider mt-5"></div>

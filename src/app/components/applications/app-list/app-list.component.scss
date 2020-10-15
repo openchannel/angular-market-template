@@ -1,0 +1,65 @@
+@import "~oc-ng-common-component/assets/styles/theme.scss";
+
+.tab {
+  color: $gray-700;
+}
+.tab:hover {
+  color: #009957 !important;
+}
+
+.color-gray {
+  color: $secondary
+}
+
+.color-green {
+  color: #009957;
+}
+
+.back-color-green {
+  background-color: #009957;
+}
+
+.back-color-blue {
+  background-color: $primary;
+}
+
+.back-color-purple {
+  background-color: $purple;
+}
+
+.back-color-yellow {
+  background-color: $yellow;
+}
+
+.back-color-red {
+  background-color: $red;
+}
+
+.color-light-gray {
+  color: $gray-500;
+}
+
+.search-icon {
+  max-width: 16px;
+  max-height: 16px;
+}
+
+.advanced-search-title:hover {
+  color: $gray-800;
+}
+
+.list-app-title {
+  .app-icon {
+    font-size: 24px;
+    height: 54px;
+    width: 54px;
+    min-width: 54px;
+    color: $light;
+    border-radius: 10% 10% 10% 10%;
+  }
+  .sphere-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+}

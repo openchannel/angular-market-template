@@ -1,0 +1,122 @@
+<form novalidate #newAppform="ngForm">
+    <div class="row form-group mt-5">
+        <div class="col-md-3 pl-0">
+            <oc-label [text]="getValue('App Name')" [required]="true" class="label-l"></oc-label>
+            <img src="assets/img/info-icon.svg" class="pl-1" alt="info-icon">
+        </div>
+        <div class="col-md-9 pl-1 pr-0">
+            <oc-input name="appName" #appName="ngModel" [(ngModel)]="appDetails.name" [(modelName)]="appDetails.name"
+                ngDefaultControl required="required"></oc-input>
+            <oc-error [control]="appName" field="name"></oc-error>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-3 pl-0">
+            <oc-label [text]="getValue('Category')" [required]="true" class="label-l"></oc-label>
+        </div>
+        <div class="col-md-9 pl-1 pr-1">
+            <oc-app-category-select class="cold-md-9" [(predefinedValArr)]='appCategories'
+                 (categoryCahnge)='updateCategory()'
+                 [ngClass]="{'ng-valid': appDetails.customData.category?.length}"
+                name="appCategory" #appCategory="ngModel" [(ngModel)]="appDetails.customData.category"
+                [addIconUrl]="addIconUrl" [closeIconUrl]="closeIconUrl" ngDefaultControl required="required">
+            </oc-app-category-select>
+            <oc-error *ngIf="!appDetails.customData.category?.length" [control]="appCategory" [field]="'customData.category'"> </oc-error>
+        </div>
+        <!-- <div class="col-md-6 pl-0">
+                <oc-select></oc-select>
+            </div>
+            <div class="col-md-3 pl-0 pr-1">
+                <span class="add-category">
+                    <img src="https://drive.google.com/u/0/uc?id=1ISG4afo0ho7k8ExvykfKbEvVSYjRBBse&export=download"
+                        class="pr-2" alt="add-icon">Add Category
+                </span>
+            </div> -->
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3 pl-0">
+            <oc-label [text]="getValue('Website URL')" class="label-l"></oc-label>
+        </div>
+        <div class="col-md-9 pl-1 pr-0">
+            <oc-input websiteValidator name="websiteUrl" #websiteUrl="ngModel"
+                [(modelName)]="appDetails.customData.website__url" [(ngModel)]="appDetails.customData.website__url"
+                ngDefaultControl></oc-input>
+            <oc-error [control]="websiteUrl" [field]="'customData.website__url'"> </oc-error>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3 pl-0">
+            <oc-label [text]="getValue('Video URL')" class="label-l"></oc-label>
+        </div>
+        <div class="col-md-9 pl-1 pr-0">
+            <oc-input websiteValidator name="videoUrl" #videoUrl="ngModel"
+                [(modelName)]="appDetails.customData.video__url" [(ngModel)]="appDetails.customData.video__url"
+                ngDefaultControl></oc-input>
+            <oc-error [control]="videoUrl" [field]="'customData.video__url'"> </oc-error>
+            <!-- <div class="embed-responsive embed-responsive-16by9 video-box" *ngIf="this.appDetails?.customData?.video__url && videoUrl.valid">
+                    <iframe width="420" height="315" [src]="getyouTubeId()" frameborder="0" allowfullscreen ></iframe>
+                </div> -->
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-3 pl-0">
+            <oc-label [text]="getValue('Icon')" name="iconImage" [required]="true" class="label-l"></oc-label>
+            <img src="assets/img/info-icon.svg" class="pl-1" alt="info-icon">
+        </div>
+        <div class="col-md-9 pl-1 pr-0">
+            <oc-file-upload [uploadIconUrl]="uploadIconUrl" [(fileDetailArr)]="appDetails.customData.icon__file"
+                [defaultFileIcon]="defaultFileIconUrl" fileType='singleImage'></oc-file-upload>
+            <!-- <oc-error [control]="iconImage"> </oc-error> -->
+            <span *ngIf="iconMsg && !appDetails.customData.icon__file.length" class="invalid-feedback">
+                Please fill out this field
+            </span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-3 pl-0">
+            <oc-label [text]="getValue('Product Images')" name="productImages" [required]="true" class="label-l"></oc-label>
+            <img src="assets/img/info-icon.svg" class="pl-1" alt="info-icon">
+        </div>
+        <div class="col-md-9 pl-1 pr-0">
+            <oc-file-upload [uploadIconUrl]="uploadIconUrl"
+                [(fileDetailArr)]="appDetails.customData.product__image__file" [defaultFileIcon]="defaultFileIconUrl"
+                fileType='multiImage'>
+            </oc-file-upload>
+            <span *ngIf="customMsg && !appDetails.customData.product__image__file.length" class="invalid-feedback">
+                Please fill out this field
+            </span>
+            <!-- <input type="text" 
+                    required style="display: none;"> -->
+            <!-- <oc-error *ngIf="isFormSubmitted" [control]="images"> </oc-error> -->
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-3 pl-0">
+            <oc-label [text]="getValue('Summary')" [required]="true" class="label-l"></oc-label>
+        </div>
+        <div class="col-md-9 pl-1 pr-0">
+            <textarea [froalaEditor]="options" [(froalaModel)]="appDetails.customData.summary" name="summary"
+                #summary="ngModel" [(ngModel)]="appDetails.customData.summary" ngDefaultControl
+                required='required'></textarea>
+            <oc-error [control]="summary" [field]="'customData.summary'"> </oc-error>
+        </div>
+    </div>
+    <div class="row form-group my-5">
+        <div class="col-md-3 pl-0">
+            <oc-button [type]="getValue('link')" [text]="getValue('Cancel')" (click)="cancelNewApp()" class="ml-n1">
+            </oc-button>
+        </div>
+        <div class="col-md pl-1" *ngIf="appStatus.appStatus !== 'Pending' && appStatus.appStatus !== 'In Review' && appStatus.appStatus !== 'Rejected'">
+            <oc-button [type]="getValue('secondary')" [text]="getValue('Save and Exit')"
+                (click)='saveNewApp(newAppform)' [process]="isSaveInPrcess" [disabled]="isSaveInPrcess">
+            </oc-button>
+        </div>
+        <div class="col-md text-right pr-0">
+            <oc-button [type]="getValue('primary')" [text]="getValue('Submit')" (click)="submitApp(newAppform)">
+            </oc-button>
+        </div>
+    </div>
+</form>

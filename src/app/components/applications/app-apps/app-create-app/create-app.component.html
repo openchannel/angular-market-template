@@ -1,0 +1,55 @@
+<div class="d-flex flex-column justify-content-start p-3">
+    <h3 class="ml-3 flex-fill"><span class="mr-1 font-med ">New App</span></h3>
+    <hr class="ml-0 mr-0 mt-1 mb-3">
+    <form [formGroup]="appDataFormGroup">
+        <div class="d-flex flex-row align-items-start mb-1">
+            <oc-label text="Developer ID" required="true" class="text-nowrap mr-1 w-25"></oc-label>
+            <div class="d-flex flex-column w-100">
+                <oc-dropbox formControlName="appId"
+                            placeHolder="Start typing the ID"
+                            customClassStyle="form-control"
+                            [clearFormAfterSelect]="false"
+                            [customSearch]="customSearch"
+                            [dropElementTemplate]="appIdTemplate"
+                            class="w-100"></oc-dropbox>
+                <oc-error [control]="appDataFormGroup.get('appId')"></oc-error>
+            </div>
+        </div>
+        <div class="d-flex flex-row align-items-start">
+            <oc-label text="App type" required="true" class="text-nowrap mr-1 w-25"></oc-label>
+            <div class="d-flex flex-column w-100">
+                <oc-dropbox formControlName="appType"
+                            placeHolder="Choice type"
+                            customClassStyle="form-control"
+                            [clearFormAfterSelect]="false"
+                            [dropElementTemplate]="defaultDropElementTemplate"
+                            [items]="currentAppsTypes"
+                            class="w-100">
+                </oc-dropbox>
+                <oc-error [control]="appDataFormGroup.get('appType')"></oc-error>
+            </div>
+        </div>
+    </form>
+    <div *ngIf="appFields?.fields">
+        <h3 class="ml-3 flex-fill"><span class="mr-1 font-med ">App details</span></h3>
+        <hr class="ml-0 mr-0 mt-1 mb-3">
+        <oc-form [formJsonData]="appFields"
+                 [anotherInvalidResult]="appDataFormGroup.invalid"
+                 (formSubmitted)="saveApp($event)">
+        </oc-form>
+    </div>
+</div>
+
+<ng-template #appIdTemplate let-result="result">
+    <div class="dropbox-custom-elements dropdown-create-app mt-1 mb-1 p-1">
+        <img src="./assets/img/human-icon.svg" class="human-icon mr-1" alt="human-icon">
+        <div class="description">{{currentAppAction.description}}<strong>{{result}}</strong></div>
+    </div>
+</ng-template>
+
+<ng-template #defaultDropElementTemplate let-result="result">
+    <div class="dropbox-custom-elements dropdown-show-app p-2 ">
+        <div class="custom-text">{{result}}</div>
+    </div>
+</ng-template>
+

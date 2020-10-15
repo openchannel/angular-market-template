@@ -1,0 +1,40 @@
+<div class="bg-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 py-7 px-4 text-center mx-auto">
+                <h1>Your App Store Platform</h1>
+                <p class="mb-4 text-secondary">A design template for implementing your app store with OpenChannel</p>
+                <oc-text-searh></oc-text-searh>
+            </div>
+        </div>
+        <oc-featured-apps [data]="featuredApp" [label]="getValue('Featured')"></oc-featured-apps>
+    </div>
+</div>
+<div class="container">
+    <div class="pt-7 pb-5">
+        <oc-app-galary [appsArr]="recentlyAddedApps" [seeAllUrl]="getValue('https://google.com')"
+        [appGalaryTitle]="getValue('Recently Added')"
+        [appGalaryDescription]="getValue('The latest apps that help you and your team work and build faster')">
+    </oc-app-galary>
+    </div>
+    
+    <oc-app-categories [data]="categories" [categoryHeaderTitle]="getValue('Categories to Explore')">
+    </oc-app-categories>
+    <div class="pt-8 pb-5">
+        <oc-app-galary [appsArr]="recentlyAddedApps" [seeAllUrl]="getValue('https://google.com')"
+        [appGalaryTitle]="getValue('Most Popular')"
+        [appGalaryDescription]="getValue('The most used apps that help you and your team get more done')">
+    </oc-app-galary>
+    </div>
+    
+    <oc-app-galary [appsArr]="recentlyAddedApps" [seeAllUrl]="getValue('https://google.com')"
+        [appGalaryTitle]="getValue('Apps for Analytics')"
+        [appGalaryDescription]="getValue('Get insights and analytics to make the better decisions')">
+    </oc-app-galary>
+</div>
+<div class="bg-container bg-s mt-5 py-8">
+    <div class="container">
+        <oc-app-get-started></oc-app-get-started>
+    </div>
+    
+</div>

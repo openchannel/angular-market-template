@@ -1,0 +1,12 @@
+@import "~oc-ng-common-component/assets/styles/styles.scss";
+
+.tag-imitation {
+  background-color: #a5daf2;
+  color: $primary;
+  margin-right: 0.5rem;
+  padding: 0.3rem;
+  border-radius: 0.3rem;
+  :last-child {
+    margin-right: 0;
+  }
+}

@@ -1,0 +1,37 @@
+
+.fields-button {
+  background-color: #44b7db;
+  border-color: #44b7db;
+  padding: 6px 10px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.fields-delete-btn {
+  background-color: #ffdde1;
+  color: #f76b83;
+}
+
+.fields-secondary-color {
+  color: #44b7db;
+}
+
+.cdk-drag-preview {
+  background-color: #fff;
+  opacity: 0.6;
+  display: flex;
+  justify-content: space-between;
+  td {
+    .row {
+      display: flex;
+      justify-content: space-between;
+      .col-5 {
+        margin-right: 1rem;
+      }
+    }
+  }
+}
+
+.cursor-drug {
+  cursor: move;
+}

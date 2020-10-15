@@ -1,0 +1,127 @@
+.section-hero {
+    background-image: url(/assets/img/hero-img1.svg);
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    height: 100%;
+    position: relative;
+    background-color: #184d83;
+    margin-bottom: 39px;
+    border-radius: 0;
+    color: #fff;
+    margin-top: 48px;
+  
+    .hero-title {
+      text-align: left;
+      line-height: 1.38;
+      font-size: 40px;
+      max-width: 700px;
+      margin: 25px 0 15px;
+      color: #fff;
+      padding: 367px 0 44px;
+    }
+  }
+  .sec-welcome {
+    .section-header h2 {
+      font-size: 24px;
+      margin-bottom: 19px;
+    }
+  
+    .featured img {
+      width: 122px;
+    }
+
+    .featured .sec-space {
+      padding: 25px 16px 0 0;
+    }
+
+    .featured .item-title {
+      max-width: 300px;
+      font-size: 20px;
+      font-weight: bold;
+      margin: 30px 0 24px;
+      line-height: 1.2;
+      min-height: 50px;
+    }
+    .item-description {
+      line-height: 1.38;
+      max-width: 300px;
+    }
+  
+    .footer-content {
+      margin-top: 80px;
+      font-size: 10px;
+      line-height: 1.4;
+      .terms {
+        opacity: 0.45;
+      }
+      p {
+        margin: 0px;
+      }
+      .copyright {
+        margin-top: 12px;
+        opacity: 0.63;
+      }
+    }
+  }
+  
+  // Media Query - max-width: 767px Start
+  @media (max-width: 767px) {
+    // Hero Sec Media Css
+    .section-hero {
+      margin-top: 60px;
+      padding-top: 200px;
+      background-size: cover !important;
+      padding: 250px 0 44px;
+      height: 100%;
+      position: relative;
+      background-color: #184d83;
+      margin-bottom: 39px;
+      background-position: center center;
+    }
+    .section-hero .hero-title {
+      font-size: 32px;
+    }
+    .section-hero .hero-title {
+      margin: 25px 0 15px;
+      padding: 0px 0 0px !important;
+    }
+    .featured .sec-space {
+      padding: 25px 0 0 0 !important;
+    }
+    .featured .item-title,.item-description {
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+  }
+  // Media Query - max-width: 767px End
+  
+  // Media Query - min-width: 768px Start
+  @media (min-width: 768px) {
+    .section-hero {
+      padding: 365px 0 44px;
+      background-size: cover !important;
+      background-position: center center;
+    }
+    .section-hero .hero-title {
+      margin: 25px 0 15px;
+      padding: 0px 0 0px !important;
+    }
+  }
+  // Media Query - min-width: 768px End
+  // iPad Media Query - min-device-width : 768px and max-device-width : 1024px Start
+  @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    .section-hero {
+      margin-top: 60px;
+    }
+    .featured .item-title {
+      min-height: 74px !important;
+    }
+  }
+  // iPad Media Query - min-device-width : 768px and max-device-width : 1024px End
+  // iPad Media Query - and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) Start
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+  .featured .item-title {
+    min-height: 50px !important;
+  }
+}
+// iPad Media Query - and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) End
