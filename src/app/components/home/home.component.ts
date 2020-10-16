@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FeaturedApp, BasicAppDetails, AppCategoryDetail } from 'oc-ng-common-service';
+import { AppsServiceImpl } from '../../core/services/apps-services/model/apps-service-impl';
+import { FilterValue } from '../../core/services/apps-services/model/apps-model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -8,38 +11,20 @@ import { FeaturedApp, BasicAppDetails, AppCategoryDetail } from 'oc-ng-common-se
 })
 export class HomeComponent implements OnInit {
 
-  featuredApp: FeaturedApp[];
+  public featuredApp: FeaturedApp[] = [];
   recentlyAddedApps: BasicAppDetails[];
   categories: AppCategoryDetail[];
 
+  public appsFilter: FilterValue [] = [];
+  public isFeatured = false;
   label;
 
   emptyDataMessage: string;
+  private subscriber: Subscription = new Subscription();
 
-  constructor() { }
+  constructor(private appService: AppsServiceImpl) { }
 
-  ngOnInit() {
-
-    const featuredApp = {
-      logoUrl: 'assets/img/feature.svg',
-      appName: 'Test App 1', appDescription: 'With this plugin you can collaborate with teammates at any time.'
-    };
-
-    const featuredApp2 = {
-      logoUrl: 'assets/img/standard-app-icon.svg',
-      appName: 'Test App 1', appDescription: 'With this Plugin you can collaborate with teammates at any time zinal'
-    };
-    const featuredApp3 = {
-      logoUrl: 'assets/img/feature2.svg',
-      appName: 'Test App 1', appDescription: 'With this Plugin you can collaborate with teammates at any time zinal'
-    };
-    const featuredApp4 = {
-      logoUrl: 'assets/img/featured3.svg',
-      appName: 'Test App 1', appDescription: 'With this Plugin you can collaborate with teammates at any time zinal'
-    };
-
-    this.featuredApp = [featuredApp, featuredApp2, featuredApp3, featuredApp4];
-
+  ngOnInit(): void {
 
     const app1 = new BasicAppDetails();
     app1.appCardClass = "col-md-12";
@@ -97,11 +82,47 @@ export class HomeComponent implements OnInit {
     appCategory3.categoryName = 'Communication';
 
     this.categories = [appCategory1, appCategory2, appCategory3];
+    this.getAppFilters();
   }
 
-  getValue(any) {
-    return any;
+  getAppFilters(): void {
+    this.subscriber.add(this.appService.getAppFilters(1, 5).subscribe(
+      (result) => {
+        result.list.forEach(item => {
+          this.appsFilter = this.appsFilter.concat(item.values);
+        });
+        this.getFeaturedApps();
+      }
+    ));
   }
 
+  getFeaturedApps(): void {
+    if (this.appsFilter && this.appsFilter.length > 0) {
+      if(this.appsFilter.find(filer => filer.id.includes('featured'))) {
+        this.isFeatured = true;
+        this.subscriber.add(
+          this.appService.getAllPublicApps(1, 10, '', 'featured')
+            .subscribe(res => {
+              res.list.forEach(item => {
+                const oneFeature = {
+                  logoUrl: item.customData?.icon,
+                  appName: item.name,
+                  appDescription: item.customData?.description
+                }
+                this.featuredApp.push(oneFeature);
+              });
+            })
+        );
+      }
+    }
+  }
 
+  appsForCategory(): void {
+    this.subscriber.add(
+      // this.appService.getAllPublicApps(1, 10, categorySort, categoryQuery)
+      //   .subscribe(res => {
+      //     return res.list;
+      //   })
+    );
+  }
 }
