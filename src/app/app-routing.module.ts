@@ -8,6 +8,7 @@ import {AppAppsComponent} from './components/applications/app-apps/app-apps.comp
 import {AppNewComponent} from './components/applications/app-new/app-new.component';
 import {MyProfileComponent} from './components/my-profile/my-profile.component';
 import {EditAppComponent} from './components/applications/edit-app/edit-app.component';
+import {AppSearchComponent} from "./components/applications/app-search/app-search.component";
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
 
     children: [
       {path: 'app-store', component: AppStoreComponent},
+      {path: 'app-search', component: AppSearchComponent},
       {path: 'app-detail', component: AppDetailComponent},
       {path: 'app-developer', component: AppDeveloperComponent},
       {path: 'app-list', component: AppAppsComponent},

@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormModalComponent } from '../../../../shared/modals/form-modal/form-modal.component';
-import { GraphqlService } from '../../../../graphql-client/graphql-service/graphql.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,8 +15,7 @@ export class FormListGeneratorComponent implements OnInit, OnDestroy {
 
   private subscriber: Subscription = new Subscription();
 
-  constructor(private modalService: NgbModal,
-              private graphQLService: GraphqlService) { }
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.getAllFormsList();
@@ -25,11 +23,11 @@ export class FormListGeneratorComponent implements OnInit, OnDestroy {
   }
 
   getAllFormsList(): void {
-    this.subscriber.add(this.graphQLService.getAllForms('list').subscribe(
-      (result: any) => {
-        this.formJSONArray = result?.data?.getAllForms;
-      }
-    ));
+    // this.subscriber.add(this.graphQLService.getAllForms('list').subscribe(
+    //   (result: any) => {
+    //     this.formJSONArray = result?.data?.getAllForms;
+    //   }
+    // ));
   }
 
   openFormModal(formFieldsData: any): void {
