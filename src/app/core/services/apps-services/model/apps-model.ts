@@ -102,3 +102,89 @@ export enum FieldType {
     // Email Types
     // emailAddress = 'emailAddress'
 }
+
+export interface FilterValue {
+    id: string;
+    label: string;
+    sort: any;
+    query: any;
+}
+
+export interface FilterList {
+    id: string;
+    name: string;
+    description: string;
+    values: FilterValue[];
+}
+
+export interface AppFiltersResponse {
+    count: number;
+    list: FilterList[];
+    pageNumber: number;
+    pages: number;
+}
+export interface AppDataModel {
+    type: string;
+    price: number;
+    trial: number;
+    license: string;
+    modelId: string;
+    currency: string;
+}
+export interface Restrict {
+    own: {
+        country: string[];
+    };
+    view: {
+        country: string[];
+    };
+}
+
+export interface AppStatus {
+    value: string;
+    lastUpdated: number;
+    modifiedBy: string;
+    reason: string;
+}
+export interface StatElement {
+    '30day': number;
+    '90day': number;
+    total: number;
+}
+
+export interface Statistics {
+    views: StatElement;
+    downloads: StatElement;
+    developerSales: StatElement;
+    totalSales: StatElement;
+    ownerships: StatElement;
+    reviews: StatElement;
+}
+
+export interface FullAppData {
+    appId: string;
+    customData: any;
+    lastUpdated: number;
+    version: number;
+    name: string;
+    safeName: string[];
+    developerId: string;
+    model: AppDataModel[];
+    access: string[];
+    restrict: Restrict | {};
+    allow: Restrict | {};
+    submittedDate: number;
+    created: number;
+    attributes: any;
+    rating: number;
+    status: AppStatus;
+    statistics: Statistics;
+    isLive: boolean;
+}
+
+export interface FullAppDataResponse {
+    count: number;
+    pages: number;
+    pageNumber: number;
+    list: FullAppData[];
+}

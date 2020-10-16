@@ -1,8 +1,17 @@
 /* tslint:disable:object-literal-key-quotes */
 import {Injectable} from '@angular/core';
 import {AppsServiceImpl} from '../model/apps-service-impl';
-import { AllAppFields, AppType, BasicApp, BasicAppsPage, Developer, DeveloperSearchPage } from '../model/apps-model';
+import {
+    AllAppFields,
+    AppFiltersResponse,
+    AppType,
+    BasicApp,
+    BasicAppsPage,
+    Developer,
+    DeveloperSearchPage, FullAppData, FullAppDataResponse
+} from '../model/apps-model';
 import {Observable, of} from 'rxjs';
+import { appListData } from '../../../../../assets/data/appListData';
 
 @Injectable({
     providedIn: 'root'
@@ -514,7 +523,60 @@ export class MockAppsService extends AppsServiceImpl {
             }
           ]
     };
+    // fields for apps sorting
+    appFilters = {
+        count: 1,
+        list: [
+            {
+                id: "proxyfilter",
+                name: "ProxyFilter",
+                description: 'My custom proxy filter.',
+                values: [
+                    {
+                        id: 'allApps',
+                        label: 'All Apps',
+                        sort: '{randomize: 1}',
+                        query: 'all'
+                    },
+                    {
+                        id: 'featured',
+                        label: 'Featured',
+                        sort: '{randomize: 1}',
+                        query: 'featured'
+                    },
+                    {
+                        id: 'popular',
+                        label: 'Popular',
+                        sort: '{randomize: 1}',
+                        query: 'popular'
+                    },
+                    {
+                        id: 'newest',
+                        label: 'Newest',
+                        sort: '{randomize: 1}',
+                        query: 'newest'
+                    }
+                ]
+            },
+            {
+                id: "anotherfilter",
+                name: "AnotherFilter",
+                description: 'Some test filter',
+                values: [
+                    {
+                        id: 'freeApps',
+                        label: 'Free Apps',
+                        sort: '{randomize: 1}',
+                        query: 'free'
+                    }
+                ]
+            }
+        ],
+        pageNumber: 1,
+        pages: 1
+    };
 
+    appsData = appListData.list;
     getDevelopersById(developerId: string, page: number, pageSize: number): Observable<DeveloperSearchPage> {
         return of(this.backEndGetAppsByDeveloperId(developerId, page, pageSize));
     }
@@ -557,6 +619,21 @@ export class MockAppsService extends AppsServiceImpl {
         };
     }
 
+    private backEndGetPublicApps(pageNumber: number, limit: number, sort: any, query: any): FullAppDataResponse {
+        let apps: FullAppData[];
+        if (query === 'all') {
+            apps = [...this.appsData];
+        } else {
+            apps = [...this.appsData.filter(app => app.customData[query] === true)]
+        }
+        return {
+            pageNumber,
+            pages: limit,
+            count: apps.length,
+            list: apps
+        }
+    }
+
     private paginate<T>(array: T [], page: number, pageSize: number): T [] {
         if (!page || page === 1) {
             return array.slice(0, pageSize);
@@ -567,5 +644,13 @@ export class MockAppsService extends AppsServiceImpl {
 
     getAppTypes(): Observable<any> {
         return of(this.appTypesData);
+    }
+
+    getAppFilters(pageNumber: number, limit: number): Observable<AppFiltersResponse> {
+        return of(this.appFilters);
+    }
+
+    getAllPublicApps(pageNumber: number, limit: number, sort: any, query: any): Observable<FullAppDataResponse> {
+        return of(this.backEndGetPublicApps(pageNumber, limit, sort, query));
     }
 }
