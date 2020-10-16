@@ -17,7 +17,6 @@ export class HomeComponent implements OnInit {
 
   public appsFilter: FilterValue [] = [];
   public isFeatured = false;
-  label;
 
   emptyDataMessage: string;
   private subscriber: Subscription = new Subscription();
