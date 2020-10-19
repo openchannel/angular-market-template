@@ -18,7 +18,6 @@ export class HomeComponent implements OnInit {
   public appsFilter: FilterValue [] = [];
   public isFeatured = false;
   public homePageConfig;
-  emptyDataMessage: string;
   private subscriber: Subscription = new Subscription();
 
   constructor(private appService: AppsServiceImpl) { }
@@ -162,11 +161,16 @@ export class HomeComponent implements OnInit {
   }
 
   appsForCategory(): void {
-    this.subscriber.add(
-      // this.appService.getAllPublicApps(1, 10, categorySort, categoryQuery)
-      //   .subscribe(res => {
-      //     return res.list;
-      //   })
-    );
+    this.homePageConfig.appListPage.forEach(element => {
+      if (element.type !== 'featured-apps' && element.type !== 'search' &&
+        element.type !== 'filter-values-card-list') {
+        this.subscriber.add(
+          this.appService.getAllPublicApps(1, 6, element.sort, element.filter)
+            .subscribe(res => {
+              element.data = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
+            })
+        );
+      }
+    });
   }
 }
