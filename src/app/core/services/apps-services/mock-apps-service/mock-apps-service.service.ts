@@ -2,16 +2,15 @@
 import {Injectable} from '@angular/core';
 import {AppsServiceImpl} from '../model/apps-service-impl';
 import {
-    AllAppFields,
     AppFiltersResponse,
-    AppType,
     BasicApp,
     BasicAppsPage,
     Developer,
-    DeveloperSearchPage, FullAppData, FullAppDataResponse
+    DeveloperSearchPage, FullAppDataResponse
 } from '../model/apps-model';
 import {Observable, of} from 'rxjs';
 import { appListData } from '../../../../../assets/data/appListData';
+import { FullAppData } from 'oc-ng-common-service';
 
 @Injectable({
     providedIn: 'root'
@@ -577,6 +576,7 @@ export class MockAppsService extends AppsServiceImpl {
     };
 
     appsData = appListData.list;
+
     getDevelopersById(developerId: string, page: number, pageSize: number): Observable<DeveloperSearchPage> {
         return of(this.backEndGetAppsByDeveloperId(developerId, page, pageSize));
     }
