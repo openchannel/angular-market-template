@@ -1,7 +1,25 @@
+@import "src/theme.scss";
+
 .result {
   margin: 35px 0 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &__label{
-    color: #727272;
+    color: $secondary;
+  }
+}
+
+.filter__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.get-dev {
+  &__container {
+    background-color: $light;
+    height: 298px;
+    margin-top: 82px;
   }
 }
