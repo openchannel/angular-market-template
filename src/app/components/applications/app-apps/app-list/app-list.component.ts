@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {GraphqlService} from '../../../../graphql-client/graphql-service/graphql.service';
 import {AppItem} from './model/app-item.model';
 
 
@@ -10,7 +9,7 @@ import {AppItem} from './model/app-item.model';
 })
 export class AppListComponent implements OnInit {
 
-    constructor(private graphqlClient: GraphqlService) {
+    constructor() {
     }
 
     apps: AppItem[];
@@ -45,13 +44,13 @@ export class AppListComponent implements OnInit {
 
     getAllApps(): void {
         this.apps = [];
-        this.graphqlClient.getAllApps().subscribe((response: { data: { allApps: AppItem[] } }) => {
-            if (response && response.data && response.data.allApps) {
-                this.apps = response.data.allApps;
-            } else {
-                console.log('ERROR Get all apps.');
-            }
-        }, () => console.log('ERROR Get all apps.'));
+        // this.graphqlClient.getAllApps().subscribe((response: { data: { allApps: AppItem[] } }) => {
+        //     if (response && response.data && response.data.allApps) {
+        //         this.apps = response.data.allApps;
+        //     } else {
+        //         console.log('ERROR Get all apps.');
+        //     }
+        // }, () => console.log('ERROR Get all apps.'));
     }
 
     getTotalResultMessage(): string {
