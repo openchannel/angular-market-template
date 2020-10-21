@@ -1,176 +1,97 @@
-import { Component, OnInit } from '@angular/core';
-import { BasicAppDetails, AppCategoryDetail, FullAppData } from 'oc-ng-common-service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BasicAppDetails, AppCategoryDetail, FullAppData, AppsService } from 'oc-ng-common-service';
 import { AppsServiceImpl } from '../../core/services/apps-services/model/apps-service-impl';
 import { FilterValue } from '../../core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
+import { pageConfig } from '../../../assets/data/configData';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
   public featuredApp: FullAppData[] = [];
-  recentlyAddedApps: BasicAppDetails[];
-  categories: AppCategoryDetail[];
+  public categories: AppCategoryDetail[];
 
   public appsFilter: FilterValue [] = [];
   public isFeatured = false;
   public homePageConfig;
   private subscriber: Subscription = new Subscription();
 
-  constructor(private appService: AppsServiceImpl) { }
+  constructor(private appService: AppsService) { }
 
   ngOnInit(): void {
-     this.homePageConfig = {
-       "fieldMappings": {
-         "icon": "icon",
-         "summary": "summary",
-         "description": "description",
-         "video": "video",
-         "images": "images",
-         "categories": "categories",
-         "author": "author"
-       },
-       "appListPage": [
-         {
-           "name": "Your App Store Platform",
-           "description": "A design template for implementing your app store with OpenChannel",
-           "type": "search"
-         },
-         {
-           "name": "Featured",
-           "description": "",
-           "type": "featured-apps",
-           "filter": "{featured: yes}",
-           "sort": "{randomize: 1}"
-         },
-         {
-           "name": "Recently Added",
-           "description": "The latest apps that help you and your team work and build faster",
-           "type": "apps-list",
-           "filter": "{\"status.value\":\"approved\"}",
-           "sort": "{newest: 1}"
-         },
-         {
-           "name": "Categories to explore",
-           "description": null,
-           "type": "filter-values-card-list",
-           "filterId": "categories",
-           "count": 3
-         },
-         {
-           "name": "Most Popular",
-           "description": "The most used apps that help you and your team get more done",
-           "type": "apps-list",
-           "filter": "{\"status.value\":\"approved\"}",
-           "sort": "{popular: 1}"
-         },
-         {
-           "name": "Apps for Analytics",
-           "description": "The latest apps that help you and your team work and build faster",
-           "type": "apps-list",
-           "filter": "{\"status.value\":\"approved\",\"customData.categories\":\"Analytics\"}",
-           "sort": null
-         }
-       ]
-     }
-    const app1 = new BasicAppDetails();
-    app1.appCardClass = "col-md-12";
-    app1.appDescription = "With this plugin you can communicate with your teammates any time";
-    app1.appLogoUrl = "https://drive.google.com/u/0/uc?id=19l7Znd-iPPYUhM6zaiQZ01rE2NpkDFyk&export=download";
-    app1.appName = "Plugin";
-    app1.appPrice = "Free";
-    app1.rating = 3.5;
-    app1.reviewCount = 12;
-
-    const app2 = new BasicAppDetails();
-    app2.appCardClass = "col-md-12";
-    app2.appDescription = "Integrate directly with your account and make customer updates a breeze";
-    app2.appLogoUrl = "https://drive.google.com/u/0/uc?id=1vDDzbS--o_UIgXFE_LmMfVmSAKuprCyb&export=download";
-    app2.appName = "Application";
-    app2.appPrice = "$11.99";
-    app2.rating = 0;
-    app2.reviewCount = 0;
-
-    const app3 = new BasicAppDetails();
-    app3.appCardClass = "col-md-12";
-    app3.appDescription = "With this plugin you can communicate with your teammates any time";
-    app3.appLogoUrl = "https://drive.google.com/u/0/uc?id=1fWkPPXp3tmkYRBy-GtCm_9PkP7fmConE&export=download";
-    app3.appName = "Plugin";
-    app3.appPrice = "Free";
-    app3.rating = 3.5;
-    app3.reviewCount = 12;
-
-    const app4 = new BasicAppDetails();
-    app4.appCardClass = "col-md-12";
-    app4.appDescription = "Improve and extend your experience right from your own UI";
-    app4.appLogoUrl = "https://drive.google.com/u/0/uc?id=1KipwDw0K8xJC_StaAhsyDTEgcAoVHqDp&export=download";
-    app4.appName = "Integration";
-    app4.appPrice = "$4.99";
-    app4.rating = 4.9;
-    app4.reviewCount = 87;
-
-
-    this.recentlyAddedApps = [app1, app2, app3, app4, app1, app2];
-
-
-    const appCategory1 = new AppCategoryDetail();
-    appCategory1.categoryCardClass = 'category-card';
-    appCategory1.categoryLogo = 'https://stage1-philips-market-test.openchannel.io/assets/img/item-1.png';
-    appCategory1.categoryName = 'All Apps';
-
-    const appCategory2 = new AppCategoryDetail();
-    appCategory2.categoryCardClass = 'category-card';
-    appCategory2.categoryLogo = 'https://stage1-philips-market-test.openchannel.io/assets/img/item-2.png';
-    appCategory2.categoryName = 'Analytics';
-
-    const appCategory3 = new AppCategoryDetail();
-    appCategory3.categoryCardClass = 'category-card';
-    appCategory3.categoryLogo = 'https://stage1-philips-market-test.openchannel.io/assets/img/item-3.png';
-    appCategory3.categoryName = 'Communication';
-
-    this.categories = [appCategory1, appCategory2, appCategory3];
-    this.getAppFilters();
+    this.getPageConfig();
   }
 
-  getAppFilters(): void {
-    this.subscriber.add(this.appService.getAppFilters(1, 5).subscribe(
-      (result) => {
-        result.list.forEach(item => {
-          this.appsFilter = this.appsFilter.concat(item.values);
-        });
-        this.getFeaturedApps();
-      }
-    ));
+  ngOnDestroy() {
+    this.subscriber.unsubscribe();
   }
 
+  getPageConfig(): void {
+    this.homePageConfig = pageConfig;
+    this.getFeaturedApps();
+    this.appsForCategory();
+    this.getCategoriesToExplore();
+  }
+
+  // Getting featured apps separately
   getFeaturedApps(): void {
-    if (this.appsFilter && this.appsFilter.length > 0) {
-      if(this.appsFilter.find(filer => filer.id.includes('featured'))) {
-        this.isFeatured = true;
+    if (this.homePageConfig && this.homePageConfig.appListPage && this.homePageConfig.appListPage.length > 0) {
+      const featureConfig = this.homePageConfig.appListPage.find(filer => filer.type.includes('featured-apps'));
+      if(featureConfig) {
         this.subscriber.add(
-          this.appService.getAllPublicApps(1, 10, '', 'featured')
+          this.appService.getApps(1, 6, featureConfig.sort, featureConfig.filter)
             .subscribe(res => {
               this.featuredApp = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
+              if (this.featuredApp && this.featuredApp.length > 0) {
+                this.isFeatured = true;
+              }
             })
         );
       }
     }
   }
 
+// Getting apps for each filter from page config
   appsForCategory(): void {
     this.homePageConfig.appListPage.forEach(element => {
       if (element.type !== 'featured-apps' && element.type !== 'search' &&
         element.type !== 'filter-values-card-list') {
         this.subscriber.add(
-          this.appService.getAllPublicApps(1, 6, element.sort, element.filter)
+          this.appService.getApps(1, 6, element.sort, element.filter)
             .subscribe(res => {
               element.data = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
             })
         );
       }
     });
+  }
+
+  getCategoriesToExplore() {
+    const appCategory1 = new AppCategoryDetail();
+    appCategory1.categoryCardClass = 'category-card';
+    appCategory1.categoryLogo = '../../../../assets/img/all-apps-category-icon.svg';
+    appCategory1.categoryName = 'All Apps';
+    appCategory1.categoryQuery = {filterId: 'collections', valueId: 'allApps'};
+
+    const appCategory2 = new AppCategoryDetail();
+    appCategory2.categoryCardClass = 'category-card';
+    appCategory2.categoryLogo = '../../../../assets/img/analytics-category-icon.svg';
+    appCategory2.categoryName = 'Analytics';
+    appCategory2.categoryQuery = {filterId: 'categories', valueId: 'analytics'};
+    appCategory2.categoryBackgroundImage = '../../../../assets/img/analytics-category-background.png'
+
+
+    const appCategory3 = new AppCategoryDetail();
+    appCategory3.categoryCardClass = 'category-card';
+    appCategory3.categoryLogo = '../../../../assets/img/communication-category-icon.svg';
+    appCategory3.categoryName = 'Communication';
+    appCategory3.categoryQuery = {filterId: 'categories', valueId: 'communication'};
+    appCategory3.categoryBackgroundImage = '../../../../assets/img/communication-category-background.png'
+
+    this.categories = [appCategory1, appCategory2, appCategory3];
   }
 }

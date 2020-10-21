@@ -16,14 +16,19 @@
     <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
         <div [ngSwitch]="configElement?.type">
             <div class="pt-8 pb-5" *ngSwitchCase="'apps-list'">
-                <oc-app-galary [appsArr]="recentlyAddedApps"
-                               seeAllUrl="https://google.com"
-                               [appGalaryTitle]="configElement.name"
-                               [appGalaryDescription]="configElement.description">
-                </oc-app-galary>
+                <oc-app-gallery *ngIf="configElement?.data"
+                                [appsArr]="configElement?.data"
+                               seeAllUrl="app-search"
+                               [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
+                               [appGalleryTitle]="configElement.name"
+                               [appGalleryDescription]="configElement.description">
+                </oc-app-gallery>
             </div>
             <div *ngSwitchCase="'filter-values-card-list'">
-                <oc-app-categories [data]="categories" [categoryHeaderTitle]="configElement.name">
+                <oc-app-categories
+                        [data]="categories"
+                        [categoryHeaderTitle]="configElement.name"
+                        categoryRouterLink="app-search">
                 </oc-app-categories>
             </div>
         </div>

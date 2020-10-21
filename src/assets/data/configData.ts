@@ -18,7 +18,7 @@
        "name": "Featured",
        "description": "",
        "type": "featured-apps",
-       "filter": "{featured: yes}",
+       "filter": "{\"attributes.featured\": \"yes\"}",
        "filterId": "collections",
        "valueId": "featured",
        "sort": "{randomize: 1}"
