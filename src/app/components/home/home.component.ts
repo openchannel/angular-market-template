@@ -4,6 +4,7 @@ import { AppsServiceImpl } from '../../core/services/apps-services/model/apps-se
 import { FilterValue } from '../../core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
 import { pageConfig } from '../../../assets/data/configData';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   public homePageConfig;
   private subscriber: Subscription = new Subscription();
 
-  constructor(private appService: AppsService) { }
+  constructor(private appService: AppsService,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.getPageConfig();
@@ -93,5 +95,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     appCategory3.categoryBackgroundImage = '../../../../assets/img/communication-category-background.png'
 
     this.categories = [appCategory1, appCategory2, appCategory3];
+  }
+
+  catchSearchText(searchText) {
+    this.router.navigate(['app-search'], {queryParams:
+        {filterId: 'collections', valueId: 'allApps', searchText: searchText}}).then();
   }
 }
