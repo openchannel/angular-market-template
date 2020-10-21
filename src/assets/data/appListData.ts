@@ -67,6 +67,7 @@ export const appListData: FullAppDataResponse = {
           "featured": "yes"
         },
         "rating": 200,
+        "reviewCount": 4,
         "status":
           {
             "value": "approved",
@@ -146,6 +147,7 @@ export const appListData: FullAppDataResponse = {
           "featured": "yes"
         },
         "rating": 400,
+        "reviewCount": 10,
         "status":
           {
             "value": "approved",
@@ -171,7 +173,7 @@ export const appListData: FullAppDataResponse = {
             "summary": "Automatically set on/off timers...",
             "description": "HPWHs use electricity to move heat...",
             "video": "https://www.youtube.com/watch?v=i73n-LTXPIM",
-            "icon": "https://s3.amazonaws.com/cloudexchange-uat/55653202e4b0a70b13a4562d.jpg",
+            "icon": "https://d3grfap2l5ikgv.cloudfront.net/5f6f816f7f35e1471c24ab9c/public/5f8d57a672dc3565218c16e4.png",
             "images":
               [
                 "https://s3.amazonaws.com/cloudexchange-uat/55653218e4b0a70b13a45633.jpg",
@@ -225,6 +227,7 @@ export const appListData: FullAppDataResponse = {
           "featured": "yes"
         },
         "rating": 350,
+        "reviewCount": 8,
         "status":
           {
             "value": "approved",
@@ -272,7 +275,7 @@ export const appListData: FullAppDataResponse = {
         "model":
           [
             {
-              "type": "paid",
+              "type": "single",
               "price": 20,
               "trial": 0,
               "license": "single",
@@ -300,6 +303,7 @@ export const appListData: FullAppDataResponse = {
         "created": 1432695338702,
         "attributes": {},
         "rating": 450,
+        "reviewCount": 25,
         "status":
           {
             "value": "approved",
@@ -348,7 +352,7 @@ export const appListData: FullAppDataResponse = {
         "model":
           [
             {
-              "type": "paid",
+              "type": "single",
               "price": 15,
               "trial": 0,
               "license": "single",
@@ -376,6 +380,7 @@ export const appListData: FullAppDataResponse = {
         "created": 1432695338702,
         "attributes": {},
         "rating": 200,
+        "reviewCount": 3,
         "status":
           {
             "value": "approved",
@@ -401,7 +406,7 @@ export const appListData: FullAppDataResponse = {
             "summary": "Automatically set on/off timers...",
             "description": "HPWHs use electricity to move heat...",
             "video": "https://www.youtube.com/watch?v=i73n-LTXPIM",
-            "icon": "https://s3.amazonaws.com/cloudexchange-uat/55653202e4b0a70b13a4562d.jpg",
+            "icon": "https://d3grfap2l5ikgv.cloudfront.net/5f6f816f7f35e1471c24ab9c/public/5f8d57a672dc3565218c16e4.png",
             "images":
               [
                 "https://s3.amazonaws.com/cloudexchange-uat/55653218e4b0a70b13a45633.jpg",
@@ -424,7 +429,7 @@ export const appListData: FullAppDataResponse = {
         "model":
           [
             {
-              "type": "paid",
+              "type": "recurring",
               "price": 5.7,
               "trial": 0,
               "license": "single",
@@ -452,6 +457,7 @@ export const appListData: FullAppDataResponse = {
         "created": 1432695338702,
         "attributes": {},
         "rating": 500,
+        "reviewCount": 2,
         "status":
           {
             "value": "approved",
