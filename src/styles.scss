@@ -1,4 +1,8 @@
 @import "~oc-ng-common-component/assets/styles/styles.scss";
+@import "~oc-ng-common-component/assets/styles/theme.scss";
+
+$category-color-mix1: #ff0606;
+$category-color-mix2: #ffffff;
 .bg-container {
   width: 100%;
   min-height: 100vh;
@@ -152,5 +156,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border-radius: 4px;
   &-title {
     border-bottom: 1px solid #c9d5ea;
+  }
+}
+
+.card-1 {
+  .content-centered {
+    color: mix($primary, $category-color-mix1, 70%) !important;
+  }
+}
+
+.card-2 {
+  .content-centered {
+    color: mix($primary, $category-color-mix2, 70%) !important;
   }
 }
