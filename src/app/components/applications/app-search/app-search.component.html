@@ -1,0 +1,22 @@
+<app-loader #loader></app-loader>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 py-4">
+            <img src="./assets/img/path_arrow.svg"
+                 alt="arrow-icon">
+            <a href="#" class="font-m font-med pl-1">Back to App Store</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <oc-select-expandable></oc-select-expandable>
+        </div>
+        <div class="col-md-9">
+            <oc-text-search #searchInput [(searchText)]="searchText"></oc-text-search>
+            <div *ngIf="appPage && appPage.count > 0" class="result">
+                <div class="font-l">{{ appPage?.count }} results</div>
+            </div>
+            <oc-app-list-grid [appList]="appPage?.list" noAppMessage="Application not found"></oc-app-list-grid>
+        </div>
+    </div>
+</div>

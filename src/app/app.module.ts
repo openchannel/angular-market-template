@@ -56,13 +56,8 @@ import { CamelCaseToNormalPipe } from './shared/custom-components/camel-case-to-
 import { FieldPreviewModalComponent } from './shared/modals/field-preview-modal/field-preview-modal.component';
 import { SubmissionsTableComponent } from './components/applications/app-store/form-list-generator/submissions-table/submissions-table.component';
 import { SubmissionsDataViewModalComponent } from './shared/modals/submissions-data-view-modal/submissions-data-view-modal.component';
-
-export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
-  return {
-    link: httpLink.create({uri: environment.graphqlUrl}),
-    cache: new InMemoryCache(),
-  };
-}
+import { AppSearchComponent } from './components/applications/app-search/app-search.component';
+import {HttpXsrfInterceptor} from "./core/interceptors/httpxsrf.interceptor";
 
 @NgModule({
   declarations: [
@@ -100,7 +95,8 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
     AddFieldModalComponent,
     FieldOptionsComponent,
     CamelCaseToNormalPipe,
-    FieldPreviewModalComponent
+    FieldPreviewModalComponent,
+    AppSearchComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
@@ -123,12 +119,8 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   ],
   providers: [
    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
+   { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true },
    { provide: NgbDateAdapter, useClass: CustomAdapter },
-   {
-     provide: APOLLO_OPTIONS,
-     useFactory: createApollo,
-     deps: [HttpLink],
-   },
     {provide: AppsServiceImpl, useClass: MockAppsService},
    DatePipe],
   bootstrap: [AppComponent],

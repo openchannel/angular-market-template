@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { GraphqlService } from '../../../../../graphql-client/graphql-service/graphql.service';
 import { Subscription } from 'rxjs';
 import { MockAppsService } from '../../../../../core/services/apps-services/mock-apps-service/mock-apps-service.service';
 import { AppType } from '../../../../../core/services/apps-services/model/apps-model';
@@ -28,7 +27,6 @@ export class AppTypesComponent implements OnInit, OnDestroy {
   // main subscription for http requests
   private requestSubscriber: Subscription = new Subscription();
   constructor(private fb: FormBuilder,
-              private graphQLService: GraphqlService,
               private mockService: MockAppsService) { }
 
   ngOnInit(): void {
@@ -36,19 +34,19 @@ export class AppTypesComponent implements OnInit, OnDestroy {
   }
 
   getAppTypes(): void {
-    this.requestSubscriber.add(
-      this.graphQLService.getAppTypes().subscribe(
-        result => {
-          if (result.data.getAppTypes.list && result.data.getAppTypes.list.length > 0) {
-            this.appTypesData = result.data.getAppTypes.list;
-            this.appTypesData.forEach((item, index) => {
-              this.fillAppType(item, index);
-            });
-          } else {
-            this.addAppType();
-          }
-        }
-      ));
+    // this.requestSubscriber.add(
+    //   this.graphQLService.getAppTypes().subscribe(
+    //     result => {
+    //       if (result.data.getAppTypes.list && result.data.getAppTypes.list.length > 0) {
+    //         this.appTypesData = result.data.getAppTypes.list;
+    //         this.appTypesData.forEach((item, index) => {
+    //           this.fillAppType(item, index);
+    //         });
+    //       } else {
+    //         this.addAppType();
+    //       }
+    //     }
+    //   ));
   }
   /**
    * Adding Empty form to the App type forms
@@ -126,13 +124,13 @@ export class AppTypesComponent implements OnInit, OnDestroy {
 
   saveAppTypeData(appTypeForm: any, index?: number) {
     const appData = appTypeForm.getRawValue();
-    this.graphQLService.updateAppType(appData.id, appData).subscribe(
-      result => {
-        if (index) {
-          this.formsStatus[index].editable = false;
-        }
-      }
-    );
+    // this.graphQLService.updateAppType(appData.id, appData).subscribe(
+    //   result => {
+    //     if (index) {
+    //       this.formsStatus[index].editable = false;
+    //     }
+    //   }
+    // );
   }
 
   catchFieldChanging(fieldsDefinitions, appTypeForm) {
