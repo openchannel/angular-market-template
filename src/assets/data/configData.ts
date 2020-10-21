@@ -1,6 +1,7 @@
  export const pageConfig = {
    "fieldMappings": {
      "icon": "icon",
+     "logo": "logo",
      "summary": "summary",
      "description": "description",
      "video": "video",

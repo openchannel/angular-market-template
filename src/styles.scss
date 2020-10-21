@@ -1,4 +1,7 @@
 @import "~oc-ng-common-component/assets/styles/styles.scss";
+
+$link-gray: #333333;
+
 .bg-container {
   width: 100%;
   min-height: 100vh;
@@ -153,4 +156,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   &-title {
     border-bottom: 1px solid #c9d5ea;
   }
+}
+
+.black-link {
+  color: $link-gray;
 }
