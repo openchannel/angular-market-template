@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Application, AppsService, Filter, FrontendService, FullAppData, Page} from 'oc-ng-common-service';
+import {AppsService, Filter, FrontendService, FullAppData, Page} from 'oc-ng-common-service';
 import {debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {OcTextSearchComponent} from 'oc-ng-common-component';
@@ -61,11 +61,11 @@ export class AppSearchComponent implements AfterViewInit, OnDestroy, OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             mergeMap((value: string) => this.searchAppObservable(value, this.getFilterQuery())))
-        .subscribe((data: Page<Application>) => this.loader.toggle(),
+        .subscribe((data: Page<FullAppData>) => this.loader.toggle(),
                 error => this.loader.toggle());
   }
 
-  searchAppObservable(text: string, sort: string): Observable<Page<Application>> {
+  searchAppObservable(text: string, sort: string): Observable<Page<FullAppData>> {
     this.loader.toggle();
     return this.appService.searchApp(text, sort)
         .pipe(takeUntil(this.destroy$),
