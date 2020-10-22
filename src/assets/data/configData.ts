@@ -7,7 +7,8 @@
      "video": "video-url",
      "images": "images",
      "categories": "categories",
-     "author": "author"
+     "author": "author",
+     "gallery": "gallery"
    },
    "appListPage": [
      {
