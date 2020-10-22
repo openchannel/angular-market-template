@@ -9,7 +9,7 @@
         </div>
         <oc-featured-apps *ngIf="isFeatured"
                           [data]="featuredApp"
-                          mainRouterLink="app-detail/"
+                          mainRouterLink="/app-detail/"
                           label="Featured"></oc-featured-apps>
     </div>
 </div>
@@ -19,7 +19,7 @@
             <div class="pt-8 pb-5" *ngSwitchCase="'apps-list'">
                 <oc-app-gallery *ngIf="configElement?.data"
                                 [appsArr]="configElement?.data"
-                                routerLinkForOneApp="app-detail/"
+                                routerLinkForOneApp="/app-detail/"
                                seeAllUrl="/app-search"
                                [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
                                [appGalleryTitle]="configElement.name"
