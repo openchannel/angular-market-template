@@ -9,7 +9,7 @@ import {
   FrontendService,
   DropdownModel,
 } from 'oc-ng-common-service';
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
@@ -53,7 +53,8 @@ export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit {
               private reviewsService: ReviewsService,
               private frontendService: FrontendService,
               private loaderService: LoaderService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private router: Router) { }
 
   ngOnInit(): void {
     const appId = this.route.snapshot.paramMap.get('appId');
@@ -79,6 +80,11 @@ export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.getRecommendedApps();
+    this.router.events.subscribe(event => {
+      if(event instanceof NavigationEnd) {
+        this.ngOnInit();
+      }
+    })
   }
 
   ngAfterViewInit() {
