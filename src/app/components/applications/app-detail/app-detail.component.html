@@ -22,10 +22,7 @@
                                label="reviews" labelClass="font-med" type="single-star"></oc-rating>
                     <oc-button type="primary" text="Buy Now"></oc-button>
                 </div>
-                <div class="col-md-auto">
-                    <video [src]="app.video"
-                           width="380" height="255"></video>
-                </div>
+                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="col-md"></oc-video>
             </div>
         </div>
     </div>
