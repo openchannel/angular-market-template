@@ -15,3 +15,8 @@
 .review-column {
   flex-grow: 1;
 }
+
+.hid-description {
+  max-height: 115px;
+  overflow: hidden;
+}

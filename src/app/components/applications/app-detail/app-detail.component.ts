@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   AppsService,
   ReviewsService,
@@ -14,13 +14,16 @@ import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
 import {LoaderService} from '../../../shared/services/loader.service';
+import { OcTextSearchComponent } from 'oc-ng-common-component';
 
 @Component({
   selector: 'app-app-detail',
   templateUrl: './app-detail.component.html',
   styleUrls: ['./app-detail.component.scss']
 })
-export class AppDetailComponent implements OnInit, OnDestroy {
+export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('description') appDescription: HTMLParagraphElement;
 
   app: FullAppData;
   recommendedApps: FullAppData [] = [];
@@ -41,6 +44,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
       new DropdownModel('1 Stars', `{'rating': 100}`),
   ];
   selectedFilter: DropdownModel<string> = this.reviewsFilter[0];
+
+  expandDescription: boolean = false;
 
   private destroy$: Subject<void> = new Subject();
   private appConfigPipe = pageConfig.fieldMappings;
@@ -74,6 +79,12 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     });
 
     this.getRecommendedApps();
+  }
+
+  ngAfterViewInit() {
+    if (this.appDescription.offsetHeight < 120) {
+      this.expandDescription = true;
+    }
   }
 
   ngOnDestroy(): void {
