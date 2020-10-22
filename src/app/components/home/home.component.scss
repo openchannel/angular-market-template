@@ -9,7 +9,7 @@
     border-radius: 0;
     color: #fff;
     margin-top: 48px;
-  
+
     .hero-title {
       text-align: left;
       line-height: 1.38;
@@ -25,7 +25,7 @@
       font-size: 24px;
       margin-bottom: 19px;
     }
-  
+
     .featured img {
       width: 122px;
     }
@@ -46,7 +46,7 @@
       line-height: 1.38;
       max-width: 300px;
     }
-  
+
     .footer-content {
       margin-top: 80px;
       font-size: 10px;
@@ -63,7 +63,7 @@
       }
     }
   }
-  
+
   // Media Query - max-width: 767px Start
   @media (max-width: 767px) {
     // Hero Sec Media Css
@@ -94,7 +94,7 @@
     }
   }
   // Media Query - max-width: 767px End
-  
+
   // Media Query - min-width: 768px Start
   @media (min-width: 768px) {
     .section-hero {
@@ -125,3 +125,7 @@
   }
 }
 // iPad Media Query - and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) End
+
+.min-height-auto {
+  min-height: auto;
+}

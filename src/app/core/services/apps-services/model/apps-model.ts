@@ -1,3 +1,5 @@
+import { FullAppData } from 'oc-ng-common-service';
+
 export interface Page<L> {
     list: L[];
     totalCount: number;
@@ -101,4 +103,32 @@ export enum FieldType {
     // singleImage = 'singleImage',
     // Email Types
     // emailAddress = 'emailAddress'
+}
+
+export interface FilterValue {
+    id: string;
+    label: string;
+    sort: any;
+    query: any;
+}
+
+export interface FilterList {
+    id: string;
+    name: string;
+    description: string;
+    values: FilterValue[];
+}
+
+export interface AppFiltersResponse {
+    count: number;
+    list: FilterList[];
+    pageNumber: number;
+    pages: number;
+}
+
+export interface FullAppDataResponse {
+    count: number;
+    pages: number;
+    pageNumber: number;
+    list: FullAppData[];
 }
