@@ -20,7 +20,7 @@
                 <oc-app-gallery *ngIf="configElement?.data"
                                 [appsArr]="configElement?.data"
                                 routerLinkForOneApp="app-detail/"
-                               seeAllUrl="app-search"
+                               seeAllUrl="/app-search"
                                [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
                                [appGalleryTitle]="configElement.name"
                                [appGalleryDescription]="configElement.description">
@@ -36,7 +36,7 @@
         </div>
     </ng-container>
 </div>
-<div class="bg-container bg-s mt-5 py-8 min-height-auto">
+<div class="bg-container mt-5 py-8 min-height-auto">
     <div class="container">
         <oc-app-get-started getStartedButtonText="Get Started as an App Developer"></oc-app-get-started>
     </div>

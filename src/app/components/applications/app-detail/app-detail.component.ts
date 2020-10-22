@@ -23,6 +23,7 @@ import {LoaderService} from '../../../shared/services/loader.service';
 export class AppDetailComponent implements OnInit, OnDestroy {
 
   app: FullAppData;
+  recommendedApps: FullAppData [] = [];
   appData$: Observable<FullAppData>;
   overallRating: OverallRatingSummary = new OverallRatingSummary();
 
@@ -42,7 +43,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   selectedFilter: DropdownModel<string> = this.reviewsFilter[0];
 
   private destroy$: Subject<void> = new Subject();
-
+  private appConfigPipe = pageConfig.fieldMappings;
   constructor(private appService: AppsService,
               private reviewsService: ReviewsService,
               private frontendService: FrontendService,
@@ -71,6 +72,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
           this.reviewsSorts = page.list[0] ?
               page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort)) : null;
     });
+
+    this.getRecommendedApps();
   }
 
   ngOnDestroy(): void {
@@ -101,6 +104,19 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   onReviewFilterChange(selected: DropdownModel<string>): void {
     this.selectedFilter = selected;
     this.loadReviews();
+  }
+
+  getRecommendedApps(): void {
+    this.loaderService.showLoader('3');
+
+    this.appService.getApps(1, 3, "{randomize: 1}", "{\"status.value\":\"approved\"}").pipe(
+      takeUntil(this.destroy$))
+      .subscribe(apps => {
+        this.recommendedApps = apps.list.map(app => new FullAppData(app, this.appConfigPipe));
+        this.loaderService.closeLoader('3');
+      }, () => {
+        this.loaderService.closeLoader('3');
+      });
   }
 
   private countRating(): void {
