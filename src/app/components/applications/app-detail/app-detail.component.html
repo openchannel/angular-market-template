@@ -1,4 +1,4 @@
-<app-loader #loader></app-loader>
+<app-loader></app-loader>
 <div *ngIf="appData$ | async">
     <div class="bg-container bg bg-s pb-7">
         <div class="container">
@@ -27,17 +27,11 @@
         </div>
     </div>
     <div class="container">
-        <div class="row my-8">
-            <div class="col-md text-center" *ngFor="let image of app.images">
-                <img [src]="image"
-                     height="192" alt="icon">
-                <p class="font-l font-med mt-2 mb-1">Collaborate from Anywhere</p>
-                <span class="font-m">Send an email, text message, start a video call or create a new project thread all in
-                real time</span>
-            </div>
-        </div>
+        <oc-image-gallery *ngIf="app.gallery && app.gallery.length > 0"
+                          [gallery]="app.gallery"
+                          class="mt-8"></oc-image-gallery>
 
-        <div class="row mb-8">
+        <div class="row mb-8 mt-8">
             <div class="col-md-8">
                 <h4 class="mb-5">About</h4>
                 <p class="text-secondary" [innerHTML]="app.description">
