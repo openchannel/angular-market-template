@@ -1,6 +1,9 @@
 @import "~oc-ng-common-component/assets/styles/styles.scss";
+@import "~oc-ng-common-component/assets/styles/theme.scss";
 
 $link-gray: #333333;
+$category-color-mix1: #ff0606;
+$category-color-mix2: #ffffff;
 
 .bg-container {
   width: 100%;
@@ -160,4 +163,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .black-link {
   color: $link-gray;
+}
+
+.card-1 {
+  .content-centered {
+    color: mix($primary, $category-color-mix1, 70%) !important;
+  }
+}
+
+.card-2 {
+  .content-centered {
+    color: mix($primary, $category-color-mix2, 70%) !important;
+  }
 }

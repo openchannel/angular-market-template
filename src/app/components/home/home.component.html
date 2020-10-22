@@ -1,4 +1,4 @@
-<div class="bg-container">
+<div class="bg-container d-flex align-items-center">
     <div class="container">
         <div class="row">
             <div class="col-md-7 py-7 px-4 text-center mx-auto">
@@ -7,34 +7,35 @@
                 <oc-text-searh></oc-text-searh>
             </div>
         </div>
-        <oc-featured-apps [data]="featuredApp" [label]="getValue('Featured')"></oc-featured-apps>
+        <oc-featured-apps *ngIf="isFeatured"
+                          [data]="featuredApp"
+                          label="Featured"></oc-featured-apps>
     </div>
 </div>
 <div class="container">
-    <div class="pt-7 pb-5">
-        <oc-app-galary [appsArr]="recentlyAddedApps" [seeAllUrl]="getValue('https://google.com')"
-        [appGalaryTitle]="getValue('Recently Added')"
-        [appGalaryDescription]="getValue('The latest apps that help you and your team work and build faster')">
-    </oc-app-galary>
-    </div>
-    
-    <oc-app-categories [data]="categories" [categoryHeaderTitle]="getValue('Categories to Explore')">
-    </oc-app-categories>
-    <div class="pt-8 pb-5">
-        <oc-app-galary [appsArr]="recentlyAddedApps" [seeAllUrl]="getValue('https://google.com')"
-        [appGalaryTitle]="getValue('Most Popular')"
-        [appGalaryDescription]="getValue('The most used apps that help you and your team get more done')">
-    </oc-app-galary>
-    </div>
-    
-    <oc-app-galary [appsArr]="recentlyAddedApps" [seeAllUrl]="getValue('https://google.com')"
-        [appGalaryTitle]="getValue('Apps for Analytics')"
-        [appGalaryDescription]="getValue('Get insights and analytics to make the better decisions')">
-    </oc-app-galary>
+    <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
+        <div [ngSwitch]="configElement?.type">
+            <div class="pt-8 pb-5" *ngSwitchCase="'apps-list'">
+                <oc-app-gallery *ngIf="configElement?.data"
+                                [appsArr]="configElement?.data"
+                               seeAllUrl="app-search"
+                               [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
+                               [appGalleryTitle]="configElement.name"
+                               [appGalleryDescription]="configElement.description">
+                </oc-app-gallery>
+            </div>
+            <div *ngSwitchCase="'filter-values-card-list'">
+                <oc-app-categories
+                        [data]="categories"
+                        [categoryHeaderTitle]="configElement.name"
+                        categoryRouterLink="app-search">
+                </oc-app-categories>
+            </div>
+        </div>
+    </ng-container>
 </div>
-<div class="bg-container bg-s mt-5 py-8">
+<div class="bg-container bg-s mt-5 py-8 min-height-auto">
     <div class="container">
-        <oc-app-get-started></oc-app-get-started>
+        <oc-app-get-started getStartedButtonText="Get Started as an App Developer"></oc-app-get-started>
     </div>
-    
 </div>
