@@ -1,7 +1,7 @@
-import {AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AppsService, Filter, FrontendService, FullAppData, Page} from 'oc-ng-common-service';
 import {debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap} from 'rxjs/operators';
-import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {OcTextSearchComponent} from 'oc-ng-common-component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {pageConfig} from '../../../../assets/data/configData';
@@ -19,6 +19,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   searchText: string;
   appPage: Page<FullAppData>;
   filters: Filter[];
+  selectedFilterLabels: string[] = [];
+
   loadFilters$: Observable<Page<Filter>>;
   textChange$: Subject<string> = new Subject();
 
@@ -99,7 +101,6 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   onFilterChange() {
     this.getData();
-    console.log(this.searchInput);
   }
 
   onTextChange(text: string) {
@@ -116,11 +117,13 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   private getFilterQuery() {
     const queries: string[] = [];
+    this.selectedFilterLabels = [];
 
     this.filters.forEach(filter => {
       filter.values.forEach(value => {
         if (value.checked) {
           queries.push(value.query);
+          this.selectedFilterLabels.push(value.label);
         }
       });
     });
