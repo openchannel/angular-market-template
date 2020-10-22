@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 py-4">
-                    <img src="https://drive.google.com/u/0/uc?id=1PBgcSG6CTGQiZD13s7feI_Dhup5viFNM&export=download"
+                    <img src="./assets/img/arrow-left.svg"
                          alt="arrow-icon">
                     <a href="#" class="font-m font-med pl-1">Back to App Store</a>
                 </div>
@@ -18,7 +18,8 @@
                     <h4 class="mb-2">{{ app.name }}</h4>
                     <a href="#" class="font-med" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
                     <p class="text-secondary mt-2">{{ app.summary }}</p>
-                    <oc-rating class="mb-2" [rating]="app.rating / 100" [reviewCount]="app.reviewCount" type="single-star"></oc-rating>
+                    <oc-rating class="mb-2" [rating]="app.rating / 100" [reviewCount]="app.reviewCount"
+                               label="reviews" labelClass="font-med" type="single-star"></oc-rating>
                     <oc-button type="primary" text="Buy Now"></oc-button>
                 </div>
                 <div class="col-md-auto">
@@ -77,7 +78,6 @@
             </div>
         </div>
 
-
         <div class="d-flex">
             <div class="rating-column">
                 <oc-overall-rating [allReviewSummary]="overallRating"></oc-overall-rating>
@@ -87,7 +87,14 @@
                                 [totalReview]="reviewsPage?.count"
                                 reviewListTitle="Most recent reviews">
                     <div>
-                        <oc-dropdown [options]="reviewsSorts" [selected]="this.selectedSort"></oc-dropdown>
+                        <oc-dropdown [options]="reviewsSorts"
+                                     [selected]="selectedSort"
+                                     (selectedChange)="onReviewSortChange($event)"
+                                     class="mr-5"></oc-dropdown>
+                        <oc-dropdown [options]="reviewsFilter"
+                                     title="Show"
+                                     (selectedChange)="onReviewFilterChange($event)"
+                                     [selected]="selectedFilter"></oc-dropdown>
                     </div>
                 </oc-review-list>
             </div>
