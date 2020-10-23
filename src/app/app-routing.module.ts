@@ -16,6 +16,7 @@ const routes: Routes = [
     component: CommonLayoutComponent,
 
     children: [
+      {path: '', component: HomeComponent},
       {path: 'app-store', component: HomeComponent},
       {path: 'app-search', component: AppSearchComponent},
       {path: 'app-detail/:appId', component: AppDetailComponent},
@@ -30,7 +31,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {useHash: true})],
+  imports: [RouterModule.forRoot(routes, {
+    useHash: true,
+    onSameUrlNavigation: 'reload',
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {

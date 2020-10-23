@@ -9,7 +9,7 @@ import {
   FrontendService,
   DropdownModel,
 } from 'oc-ng-common-service';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
@@ -76,11 +76,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     });
 
     this.getRecommendedApps();
-    this.router.events.subscribe(event => {
-      if(event instanceof NavigationEnd) {
-        this.ngOnInit();
-      }
-    })
+
+    this.router.routeReuseStrategy.shouldReuseRoute = () => {
+      return false;
+    };
   }
 
   ngOnDestroy(): void {
