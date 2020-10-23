@@ -1,0 +1,6 @@
+/*
+  Content-Security-Policy: default-src 'self'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: origin
+  Permissions-Policy: payment 'self'

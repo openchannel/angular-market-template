@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AppsService, Filter, FrontendService, FullAppData, Page} from 'oc-ng-common-service';
 import {debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
-import {OcTextSearchComponent} from 'oc-ng-common-component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {pageConfig} from '../../../../assets/data/configData';
 import {LoaderService} from '../../../shared/services/loader.service';
@@ -13,8 +12,6 @@ import {LoaderService} from '../../../shared/services/loader.service';
   styleUrls: ['./app-search.component.scss']
 })
 export class AppSearchComponent implements OnDestroy, OnInit {
-
-  @ViewChild('searchInput') searchInput: OcTextSearchComponent;
 
   searchText: string;
   appPage: Page<FullAppData>;
@@ -29,7 +26,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   constructor(private appService: AppsService,
               private frontendService: FrontendService,
               private router: ActivatedRoute,
-              private laoderService: LoaderService,
+              private loaderService: LoaderService,
               private route: Router) {}
 
   ngOnInit() {
@@ -37,7 +34,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     const filterId = this.router.snapshot.queryParamMap.get('filterId');
     const filterValueId = this.router.snapshot.queryParamMap.get('valueId');
 
-    this.laoderService.showLoader('1');
+    this.loaderService.showLoader('1');
 
     this.loadFilters$ = this.frontendService.getFilters()
         .pipe(takeUntil(this.destroy$));
@@ -55,7 +52,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             });
           }
 
-          this.laoderService.closeLoader('1');
+          this.loaderService.closeLoader('1');
 
           if (this.searchText || this.getFilterQuery()) {
             this.getData();
@@ -78,12 +75,12 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             mergeMap((value: string) => this.searchAppObservable(value, this.getFilterQuery())))
-        .subscribe((data: Page<FullAppData>) => this.laoderService.closeLoader('2'),
-            error => this.laoderService.closeLoader('2'));
+        .subscribe((data: Page<FullAppData>) => this.loaderService.closeLoader('2'),
+            error => this.loaderService.closeLoader('2'));
   }
 
   searchAppObservable(text: string, sort: string): Observable<Page<FullAppData>> {
-    this.laoderService.showLoader('2');
+    this.loaderService.showLoader('2');
     return this.appService.searchApp(text, sort)
         .pipe(takeUntil(this.destroy$),
               map((data: Page<FullAppData>) => {
@@ -95,8 +92,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   getData(): void {
     this.searchAppObservable(this.searchText, this.getFilterQuery())
-        .subscribe(() => this.laoderService.closeLoader('2'),
-            error => this.laoderService.closeLoader('2'));
+        .subscribe(() => this.loaderService.closeLoader('2'),
+            error => this.loaderService.closeLoader('2'));
   }
 
   onFilterChange() {
