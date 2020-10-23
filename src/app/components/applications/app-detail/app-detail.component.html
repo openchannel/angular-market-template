@@ -32,16 +32,10 @@
                           class="mt-8"></oc-image-gallery>
 
         <div class="row mb-8 mt-8">
-            <div class="col-md-8">
-                <h4 class="mb-5">About</h4>
-                <p #description class="text-secondary" [innerHTML]="app.description"
-                   [class.hid-description]="!expandDescription">
-                </p>
-                <span *ngIf="!expandDescription" class="font-m font-med cursor-pointer text-primary"
-                      (click)="expandDescription = true">
-                    Show full description
-                </span>
-            </div>
+            <oc-app-description  class="col-md-8"
+                        [appDescription]="app.description"
+                        header="About"
+                        expandDescriptionText="Show full description"></oc-app-description>
             <div class="col-md ml-8">
                 <h4 class="mb-5">Support</h4>
                 <ul class="list-group list-group-flush">

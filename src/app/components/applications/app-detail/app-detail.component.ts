@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AppsService,
   ReviewsService,
@@ -14,16 +14,13 @@ import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
 import {LoaderService} from '../../../shared/services/loader.service';
-import { OcTextSearchComponent } from 'oc-ng-common-component';
 
 @Component({
   selector: 'app-app-detail',
   templateUrl: './app-detail.component.html',
   styleUrls: ['./app-detail.component.scss']
 })
-export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit {
-
-  @ViewChild('description') appDescription: HTMLParagraphElement;
+export class AppDetailComponent implements OnInit, OnDestroy {
 
   app: FullAppData;
   recommendedApps: FullAppData [] = [];
@@ -45,7 +42,6 @@ export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   ];
   selectedFilter: DropdownModel<string> = this.reviewsFilter[0];
 
-  expandDescription: boolean = false;
 
   private destroy$: Subject<void> = new Subject();
   private appConfigPipe = pageConfig.fieldMappings;
@@ -87,12 +83,6 @@ export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     })
   }
 
-  ngAfterViewInit() {
-    if (this.appDescription.offsetHeight < 120) {
-      this.expandDescription = true;
-    }
-  }
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -126,7 +116,7 @@ export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   getRecommendedApps(): void {
     this.loaderService.showLoader('3');
 
-    this.appService.getApps(1, 3, "{randomize: 1}", "{\"status.value\":\"approved\"}").pipe(
+    this.appService.getApps(1, 3, '{randomize: 1}', '{\'status.value\':\'approved\'}').pipe(
       takeUntil(this.destroy$))
       .subscribe(apps => {
         this.recommendedApps = apps.list.map(app => new FullAppData(app, this.appConfigPipe));
