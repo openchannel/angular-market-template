@@ -12,7 +12,9 @@ export const environment = {
   openchannelUrl: 'https://market.openchannel.io',
   graphqlUrl: 'http://6e4d6c7f6f0f.ngrok.io/graphql',
   // graphqlUrl: 'http://60da39e541f9.ngrok.io/graphql',
-  auth: 'Basic NWY1NGE3NjljOTZjZjYxMjNlNzNiMDZmOmVJUG1fQ3F5NXVTVm1vbXdLNlNLakh1cEdQX3drN0hEY29kSS13bkZuUm8='
+  auth: 'Basic NWY1NGE3NjljOTZjZjYxMjNlNzNiMDZmOmVJUG1fQ3F5NXVTVm1vbXdLNlNLakh1cEdQX3drN0hEY29kSS13bkZuUm8=',
+  iframelyApiKey: 'ab8c8d0627356d139eed8f',
+  iframelyUrl: 'https://iframe.ly/api/iframely',
 };
 
 /*

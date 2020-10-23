@@ -1,83 +1,99 @@
-<div class="bg-container bg-s pb-7">
+<app-loader></app-loader>
+<div *ngIf="appData$ | async">
+    <div class="bg-container bg bg-s pb-7">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 py-4">
+                    <img src="./assets/img/arrow-left.svg"
+                         alt="arrow-icon">
+                    <a routerLink="/app-store" class="font-m font-med pl-1">Back to App Store</a>
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-md-auto" *ngIf="app.logo">
+                    <img [src]="app.logo"
+                         height="255" alt="app-icon">
+                </div>
+                <div class="col-md d-flex flex-column">
+                    <h4 class="mb-2">{{ app.name }}</h4>
+                    <a href="#" class="font-med" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
+                    <p class="text-secondary mt-2">{{ app.summary }}</p>
+                    <oc-rating class="mb-2" [rating]="app.rating / 100" [reviewCount]="app.reviewCount"
+                               label="reviews" labelClass="font-med" type="single-star"></oc-rating>
+                    <oc-button type="primary" text="Buy Now"></oc-button>
+                </div>
+                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="col-md"></oc-video>
+            </div>
+        </div>
+    </div>
     <div class="container">
-        <div class="row">
-            <div class="col-md-12 py-4">
-                <img src="https://drive.google.com/u/0/uc?id=1PBgcSG6CTGQiZD13s7feI_Dhup5viFNM&export=download"
-                    alt="arrow-icon">
-                <a href="#" class="font-m font-med pl-1">Back to App Store</a>
-            </div>
-        </div>
-        <div class="row mb-1">
-            <div class="col-md-auto">
-                <img src="https://drive.google.com/u/0/uc?id=1Vki0NPL3WXQEgufLAgjvWXTmJKiLKTNO&export=download"
-                    width="255" height="255" alt="app-icon">
-            </div>
-            <div class="col-md">
-                <h4 class="mb-2">Application</h4>
-                <a href="#" class="font-med">$11.99</a>
-                <p class="text-secondary mt-2">Collaborate with teammates anytime, anywhere.</p>
-                <oc-rating></oc-rating>
-                <oc-button></oc-button>
-            </div>
-            <div class="col-md-auto">
-                <img src="https://drive.google.com/u/0/uc?id=1ldLBzwIPzzo_WDe450-GDW8U4sYMwhHY&export=download"
-                    width="380" height="255" alt="app-icon">
-            </div>
-        </div>
-    </div>
-</div>
-<div class="container">
-    <div class="row my-8">
-        <div class="col-md text-center">
-            <img src="https://drive.google.com/u/0/uc?id=1kIVWdkrfTppvyQtkfdI7u32LWOKJKQK3&export=download" width="350"
-                height="192" alt="icon">
-            <p class="font-l font-med mt-2 mb-1">Collaborate from Anywhere</p>
-            <span class="font-m">Send an email, text message, start a video call or create a new project thread all in
-                real time</span>
-        </div>
-        <div class="col-md text-center">
-            <img src="https://drive.google.com/u/0/uc?id=1-ta0MGkoGEXylNkweSiuy8zM_Vy6wYKU&export=download" width="350"
-                height="192" alt="icon">
-            <p class="font-l font-med mt-2 mb-1">Collaborate from Anywhere</p>
-            <span class="font-m">Send an email, text message, start a video call or create a new project thread all in
-                real time</span>
-        </div>
-        <div class="col-md text-center">
-            <img src="https://drive.google.com/u/0/uc?id=1AbX9FAHY2E6PMrSqzBtyhNTBPNIDy-hs&export=download" width="350"
-                height="192" alt="icon">
-            <p class="font-l font-med mt-2 mb-1">Collaborate from Anywhere</p>
-            <span class="font-m">Send an email, text message, start a video call or create a new project thread all in
-                real time</span>
-        </div>
-    </div>
+        <oc-image-gallery *ngIf="app.gallery && app.gallery.length > 0"
+                          [gallery]="app.gallery"
+                          class="mt-8"></oc-image-gallery>
 
-    <div class="row mb-8">
-        <div class="col-md-8">
-            <h4 class="mb-5">About</h4>
-            <p class="text-secondary">
-                With this Application you can collaborate with teammates at any time, from any where in the world. Send
-                an email, text message, start a video call or create a new project thread all in real time. All of your
-                conversations will automatically sync across every device. <br><br>
-                Team administrators can create public or private threads, add or remove team members and even invite
-                people from external organizations to collaborate on a project.
-            </p>
-            <a href="#" class="font-m font-med">Show full description</a>
+        <div class="row mb-8 mt-8">
+            <oc-app-description  class="col-md-8"
+                        [appDescription]="app.description"
+                        header="About"
+                        expandDescriptionText="Show full description"></oc-app-description>
+            <div class="col-md ml-8">
+                <h4 class="mb-5">Support</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <img src="https://drive.google.com/u/0/uc?id=19l_PmHX-o41r6i_iy6jM1tjFgpnTndxs&export=download"
+                             class="pr-2" alt="icon">
+                        <a class="font-m font-med black-link" [href]="app.customData['terms-of-service-url']">F.A.Q.</a>
+                    </li>
+                    <li class="list-group-item"><img
+                            src="https://drive.google.com/u/0/uc?id=15OqGirdDRuOu9fOrtJm22mDNZKfUvFpG&export=download"
+                            class="pr-2" alt="icon">
+                        <a class="font-m font-med black-link" [href]="app.customData['website-url']">Developer website</a>
+                    </li>
+                    <li class="list-group-item"><img
+                            src="https://drive.google.com/u/0/uc?id=1HSmib71yx3xSlqZAxdS1lobMmLpKMedi&export=download"
+                            class="pr-2" alt="icon">
+                        <a class="font-m font-med black-link" [href]="app.customData['terms-of-service-url']">Privacy Policy</a>
+                    </li>
+                    <li class="list-group-item"><img
+                            src="https://drive.google.com/u/0/uc?id=1ZOT4RuSOtGgjgL_ayCym-J_wjnoMwtGZ&export=download"
+                            class="pr-2" alt="icon">{{app.customData['contact-email']}}
+                    </li>
+                    <li class="list-group-item"><img
+                            src="https://drive.google.com/u/0/uc?id=1elm03rFroYXt0mCt_URMBQNRmDe1dTXP&export=download"
+                            class="pr-2" alt="icon">
+                        <a class="font-m font-med black-link" [href]="app.customData['support-url']">Support website</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="col-md ml-8">
-            <h4 class="mb-5">Support</h4>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <img src="https://drive.google.com/u/0/uc?id=19l_PmHX-o41r6i_iy6jM1tjFgpnTndxs&export=download"
-                      class="pr-2"  alt="icon">F.A.Q.</li>
-                <li class="list-group-item"><img src="https://drive.google.com/u/0/uc?id=15OqGirdDRuOu9fOrtJm22mDNZKfUvFpG&export=download"
-                    class="pr-2"  alt="icon">Developer website</li>
-                <li class="list-group-item"><img src="https://drive.google.com/u/0/uc?id=1HSmib71yx3xSlqZAxdS1lobMmLpKMedi&export=download"
-                    class="pr-2"  alt="icon">Privacy Policy</li>
-                <li class="list-group-item"><img src="https://drive.google.com/u/0/uc?id=1ZOT4RuSOtGgjgL_ayCym-J_wjnoMwtGZ&export=download"
-                    class="pr-2"  alt="icon">support@application.com</li>
-                <li class="list-group-item"><img src="https://drive.google.com/u/0/uc?id=1elm03rFroYXt0mCt_URMBQNRmDe1dTXP&export=download"
-                    class="pr-2"  alt="icon">Support website</li>
-            </ul>
+
+        <div class="d-flex">
+            <div class="rating-column">
+                <oc-overall-rating [allReviewSummary]="overallRating"></oc-overall-rating>
+            </div>
+            <div class="review-column">
+                <oc-review-list [reviewsList]="reviewsPage?.list"
+                                [totalReview]="reviewsPage?.count"
+                                reviewListTitle="Most recent reviews">
+                    <div>
+                        <oc-dropdown [options]="reviewsSorts"
+                                     [selected]="selectedSort"
+                                     (selectedChange)="onReviewSortChange($event)"
+                                     class="mr-5"></oc-dropdown>
+                        <oc-dropdown [options]="reviewsFilter"
+                                     title="Show"
+                                     (selectedChange)="onReviewFilterChange($event)"
+                                     [selected]="selectedFilter"></oc-dropdown>
+                    </div>
+                </oc-review-list>
+            </div>
+        </div>
+    </div>
+    <div class="bg-container mt-5 py-8 min-height-auto" *ngIf="recommendedApps">
+        <div class="container">
+            <oc-recommended-apps recommendedAppTitle="Recommended For You"
+                                 [appList]="recommendedApps"
+                                 appsMainLink="/app-detail/"></oc-recommended-apps>
         </div>
     </div>
 </div>

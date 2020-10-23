@@ -1,12 +1,14 @@
  export const pageConfig = {
    "fieldMappings": {
      "icon": "icon",
+     "logo": "logo",
      "summary": "summary",
      "description": "description",
-     "video": "video",
+     "video": "video-url",
      "images": "images",
      "categories": "categories",
-     "author": "author"
+     "author": "author",
+     "gallery": "gallery"
    },
    "appListPage": [
      {

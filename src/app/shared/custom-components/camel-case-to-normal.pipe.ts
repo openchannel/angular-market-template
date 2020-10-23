@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-const S = require('string');
+import S from 'string';
 
 @Pipe({
   name: 'camelCaseToNormal'

@@ -7,7 +7,7 @@
             <a href="#" class="font-m font-med pl-1">Back to App Store</a>
         </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="loadFilters$ | async">
         <div class="col-md-3 filter__container">
             <oc-select-expandable *ngFor="let filter of filters"
                                   class="mb-1"
@@ -17,9 +17,11 @@
                                   [(selectModels)]="filter.values"></oc-select-expandable>
         </div>
         <div class="col-md-9">
-            <oc-text-search #searchInput [(searchText)]="searchText"></oc-text-search>
+            <oc-text-search [(searchText)]="searchText" (searchTextChange)="onTextChange($event)"></oc-text-search>
             <div class="result">
-                <div class="font-l">{{ appPage ? appPage.count : 0}} results</div>
+                <div class="font-l result__label">
+                    {{ appPage ? appPage.count : 0}} results{{selectedFilterLabels.length > 0 ? ' for "' + selectedFilterLabels.join(', ') + '"' : ''}}
+                </div>
             </div>
             <oc-app-list-grid [appList]="appPage?.list"
                               (gotoDetails)="goToAppDetails($event)"

@@ -4,11 +4,12 @@
             <div class="col-md-7 py-7 px-4 text-center mx-auto">
                 <h1>Your App Store Platform</h1>
                 <p class="mb-4 text-secondary">A design template for implementing your app store with OpenChannel</p>
-                <oc-text-searh></oc-text-searh>
+                <oc-text-search (enterSearch)="catchSearchText($event)"></oc-text-search>
             </div>
         </div>
         <oc-featured-apps *ngIf="isFeatured"
                           [data]="featuredApp"
+                          mainRouterLink="/app-detail/"
                           label="Featured"></oc-featured-apps>
     </div>
 </div>
@@ -18,7 +19,8 @@
             <div class="pt-8 pb-5" *ngSwitchCase="'apps-list'">
                 <oc-app-gallery *ngIf="configElement?.data"
                                 [appsArr]="configElement?.data"
-                               seeAllUrl="app-search"
+                                routerLinkForOneApp="/app-detail/"
+                               seeAllUrl="/app-search"
                                [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
                                [appGalleryTitle]="configElement.name"
                                [appGalleryDescription]="configElement.description">
@@ -34,7 +36,7 @@
         </div>
     </ng-container>
 </div>
-<div class="bg-container bg-s mt-5 py-8 min-height-auto">
+<div class="bg-container mt-5 py-8 min-height-auto">
     <div class="container">
         <oc-app-get-started getStartedButtonText="Get Started as an App Developer"></oc-app-get-started>
     </div>
