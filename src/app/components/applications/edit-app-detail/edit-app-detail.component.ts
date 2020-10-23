@@ -76,19 +76,6 @@ export class EditAppDetailComponent implements OnInit {
     }
 
 
-    // this.productImages=this.appDetails.customData.product__image__file;
-    // this.icons=[this.appDetails.customData.icon__file];
-    // FroalaEditor.DefineIcon('alert', {NAME: 'info'});
-    // FroalaEditor.RegisterCommand('alert', {
-    //   title: 'Hello',
-    //   focus: false,
-    //   undo: false,
-    //   refreshAfterCallback: false,
-    //
-    //   callback: () => {
-    //     alert('Hello!');
-    //   }
-    // });
     this.getyouTubeId();
   }
 
