@@ -1,0 +1,51 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Form Submission</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <section class="shadow-sm">
+      <h6 class="border-bottom p-1">Submission Details</h6>
+      <div class="mt-1 p-2">
+        <div class="row mb-1">
+          <span class="font-bold col-md-3">Name</span>
+          <span class="col-md-9">{{submissionData?.name}}</span>
+        </div>
+        <div class="row mb-1">
+          <span class="font-bold col-md-3">Submission ID</span>
+          <span class="col-md-9">{{submissionData?.formSubmissionId}}</span>
+        </div>
+        <div class="row mb-1">
+          <span class="font-bold col-md-3">Submitted On</span>
+          <span class="col-md-9">{{submissionData?.submittedDate | date: 'dd LLL, yyyy @ H:mm'}}</span>
+        </div>
+        <div class="row mb-1">
+          <span class="font-bold col-md-3">User</span>
+          <span class="col-md-9">{{submissionData?.userId}}</span>
+        </div>
+        <div class="row mb-1">
+          <span class="font-bold col-md-3">Email</span>
+          <span class="col-md-9">{{submissionData?.email}}</span>
+        </div>
+      </div>
+    </section>
+    <section class="shadow-sm mt-2">
+      <h6 class="border-bottom p-1">Submission Fields</h6>
+      <div class="mt-1 p-2">
+        <div class="row mb-1" *ngFor="let item of submissionData?.formData | keyvalue">
+          <span class="font-bold col-md-3" *ngIf="item.key !== '__typename'">{{item.key}}</span>
+          <div class="col-md-9" [ngSwitch]="checkForSpecialData(item.value)" *ngIf="item.key !== '__typename'">
+            <div *ngSwitchCase="'html'"
+                 [innerHTML]="sanitizer.bypassSecurityTrustHtml(item.value.toString())" class="text-wrap"></div>
+            <div *ngSwitchCase="'array'" class="row">
+              <span class="tag-imitation" *ngFor="let element of item.value">{{element}}</span>
+            </div>
+            <p *ngSwitchCase="'string'">{{item.value}}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

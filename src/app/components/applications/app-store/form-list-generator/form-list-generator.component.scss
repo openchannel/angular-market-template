@@ -1,0 +1,7 @@
+
+.border-bottom-custom {
+  border-bottom: 1px solid #e8e4e4;
+  &:last-child {
+    border-bottom: none;
+  }
+}

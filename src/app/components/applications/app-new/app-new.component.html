@@ -1,0 +1,14 @@
+<div class="bg-container bg-s py-7">
+    <div class="container">
+        <img src="assets/img/arrow-left.svg" alt="arrow-icon">
+        <a href="/app-developer" class="font-m font-med pl-1">Back to Manage Apps</a>
+        <h1 class="mt-3">Submit New App</h1>
+    </div>
+</div>
+
+
+<div class="container container-s">
+    <app-edit-app-detail [(appDetails)]=appDetails (saveOrSubmitApp)="gotoAppsList()" (cancelApp)="cancelNewApp()"></app-edit-app-detail>
+</div>
+
+<div class="divider"></div>

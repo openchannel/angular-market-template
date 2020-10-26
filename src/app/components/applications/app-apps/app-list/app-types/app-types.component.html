@@ -1,0 +1,51 @@
+<div class="w-100 forms-container p-2">
+  <ngb-accordion [closeOthers]="true" type="light">
+    <ngb-panel [id]="'static-' + i" *ngFor="let appForm of appTypes.controls; let i = index">
+      <ng-template ngbPanelTitle class="custom-accordion-title">
+        <h6 class="custom-accordion-title">
+          {{appForm.get('label').value ? appForm.get('label').value : 'New Type'}}
+        </h6>
+      </ng-template>
+      <ng-template ngbPanelContent class="p-3">
+        <form [formGroup]="appForm">
+          <div class="row">
+            <div class="form-group col-md-6">
+              <oc-label text="Label" [required]="true"></oc-label>
+              <oc-input formControlName="label"></oc-input>
+              <oc-error [control]="appForm.get('label')"></oc-error>
+            </div>
+            <div class="form-group col-md-6">
+              <oc-label text="Id" [required]="true"></oc-label>
+              <oc-input formControlName="id"></oc-input>
+              <oc-error [control]="appForm.get('id')"></oc-error>
+            </div>
+          </div>
+          <div class="form-group">
+            <oc-label text="Description"></oc-label>
+            <oc-textarea formControlName="description"></oc-textarea>
+          </div>
+          <div class="row ml-0" *ngIf="formsStatus[i].editable">
+            <oc-button text="SAVE CHANGES" type="primary" [class]="'mr-2'"
+                       (click)="saveAppTypeData(appForm, i)"></oc-button>
+            <oc-button text="CANCEL" type="secondary"
+                       *ngIf="!formsStatus[i].existed"
+                       (click)="cancelForm(i)"></oc-button>
+            <oc-button text="RESET" type="secondary"
+                       *ngIf="formsStatus[i].existed" (click)="resetForm(i, appForm)"></oc-button>
+          </div>
+        </form>
+        <section class="mt-3" *ngIf="appForm.get('fieldDefinitions').value
+                              && appForm.get('fieldDefinitions').value.length > 0">
+          <h5>Fields</h5>
+          <hr class="mt-2 mb-2">
+          <div>
+            <app-app-type-fields [fieldDefinitions]="appTypesData[i]?.fieldDefinitions"
+                                 (fieldsChanging)="catchFieldChanging($event, appForm)">
+            </app-app-type-fields>
+          </div>
+        </section>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+  <oc-button text="ADD TYPE" type="primary" [class]="'mt-2'" (click)="addAppType()"></oc-button>
+</div>

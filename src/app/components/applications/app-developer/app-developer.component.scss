@@ -1,0 +1,46 @@
+@import "~oc-ng-common-component/assets/styles/theme.scss";
+.app-manage-card {
+  padding: 8px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  border: 1px solid #c9d5ea;
+  border-radius: 4px;
+  margin: 0;
+  .time-selection {
+    padding: 11px;
+    width: 152px;
+    height: 50px;
+    text-align: center;
+    display: inline-block;
+  }
+  .time-selection.active {
+    border: 1px solid #c9d5ea;
+    border-radius: 4px;
+    background-color: white;
+  }
+}
+
+.chart-card {
+  border: 1px solid $info;
+  border-radius: 4px;
+  padding: 40px;
+  margin: 0;
+  background-color: white;
+  .sec-download {
+    width: 245px;
+    padding: 0;
+    img {
+      margin-top: 48px;
+      margin-bottom: 16px;
+    }
+    h4 {
+      padding-bottom: 47px;
+      border-bottom: 1px solid rgba(201, 213, 234, 0.5);
+      margin-bottom: 16px;
+    }
+    span {
+      color: #74787e;
+      font-size: 14px;
+    }
+  }
+}

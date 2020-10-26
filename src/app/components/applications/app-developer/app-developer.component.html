@@ -1,0 +1,67 @@
+<div class="bg-container" [style.visibility]="(isAppsLoading || isChartLoading) ? 'hidden': 'visible'">
+    <div class="container">
+        <div class="row py-5">
+            <div class="col-md-9">
+                <h1 class="mb-0">Manage Apps</h1>
+            </div>
+            <div class="col-md" (click)="newApp()">
+                <oc-button text="Submit New App" type="primary" class="btn-block">
+                </oc-button>
+            </div>
+        </div>
+
+        <div class="row app-manage-card">
+            <div class="col-md-9 pl-0">
+                <div class="time-selection" [ngClass]="{
+                    active: period === 'month'
+                  }">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" id="month" value="month" name="name"
+                            [(ngModel)]="period" (ngModelChange)="getChartStatistics()">
+                        <label class="custom-control-label cursor-pointer" for="month">Month</label>
+                    </div>
+                </div>
+                <div class="time-selection" [ngClass]="{
+                    active: period ==='day'
+                  }">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" id="day" value="day" name="name"
+                            [(ngModel)]="period" (ngModelChange)="getChartStatistics()">
+                        <label class="custom-control-label cursor-pointer" for="day">Day</label>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-3 oc-dropdown-toggle">
+                <!-- <div class="time-selection active"> -->
+                <div ngbDropdown class="d-inline-block">
+                    <button class="btn btn-secondary" id="dropdownBasic1"
+                        ngbDropdownToggle>{{ (selectedChartField == 'downloads' ? 'Downloads' :
+                        selectedChartField == 'views' ? 'Views' :
+                        selectedChartField == 'leads' ? 'Leads' : '')}}
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                        <button value="downloads" ngbDropdownItem (click)="changeField('downloads')">Downloads</button>
+                        <button value="views" ngbDropdownItem (click)="changeField('views')">Views</button>
+                        <button value="leads" ngbDropdownItem (click)="changeField('leads')">Leads</button>
+                    </div>
+                </div>
+
+                <!-- </div> -->
+            </div>
+        </div>
+        <div class="my-3">
+            <oc-chart [labels]="labels" [dataSets]="dataSets" [count]="count" [countText]="countText"
+                [downloadUrl]="downloadUrl" [name]="period" [random]="random"></oc-chart>
+        </div>
+
+        <div class="pb-1">
+            <div class="pb-1">
+                <oc-menu-grid (menuClicked)="menuchange($event)" [menuUrl]="menuUrl" [appList]="applications"
+                    [sortIcon]="sortIcon"></oc-menu-grid>
+            </div>
+
+        </div>
+
+    </div>

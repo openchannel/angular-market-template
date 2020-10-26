@@ -1,0 +1,33 @@
+@import "~oc-ng-common-component/assets/styles/theme.scss";
+@import "bootstrap";
+
+.dropdown-create-app {
+  background: $gray-200;
+  color: $gray-700;
+}
+
+.dropdown-show-app {
+  .description {
+    color: $gray-500;
+  }
+  .custom-text {
+    color: $gray-900;
+  }
+}
+
+.dropdown-show-app:hover {
+  background: $gray-200;
+}
+
+.human-icon {
+  min-height: 13px;
+  min-width: 13px;
+}
+
+.dropbox-custom-elements {
+  max-height: 46px;
+  @extend .d-flex;
+  @extend .flex-row;
+  @extend .flex-nowrap;
+  @extend .align-items-center;
+}

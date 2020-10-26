@@ -1,0 +1,14 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title">Preview {{fieldFullData.label}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <oc-form
+            [showButton]="false"
+            [formJsonData]="dataForForm"></oc-form>
+    <oc-button text="Close" type="primary" (click)="close()"></oc-button>
+  </div>
+</div>

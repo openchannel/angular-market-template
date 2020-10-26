@@ -1,0 +1,13 @@
+.table-collapsed {
+  height: 0;
+  overflow-y: hidden;
+  border-top: none;
+  border-bottom: none;
+}
+
+.table-opened {
+  height: auto;
+  overflow-y: auto;
+  border-top: 1px solid #c9d5ea;
+  border-bottom: 1px solid #c9d5ea;
+}

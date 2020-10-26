@@ -1,0 +1,37 @@
+<div class="p-3">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{formData.name}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <section class="mt-2">
+    <h6 class="border-bottom pb-1 pt-1">Submission Details</h6>
+    <form [formGroup]="submissionDetailsForm">
+      <div class="form-group">
+        <oc-label text="Name" [class]="'mb-1'">
+        </oc-label>
+        <oc-input  formControlName="name"></oc-input>
+      </div>
+      <div class="form-group">
+        <oc-label text="App" [class]="'mb-1'">
+        </oc-label>
+        <oc-input  formControlName="appId"></oc-input>
+      </div>
+      <div class="form-group">
+        <oc-label text="User" [class]="'mb-1'">
+        </oc-label>
+        <oc-input  formControlName="userId"></oc-input>
+      </div>
+      <div class="form-group">
+        <oc-label text="Email" [class]="'mb-1'">
+        </oc-label>
+        <oc-input  formControlName="email"></oc-input>
+      </div>
+    </form>
+  </section>
+  <section>
+    <h6 class="border-bottom pb-lg-1 bp-1">Submission Fields</h6>
+    <oc-form [formJsonData]="formData" (formSubmitted)="sendFormData($event)"></oc-form>
+  </section>
+</div>
