@@ -19,28 +19,16 @@ import {LoaderComponent} from './shared/custom-components/loader/loader.componen
 import {DatePipe} from '@angular/common';
 import {SignupComponent} from './components/signup/signup.component';
 import {OcCommonServiceModule} from 'oc-ng-common-service';
-import {AppStoreComponent} from './components/applications/app-store/app-store.component';
-import {AppAppsComponent} from './components/applications/app-apps/app-apps.component';
-import {AppDetailComponent} from './components/applications/app-detail/app-detail.component';
-import {AppDeveloperComponent} from './components/applications/app-developer/app-developer.component';
-import {AppNewComponent} from './components/applications/app-new/app-new.component';
 import {environment} from 'src/environments/environment';
 import {GeneralProfileComponent} from './components/my-profile/general/general-profile.component';
 import {ChangePasswordComponent} from './components/my-profile/change-password/change-password.component';
 import {MyProfileComponent} from './components/my-profile/my-profile.component';
-import {EditAppDetailComponent} from './components/applications/edit-app-detail/edit-app-detail.component';
-import {EditAppComponent} from './components/applications/edit-app/edit-app.component';
 import {ActivationComponent} from './components/activation/activation.component';
 import {ResetPasswordComponent} from './components/reset-password/reset-password.component';
-import {FormListGeneratorComponent} from './components/applications/app-store/form-list-generator/form-list-generator.component';
 import {FormModalComponent} from './shared/modals/form-modal/form-modal.component';
-import {AppListComponent} from './components/applications/app-apps/app-list/app-list.component';
-import {CreateAppComponent} from './components/applications/app-apps/app-create-app/create-app.component';
 import {OcCommonLibModule} from 'oc-ng-common-component';
-import {AppTypesComponent} from './components/applications/app-apps/app-list/app-types/app-types.component';
 import {AppsServiceImpl} from './core/services/apps-services/model/apps-service-impl';
 import {MockAppsService} from './core/services/apps-services/mock-apps-service/mock-apps-service.service';
-import {AppTypeFieldsComponent} from './components/applications/app-apps/app-list/app-types/app-type-fields/app-type-fields.component';
 import {ConfirmationModalComponent} from './shared/modals/confirmation-modal/confirmation-modal.component';
 import {AddFieldModalComponent} from './shared/modals/add-field-modal/add-field-modal.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -48,10 +36,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {FieldOptionsComponent} from './shared/modals/add-field-modal/field-options/field-options.component';
 import {CamelCaseToNormalPipe} from './shared/custom-components/camel-case-to-normal.pipe';
 import {FieldPreviewModalComponent} from './shared/modals/field-preview-modal/field-preview-modal.component';
-import {SubmissionsTableComponent} from './components/applications/app-store/form-list-generator/submissions-table/submissions-table.component';
 import {SubmissionsDataViewModalComponent} from './shared/modals/submissions-data-view-modal/submissions-data-view-modal.component';
 import {AppSearchComponent} from './components/applications/app-search/app-search.component';
 import {HttpXsrfInterceptor} from './core/interceptors/httpxsrf.interceptor';
+import {AppDetailComponent} from "./components/applications/app-detail/app-detail.component";
 
 @NgModule({
   declarations: [
@@ -64,27 +52,14 @@ import {HttpXsrfInterceptor} from './core/interceptors/httpxsrf.interceptor';
     ForgotPasswordComponent,
     SignupComponent,
     SignupComponent,
-    AppStoreComponent,
-    AppAppsComponent,
     AppDetailComponent,
-    AppDeveloperComponent,
-    AppNewComponent,
     GeneralProfileComponent,
     ChangePasswordComponent,
     MyProfileComponent,
-    EditAppDetailComponent,
-    EditAppComponent,
     ActivationComponent,
     ResetPasswordComponent,
-    FormListGeneratorComponent,
-    SubmissionsTableComponent,
     SubmissionsDataViewModalComponent,
     FormModalComponent,
-    AppListComponent,
-    CreateAppComponent,
-    CreateAppComponent,
-    AppTypesComponent,
-    AppTypeFieldsComponent,
     ConfirmationModalComponent,
     AddFieldModalComponent,
     FieldOptionsComponent,
