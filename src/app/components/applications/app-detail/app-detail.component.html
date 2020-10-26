@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="row mb-1">
-                <div class="col-md-auto" *ngIf="app.logo">
+                <div class="col-md-auto mb-2 app-logo" *ngIf="app.logo">
                     <img [src]="app.logo"
                          height="255" alt="app-icon">
                 </div>
@@ -22,7 +22,7 @@
                                label="reviews" labelClass="font-med" type="single-star"></oc-rating>
                     <oc-button type="primary" text="Buy Now"></oc-button>
                 </div>
-                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="col-md"></oc-video>
+                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="col-md mt-2 mt-md-0"></oc-video>
             </div>
         </div>
     </div>
