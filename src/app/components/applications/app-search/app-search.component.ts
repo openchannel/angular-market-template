@@ -54,9 +54,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
           this.loaderService.closeLoader('1');
 
-          if (this.searchText || this.getFilterQuery()) {
-            this.getData();
-          }
+          this.getData();
         });
 
     this.subscribeToSearchChange();
