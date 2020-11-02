@@ -1,4 +1,12 @@
 <div class="bg-container pt-5">
-    <oc-signup (submit)="signup($event)" [signupModel]="signupModel" [loginUrl]="loginUrl" [signupUrl]="signupUrl" [activationUrl]="activationUrl"  [companyLogoUrl]="companyLogoUrl" [showSignupFeedbackPage]="showSignupFeedbackPage"
-    [termsUrl]="termsAndConditionPageUrl" [policyUrl]="dataProcessingPolicyUrl" [process]="inProcess" [forgotPasswordDoneUrl]="forgotPasswordDoneIconPath"></oc-signup>
+    <oc-user-signup (submit)="signup($event)"
+                    [signupModel]="signupModel"
+                    [loginUrl]="loginUrl"
+                    [signupUrl]="signupUrl"
+                    [companyLogoUrl]="companyLogoUrl"
+                    [showSignupFeedbackPage]="showSignupFeedbackPage"
+                    [termsUrl]="termsAndConditionPageUrl"
+                    [policyUrl]="dataProcessingPolicyUrl"
+                    [process]="inProcess"
+                    [forgotPasswordDoneUrl]="forgotPasswordDoneIconPath"></oc-user-signup>
 </div>

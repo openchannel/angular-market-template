@@ -1,12 +1,19 @@
 import {Injectable} from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+  HttpResponse,
+} from '@angular/common/http';
 
-import {Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {NotificationService} from 'src/app/shared/custom-components/notification/notification.service';
 import {LoaderService} from 'src/app/shared/services/loader.service';
 import {Router} from '@angular/router';
 import {OcErrorService} from 'oc-ng-common-component';
-import {environment} from '../../../environments/environment';
+import {catchError, map} from 'rxjs/operators';
 
 @Injectable()
 export class HttpConfigInterceptor implements HttpInterceptor {
@@ -15,8 +22,21 @@ export class HttpConfigInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // request = request.clone({ headers: request.headers.set('Authorization', environment.auth) });
-    return next.handle(request);
+    return next.handle(request).pipe(
+        map((event: HttpEvent<any>) => {
+          if (event instanceof HttpResponse) {
+            this.loaderService.closeLoader(event.url);
+          }
+          return event;
+        }),
+        catchError((response: HttpErrorResponse) => {
+          this.loaderService.closeLoader(response.url);
+
+          if (response.error && response.error['validation-errors']) {
+            this.handleValidationError(response.error['validation-errors']);
+          }
+          return throwError(response);
+        }));
   }
 
   handleValidationError(validationErrorList: any[]) {

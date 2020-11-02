@@ -5,8 +5,10 @@ import {AppDetailComponent} from './components/applications/app-detail/app-detai
 import {MyProfileComponent} from './components/my-profile/my-profile.component';
 import {AppSearchComponent} from './components/applications/app-search/app-search.component';
 import { HomeComponent } from './components/home/home.component';
+import {SignupComponent} from './components/signup/signup.component';
 
 const routes: Routes = [
+  {path: 'signup', component: SignupComponent},
   {
     path: '',
     component: CommonLayoutComponent,
