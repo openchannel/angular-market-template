@@ -1,5 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AuthenticationService, OauthService, SellerActivation, UsersService} from 'oc-ng-common-service';
+import {Component, OnDestroy} from '@angular/core';
+import {SellerActivation, UsersService} from 'oc-ng-common-service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -20,8 +20,8 @@ export class ActivationComponent implements OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
-    constructor(private userService: UsersService, private oauthService: OauthService,
-                private authenticationService: AuthenticationService, private router: Router,
+    constructor(private userService: UsersService,
+                private router: Router,
                 private route: ActivatedRoute) {
         this.activationModel.code = this.route.snapshot.queryParamMap.get('token');
     }

@@ -1,47 +1,102 @@
-import { Component, OnInit } from '@angular/core';
-import { OauthService, SellerSignin, SellerService, AuthenticationService } from 'oc-ng-common-service';
-import { environment } from 'src/environments/environment';
-import { Router } from '@angular/router';
-import { LoaderService } from 'src/app/shared/services/loader.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {
+    AuthenticationService,
+    AuthHolderService,
+    AwsAuthService,
+    LoginRequest,
+    LoginResponse,
+    SellerSignin,
+} from 'oc-ng-common-service';
+import {Router} from '@angular/router';
+import {LoaderService} from 'src/app/shared/services/loader.service';
+import {filter, takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {OAuthService} from 'angular-oauth2-oidc';
+import {JwksValidationHandler} from 'angular-oauth2-oidc-jwks';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
-  companyLogoUrl = "./assets/img/logo-company.png";
-  signupUrl = "/signup";
-  forgotPwdUrl = "/forgot-password";
-  successLoginFwdUrl = "/app-developer";
-  signIn = new SellerSignin();
-  inProcess = false;
-  isLoading = true;
-  constructor(private oauthService : OauthService,private router: Router,private sellerService : SellerService,
-    private authenticationService : AuthenticationService, private loaderService : LoaderService
-  ) { }
+    companyLogoUrl = './assets/img/logo-company.png';
+    signupUrl = '/signup';
+    forgotPwdUrl = '/forgot-password';
+    signIn = new SellerSignin();
+    inProcess = false;
+    isLoading = false;
 
-  ngOnInit(): void {
-    this.loaderService.showLoader("1");
-      //localStorage.getItem("rememberMe") && localStorage.getItem("rememberMe")=='true' &&
-      if (localStorage.getItem("access_token")) {
-        this.authenticationService.saveUserprofileInformation(res => {
-            this.isLoading = false;
-            this.loaderService.closeLoader("1");
-            this.router.navigateByUrl("/app-developer");
-        },res => {
-          this.isLoading = false;
-          this.loaderService.closeLoader("1");
-        });
-      }else{
-        this.isLoading = false;
-        this.loaderService.closeLoader("1");
-      }
-  }
+    loginType: string;
 
-  login(event) {
-    this.router.navigateByUrl("/app-store");
-  }
+    private destroy$: Subject<void> = new Subject();
 
+    constructor(private router: Router,
+                private loaderService: LoaderService,
+                private awsAuthService: AwsAuthService,
+                private authHolderService: AuthHolderService,
+                private oauthService: OAuthService,
+                private openIdAuthService: AuthenticationService) {
+    }
+
+    ngOnInit(): void {
+        if (this.authHolderService.isLoggedInUser()) {
+            this.router.navigate(['/app-store']);
+        }
+
+        this.isLoading = true;
+        this.oauthService.hasValidAccessToken();
+
+        this.openIdAuthService.getAuthConfig()
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(value => value))
+            .subscribe((authConfig) => {
+                    this.loginType = authConfig.type;
+
+                    this.oauthService.configure({
+                        ...authConfig,
+                        redirectUri: authConfig.redirectUri || window.location.origin,
+                    });
+
+                    this.oauthService.tokenValidationHandler = new JwksValidationHandler();
+                    this.oauthService.loadDiscoveryDocumentAndTryLogin({
+                        onTokenReceived: receivedTokens => {
+                            this.openIdAuthService.login(new LoginRequest(receivedTokens.idToken, receivedTokens.accessToken))
+                                .pipe(takeUntil(this.destroy$))
+                                .subscribe((response: LoginResponse) => {
+                                    this.processLoginResponse(response);
+                                });
+                        },
+                    });
+                }, err => console.error('getAuthConfig', err),
+                () => this.isLoading = false);
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    login(event) {
+        if (event === true) {
+            if (this.loginType) {
+                this.oauthService.initLoginFlow();
+            } else {
+                this.awsAuthService.signIn(this.signIn)
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe((response: LoginResponse) => {
+                        this.processLoginResponse(response);
+                    });
+            }
+
+        }
+    }
+
+    private processLoginResponse(response: LoginResponse) {
+        this.authHolderService.persist(response.accessToken, response.refreshToken);
+        localStorage.setItem('email', this.signIn.email);
+        this.router.navigate(['/app-store']);
+    }
 }
