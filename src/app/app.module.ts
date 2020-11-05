@@ -40,6 +40,7 @@ import {SubmissionsDataViewModalComponent} from './shared/modals/submissions-dat
 import {AppSearchComponent} from './components/applications/app-search/app-search.component';
 import {HttpXsrfInterceptor} from './core/interceptors/httpxsrf.interceptor';
 import {AppDetailComponent} from "./components/applications/app-detail/app-detail.component";
+import {OAuthModule, OAuthService} from 'angular-oauth2-oidc';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import {AppDetailComponent} from "./components/applications/app-detail/app-detai
     OcCommonLibModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    DragDropModule
+    DragDropModule,
+    OAuthModule.forRoot(),
   ],
   providers: [
    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },

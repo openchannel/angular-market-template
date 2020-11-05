@@ -1,32 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {AuthHolderService} from 'oc-ng-common-service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
 
-  sellerName : string = null;
-  constructor(public router:Router){
- //   console.log("header component loaded.");
-     this.displayUserInfo();
-}
+    userName: string;
 
-  ngOnInit(): void {
-  }
+    constructor(public router: Router,
+                private authHolderService: AuthHolderService) {
+        this.displayUserInfo();
+    }
 
+    ngOnInit(): void {
+    }
 
-  displayUserInfo(){
-      if (localStorage.getItem("email")) {
-        this.sellerName = localStorage.getItem("email");
-      }
-  }
+    displayUserInfo() {
+        if (localStorage.getItem('email')) {
+            this.userName = localStorage.getItem('email');
+        }
+    }
 
-  logout(){
-    localStorage.clear();
-    this.router.navigateByUrl("/login");
-  }
-
+    logout() {
+        localStorage.clear();
+        this.authHolderService.clearTokensInStorage();
+        this.router.navigate(['/login']);
+    }
 }

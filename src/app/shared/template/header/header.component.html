@@ -45,11 +45,10 @@
                             <!-- {{ this.sellerName ? this.sellerName : 'My Profile' }} -->
                             My Profile
                         </a>
-                        <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="navbarDropdown"
-                            *ngIf="this.sellerName != null">
-                            <!-- <a class="dropdown-item" href="#">Action</a> -->
-                            <a class="dropdown-item" href="/my-profile">Profile</a>
-                            <a class="dropdown-item" [routerLink]="" (click)="logout()">Logout
+                        <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="navbarDropdown">
+                             <a class="dropdown-item" *ngIf="!userName" routerLink="login">Login</a>
+                            <a class="dropdown-item" *ngIf="userName" routerLink="my-profile">Profile</a>
+                            <a class="dropdown-item" *ngIf="userName" (click)="logout()">Logout
                                 <img src="assets/img/logout.svg"
                                     class="pl-5" alt="logout">
                             </a>
