@@ -36,11 +36,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {FieldOptionsComponent} from './shared/modals/add-field-modal/field-options/field-options.component';
 import {CamelCaseToNormalPipe} from './shared/custom-components/camel-case-to-normal.pipe';
 import {FieldPreviewModalComponent} from './shared/modals/field-preview-modal/field-preview-modal.component';
-import {SubmissionsDataViewModalComponent} from './shared/modals/submissions-data-view-modal/submissions-data-view-modal.component';
 import {AppSearchComponent} from './components/applications/app-search/app-search.component';
 import {HttpXsrfInterceptor} from './core/interceptors/httpxsrf.interceptor';
-import {AppDetailComponent} from "./components/applications/app-detail/app-detail.component";
-import {OAuthModule, OAuthService} from 'angular-oauth2-oidc';
+import {AppDetailComponent} from './components/applications/app-detail/app-detail.component';
+import {OAuthModule} from 'angular-oauth2-oidc';
 
 @NgModule({
   declarations: [
@@ -59,7 +58,6 @@ import {OAuthModule, OAuthService} from 'angular-oauth2-oidc';
     MyProfileComponent,
     ActivationComponent,
     ResetPasswordComponent,
-    SubmissionsDataViewModalComponent,
     FormModalComponent,
     ConfirmationModalComponent,
     AddFieldModalComponent,
@@ -95,7 +93,6 @@ import {OAuthModule, OAuthService} from 'angular-oauth2-oidc';
    DatePipe],
   bootstrap: [AppComponent],
   entryComponents: [
-    SubmissionsDataViewModalComponent,
     LoaderComponent,
     FormModalComponent,
     ConfirmationModalComponent,
