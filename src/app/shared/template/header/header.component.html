@@ -1,0 +1,61 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img src="assets/img/logo-company.png" alt="brand-logo" class="company-logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"
+                    [ngClass]="{
+                    active: router.url.includes('app-store')
+                  }"
+                >
+                    <a class="nav-link" [routerLink]="'/app-store'">Browse <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item" [ngClass]="{
+                    active: router.url.includes('app-developer')
+                  }">
+                    <a class="nav-link" [routerLink]="'/app-developer'">Manage</a>
+                </li>
+                <li class="nav-item" [ngClass]="{active: router.url.includes('app-list')}">
+                    <a class="nav-link" [routerLink]="'/app-list'">Apps</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Checkout</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <ul class="navbar-nav">
+                    <li class="">
+                        <a class="nav-link" routerLink="/app-search">
+                            <img src="assets/img/search-icon.svg"
+                                class="pr-1" alt="search-icon"> Search</a>
+                    </li>
+                    <li class="">
+                        <a class="nav-link" href="#"><img src="assets/img/notification-icon.svg" alt="icon"></a>
+                    </li>
+                    <li class="nav-item dropdown" ngbDropdown>
+                        <a class="nav-link dropdown-toggle pr-0" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
+                            <!-- {{ this.sellerName ? this.sellerName : 'My Profile' }} -->
+                            My Profile
+                        </a>
+                        <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="navbarDropdown">
+                             <a class="dropdown-item" *ngIf="!userName" routerLink="login">Login</a>
+                            <a class="dropdown-item" *ngIf="userName" routerLink="my-profile">Profile</a>
+                            <a class="dropdown-item" *ngIf="userName" (click)="logout()">Logout
+                                <img src="assets/img/logout.svg"
+                                    class="pl-5" alt="logout">
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</nav>

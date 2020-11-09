@@ -1,0 +1,98 @@
+<div>
+  <div class="modal-header">
+    <h4 class="modal-title">{{action}} Field</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModalWithResult('cancel')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="fieldForm">
+      <div class="form-group">
+        <oc-label text="Label" [required]="true"></oc-label>
+        <oc-input formControlName="label"></oc-input>
+        <oc-error [control]="fieldForm.get('label')"></oc-error>
+      </div>
+      <div class="form-group">
+        <oc-label text="Id" [required]="true"></oc-label>
+        <oc-input formControlName="id"></oc-input>
+        <oc-error [control]="fieldForm.get('id')"></oc-error>
+      </div>
+      <div class="form-group">
+        <oc-label text="Description"></oc-label>
+        <oc-textarea formControlName="description"></oc-textarea>
+      </div>
+      <div class="form-group">
+        <oc-label text="Type" [required]="true"></oc-label>
+        <oc-select formControlName="type" [selectValArr]="allTypes"></oc-select>
+        <oc-error [control]="fieldForm.get('type')"></oc-error>
+      </div>
+      <div class="form-group" *ngIf="fieldForm.get('type').value === 'tags' ||
+                              fieldForm.get('type').value === 'dropdownList'">
+        <oc-tags [(ngModel)]="optionsForTags"
+                 [ngModelOptions]="{standalone: true}"
+                 title="Options"
+                 placeHolderInputName="Add Values"
+                 ></oc-tags>
+      </div>
+      <app-field-options (optionsValue)="getOptionsValue($event)"
+                         [type]="fieldForm.get('type').value"
+                         [optionsData]="fieldData ? fieldData.attributes : null"></app-field-options>
+      <ng-container [ngSwitch]="fieldForm.get('type').value">
+        <div class="form-group" *ngSwitchCase="'text'">
+          <oc-label text="Default Value"></oc-label>
+          <oc-input formControlName="defaultValue"></oc-input>
+        </div>
+        <div class="form-group" *ngSwitchCase="'longText'">
+          <oc-label text="Default Value"></oc-label>
+          <oc-textarea formControlName="defaultValue"></oc-textarea>
+        </div>
+        <div class="form-group" *ngSwitchCase="'richText'">
+          <oc-label text="Default Value"></oc-label>
+          <oc-rich-text-editor formControlName="defaultValue"></oc-rich-text-editor>
+        </div>
+        <div class="form-group" *ngSwitchCase="'tags'">
+          <oc-tags formControlName="defaultValue"
+                   title="Default value"
+                   [availableTags]="optionsForTags"
+                   placeHolderInputName="Add Default Value"
+                   placeHolderDropBoxName="Select Default Value"></oc-tags>
+        </div>
+        <div *ngSwitchCase="'multiFile'" class="mt-2 mb-2">
+          <oc-label text="Default Value"></oc-label>
+          <oc-file-upload
+                  formControlName="defaultValue"
+                  isMultiFile="true"
+                  fileType="'multiFile'"
+                  uploadIconUrl="https://stage1-philips-market-test.openchannel.io/assets/img/item-1.png"
+                  [mockUploadingFile]="mockUploadingFile" >
+          </oc-file-upload>
+        </div>
+        <div *ngSwitchCase="'multiImage'" class="mt-2 mb-2">
+          <oc-label text="Default Value"></oc-label>
+          <oc-file-upload
+                  formControlName="defaultValue"
+                  isMultiFile="true"
+                  fileType="'multiImage'"
+                  [uploadIconUrl]="'https://stage1-philips-market-test.openchannel.io/assets/img/item-1.png'"
+                  [mockUploadingFile]="mockUploadingFile">
+          </oc-file-upload>
+        </div>
+      </ng-container>
+      <div class="form-group">
+        <oc-label text="Placeholder"></oc-label>
+        <oc-input formControlName="placeholder"></oc-input>
+        <oc-error [control]="fieldForm.get('placeholder')"></oc-error>
+      </div>
+    </form>
+    <div class="row ml-0 mt-3">
+      <oc-button type="primary"
+                 text="Save"
+                 [class]="'mr-2'"
+                 (click)="closeAction('success')"></oc-button>
+      <oc-button
+              type="secondary"
+              text="CANCEL"
+              (click)="closeAction('cancel')"></oc-button>
+    </div>
+  </div>
+</div>
