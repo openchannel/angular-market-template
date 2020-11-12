@@ -13,12 +13,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This Frontend needs for the marketplace Users.<br>
-
-They can : 
-   * browse Apps
-   * evaluate App and set some comments
-   * buy approved Apps.
+This application represents the market site. It allows to users view and purchases actual apps.
 
 Note: Unauthorized Users can browse Apps.
 
@@ -33,15 +28,20 @@ Note: Unauthorized Users can browse Apps.
 Install node.js and npm [Guide](https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/)
 
 ### Installation
+
 1. `npm install`
 
-2. Optional. If need connect oc-ng-common-service.<br>
+2. For Developers. If need connect oc-ng-common-service.<br>
    `npm install file:<absolute path to common service project dist/oc-ng-common-service>`
 
-3. Optional. If need connect oc-ng-common-components.<br>
+3. For Developers. If need connect oc-ng-common-components.<br>
    `npm install file:<absolute path to common component project dist/oc-ng-common-components>`
 
-4. `ng serve`
+4. Then run <font color="red">ONE</font> of this : 
+    * start app with the Okta SSO <br>
+      ``npm run start-okta``
+    * start app with the Google SSO <br>
+       ``npm run start-google``
 
 <!-- CONTACT -->
 ## Contact
