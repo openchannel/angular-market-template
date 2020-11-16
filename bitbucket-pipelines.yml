@@ -17,10 +17,9 @@ definitions:
               SONAR_TOKEN: 'd930e2f86b16bcc43f8b2d6ab978a1c3fb081b10'
               EXTRA_ARGS: '-Dsonar.sources=src -Dsonar.tests=src -Dsonar.test.inclusions="**/testing/**,**/*.spec.ts" -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info'
 pipelines:
-  branches:
-    AT-177_base_poc:
-      - step: *build-test-sonarcloud
-    develop:
-      - step: *build-test-sonarcloud
-    master:
-      - step: *build-test-sonarcloud
+  default:
+    - step:
+        name: Build
+        script:
+          - npm install --quiet
+          - npm run build
