@@ -43,6 +43,19 @@ Install node.js and npm [Guide](https://linuxize.com/post/how-to-install-node-js
     * start app with the Google SSO <br>
        ``npm run start-google``
 
+## Documentation Compodoc
+Compodoc show project structure. (modules, components, routes and etc.)
+
+* Generate Documentation :<br>
+
+  ``npm run create-compodoc``
+
+* Run Compodoc :<br>
+
+  ``npm run start-compodoc``
+  
+* Documentation [http://localhost:8888](http://localhost:8888)
+
 <!-- CONTACT -->
 ## Contact
 

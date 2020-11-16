@@ -9,7 +9,9 @@
     "build": "./node_modules/.bin/ng build --configuration=us1-test",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "create-compodoc": "npx compodoc -p tsconfig.json src -d ./development/documentation",
+    "start-compodoc": " compodoc -s -r 8888 -d ./development/documentation/"
   },
   "private": true,
   "dependencies": {
@@ -48,6 +50,7 @@
     "@angular/cli": "~9.1.1",
     "@angular/compiler-cli": "~9.1.1",
     "@angular/language-service": "~9.1.1",
+    "@compodoc/compodoc": "^1.1.11",
     "@fortawesome/angular-fontawesome": "^0.7.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
