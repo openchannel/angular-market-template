@@ -1,3 +1,4 @@
+image: node:10.15.3
 
 definitions:
   caches:
@@ -10,6 +11,7 @@ definitions:
           - sonar
         script:
           - npm install --quiet
+          - npm run build
           - pipe: sonarsource/sonarcloud-scan:0.1.5
             variables:
               SONAR_TOKEN: 'd930e2f86b16bcc43f8b2d6ab978a1c3fb081b10'
