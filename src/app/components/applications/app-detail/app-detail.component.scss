@@ -1,5 +1,3 @@
-@import "~bootstrap/scss/bootstrap";
-
 .list-group.list-group-flush {
   .list-group-item {
     padding: 0 0 10px;
@@ -9,23 +7,6 @@
   }
 }
 
-.rating-column {
-  width: 255px;
-  margin-right: 150px;
-  @include media-breakpoint-down(sm) {
-    margin-bottom: 1rem;
-  }
-}
-
 .review-column {
   flex-grow: 1;
-}
-
-.app-logo {
-  @include media-breakpoint-down(xs) {
-    img {
-      width: 100%;
-      height: auto;
-    }
-  }
 }

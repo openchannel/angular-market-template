@@ -1,5 +1,4 @@
 @import "~oc-ng-common-component/assets/styles/styles.scss";
-@import "~oc-ng-common-component/assets/styles/theme.scss";
 
 $link-gray: #333333;
 $category-color-mix1: #ff0606;
@@ -179,4 +178,46 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .min-height-auto {
   min-height: auto;
+}
+
+.result {
+  margin: 35px 0 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__label{
+    color: $secondary;
+  }
+}
+
+.get-dev {
+  &__container {
+    background-color: $light;
+    height: 298px;
+    margin-top: 82px;
+  }
+}
+
+.result {
+  &__label{
+    color: $secondary;
+  }
+}
+
+.app-logo {
+  @include media-breakpoint-down(xs) {
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.rating-column {
+  width: 255px;
+  margin-right: 150px;
+  @include media-breakpoint-down(sm) {
+    margin-bottom: 1rem;
+  }
 }
