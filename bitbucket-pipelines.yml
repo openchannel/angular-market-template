@@ -189,11 +189,3 @@ pipelines:
       - step:
           <<: *build-app-and-deploy
           deployment: stage1
-    EU:
-      - step:
-          <<: *build-app-and-deploy
-          deployment: eu
-    US1:
-      - step:
-          <<: *build-app-and-deploy
-          deployment: us1
