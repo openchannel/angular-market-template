@@ -33,7 +33,7 @@ definitions:
           - npm install -g @angular/cli
           - echo "${BUILD_ENVIRONMENT}"
           - echo $BUILD_ENVIRONMENT
-          - ng build --configuration=${BUILD_ENVIRONMENT}
+          - ng build --configuration=${BUILD_ENVIRONMENT} --output-path dist/
           # Application
           - export DISTRIBUTION_ID=`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/DISTRIBUTION_ID --output text --query Parameter.Value`
           - export AWS_S3="`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/AWS_S3 --output text --query Parameter.Value`"
@@ -80,7 +80,7 @@ definitions:
           - export BUILD_ENVIRONMENT="${BUILD_ENVIRONMENT}-live"
           - echo "${BUILD_ENVIRONMENT}"
           - echo $BUILD_ENVIRONMENT
-          - ng build --configuration=${BUILD_ENVIRONMENT}
+          - ng build --configuration=${BUILD_ENVIRONMENT} --output-path dist/
           # Application
           - export DISTRIBUTION_ID=`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/DISTRIBUTION_ID --output text --query Parameter.Value`
           - export AWS_S3="`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/AWS_S3 --output text --query Parameter.Value`"
@@ -126,7 +126,7 @@ definitions:
           - npm install -g @angular/cli
           - export BUILD_ENVIRONMENT="${BUILD_ENVIRONMENT}-demo"
           - echo $BUILD_ENVIRONMENT
-          - ng build --configuration=${BUILD_ENVIRONMENT}
+          - ng build --configuration=${BUILD_ENVIRONMENT} --output-path dist/
           # Application
           - export DISTRIBUTION_ID=`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/DISTRIBUTION_ID --output text --query Parameter.Value`
           - export AWS_S3="`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/AWS_S3 --output text --query Parameter.Value`"
@@ -172,7 +172,7 @@ definitions:
           - npm install -g @angular/cli
           - export BUILD_ENVIRONMENT="${BUILD_ENVIRONMENT}-test"
           - echo $BUILD_ENVIRONMENT
-          - ng build --configuration=${BUILD_ENVIRONMENT}
+          - ng build --configuration=${BUILD_ENVIRONMENT} --output-path dist/
           # Application
           - export DISTRIBUTION_ID=`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/DISTRIBUTION_ID --output text --query Parameter.Value`
           - export AWS_S3="`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/AWS_S3 --output text --query Parameter.Value`"
