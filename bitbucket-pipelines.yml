@@ -10,6 +10,7 @@ definitions:
           - source $CONFIG_FILE_PATH
           - if [ -n "$PROJECT_FOLDER" ]; then mv infra ${PROJECT_FOLDER}/.; fi
           - if [ -n "$PROJECT_FOLDER" ]; then cd ${PROJECT_FOLDER}; fi
+          - if [ -n "$NG_BUILD" ]; then export BUILD_ENVIRONMENT="${NG_BUILD}"; else export BUILD_ENVIRONMENT="${ENVIRONMENT}"; fi
           # Install node
           - curl -sL https://deb.nodesource.com/setup_12.x | bash -
           - apt-get install -y nodejs unzip git jq
