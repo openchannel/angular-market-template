@@ -34,11 +34,11 @@
             "scripts": []
           },
           "configurations": {
-            "us1-test": {
+			"stage1": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.us1-test.ts"
+                  "with": "src/environments/environment.stage1.ts"
                 }
               ],
               "optimization": true,
@@ -62,11 +62,11 @@
                 }
               ]
             },
-            "us1-live": {
+			"dev1": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.us1-live.ts"
+                  "with": "src/environments/environment.dev1.ts"
                 }
               ],
               "optimization": true,
