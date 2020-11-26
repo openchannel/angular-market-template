@@ -5,8 +5,6 @@
 export const environment = {
   production: true,
   apiUrl: 'https://dev1-client-api-proxy.openchannel.io/',
-  iframelyApiKey: 'ab8c8d0627356d139eed8f',
-  iframelyUrl: 'https://iframe.ly/api/iframely',
 };
 
 /*

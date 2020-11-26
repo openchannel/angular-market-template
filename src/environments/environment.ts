@@ -5,8 +5,6 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:8091/',
-  iframelyApiKey: 'ab8c8d0627356d139eed8f',
-  iframelyUrl: 'https://iframe.ly/api/iframely',
 };
 
 /*
