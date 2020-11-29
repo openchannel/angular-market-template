@@ -5,13 +5,6 @@
 export const environment = {
   production: true,
   apiUrl: 'https://dev1-client-api-proxy.openchannel.io/',
-  client_id: '43m9qbjigr8ed6i1het1rdnfso',
-  client_secret: 'on5jmqp7uq00vgeg9tnq4pii2f1f3pm84q45uq907e8vhmr24ta',
-  openchannelUrl: 'https://dev1-market.openchannel.io',
-  graphqlUrl: 'http://6e4d6c7f6f0f.ngrok.io/graphql',
-  auth: 'Basic NWY1NGE3NjljOTZjZjYxMjNlNzNiMDZmOmVJUG1fQ3F5NXVTVm1vbXdLNlNLakh1cEdQX3drN0hEY29kSS13bkZuUm8=',
-  iframelyApiKey: 'ab8c8d0627356d139eed8f',
-  iframelyUrl: 'https://iframe.ly/api/iframely',
 };
 
 /*
