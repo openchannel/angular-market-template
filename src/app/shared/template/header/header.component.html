@@ -22,23 +22,14 @@
                   }">
                     <a class="nav-link" [routerLink]="'/app-developer'">Manage</a>
                 </li>
-                <li class="nav-item" [ngClass]="{active: router.url.includes('app-list')}">
+                <li class="nav-item"
+                    *ngIf="userName"
+                    [ngClass]="{active: router.url.includes('app-list')}">
                     <a class="nav-link" [routerLink]="'/app-list'">Apps</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Checkout</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <ul class="navbar-nav">
-                    <li class="">
-                        <a class="nav-link" routerLink="/app-search">
-                            <img src="assets/img/search-icon.svg"
-                                class="pr-1" alt="search-icon"> Search</a>
-                    </li>
-                    <li class="">
-                        <a class="nav-link" href="#"><img src="assets/img/notification-icon.svg" alt="icon"></a>
-                    </li>
+                <ul class="navbar-nav" *ngIf="userName">
                     <li class="nav-item dropdown" ngbDropdown>
                         <a class="nav-link dropdown-toggle pr-0" id="navbarDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
@@ -55,6 +46,10 @@
                         </div>
                     </li>
                 </ul>
+                <div *ngIf="!userName">
+                    <button class="btn header-login-btn header-btn mr-2" routerLink="/login">Log in</button>
+                    <button class="btn btn-primary header-btn" routerLink="/signup">Sign up</button>
+                </div>
             </form>
         </div>
     </div>
