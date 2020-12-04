@@ -29,19 +29,17 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <ul class="navbar-nav" *ngIf="userName">
+                <ul class="navbar-nav" *ngIf="this.userName != null">
                     <li class="nav-item dropdown" ngbDropdown>
                         <a class="nav-link dropdown-toggle pr-0" id="navbarDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
-                            <!-- {{ this.sellerName ? this.sellerName : 'My Profile' }} -->
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
                             My Profile
                         </a>
                         <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="navbarDropdown">
-                             <a class="dropdown-item" *ngIf="!userName" routerLink="login">Login</a>
-                            <a class="dropdown-item" *ngIf="userName" routerLink="my-profile">Profile</a>
-                            <a class="dropdown-item" *ngIf="userName" (click)="logout()">Logout
+                            <a class="dropdown-item" href="/my-profile">Profile</a>
+                            <a class="dropdown-item" [routerLink]="" (click)="logout()">Logout
                                 <img src="assets/img/logout.svg"
-                                    class="pl-5" alt="logout">
+                                     class="pl-5" alt="logout">
                             </a>
                         </div>
                     </li>
