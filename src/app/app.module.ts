@@ -2,13 +2,12 @@ import {BrowserModule} from '@angular/platform-browser';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbDateAdapter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HeaderComponent} from './shared/template/header/header.component';
 import {FooterComponent} from './shared/template/footer/footer.component';
 import {HomeComponent} from './components/home/home.component';
-import {HttpConfigInterceptor} from './core/interceptors/httpconfig.interceptor';
 import {CommonLayoutComponent} from './layouts/common-layout/common-layout.component';
 import {LoginComponent} from './components/login/login.component';
 import {ForgotPasswordComponent} from './components/users/forgot-password/forgot-password.component';
@@ -18,7 +17,7 @@ import {CustomAdapter} from './core/datepicker-adapter';
 import {LoaderComponent} from './shared/custom-components/loader/loader.component';
 import {DatePipe} from '@angular/common';
 import {SignupComponent} from './components/signup/signup.component';
-import {OcCommonServiceModule} from 'oc-ng-common-service';
+import {CustomHttpClientXsrfModule, OcCommonServiceModule} from 'oc-ng-common-service';
 import {environment} from 'src/environments/environment';
 import {GeneralProfileComponent} from './components/my-profile/general/general-profile.component';
 import {ChangePasswordComponent} from './components/my-profile/change-password/change-password.component';
@@ -37,7 +36,6 @@ import {FieldOptionsComponent} from './shared/modals/add-field-modal/field-optio
 import {CamelCaseToNormalPipe} from './shared/custom-components/camel-case-to-normal.pipe';
 import {FieldPreviewModalComponent} from './shared/modals/field-preview-modal/field-preview-modal.component';
 import {AppSearchComponent} from './components/applications/app-search/app-search.component';
-import {HttpXsrfInterceptor} from './core/interceptors/httpxsrf.interceptor';
 import {AppDetailComponent} from './components/applications/app-detail/app-detail.component';
 import {OAuthModule} from 'angular-oauth2-oidc';
 
@@ -67,7 +65,7 @@ import {OAuthModule} from 'angular-oauth2-oidc';
     AppSearchComponent
   ],
   schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
+    CUSTOM_ELEMENTS_SCHEMA,
   ],
   imports: [
     FormsModule,
@@ -84,20 +82,19 @@ import {OAuthModule} from 'angular-oauth2-oidc';
     BrowserAnimationsModule,
     DragDropModule,
     OAuthModule.forRoot(),
+    CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN'}),
   ],
   providers: [
-   { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
-   { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true },
-   { provide: NgbDateAdapter, useClass: CustomAdapter },
+    {provide: NgbDateAdapter, useClass: CustomAdapter},
     {provide: AppsServiceImpl, useClass: MockAppsService},
-   DatePipe],
+    DatePipe],
   bootstrap: [AppComponent],
   entryComponents: [
     LoaderComponent,
     FormModalComponent,
     ConfirmationModalComponent,
     AddFieldModalComponent,
-    FieldPreviewModalComponent
+    FieldPreviewModalComponent,
   ],
 })
 export class AppModule {
