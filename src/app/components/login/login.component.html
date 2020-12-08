@@ -4,6 +4,6 @@
               [signupUrl]="signupUrl"
               [companyLogoUrl]="companyLogoUrl"
               (submit)="login($event)"
-              [loginType]="loginType"
+              (sendActivationLink)="sendActivationEmail($event)"
               [process]="inProcess"></oc-login>
 </div>
