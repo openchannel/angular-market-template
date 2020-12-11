@@ -10,19 +10,21 @@
                 </div>
             </div>
             <div class="row mb-1">
-                <div class="col-md-auto mb-2 app-logo" *ngIf="app.logo">
-                    <img [src]="app.logo"
-                         height="255" alt="app-icon">
+                <div class="col-sm-10 d-flex flex-column flex-md-row p-0">
+                    <div class="col-md-auto mb-2 app-logo" *ngIf="app.logo">
+                        <img [src]="app.logo"
+                             alt="app-icon">
+                    </div>
+                    <div class="col-md-6 d-flex flex-column">
+                        <h4 class="mb-2">{{ app.name }}</h4>
+                        <a href="#" class="font-med" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
+                        <p class="text-secondary mt-2">{{ app.summary }}</p>
+                        <oc-rating class="mb-2" [rating]="app.rating / 100" [reviewCount]="app.reviewCount"
+                                   label="reviews" labelClass="font-med" type="single-star"></oc-rating>
+                        <oc-button type="primary" text="Buy Now"></oc-button>
+                    </div>
                 </div>
-                <div class="col-md d-flex flex-column">
-                    <h4 class="mb-2">{{ app.name }}</h4>
-                    <a href="#" class="font-med" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
-                    <p class="text-secondary mt-2">{{ app.summary }}</p>
-                    <oc-rating class="mb-2" [rating]="app.rating / 100" [reviewCount]="app.reviewCount"
-                               label="reviews" labelClass="font-med" type="single-star"></oc-rating>
-                    <oc-button type="primary" text="Buy Now"></oc-button>
-                </div>
-                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="col-md mt-2 mt-md-0"></oc-video>
+                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="col-sm-2 mt-2 mt-sm-0"></oc-video>
             </div>
         </div>
     </div>
