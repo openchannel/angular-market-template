@@ -38,6 +38,8 @@ import {FieldPreviewModalComponent} from './shared/modals/field-preview-modal/fi
 import {AppSearchComponent} from './components/applications/app-search/app-search.component';
 import {AppDetailComponent} from './components/applications/app-detail/app-detail.component';
 import {OAuthModule} from 'angular-oauth2-oidc';
+import {ResendActivationComponent} from './components/resend-activation/resend-activation.component';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,8 @@ import {OAuthModule} from 'angular-oauth2-oidc';
     FieldOptionsComponent,
     CamelCaseToNormalPipe,
     FieldPreviewModalComponent,
-    AppSearchComponent
+    AppSearchComponent,
+    ResendActivationComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -81,6 +84,7 @@ import {OAuthModule} from 'angular-oauth2-oidc';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     DragDropModule,
+    ToastrModule.forRoot(),
     OAuthModule.forRoot(),
     CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN'}),
   ],

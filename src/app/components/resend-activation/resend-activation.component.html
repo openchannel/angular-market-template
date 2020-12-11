@@ -1,0 +1,9 @@
+<div class="bg-container pt-5">
+    <oc-resend-activation [activationModel]="activationModel"
+                          companyLogoUrl="./assets/img/logo-company.png"
+                          loginUrl="/login"
+                          signupUrl="/signup"
+                          [process]="inProcess"
+                          (submit)="sendActivationMail($event)">
+    </oc-resend-activation>
+</div>
