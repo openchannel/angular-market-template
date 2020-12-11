@@ -4,12 +4,13 @@ import {CommonLayoutComponent} from './layouts/common-layout/common-layout.compo
 import {AppDetailComponent} from './components/applications/app-detail/app-detail.component';
 import {MyProfileComponent} from './components/my-profile/my-profile.component';
 import {AppSearchComponent} from './components/applications/app-search/app-search.component';
-import { HomeComponent } from './components/home/home.component';
+import {HomeComponent} from './components/home/home.component';
 import {SignupComponent} from './components/signup/signup.component';
 import {ActivationComponent} from './components/activation/activation.component';
 import {LoginComponent} from './components/login/login.component';
 import {ResetPasswordComponent} from './components/reset-password/reset-password.component';
 import {ForgotPasswordComponent} from './components/users/forgot-password/forgot-password.component';
+import {ResendActivationComponent} from './components/resend-activation/resend-activation.component';
 
 const routes: Routes = [
   {path: 'signup', component: SignupComponent},
@@ -17,6 +18,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'reset-password', component: ResetPasswordComponent},
   {path: 'forgot-password', component: ForgotPasswordComponent},
+  {path: 'resend-activation', component: ResendActivationComponent, data: {title: 'Resend activation'}},
   {
     path: '',
     component: CommonLayoutComponent,
@@ -27,16 +29,16 @@ const routes: Routes = [
       {path: 'app-search', component: AppSearchComponent},
       {path: 'app-detail/:appId', component: AppDetailComponent},
       {path: 'my-profile', component: MyProfileComponent},
-    ]
+    ],
   },
-  {path: '**', redirectTo: '/not-found'}
+  {path: '**', redirectTo: '/not-found'},
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     onSameUrlNavigation: 'reload',
   })],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {
 }

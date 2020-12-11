@@ -3,6 +3,7 @@ import {SellerActivation, UsersService} from 'oc-ng-common-service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
     selector: 'app-activation',
@@ -22,7 +23,8 @@ export class ActivationComponent implements OnDestroy {
 
     constructor(private userService: UsersService,
                 private router: Router,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private toastr: ToastrService) {
         this.activationModel.code = this.route.snapshot.queryParamMap.get('token');
     }
 
@@ -33,6 +35,7 @@ export class ActivationComponent implements OnDestroy {
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(res => {
                         this.inProcess = false;
+                        this.toastr.success('Account activated');
                         this.router.navigate(['login']);
                     },
                     error => {
