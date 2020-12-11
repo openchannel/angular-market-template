@@ -84,7 +84,8 @@ export const appListData: FullAppDataResponse = {
             "ownerships":{"30day":0,"90day":0,"total":0},
             "reviews":{"30day":0,"90day":0,"total":0}
           },
-        "isLive": true
+        "isLive": true,
+        parent: null,
       },
       {
         "appId": "5565322ae4b0a70b13a3763b",
@@ -164,7 +165,8 @@ export const appListData: FullAppDataResponse = {
             "ownerships":{"30day":0,"90day":0,"total":0},
             "reviews":{"30day":0,"90day":0,"total":0}
           },
-        "isLive": true
+        "isLive": true,
+        parent: null,
       },
       {
         "appId": "5565325ae4b0a70b13a4563b",
@@ -244,7 +246,8 @@ export const appListData: FullAppDataResponse = {
             "ownerships":{"30day":0,"90day":0,"total":0},
             "reviews":{"30day":0,"90day":0,"total":0}
           },
-        "isLive": true
+        "isLive": true,
+        parent: null,
       },
       {
         "appId": "5565322ae4b0a48b13a3763b",
@@ -320,7 +323,8 @@ export const appListData: FullAppDataResponse = {
             "ownerships":{"30day":0,"90day":0,"total":0},
             "reviews":{"30day":0,"90day":0,"total":0}
           },
-        "isLive": true
+        "isLive": true,
+        parent: null,
       },
       {
         "appId": "5565322ae4b0a70b34a4589b",
@@ -397,7 +401,8 @@ export const appListData: FullAppDataResponse = {
             "ownerships":{"30day":0,"90day":0,"total":0},
             "reviews":{"30day":0,"90day":0,"total":0}
           },
-        "isLive": true
+        "isLive": true,
+        parent: null,
       },
       {
         "appId": "5745322ae4b0a70b13a3763b",
@@ -474,7 +479,8 @@ export const appListData: FullAppDataResponse = {
             "ownerships":{"30day":0,"90day":0,"total":0},
             "reviews":{"30day":0,"90day":0,"total":0}
           },
-        "isLive": true
+        "isLive": true,
+        parent: null,
       }
     ]
 }
