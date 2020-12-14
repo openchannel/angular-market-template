@@ -75,6 +75,14 @@ export const appListData: FullAppDataResponse = {
             "modifiedBy": "administrator",
             "reason": ""
           },
+        "parent": {
+          "status": {
+            "value": 'approved',
+            "lastUpdated": 1432696823474,
+            "modifiedBy": "developer",
+            "reason": ""
+          }
+        },
         "statistics":
           {
             "views":{"30day":0,"90day":0,"total":0},
@@ -155,6 +163,14 @@ export const appListData: FullAppDataResponse = {
             "modifiedBy": "administrator",
             "reason": ""
           },
+        "parent": {
+          "status": {
+            "value": 'approved',
+            "lastUpdated": 1432696823474,
+            "modifiedBy": "developer",
+            "reason": ""
+          }
+        },
         "statistics":
           {
             "views":{"30day":0,"90day":0,"total":0},
@@ -235,6 +251,14 @@ export const appListData: FullAppDataResponse = {
             "modifiedBy": "administrator",
             "reason": ""
           },
+        "parent": {
+          "status": {
+            "value": 'approved',
+            "lastUpdated": 1432696823474,
+            "modifiedBy": "developer",
+            "reason": ""
+          }
+        },
         "statistics":
           {
             "views":{"30day":0,"90day":0,"total":0},
@@ -311,6 +335,14 @@ export const appListData: FullAppDataResponse = {
             "modifiedBy": "administrator",
             "reason": ""
           },
+        "parent": {
+          "status": {
+            "value": 'approved',
+            "lastUpdated": 1432696823474,
+            "modifiedBy": "developer",
+            "reason": ""
+          }
+        },
         "statistics":
           {
             "views":{"30day":0,"90day":0,"total":0},
@@ -388,6 +420,14 @@ export const appListData: FullAppDataResponse = {
             "modifiedBy": "administrator",
             "reason": ""
           },
+        "parent": {
+          "status": {
+            "value": 'approved',
+            "lastUpdated": 1432696823474,
+            "modifiedBy": "developer",
+            "reason": ""
+          }
+        },
         "statistics":
           {
             "views":{"30day":0,"90day":0,"total":0},
@@ -465,6 +505,14 @@ export const appListData: FullAppDataResponse = {
             "modifiedBy": "administrator",
             "reason": ""
           },
+        "parent": {
+          "status": {
+            "value": 'approved',
+            "lastUpdated": 1432696823474,
+            "modifiedBy": "developer",
+            "reason": ""
+          }
+        },
         "statistics":
           {
             "views":{"30day":0,"90day":0,"total":0},
