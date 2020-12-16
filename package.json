@@ -6,7 +6,7 @@
     "start-okta": "ng serve --port=4201",
     "start-google": "ng serve --port=4200",
     "start-aws": "ng serve --port=4206",
-    "build": "./node_modules/.bin/ng build --configuration=us1-test",
+    "build": "./node_modules/.bin/ng build --configuration=dev1",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
