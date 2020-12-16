@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
                 this.oauthService.configure({
                     ...authConfig,
-                    redirectUri: authConfig.redirectUri || window.location.origin,
+                    redirectUri: authConfig.redirectUri || window.location.href,
                 });
 
                 this.oauthService.tokenValidationHandler = new JwksValidationHandler();
