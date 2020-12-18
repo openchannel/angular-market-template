@@ -210,6 +210,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+/** Toast styles */
+.toast-message {
+  font-size: 12px;
+}
+
+.toast-container div.ngx-toastr {
+  padding: 16px 24px 16px 48px;
+  background-position: 24px center;
+  background-size: 12px;
+}
+
 .header-login-btn {
   border: 1px solid $info;
   color: $primary;
