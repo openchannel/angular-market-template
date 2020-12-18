@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BasicAppDetails, AppCategoryDetail, FullAppData, AppsService } from 'oc-ng-common-service';
+import { BasicAppDetails, AppCategoryDetail, FullAppData, AppsService, FrontendService } from 'oc-ng-common-service';
 import { AppsServiceImpl } from '../../core/services/apps-services/model/apps-service-impl';
 import { FilterValue } from '../../core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
@@ -14,15 +14,18 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit, OnDestroy {
 
   public featuredApp: FullAppData[] = [];
-  public categories: AppCategoryDetail[];
+  public categories: AppCategoryDetail[] = [];
 
   public appsFilter: FilterValue [] = [];
   public isFeatured = false;
   public homePageConfig;
+  public categoriesData: FilterValue [] = [];
+
   private subscriber: Subscription = new Subscription();
 
   constructor(private appService: AppsService,
-              private router: Router) { }
+              private router: Router,
+              private frontendService: FrontendService) { }
 
   ngOnInit(): void {
     this.getPageConfig();
@@ -73,28 +76,63 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getCategoriesToExplore() {
-    const appCategory1 = new AppCategoryDetail();
-    appCategory1.categoryCardClass = 'category-card';
-    appCategory1.categoryLogo = '../../../../assets/img/all-apps-category-icon.svg';
-    appCategory1.categoryName = 'All Apps';
-    appCategory1.categoryQuery = {filterId: 'collections', valueId: 'allApps'};
-
-    const appCategory2 = new AppCategoryDetail();
-    appCategory2.categoryCardClass = 'category-card';
-    appCategory2.categoryLogo = '../../../../assets/img/analytics-category-icon.svg';
-    appCategory2.categoryName = 'Analytics';
-    appCategory2.categoryQuery = {filterId: 'categories', valueId: 'analytics'};
-    appCategory2.categoryBackgroundImage = '../../../../assets/img/analytics-category-background.png'
-
-
-    const appCategory3 = new AppCategoryDetail();
-    appCategory3.categoryCardClass = 'category-card';
-    appCategory3.categoryLogo = '../../../../assets/img/communication-category-icon.svg';
-    appCategory3.categoryName = 'Communication';
-    appCategory3.categoryQuery = {filterId: 'categories', valueId: 'communication'};
-    appCategory3.categoryBackgroundImage = '../../../../assets/img/communication-category-background.png'
-
-    this.categories = [appCategory1, appCategory2, appCategory3];
+    const categoriesConfig = [
+      { background: '',
+        logo: '../../../../assets/img/all-apps-category-icon.svg',
+        color: ''
+      },
+      {
+        background: '../../../../assets/img/analytics-category-background.png',
+        logo: '../../../../assets/img/analytics-category-icon.svg',
+        color: '#907cfe'
+      },
+      {
+        background: '../../../../assets/img/communication-category-background.png',
+        logo: '../../../../assets/img/communication-category-icon.svg',
+        color: '#ff6262'
+      },
+      {
+        background: '../../../../assets/img/management-category-background.png',
+        logo: '../../../../assets/img/management-category-icon.svg',
+        color: '#81cf7c'
+      },
+      {
+        background: '../../../../assets/img/analytics-category-background.png',
+        logo: '../../../../assets/img/productivity-category-icon.svg',
+        color: '#907cfe'
+      },
+      {
+        background: '../../../../assets/img/tool-category-background.png',
+        logo: '../../../../assets/img/tool-category-icon.svg',
+        color: '#4691de'
+      }
+    ];
+    const categoryProps = pageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
+    let categoryIndex = 0;
+    if(categoryProps) {
+      this.subscriber.add(
+        this.frontendService.getFilters().subscribe(result => {
+          this.categoriesData = [...result.list.find(filter => filter.id === categoryProps.filterId).values];
+          this.categoriesData.forEach(data => {
+            if (categoryIndex === categoriesConfig.length) {
+              categoryIndex = 0;
+            }
+            const category: AppCategoryDetail = {
+              categoryLogo: categoriesConfig[categoryIndex].logo,
+              categoryBackgroundImage: categoriesConfig[categoryIndex].background,
+              categoryName: data.label,
+              categoryTitleColor: categoriesConfig[categoryIndex].color,
+              categoryQuery: {
+                filterId: categoryProps.filterId,
+                valueId: data.id
+              }
+            };
+            this.categories.push(category);
+            categoryIndex++;
+          })
+        })
+      );
+    }
   }
 
   catchSearchText(searchText) {
