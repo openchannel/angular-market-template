@@ -39,7 +39,7 @@
        "description": null,
        "type": "filter-values-card-list",
        "filterId": "categories",
-       "count": 3
+       "count": 5
      },
      {
        "name": "Most Popular",
