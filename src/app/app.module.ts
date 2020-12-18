@@ -2,7 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbDateAdapter, NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HeaderComponent} from './shared/template/header/header.component';
@@ -40,6 +40,7 @@ import {AppDetailComponent} from './components/applications/app-detail/app-detai
 import {OAuthModule} from 'angular-oauth2-oidc';
 import {ResendActivationComponent} from './components/resend-activation/resend-activation.component';
 import {ToastrModule} from 'ngx-toastr';
+import {HttpConfigInterceptor} from './core/interceptors/httpconfig.interceptor';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import {ToastrModule} from 'ngx-toastr';
     CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN'}),
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     {provide: NgbDateAdapter, useClass: CustomAdapter},
     {provide: AppsServiceImpl, useClass: MockAppsService},
     DatePipe],
