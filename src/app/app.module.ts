@@ -86,7 +86,7 @@ import {ToastrModule} from 'ngx-toastr';
     DragDropModule,
     ToastrModule.forRoot(),
     OAuthModule.forRoot(),
-    CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN'}),
+    CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl}),
   ],
   providers: [
     {provide: NgbDateAdapter, useClass: CustomAdapter},
