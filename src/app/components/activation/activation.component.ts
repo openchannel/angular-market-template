@@ -35,7 +35,7 @@ export class ActivationComponent implements OnDestroy {
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(res => {
                         this.inProcess = false;
-                        this.toastr.success('Account activated');
+                        this.toastr.success('Account successfully activated!');
                         this.router.navigate(['login']);
                     },
                     error => {
