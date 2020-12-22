@@ -164,18 +164,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: $link-gray;
 }
 
-.card-1 {
-  .content-centered {
-    color: mix($primary, $category-color-mix1, 70%) !important;
-  }
-}
-
-.card-2 {
-  .content-centered {
-    color: mix($primary, $category-color-mix2, 70%) !important;
-  }
-}
-
 .min-height-auto {
   min-height: auto;
 }
@@ -220,4 +208,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   @include media-breakpoint-down(sm) {
     margin-bottom: 1rem;
   }
+}
+
+/** Toast styles */
+.toast-message {
+  font-size: 12px;
+}
+
+.toast-container div.ngx-toastr {
+  padding: 16px 24px 16px 48px;
+  background-position: 24px center;
+  background-size: 12px;
+}
+
+.header-login-btn {
+  border: 1px solid $info;
+  color: $primary;
 }

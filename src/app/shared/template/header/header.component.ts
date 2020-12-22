@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthHolderService} from 'oc-ng-common-service';
+import {LogOutService} from '../../../core/services/logout-service/log-out.service';
 
 @Component({
     selector: 'app-header',
@@ -12,7 +13,8 @@ export class HeaderComponent implements OnInit {
     userName: string;
 
     constructor(public router: Router,
-                private authHolderService: AuthHolderService) {
+                private authHolderService: AuthHolderService,
+                private logOut: LogOutService) {
         this.displayUserInfo();
     }
 
@@ -20,14 +22,10 @@ export class HeaderComponent implements OnInit {
     }
 
     displayUserInfo() {
-        if (localStorage.getItem('email')) {
-            this.userName = localStorage.getItem('email');
-        }
+        this.userName = this.authHolderService.accessToken;
     }
 
     logout() {
-        localStorage.clear();
-        this.authHolderService.clearTokensInStorage();
-        this.router.navigate(['/login']);
+        this.logOut.logOut();
     }
 }

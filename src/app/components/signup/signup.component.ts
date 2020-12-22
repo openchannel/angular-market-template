@@ -18,6 +18,7 @@ export class SignupComponent implements OnInit {
   inProcess = false;
   signupUrl = '/signup';
   signupModel: SellerSignup;
+  activationUrl = '/activate';
 
   constructor(private usersService: UsersService) {
      this.signupModel = new SellerSignup();

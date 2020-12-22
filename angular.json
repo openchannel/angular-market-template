@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/template3-marketsite",
+            "outputPath": "dist/sites/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -29,16 +29,17 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": []
           },
           "configurations": {
-            "us1-test": {
+			"stage1": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.us1-test.ts"
+                  "with": "src/environments/environment.stage1.ts"
                 }
               ],
               "optimization": true,
@@ -62,11 +63,11 @@
                 }
               ]
             },
-            "us1-live": {
+			"dev1": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.us1-live.ts"
+                  "with": "src/environments/environment.dev1.ts"
                 }
               ],
               "optimization": true,

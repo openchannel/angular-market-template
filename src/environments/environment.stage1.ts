@@ -4,11 +4,7 @@
 
 export const environment = {
   production: true,
-  apiUrl:'https://us1-template3-portal-api-live.openchannel.io/',
-  client_id:'5ebg7rrabovia2vcsqp2idk3u7',
-  client_secret:'8pq2sa6206pg89l2onh48u6uq169bqavs032i0s8lqgj5if3kbu',
-  openchannelUrl:'https://market.openchannel.io',
-  graphqlUrl: 'https://countries.trevorblades.com/'
+  apiUrl: 'https://stage1-client-api-proxy.openchannel.io/',
 };
 
 /*
