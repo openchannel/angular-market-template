@@ -18,6 +18,9 @@ $category-color-mix2: #ffffff;
   width: 730px;
   margin: 0 auto;
 }
+.bg-container.height-unset {
+  min-height: unset;
+}
 .header-divider {
   border-top: 1px solid rgba(83, 124, 253, 0.2);
   // box-shadow: 0px -1px 0 2px rgba(83, 124, 253, 0.2);
