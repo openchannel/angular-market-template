@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   AuthenticationService,
   CommonService,
@@ -19,7 +19,7 @@ import { LoaderService } from '@core/services/loader.service';
   templateUrl: './general-profile.component.html',
   styleUrls: ['./general-profile.component.scss']
 })
-export class GeneralProfileComponent implements OnInit {
+export class GeneralProfileComponent implements OnInit, OnDestroy {
 
   @ViewChild('form') dynamicForm: OcFormComponent;
 
@@ -54,6 +54,10 @@ export class GeneralProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMyProfileDetails();
+  }
+
+  ngOnDestroy() {
+    this.subscriber.unsubscribe();
   }
 
   getMyProfileDetails() {
