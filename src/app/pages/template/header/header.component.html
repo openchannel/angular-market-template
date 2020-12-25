@@ -42,7 +42,7 @@
                         <div ngbDropdownMenu aria-labelledby="navbarDropdown" class="mt-2"
                              *ngIf="authHolderService.isLoggedInUser()">
                             <div class="dropdown-item" *ngIf="!isSSO"
-                               routerLink="/my-profile">My Profile</div>
+                               routerLink="/management/profile">My Profile</div>
                             <div class="dropdown-item"
                                *ngIf="authHolderService.userDetails.role === 'ADMIN'"
                                routerLink="/company">My Organization</div>
