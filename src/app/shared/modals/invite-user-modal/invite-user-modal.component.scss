@@ -1,0 +1,8 @@
+@import "src/assets/styles/mixins";
+
+.button-container {
+  width: 45%;
+  @include media-breakpoint-sm {
+    width: 100%;
+  }
+}
