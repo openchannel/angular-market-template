@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="assets/img/logo-company.png" alt="brand-logo" class="company-logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav justify-content-end w-100">
+                <li class="nav-item"
+                    [ngClass]="{
+                    active: router.isActive('/app/store', true)
+                  }"
+                >
+                    <a class="nav-link" routerLink="/">Browse <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item"
+                    *ngIf="userName"
+                    [ngClass]="{active: router.url.includes('app-list')}">
+                    <a class="nav-link" [routerLink]="'/app-list'">Apps</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 button-section ml-0 ml-lg-4">
+                <ul class="navbar-nav" *ngIf="this.userName != null">
+                    <li class="nav-item dropdown" ngbDropdown>
+                        <a class="nav-link dropdown-toggle pr-0" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
+                            My Profile
+                        </a>
+                        <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/my-profile">Profile</a>
+                            <a class="dropdown-item" [routerLink]="" (click)="logout()">Logout
+                                <img src="assets/img/logout.svg"
+                                     class="pl-5" alt="logout">
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+                <div *ngIf="!userName">
+                    <button class="btn header-login-btn header-btn mr-2" routerLink="/login">Log in</button>
+                    <button class="btn btn-primary header-btn" routerLink="/signup">Sign up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
