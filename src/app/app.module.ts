@@ -9,7 +9,6 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {OAuthModule} from 'angular-oauth2-oidc';
 import {ToastrModule} from 'ngx-toastr';
 import {HttpConfigInterceptor} from '@core/interceptors/httpconfig.interceptor';
-import {SharedModule} from '@shared/shared.module';
 import {LoaderComponent} from '@shared/components/loader/loader.component';
 import {environment} from '@env';
 
@@ -30,7 +29,6 @@ import {environment} from '@env';
     ToastrModule.forRoot(),
     OAuthModule.forRoot(),
     CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl}),
-    SharedModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
