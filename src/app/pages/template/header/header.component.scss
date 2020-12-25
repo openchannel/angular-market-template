@@ -34,6 +34,14 @@ li.nav-item.dropdown:hover{
   height: 40px;
   min-height: unset;
   padding: 0;
+  border-radius: 4px;
+
+}
+
+.btn-primary {
+  &:hover {
+    box-shadow: 1px 5px 30px 0 rgba(83, 124, 253, 0.5);
+  }
 }
 
 .button-section {
