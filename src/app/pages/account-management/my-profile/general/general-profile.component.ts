@@ -66,11 +66,12 @@ export class GeneralProfileComponent implements OnInit {
           this.subscriber.add(this.userAccountTypeService.getUserAccountType(account.type)
             .subscribe(definition => {
               this.formDefinition = definition;
+              this.fillFormDefinitionByValue();
             }));
         } else {
           this.formDefinition = this.defaultFormDefinition;
+          this.fillFormDefinitionByValue();
         }
-        this.fillFormDefinitionByValue();
       }
     ));
   }
@@ -92,23 +93,6 @@ export class GeneralProfileComponent implements OnInit {
       }, () => {
         this.isSaveInProcess = false;
       });
-  //   if (!myProfileform.valid) {
-  //     myProfileform.control.markAllAsTouched();
-  //     try {
-  //       this.commonService.scrollToFormInvalidField({form: myProfileform, adjustSize: 60});
-  //     } catch (error) {
-  //       this.notificationService.showError([{"message": "Please fill all required fields."}]);
-  //     }
-  //     return;
-  //   }
-  //   this.isSaveInProcess = true;
-  //   this.sellerService.updateProfileDetails(this.myProfile).subscribe((res) => {
-  //     this.notificationService.showSuccess("Profile saved successfully");
-  //   }, (err) => {
-  //     this.isSaveInProcess = false;
-  //   }, () => {
-  //     this.isSaveInProcess = false;
-  //   });
   }
 
   private fillFormDefinitionByValue() {
