@@ -9,41 +9,52 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav justify-content-end w-100">
+            <ul class="navbar-nav justify-content-end w-100 mb-0">
                 <li class="nav-item"
                     [ngClass]="{
-                    active: router.isActive('/app/store', true)
+                    active: router.isActive('/app-store', true) || router.isActive('/', true)
                   }"
                 >
-                    <a class="nav-link" routerLink="/">Browse <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" [routerLink]="'/app-store'">Browse <span class="sr-only">(current)</span></a>
                 </li>
+<!--                <li class="nav-item" [ngClass]="{-->
+<!--                    active: router.url.includes('app-developer')-->
+<!--                  }">-->
+<!--                    <a class="nav-link" [routerLink]="'/app-developer'">Manage</a>-->
+<!--                </li>-->
                 <li class="nav-item"
                     *ngIf="userName"
                     [ngClass]="{active: router.url.includes('app-list')}">
                     <a class="nav-link" [routerLink]="'/app-list'">Apps</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0 button-section ml-0 ml-lg-4">
-                <ul class="navbar-nav" *ngIf="this.userName != null">
-                    <li class="nav-item dropdown" ngbDropdown>
-                        <a class="nav-link dropdown-toggle pr-0" id="navbarDropdown" role="button"
+            <div class="form-inline my-2 my-lg-0 button-section ml-0 ml-lg-4">
+                <div class="form-inline my-2 my-lg-0 ml-0 ml-lg-4" *ngIf="this.userName != null">
+                    <div class="profile text-primary">{{initials}}</div>
+                    <div class="nav-item dropdown" ngbDropdown placement="left">
+                        <div class="dropdown-toggle pr-0 d-flex align-items-center" id="navbarDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
-                            My Profile
-                        </a>
-                        <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/my-profile">Profile</a>
-                            <a class="dropdown-item" [routerLink]="" (click)="logout()">Logout
-                                <img src="assets/img/logout.svg"
-                                     class="pl-5" alt="logout">
-                            </a>
+                            <div class="d-flex flex-column mr-1">
+                                <span class="font-m font-med text-dark">{{authHolderService.getUserName()}}</span>
+                                <span class="font-s text-muted">{{authHolderService.userDetails.roleLabel}}</span>
+                            </div>
                         </div>
-                    </li>
-                </ul>
+                        <div ngbDropdownMenu aria-labelledby="navbarDropdown" class="mt-2"
+                             *ngIf="authHolderService.isLoggedInUser()">
+                            <div class="dropdown-item" *ngIf="!isSSO"
+                               routerLink="/my-profile">My Profile</div>
+                            <div class="dropdown-item"
+                               *ngIf="authHolderService.userDetails.role === 'ADMIN'"
+                               routerLink="/company">My Organization</div>
+                            <div class="dropdown-item cursor-pointer" (click)="logout()">Logout</div>
+                        </div>
+                    </div>
+                </div>
                 <div *ngIf="!userName">
                     <button class="btn header-login-btn header-btn mr-2" routerLink="/login">Log in</button>
                     <button class="btn btn-primary header-btn" routerLink="/signup">Sign up</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </nav>

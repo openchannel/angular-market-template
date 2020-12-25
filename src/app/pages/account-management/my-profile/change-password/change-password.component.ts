@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ChnagePasswordModel, CommonService, SellerService } from 'oc-ng-common-service';
-import {NotificationService} from '@shared/components/notification/notification.service';
+import { NotificationService } from '@shared/components/notification/notification.service';
 
 @Component({
   selector: 'app-change-password',

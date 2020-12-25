@@ -8,17 +8,11 @@ import { SellerMyProfile } from 'oc-ng-common-service';
 })
 export class MyProfileComponent implements OnInit {
 
-  selectedPage : 'myProfile'|'changePassword'  = 'myProfile';
-  myProfile = new SellerMyProfile();
-  isProcessing=true;
+  selectedPage : 'myProfile' | 'changePassword'  = 'myProfile';
 
   constructor() { }
 
-  ngOnInit(): void {
-    
-  }
-
-  
+  ngOnInit(): void {  }
 
   gotoPage(pageName){
     this.selectedPage = pageName;

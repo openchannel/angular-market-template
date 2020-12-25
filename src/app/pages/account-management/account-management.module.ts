@@ -5,7 +5,7 @@ import { AccountManagementRoutingModule } from './account-management-routing.mod
 import {MyProfileComponent} from './my-profile/my-profile.component';
 import {ChangePasswordComponent} from './my-profile/change-password/change-password.component';
 import {GeneralProfileComponent} from './my-profile/general/general-profile.component';
-import {SharedModule} from '../../shared/shared.module';
+import {SharedModule} from '@shared/shared.module';
 
 
 @NgModule({

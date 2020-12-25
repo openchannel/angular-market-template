@@ -1,11 +1,18 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
+  AuthenticationService,
   CommonService,
   DeveloperDetailsModel,
-  SellerMyProfile,
-  SellerService
+  UserAccount,
+  UserAccountService,
+  UserAccountTypesService
 } from 'oc-ng-common-service';
-import {NotificationService} from '@shared/components/notification/notification.service';
+import { Subscription, throwError } from 'rxjs';
+import { OcFormComponent } from 'oc-ng-common-component';
+import { catchError, mergeMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { LoaderService } from '@core/services/loader.service';
 
 @Component({
   selector: 'app-general-profile',
@@ -14,14 +21,35 @@ import {NotificationService} from '@shared/components/notification/notification.
 })
 export class GeneralProfileComponent implements OnInit {
 
-  @Input() myProfile: SellerMyProfile = new SellerMyProfile();
-  developerDetails = new DeveloperDetailsModel();
-  @Input() isProcessing = true;
-  isSaveInProcess = false;
+  @ViewChild('form') dynamicForm: OcFormComponent;
 
-  constructor(private sellerService: SellerService,
+  myProfile: UserAccount;
+  developerDetails = new DeveloperDetailsModel();
+  isSaveInProcess = false;
+  formDefinition: any;
+  defaultFormDefinition = {
+    fields: [{
+      id: 'name',
+      label: 'Name',
+      type: 'text',
+      attributes: {required: true},
+    }, {
+      id: 'email',
+      label: 'Email',
+      type: 'emailAddress',
+      attributes: {required: true},
+    }],
+  };
+
+  private subscriber: Subscription = new Subscription();
+
+  constructor(private userService: UserAccountService,
               private commonService: CommonService,
-              private notificationService: NotificationService) {
+              private loaderService: LoaderService,
+              private userAccountTypeService: UserAccountTypesService,
+              private authService: AuthenticationService,
+              private router: Router,
+              private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -29,34 +57,64 @@ export class GeneralProfileComponent implements OnInit {
   }
 
   getMyProfileDetails() {
-    this.sellerService.getUserProfileDetails('true').subscribe((res) => {
-      this.myProfile = res;
-      this.developerDetails = this.myProfile?.developerAccount;
-    }, (err) => {
-      this.isProcessing = false;
-    }, () => {
-      this.isProcessing = false;
-    })
+    this.loaderService.showLoader('myProfile');
+
+    this.subscriber.add(this.userService.getUserAccount().subscribe(
+      account => {
+        this.myProfile = account;
+        if (account.type) {
+          this.subscriber.add(this.userAccountTypeService.getUserAccountType(account.type)
+            .subscribe(definition => {
+              this.formDefinition = definition;
+            }));
+        } else {
+          this.formDefinition = this.defaultFormDefinition;
+        }
+        this.fillFormDefinitionByValue();
+      }
+    ));
   }
 
 
-  saveGeneralProfile(myProfileform) {
-    if (!myProfileform.valid) {
-      myProfileform.control.markAllAsTouched();
-      try {
-        this.commonService.scrollToFormInvalidField({form: myProfileform, adjustSize: 60});
-      } catch (error) {
-        this.notificationService.showError([{"message": "Please fill all required fields."}]);
-      }
-      return;
-    }
+  saveGeneralProfile() {
     this.isSaveInProcess = true;
-    this.sellerService.updateProfileDetails(this.myProfile).subscribe((res) => {
-      this.notificationService.showSuccess("Profile saved successfully");
-    }, (err) => {
-      this.isSaveInProcess = false;
-    }, () => {
-      this.isSaveInProcess = false;
-    });
+
+    this.userService.updateUserAccount(this.dynamicForm.customForm.value)
+      .pipe(
+        mergeMap(value => this.authService.refreshTokenSilent().pipe(
+          catchError(err => {
+            this.router.navigate(['login']);
+            return throwError(err);
+          }))))
+      .subscribe(value => {
+        this.toasterService.success('Your profile has been updated');
+        this.isSaveInProcess = false;
+      }, () => {
+        this.isSaveInProcess = false;
+      });
+  //   if (!myProfileform.valid) {
+  //     myProfileform.control.markAllAsTouched();
+  //     try {
+  //       this.commonService.scrollToFormInvalidField({form: myProfileform, adjustSize: 60});
+  //     } catch (error) {
+  //       this.notificationService.showError([{"message": "Please fill all required fields."}]);
+  //     }
+  //     return;
+  //   }
+  //   this.isSaveInProcess = true;
+  //   this.sellerService.updateProfileDetails(this.myProfile).subscribe((res) => {
+  //     this.notificationService.showSuccess("Profile saved successfully");
+  //   }, (err) => {
+  //     this.isSaveInProcess = false;
+  //   }, () => {
+  //     this.isSaveInProcess = false;
+  //   });
+  }
+
+  private fillFormDefinitionByValue() {
+    for (const field of this.formDefinition.fields) {
+      field.defaultValue = this.myProfile[field.id];
+    }
+    this.loaderService.closeLoader('myProfile');
   }
 }
