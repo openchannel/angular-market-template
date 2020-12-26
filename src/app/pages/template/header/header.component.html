@@ -45,7 +45,7 @@
                                routerLink="/management/profile">My Profile</div>
                             <div class="dropdown-item"
                                *ngIf="authHolderService.userDetails.role === 'ADMIN'"
-                               routerLink="/company">My Organization</div>
+                               routerLink="/management/company">My Organization</div>
                             <div class="dropdown-item cursor-pointer" (click)="logout()">Logout</div>
                         </div>
                     </div>
