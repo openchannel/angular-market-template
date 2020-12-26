@@ -150,7 +150,12 @@ export class InviteUserModalComponent implements OnInit, OnDestroy {
         this.closeAction('success');
       });
     } else {
-      // send user invite
+      const templateId = '5fc663f2217876017548dc25';
+      this.inviteService.sendUserInvite(this.formData, this.userId, templateId, this.companyName)
+      .subscribe(response => {
+        this.formInvalid = false;
+        this.closeAction('success');
+      }, () => { this.formInvalid = false; });
     }
   }
 }
