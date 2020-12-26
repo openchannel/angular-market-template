@@ -8,6 +8,7 @@ import {GeneralProfileComponent} from './my-profile/general/general-profile.comp
 import {SharedModule} from '@shared/shared.module';
 import {ManagementComponent} from './my-company/management/management.component';
 import {MyCompanyComponent} from './my-company/my-company.component';
+import { CompanyDetailsComponent } from './my-company/company-details/company-details.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import {MyCompanyComponent} from './my-company/my-company.component';
     ChangePasswordComponent,
     GeneralProfileComponent,
     ManagementComponent,
-    MyCompanyComponent
+    MyCompanyComponent,
+    CompanyDetailsComponent
   ],
   imports: [
     CommonModule,
