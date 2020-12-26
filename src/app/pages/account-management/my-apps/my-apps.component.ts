@@ -12,17 +12,12 @@ import {LoaderService} from '@core/services/loader.service';
 })
 export class MyAppsComponent implements OnInit {
 
-  private destroy$ = new Subject();
   appList: FullAppData[] = [];
   appSorts: DropdownModel<string>[];
   selectedSort: DropdownModel<string>;
 
-  private readonly appQuery = JSON.stringify({
-    userId: this.authHolderService.userDetails.organizationId,
-    isOwner: true,
-  });
-
   private pageNumber = 1;
+  private destroy$ = new Subject();
 
   constructor(private appsService: AppsService,
               private frontendService: FrontendService,
@@ -46,9 +41,8 @@ export class MyAppsComponent implements OnInit {
   }
 
   private loadApps() {
-    this.loaderService.showLoader('apps');
-
-    this.appsService.getApps(this.pageNumber, 5, this.selectedSort ? this.selectedSort.value : '', this.appQuery)
+    const sort = this.selectedSort ? this.selectedSort.value : '';
+    this.appsService.getApps(this.pageNumber, 5, sort, '', true)
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
         this.appList = [...this.appList, ...res.list.map(app => new FullAppData(app, pageConfig.fieldMappings))];
