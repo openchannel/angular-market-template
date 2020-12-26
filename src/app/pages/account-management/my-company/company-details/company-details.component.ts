@@ -20,7 +20,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   typeFields: {
     fields: DeveloperTypeFieldModel [];
   };
-  isInvalidForm = true;
+  isInvalidForm = false;
   savingCompanyData = false;
 
   private newCustomData: any;
