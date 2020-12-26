@@ -19,8 +19,8 @@
                 </li>
                 <li class="nav-item"
                     *ngIf="userName"
-                    [ngClass]="{active: router.url.includes('app-list')}">
-                    <a class="nav-link" [routerLink]="'/app-list'">Apps</a>
+                    [ngClass]="{active: router.url.includes('/management/apps')}">
+                    <a class="nav-link" [routerLink]="'/management/apps'">My apps</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0 button-section ml-0 ml-lg-4">
