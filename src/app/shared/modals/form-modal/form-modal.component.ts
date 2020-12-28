@@ -1,51 +1,38 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {Component, Input} from '@angular/core';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-form-modal',
   templateUrl: './form-modal.component.html',
   styleUrls: ['./form-modal.component.scss']
 })
-export class FormModalComponent implements OnInit, OnDestroy {
+export class FormModalComponent {
   /**
    * Object with all data for the form generation
    */
   @Input() formData: any;
+  @Input() modalTitle: string;
 
-  private subscriber: Subscription = new Subscription();
   public submissionDetailsForm: FormGroup;
+  private form: FormGroup;
 
-  constructor(private activeModal: NgbActiveModal,
-              private fb: FormBuilder) { }
-
-  ngOnInit(): void {
-    this.initSubmissionDetailsForm();
-  }
-
-  initSubmissionDetailsForm(): void {
-    this.submissionDetailsForm = this.fb.group({
-      name: [''],
-      appId: [null],
-      userId: [null],
-      email: [''],
-    });
-  }
-
-  sendFormData(formDataForSubmission): void {
-    const dataToServer = this.submissionDetailsForm.getRawValue();
-
-    if (formDataForSubmission) {
-      dataToServer.formData = formDataForSubmission;
-    }
-  }
+  constructor(private activeModal: NgbActiveModal) { }
 
   closeModal() {
     this.activeModal.close();
   }
 
-  ngOnDestroy() {
-    this.subscriber.unsubscribe();
+  onFormCreated(form: FormGroup) {
+    this.form = form;
+  }
+
+  onSubmit() {
+    if (this.form.invalid) {
+      Object.keys(this.form.controls).forEach(controlName => this.form.controls[controlName].markAsTouched());
+      return;
+    }
+
+    this.activeModal.close(this.form.value);
   }
 }
