@@ -63,6 +63,8 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.createFormFields(this.defaultDeveloperTypeFields);
         }
+      }, () => {
+        this.toastService.error('Sorry! Can\'t load company details. Please, reload the page');
       }
     ));
   }
@@ -83,6 +85,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
           this.savingCompanyData = false;
           this.toastService.success('Your company details has been updated');
         }, error => {
+          this.toastService.error('Sorry! Can\'t update a company data. Please, try again later');
           this.savingCompanyData = false;
           console.error('updateUserCompany', error);
         }));
