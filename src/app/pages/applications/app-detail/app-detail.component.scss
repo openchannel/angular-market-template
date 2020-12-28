@@ -1,3 +1,5 @@
+@import "~oc-ng-common-component/assets/styles/theme.scss";
+
 .list-group.list-group-flush {
   .list-group-item {
     padding: 0 0 10px;
@@ -9,4 +11,12 @@
 
 .review-column {
   flex-grow: 1;
+}
+
+.close-icon {
+  width: 16px;
+  height: 16px;
+  background-color: $secondary;
+  -webkit-mask: url("~assets/img/close-icon.svg") no-repeat center;
+  mask: url("~assets/img/close-icon.svg") no-repeat center;
 }

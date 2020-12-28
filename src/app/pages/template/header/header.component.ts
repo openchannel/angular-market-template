@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.isSSO = this.authHolderService.userDetails.isSSO;
+        this.isSSO = this.authHolderService?.userDetails?.isSSO;
     }
 
     displayUserInfo() {
