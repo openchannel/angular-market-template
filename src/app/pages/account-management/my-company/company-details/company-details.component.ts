@@ -1,3 +1,4 @@
+import { LoaderService } from '@core/services/loader.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AuthHolderService,
@@ -8,7 +9,6 @@ import {
 } from 'oc-ng-common-service';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { LoaderService } from '@core/services/loader.service';
 
 @Component({
   selector: 'app-company-details',
@@ -35,11 +35,11 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   private companyData: UserCompanyModel;
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private toastService: ToastrService,
+  constructor(private loader: LoaderService,
+              private toastService: ToastrService,
               private authHolderService: AuthHolderService,
               private userAccountService: UserAccountService,
-              private usersService: UsersService,
-              private loader: LoaderService) { }
+              private usersService: UsersService) { }
 
   ngOnInit(): void {
     this.loader.showLoader('companyData');
