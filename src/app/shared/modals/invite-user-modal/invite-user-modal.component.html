@@ -1,0 +1,22 @@
+<div class="p-3" *ngIf="userTypes && userTypes.length > 0">
+  <div class="modal-header">
+    <h4 class="modal-title text-center w-100" id="modal-basic-title">{{modalTitle}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeAction('cancel')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <oc-form [formJsonData]="formConfig" [showButton]="false"
+           (isFormInvalid)="getFormStatus($event)"
+           (formDataUpdated)="getDataFromForm($event)"></oc-form>
+  <div class="d-flex justify-content-between flex-column-reverse flex-sm-row mt-4">
+    <div class="button-container">
+      <oc-button type="secondary" text="Cancel" class="w-100"
+                 (click)="closeAction('cancel')"></oc-button>
+    </div>
+    <div class="button-container mb-2 mb-sm-0">
+      <oc-button type="primary" [text]="successButtonText"
+                 class="w-100" [disabled]="formInvalid"
+                 (click)="sendInvite()"></oc-button>
+    </div>
+  </div>
+</div>

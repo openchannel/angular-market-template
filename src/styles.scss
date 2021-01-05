@@ -233,3 +233,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     box-shadow: 1px 5px 30px 0 rgba(201, 213, 234, 0.5);
   }
 }
+
+@media (min-width: 730px) {
+  .modal-dialog {
+    max-width: 750px;
+  }
+}
