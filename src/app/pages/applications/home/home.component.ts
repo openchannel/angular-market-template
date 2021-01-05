@@ -135,7 +135,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   catchSearchText(searchText) {
-    this.router.navigate(['app-search'], {queryParams:
+    this.router.navigate(['app/search'], {queryParams:
         {filterId: 'collections', valueId: 'allApps', searchText: searchText}}).then();
   }
 }
