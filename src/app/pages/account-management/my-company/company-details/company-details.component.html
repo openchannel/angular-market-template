@@ -1,0 +1,12 @@
+<div *ngIf="typeFields?.fields" class="d-flex flex-column form-max-width">
+  <oc-form  [formJsonData]="typeFields"
+            [showButton]="false"
+            (isFormInvalid)="setIsFormInvalid($event)"
+            (formDataUpdated)="setCompanyData($event)">
+  </oc-form>
+  <oc-button type="primary" text="Save" class="save-button ml-auto mr-0" [class]="'w-100'"
+             [disabled]="savingCompanyData || isInvalidForm"
+             [process]="savingCompanyData"
+             (click)="saveType()">
+  </oc-button>
+</div>

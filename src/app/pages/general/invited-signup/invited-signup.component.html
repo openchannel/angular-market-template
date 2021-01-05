@@ -1,0 +1,41 @@
+<div class="bg-container pt-5">
+  <div class="card oc-card-with-border" >
+    <div class="card-body">
+      <h5 class="text-primary" *ngIf="isExpired">Sorry! Your invite token has been expired!</h5>
+      <ng-container *ngIf="!isExpired && formConfig">
+        <div class="text-center">
+          <img alt="logo" class="img-fluid mb-4 company-logo" src="./assets/img/logo-company.png">
+        </div>
+        <div class="text-center">
+          <h4>Sign Up</h4>
+          <oc-label text="Enter your account details below" class="mb-3"></oc-label>
+        </div>
+        <oc-form [formJsonData]="formConfig"
+                 (createdForm)="getCreatedForm($event)"
+                 [showButton]="false"
+                 (formDataUpdated)="getFormValues($event)"></oc-form>
+        <div class="form-group">
+          <div class="d-flex align-items-center">
+            <input type="checkbox" [(ngModel)]="isTerms"
+                   [ngModelOptions]="{standalone: true}"
+                   class="agree-checkbox mr-1">
+            <div class="font-s">
+              I agree to
+              <a class="font-s font-med" href="https://my.openchannel.io/terms-of-service" target="_blank">
+                Terms of Service
+              </a>
+              and
+              <a class="font-s font-med" href="https://my.openchannel.io/data-processing-policy" target="_blank">
+                Data Processing Policy
+              </a>
+            </div>
+          </div>
+        </div>
+        <oc-button (click)="submitForm()" [disabled]="(!isTerms && isFormInvalid) || inProcess"
+                   [process]="inProcess" text="Sign Up" type="primary"
+                   class="btn-block mt-5 mb-3">
+        </oc-button>
+      </ng-container>
+    </div>
+  </div>
+</div>
