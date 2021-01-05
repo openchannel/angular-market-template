@@ -17,11 +17,6 @@
                 >
                     <a class="nav-link" [routerLink]="'/app/store'">Browse <span class="sr-only">(current)</span></a>
                 </li>
-<!--                <li class="nav-item" [ngClass]="{-->
-<!--                    active: router.url.includes('app-developer')-->
-<!--                  }">-->
-<!--                    <a class="nav-link" [routerLink]="'/app-developer'">Manage</a>-->
-<!--                </li>-->
                 <li class="nav-item"
                     *ngIf="userName"
                     [ngClass]="{active: router.url.includes('/management/apps')}">
