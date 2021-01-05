@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppCategoryDetail, FullAppData, AppsService, FrontendService } from 'oc-ng-common-service';
-import { FilterValue } from '../../../core/services/apps-services/model/apps-model';
+import { FilterValue } from '@core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
 import { pageConfig } from '../../../../assets/data/configData';
 import { Router } from '@angular/router';
@@ -135,7 +135,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   catchSearchText(searchText) {
-    this.router.navigate(['app-search'], {queryParams:
+    this.router.navigate(['app/search'], {queryParams:
         {filterId: 'collections', valueId: 'allApps', searchText: searchText}}).then();
   }
 }

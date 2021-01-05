@@ -1,0 +1,21 @@
+.page-title {
+  line-height: 40px;
+}
+
+div.menu {
+  left: unset;
+  right: 0;
+}
+
+.menu-button {
+  width: 52px;
+  min-width: 52px;
+  height: 42px;
+  min-height: 42px;
+  padding: 0;
+
+  &:after {
+    display: none;
+  }
+
+}
