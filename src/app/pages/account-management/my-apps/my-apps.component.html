@@ -1,0 +1,34 @@
+<div class="bg-container height-unset py-2">
+    <div class="container">
+        <img src="assets/img/arrow-left.svg" alt="arrow-icon">
+        <a class="font-m font-med pl-1 cursor-pointer link">Back</a>
+        <h3 class="page-title">My apps</h3>
+    </div>
+</div>
+
+<div class="container d-flex flex-column">
+    <div class="d-flex justify-content-end pt-4 pb-3" *ngIf="appSorts">
+        <oc-dropdown [options]="appSorts"
+                     title="Show"
+                     (selectedChange)="onSortChange($event)"
+                     [selected]="selectedSort"></oc-dropdown>
+    </div>
+
+    <div (scrolled)="onScrollDown()"
+         class="d-flex flex-column"
+         infiniteScroll>
+        <oc-app-short-info *ngFor="let app of appList"
+                           [app]="app"
+                           class="mb-2">
+            <div ngbDropdown placement="bottom-right">
+                <button class="btn btn-secondary menu-button" ngbDropdownToggle>
+                    <img src="assets/img/dots-hr-icon.svg" alt="more-icon" class="icon-dots">
+                </button>
+                <div ngbDropdownMenu>
+                    <button class="dropdown-item">To Do...</button>
+                </div>
+            </div>
+        </oc-app-short-info>
+    </div>
+</div>
+<div class="divider mt-8"></div>
