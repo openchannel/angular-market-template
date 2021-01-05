@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component} from '@angular/core';
 import {LoaderService} from '@core/services/loader.service';
 
 @Component({
@@ -7,36 +6,20 @@ import {LoaderService} from '@core/services/loader.service';
   templateUrl: './loader.component.html',
   styleUrls: ['./loader.component.scss']
 })
-export class LoaderComponent implements OnInit  {
+export class LoaderComponent {
 
   loading: boolean;
 
-
-
-  constructor(public loaderService: LoaderService,
-    private router: Router) {
+  constructor(public loaderService: LoaderService) {
 
     this.loaderService.inProcess.subscribe((v) => {
       this.loading = v;
     });
 
   }
-  ngOnInit() {
-  }
 
   toggle() {
     this.loading = !this.loading;
-  }
-
-  getClass(){
-
-      if(this.router.url.split('?')[0] == "/applications"){
-        return 'filter-menu';
-      } else if(this.router.url.split('?')[0].includes("/invite/")
-             || this.router.url.split('?')[0].includes("/sso/authenticate")){
-          return '';
-      }
-      return 'left-menu';
   }
 
 }
