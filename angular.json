@@ -23,6 +23,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
+            "preserveSymlinks": true,
             "assets": [
               "src/assets",
               "src/robots.txt"

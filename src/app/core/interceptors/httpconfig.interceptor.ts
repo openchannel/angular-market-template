@@ -9,12 +9,12 @@ import {
 } from '@angular/common/http';
 
 import {BehaviorSubject, Observable, throwError} from 'rxjs';
-import {NotificationService} from 'src/app/shared/custom-components/notification/notification.service';
-import {LoaderService} from 'src/app/shared/services/loader.service';
+import {NotificationService} from '@shared/components/notification/notification.service';
 import {Router} from '@angular/router';
 import {OcErrorService} from 'oc-ng-common-component';
 import {catchError, filter, map, switchMap, take} from 'rxjs/operators';
 import {AuthHolderService, AuthenticationService, LoginResponse} from 'oc-ng-common-service';
+import {LoaderService} from '@core/services/loader.service';
 
 @Injectable()
 export class HttpConfigInterceptor implements HttpInterceptor {
