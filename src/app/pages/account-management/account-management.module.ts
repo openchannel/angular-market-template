@@ -8,6 +8,9 @@ import {GeneralProfileComponent} from './my-profile/general/general-profile.comp
 import {SharedModule} from '@shared/shared.module';
 import { MyAppsComponent } from './my-apps/my-apps.component';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
+import {ManagementComponent} from './my-company/management/management.component';
+import {MyCompanyComponent} from './my-company/my-company.component';
+import { CompanyDetailsComponent } from './my-company/company-details/company-details.component';
 
 
 @NgModule({
@@ -16,6 +19,9 @@ import {InfiniteScrollModule} from 'ngx-infinite-scroll';
     ChangePasswordComponent,
     GeneralProfileComponent,
     MyAppsComponent,
+    ManagementComponent,
+    MyCompanyComponent,
+    CompanyDetailsComponent
   ],
   imports: [
     CommonModule,
