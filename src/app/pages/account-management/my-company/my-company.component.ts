@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService} from 'ngx-toastr';
 import {AuthHolderService} from 'oc-ng-common-service';
+import {InviteUserModalComponent} from '@shared/modals/invite-user-modal/invite-user-modal.component';
 
 export interface Page {
   pageId: string;
@@ -70,5 +71,15 @@ export class MyCompanyComponent implements OnInit {
   private filterPagesByUserType(userType: string): Page [] {
     return this.currentPages = this.pages.filter(page =>
         page.showByTypes.filter(pattern => pattern === '*' || pattern === userType).length > 0);
+  }
+
+  openInviteModal() {
+    const modalRef = this.modal.open(InviteUserModalComponent);
+    modalRef.componentInstance.userId = this.authHolderService.userDetails.organizationId;
+    modalRef.result.then(result => {
+      if (result.status === 'success') {
+        this.toaster.success('Invitation sent to ' + result.userData.email);
+      }
+    });
   }
 }

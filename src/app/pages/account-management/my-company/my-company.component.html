@@ -8,6 +8,7 @@
         <div class="button-container">
             <oc-button *ngIf="selectedPage?.pageId === pages[1].pageId"
                        text="Invite a member" type="primary"
+                       (click)="openInviteModal()"
                        [style]="'min-width: 100%'"></oc-button>
         </div>
     </div>
@@ -24,6 +25,7 @@
             </ul>
         </div>
         <div [ngSwitch]="selectedPage?.pageId" class="col pt-1">
+            <app-company-details *ngSwitchCase="pages[0].pageId"></app-company-details>
             <app-management *ngSwitchCase="pages[1].pageId"></app-management>
         </div>
     </div>

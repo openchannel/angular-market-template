@@ -7,13 +7,16 @@ import {
   OCReviewDetails,
   OverallRatingSummary,
   FrontendService,
-  DropdownModel,
+  DropdownModel, AppFormService, AppFormModel,
 } from 'oc-ng-common-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
 import {LoaderService} from '@core/services/loader.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FormModalComponent} from '@shared/modals/form-modal/form-modal.component';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-app-detail',
@@ -45,12 +48,17 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject();
   private appConfigPipe = pageConfig.fieldMappings;
+  private contactForm: AppFormModel;
+
   constructor(private appService: AppsService,
               private reviewsService: ReviewsService,
               private frontendService: FrontendService,
               private loaderService: LoaderService,
               private route: ActivatedRoute,
-              private router: Router) { }
+              private router: Router,
+              private modalService: NgbModal,
+              private formService: AppFormService,
+              private toaster: ToastrService) { }
 
   ngOnInit(): void {
     const appId = this.route.snapshot.paramMap.get('appId');
@@ -76,6 +84,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     });
 
     this.getRecommendedApps();
+    this.getContactForm();
 
     this.router.routeReuseStrategy.shouldReuseRoute = () => {
       return false;
@@ -128,5 +137,46 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   private countRating(): void {
     this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.reviewsPage.count);
     this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
+  }
+
+  openContactForm() {
+    const modalRef = this.modalService.open(FormModalComponent, { size: 'lg' });
+    modalRef.componentInstance.formData = this.contactForm;
+    modalRef.componentInstance.modalTitle = 'Contact form';
+
+    modalRef.result.then(value => {
+      if (value) {
+        this.loaderService.showLoader('contactForm');
+        this.formService.createFormSubmission(this.contactForm.formId, {
+          appId: this.app.appId,
+          name: value.name,
+          userId: '',
+          email: value.email,
+          formData: {
+            ...value,
+          },
+        }).pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+              this.loaderService.closeLoader('contactForm');
+              this.toaster.success('Your message was sent to the Developer');
+            },
+            () => {
+              this.loaderService.closeLoader('contactForm');
+              this.toaster.error('Your message wasn\'t sent to the Developer');
+            });
+      }
+    });
+  }
+
+  private getContactForm() {
+    this.formService.getForm('lead')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(form => {
+        this.contactForm = form;
+      });
+  }
+
+  get isDownloadRendered(): boolean {
+    return true;
   }
 }

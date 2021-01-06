@@ -9,6 +9,7 @@ import {ResetPasswordComponent} from './reset-password/reset-password.component'
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {ActivationComponent} from './activation/activation.component';
 import {SharedModule} from '../../shared/shared.module';
+import {InvitedSignupComponent} from './invited-signup/invited-signup.component';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import {SharedModule} from '../../shared/shared.module';
     ResendActivationComponent,
     ResetPasswordComponent,
     ForgotPasswordComponent,
+    InvitedSignupComponent
   ],
   imports: [
     CommonModule,

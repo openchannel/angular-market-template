@@ -20,6 +20,9 @@ $category-color-mix2: #ffffff;
   width: 730px;
   margin: 0 auto;
 }
+.bg-container.height-unset {
+  min-height: unset;
+}
 .header-divider {
   border-top: 1px solid rgba(83, 124, 253, 0.2);
   // box-shadow: 0px -1px 0 2px rgba(83, 124, 253, 0.2);
@@ -226,6 +229,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .header-login-btn {
   border: 1px solid $info;
   color: $primary;
+  &:hover {
+    box-shadow: 1px 5px 30px 0 rgba(201, 213, 234, 0.5);
+  }
 }
 
 @media (min-width: 730px) {
