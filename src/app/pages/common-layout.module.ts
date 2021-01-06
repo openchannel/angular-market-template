@@ -5,7 +5,7 @@ import { CommonLayoutRoutingModule } from './common-layout-routing.module';
 import {CommonLayoutComponent} from './common-layout.component';
 import {HeaderComponent} from './template/header/header.component';
 import {FooterComponent} from './template/footer/footer.component';
-import {SharedModule} from '../shared/shared.module';
+import {SharedModule} from '@shared/shared.module';
 
 
 @NgModule({
