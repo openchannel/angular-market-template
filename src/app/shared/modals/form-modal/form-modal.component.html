@@ -6,8 +6,7 @@
   <div class="modal-body p-5">
     <oc-form [formJsonData]="formData"
              (createdForm)="onFormCreated($event)"
-             [showButton]="false"
-             (formSubmitted)="sendFormData($event)"></oc-form>
+             [showButton]="false"></oc-form>
     <div class="d-flex justify-content-center">
       <oc-button class="confirm-modal-button mr-2"
                  (click)="onSubmit()"
