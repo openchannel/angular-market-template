@@ -1,37 +1,22 @@
-<div class="p-3">
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">{{formData.name}}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+<div>
+  <div class="modal-header p-3" *ngIf="modalTitle">
+    <h4 class="modal-title text-center w-100 mb-0" id="modal-basic-title">{{modalTitle}}</h4>
+    <img src="./assets/img/close-icon.svg" class="cursor-pointer" (click)="closeModal()">
   </div>
-  <section class="mt-2">
-    <h6 class="border-bottom pb-1 pt-1">Submission Details</h6>
-    <form [formGroup]="submissionDetailsForm">
-      <div class="form-group">
-        <oc-label text="Name" [class]="'mb-1'">
-        </oc-label>
-        <oc-input  formControlName="name"></oc-input>
-      </div>
-      <div class="form-group">
-        <oc-label text="App" [class]="'mb-1'">
-        </oc-label>
-        <oc-input  formControlName="appId"></oc-input>
-      </div>
-      <div class="form-group">
-        <oc-label text="User" [class]="'mb-1'">
-        </oc-label>
-        <oc-input  formControlName="userId"></oc-input>
-      </div>
-      <div class="form-group">
-        <oc-label text="Email" [class]="'mb-1'">
-        </oc-label>
-        <oc-input  formControlName="email"></oc-input>
-      </div>
-    </form>
-  </section>
-  <section>
-    <h6 class="border-bottom pb-lg-1 bp-1">Submission Fields</h6>
-    <oc-form [formJsonData]="formData" (formSubmitted)="sendFormData($event)"></oc-form>
-  </section>
+  <div class="modal-body p-5">
+    <oc-form [formJsonData]="formData"
+             (createdForm)="onFormCreated($event)"
+             [showButton]="false"></oc-form>
+    <div class="d-flex justify-content-center">
+      <oc-button class="confirm-modal-button mr-2"
+                 (click)="onSubmit()"
+                 [class]="'w-100'"
+                 text="Send"></oc-button>
+      <oc-button class="confirm-modal-button"
+                 [class]="'w-100'"
+                 text="Cancel"
+                 type="secondary"
+                 (click)="closeModal()"></oc-button>
+    </div>
+  </div>
 </div>
