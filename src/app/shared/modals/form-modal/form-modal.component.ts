@@ -14,7 +14,6 @@ export class FormModalComponent {
   @Input() formData: any;
   @Input() modalTitle: string;
 
-  public submissionDetailsForm: FormGroup;
   private form: FormGroup;
 
   constructor(private activeModal: NgbActiveModal) { }
