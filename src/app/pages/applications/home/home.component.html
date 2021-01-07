@@ -1,0 +1,44 @@
+<div class="bg-container height-unset d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 py-7 px-4 text-center mx-auto">
+                <h1>Your App Store Platform</h1>
+                <p class="mb-4 text-secondary">A design template for implementing your app store with OpenChannel</p>
+                <oc-text-search (enterSearch)="catchSearchText($event)"></oc-text-search>
+            </div>
+        </div>
+        <oc-featured-apps *ngIf="isFeatured"
+                          [data]="featuredApp"
+                          mainRouterLink="/app/detail/"
+                          label="Featured"></oc-featured-apps>
+    </div>
+</div>
+<div class="container">
+    <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
+        <div [ngSwitch]="configElement?.type">
+            <div class="pt-8 pb-5" *ngSwitchCase="'apps-list'">
+                <oc-app-gallery *ngIf="configElement?.data"
+                                [appsArr]="configElement?.data"
+                                routerLinkForOneApp="/app/detail/"
+                                seeAllUrl="/app/search"
+                                [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
+                                [appGalleryTitle]="configElement.name"
+                                [appGalleryDescription]="configElement.description">
+                </oc-app-gallery>
+            </div>
+            <div *ngSwitchCase="'filter-values-card-list'">
+                <oc-app-categories
+                        *ngIf="categoriesData"
+                        [data]="categories"
+                        [categoryHeaderTitle]="configElement.name"
+                        categoryRouterLink="app-search">
+                </oc-app-categories>
+            </div>
+        </div>
+    </ng-container>
+</div>
+<div class="bg-container mt-5 py-8 min-height-auto">
+    <div class="container">
+        <oc-app-get-started getStartedButtonText="Get Started as an App Developer"></oc-app-get-started>
+    </div>
+</div>

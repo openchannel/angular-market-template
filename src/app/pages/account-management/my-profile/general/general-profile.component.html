@@ -1,0 +1,10 @@
+<oc-form *ngIf="formDefinition" #form
+         [formJsonData]="formDefinition"
+         [showButton]="false"></oc-form>
+<div class="w-100 mt-2">
+    <oc-button type="primary" text="Save" class="btn-block w-100"
+               [process]="isSaveInProcess"
+               [disabled]="isSaveInProcess || (dynamicForm && !dynamicForm.customForm.valid)"
+               (click)="saveGeneralProfile()">
+    </oc-button>
+</div>
