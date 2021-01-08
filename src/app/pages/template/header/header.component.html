@@ -12,16 +12,11 @@
             <ul class="navbar-nav justify-content-end w-100 mb-0">
                 <li class="nav-item"
                     [ngClass]="{
-                    active: router.isActive('/app-store', true) || router.isActive('/', true)
+                    active: router.isActive('/app/store', true) || router.isActive('/', true)
                   }"
                 >
-                    <a class="nav-link" [routerLink]="'/app-store'">Browse <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" [routerLink]="'/app/store'">Browse <span class="sr-only">(current)</span></a>
                 </li>
-<!--                <li class="nav-item" [ngClass]="{-->
-<!--                    active: router.url.includes('app-developer')-->
-<!--                  }">-->
-<!--                    <a class="nav-link" [routerLink]="'/app-developer'">Manage</a>-->
-<!--                </li>-->
                 <li class="nav-item"
                     *ngIf="userName"
                     [ngClass]="{active: router.url.includes('/management/apps')}">
@@ -41,11 +36,11 @@
                         </div>
                         <div ngbDropdownMenu aria-labelledby="navbarDropdown" class="mt-2"
                              *ngIf="authHolderService.isLoggedInUser()">
-                            <div class="dropdown-item" *ngIf="!isSSO"
-                               routerLink="/my-profile">My Profile</div>
-                            <div class="dropdown-item"
+                            <div class="dropdown-item cursor-pointer" *ngIf="!isSSO"
+                               routerLink="/management/profile">My Profile</div>
+                            <div class="dropdown-item cursor-pointer"
                                *ngIf="authHolderService.userDetails.role === 'ADMIN'"
-                               routerLink="/management/company">My Organization</div>
+                               routerLink="/management/company">My Company</div>
                             <div class="dropdown-item cursor-pointer" (click)="logout()">Logout</div>
                         </div>
                     </div>

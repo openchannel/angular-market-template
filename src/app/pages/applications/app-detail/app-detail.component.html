@@ -27,7 +27,10 @@
                         <p class="text-secondary mt-2">{{ app.summary }}</p>
                         <oc-rating class="mb-2" [rating]="app.rating / 100" [reviewCount]="app.reviewCount"
                                    label="reviews" labelClass="font-med" type="single-star"></oc-rating>
-                        <oc-button type="primary" text="Buy Now"></oc-button>
+                        <div>
+                            <oc-button *ngIf="isDownloadRendered" type="primary" text="Buy Now" class="mr-2"></oc-button>
+                            <oc-button [type]="isDownloadRendered ? 'secondary' : 'primary'" text="Contact" (click)="openContactForm()"></oc-button>
+                        </div>
                     </div>
                 </div>
                 <oc-video *ngIf="app.video" [videoUrl]="app.video" class="col-sm-2 mt-2 mt-sm-0"></oc-video>
