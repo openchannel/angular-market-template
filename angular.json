@@ -26,7 +26,8 @@
             "preserveSymlinks": true,
             "assets": [
               "src/assets",
-              "src/robots.txt"
+              "src/robots.txt",
+              "_redirects"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
@@ -126,7 +127,8 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/assets",
-              "src/favicon.png"
+              "src/favicon.png",
+              "_redirects"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
