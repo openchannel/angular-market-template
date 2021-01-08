@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {AppsService, AuthHolderService, DropdownModel, FrontendService, FullAppData} from 'oc-ng-common-service';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
@@ -10,7 +10,7 @@ import {LoaderService} from '@core/services/loader.service';
   templateUrl: './my-apps.component.html',
   styleUrls: ['./my-apps.component.scss']
 })
-export class MyAppsComponent implements OnInit {
+export class MyAppsComponent implements OnInit, OnDestroy {
 
   appList: FullAppData[] = [];
   appSorts: DropdownModel<string>[];
@@ -40,6 +40,13 @@ export class MyAppsComponent implements OnInit {
         () => this.loaderService.closeLoader('sorts'));
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.loaderService.closeLoader('sorts');
+    this.loaderService.closeLoader('apps');
+  }
+
   private loadApps() {
     const sort = this.selectedSort ? this.selectedSort.value : '';
     this.appsService.getApps(this.pageNumber, 5, sort, '', true)
@@ -61,5 +68,9 @@ export class MyAppsComponent implements OnInit {
   onScrollDown() {
     this.pageNumber++;
     this.loadApps();
+  }
+
+  goBack() {
+    history.back();
   }
 }
