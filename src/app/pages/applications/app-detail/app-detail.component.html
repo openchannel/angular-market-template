@@ -2,11 +2,17 @@
 <div *ngIf="appData$ | async">
     <div class="bg-container bg bg-s pb-7">
         <div class="container">
-            <div class="row">
-                <div class="col-md-12 py-4">
-                    <img src="./assets/img/arrow-left.svg"
-                         alt="arrow-icon">
-                    <a routerLink="/app-store" class="font-m font-med pl-1">Back to App Store</a>
+            <div class="height-unset py-2 d-flex flex-row justify-content-between">
+                <div class="mb-1">
+                    <div class="d-flex flex-row align-items-center">
+                        <img src="./assets/img/arrow-left.svg"
+                             alt="arrow-icon">
+                        <a routerLink="/app-store" class="font-m font-med pl-1">Back to App Store</a>
+                    </div>
+                    <h3 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h3>
+                </div>
+                <div *ngIf="isDeveloperPreviewPage">
+                    <oc-button type="secondary" (click)="closeWindow()" [customTemplate]="closePreviewButton"></oc-button>
                 </div>
             </div>
             <div class="row mb-1">
@@ -102,3 +108,10 @@
         </div>
     </div>
 </div>
+
+<ng-template #closePreviewButton>
+    <div class="d-flex flex-row align-items-center">
+        <div class="close-icon mr-1"></div>
+        Close preview
+    </div>
+</ng-template>
