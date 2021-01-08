@@ -8,6 +8,7 @@ const routes: Routes = [
   {path: 'store', component: HomeComponent},
   {path: 'search', component: AppSearchComponent},
   {path: 'detail/:appId', component: AppDetailComponent},
+  {path: 'detail/:appId/:appVersion', component: AppDetailComponent},
 ];
 
 @NgModule({
