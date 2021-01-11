@@ -32,7 +32,9 @@ export class MyAppsComponent implements OnInit {
       .subscribe(page => {
         this.appSorts = page.list[0] ?
           page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort)) : null;
-        this.selectedSort = this.appSorts[0];
+        if (this.appSorts) {
+          this.selectedSort = this.appSorts[0];
+        }
 
         this.loadApps();
       },
