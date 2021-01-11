@@ -80,7 +80,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   }
 
   saveType(): void {
-    if (this.newCustomData) {
+    if (this.newCustomData && !this.savingCompanyData && !this.isInvalidForm) {
       this.savingCompanyData = true;
       this.subscriptions.add(this.usersService.updateUserCompany(this.newCustomData)
         .subscribe(() => {
