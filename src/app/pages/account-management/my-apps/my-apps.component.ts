@@ -64,4 +64,8 @@ export class MyAppsComponent implements OnInit {
     this.pageNumber++;
     this.loadApps();
   }
+
+  goBack() {
+    history.back();
+  }
 }
