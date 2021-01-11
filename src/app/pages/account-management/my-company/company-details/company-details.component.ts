@@ -59,6 +59,8 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
           this.subscriptions.add(this.usersService.getUserTypeDefinition(company.type)
           .subscribe(resultDefinition => {
             this.createFormFields(resultDefinition.fields);
+          }, () => {
+            this.createFormFields(this.defaultDeveloperTypeFields);
           }));
         } else {
           this.createFormFields(this.defaultDeveloperTypeFields);
