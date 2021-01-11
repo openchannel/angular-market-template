@@ -10,6 +10,7 @@ import { MyAppsComponent } from './my-apps/my-apps.component';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ManagementComponent} from './my-company/management/management.component';
 import {MyCompanyComponent} from './my-company/my-company.component';
+import { CompanyDetailsComponent } from './my-company/company-details/company-details.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import {MyCompanyComponent} from './my-company/my-company.component';
     GeneralProfileComponent,
     MyAppsComponent,
     ManagementComponent,
-    MyCompanyComponent
+    MyCompanyComponent,
+    CompanyDetailsComponent
   ],
   imports: [
     CommonModule,
