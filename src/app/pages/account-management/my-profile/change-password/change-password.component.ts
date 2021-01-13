@@ -30,22 +30,25 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   }
 
   changePassword(form: NgForm){
-    if (!form.valid) {
-      return;
+    if (!this.isSaveInProcess) {
+      if (!form.valid) {
+        form.form.markAllAsTouched();
+      } else {
+        this.isSaveInProcess = true;
+        this.subscriber.add(this.usersService.changePassword(form.value)
+          .subscribe(() => {
+            for (const controlKey of Object.keys(form.form.controls)) {
+              const control = form.form.controls[controlKey];
+              control.reset();
+              control.setErrors(null);
+            }
+            this.toasterService.success('Password has been updated');
+          }, () => {
+            this.isSaveInProcess = false;
+          }, () => {
+            this.isSaveInProcess = false;
+          }));
+      }
     }
-    this.isSaveInProcess = true;
-    this.subscriber.add(this.usersService.changePassword(form.value)
-      .subscribe(() => {
-        for (const controlKey of Object.keys(form.form.controls)) {
-          const control = form.form.controls[controlKey];
-          control.reset();
-          control.setErrors(null);
-        }
-        this.toasterService.success('Password has been updated');
-      }, (err) => {
-        this.isSaveInProcess = false;
-      }, () => {
-        this.isSaveInProcess = false;
-      }));
   }
 }

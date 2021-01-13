@@ -59,6 +59,8 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
           this.subscriptions.add(this.usersService.getUserTypeDefinition(company.type)
           .subscribe(resultDefinition => {
             this.createFormFields(resultDefinition.fields);
+          }, () => {
+            this.createFormFields(this.defaultDeveloperTypeFields);
           }));
         } else {
           this.createFormFields(this.defaultDeveloperTypeFields);
@@ -78,7 +80,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   }
 
   saveType(): void {
-    if (this.newCustomData) {
+    if (this.newCustomData && !this.savingCompanyData && !this.isInvalidForm) {
       this.savingCompanyData = true;
       this.subscriptions.add(this.usersService.updateUserCompany(this.newCustomData)
         .subscribe(() => {

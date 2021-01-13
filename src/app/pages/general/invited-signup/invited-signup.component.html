@@ -31,8 +31,9 @@
             </div>
           </div>
         </div>
-        <oc-button (click)="submitForm()" [disabled]="(!isTerms && isFormInvalid) || inProcess"
-                   [process]="inProcess" text="Sign Up" type="primary"
+        <oc-button (click)="submitForm()"
+                   [process]="inProcess"
+                   text="Sign Up" type="primary"
                    class="btn-block mt-5 mb-3">
         </oc-button>
       </ng-container>
