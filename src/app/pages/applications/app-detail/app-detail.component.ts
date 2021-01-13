@@ -7,7 +7,7 @@ import {
   OCReviewDetails,
   OverallRatingSummary,
   FrontendService,
-  DropdownModel, AppFormService, AppFormModel,
+  DropdownModel, AppVersionService, AppFormService, AppFormModel,
 } from 'oc-ng-common-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
@@ -44,13 +44,14 @@ export class AppDetailComponent implements OnInit, OnDestroy {
       new DropdownModel('1 Stars', `{'rating': 100}`),
   ];
   selectedFilter: DropdownModel<string> = this.reviewsFilter[0];
-
+  isDeveloperPreviewPage = false;
 
   private destroy$: Subject<void> = new Subject();
   private appConfigPipe = pageConfig.fieldMappings;
   private contactForm: AppFormModel;
 
   constructor(private appService: AppsService,
+              private appVersionService: AppVersionService,
               private reviewsService: ReviewsService,
               private frontendService: FrontendService,
               private loaderService: LoaderService,
@@ -62,13 +63,11 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const appId = this.route.snapshot.paramMap.get('appId');
+    const appVersion = this.route.snapshot.paramMap.get('appVersion');
 
     this.loaderService.showLoader('1');
 
-    this.appData$ = this.appService.getAppById(appId)
-        .pipe(takeUntil(this.destroy$),
-              map(app => new FullAppData(app, pageConfig.fieldMappings)),
-              tap(app => this.app = app));
+    this.appData$ = this.getApp(appId, appVersion)
 
     this.appData$.subscribe(app => {
           this.loaderService.closeLoader('1');
@@ -134,6 +133,17 @@ export class AppDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  private getApp(appId: string, appVersion: string): Observable<FullAppData> {
+    this.isDeveloperPreviewPage = appVersion && Number(appVersion) > 0;
+    const appData = (this.isDeveloperPreviewPage) ?
+        this.appVersionService.getAppByVersion(appId, Number(appVersion)):
+        this.appService.getAppById(appId);
+
+    return appData.pipe(takeUntil(this.destroy$),
+          map(app => new FullAppData(app, pageConfig.fieldMappings)),
+          tap(app => this.app = app));
+  }
+
   private countRating(): void {
     this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.reviewsPage.count);
     this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
@@ -156,7 +166,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             ...value,
           },
         }).pipe(takeUntil(this.destroy$))
-          .subscribe(() => {
+        .subscribe(() => {
               this.loaderService.closeLoader('contactForm');
               this.toaster.success('Your message was sent to the Developer');
             },
@@ -170,13 +180,17 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   private getContactForm() {
     this.formService.getForm('lead')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(form => {
-        this.contactForm = form;
-      });
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(form => {
+      this.contactForm = form;
+    });
   }
 
   get isDownloadRendered(): boolean {
     return true;
+  }
+
+  closeWindow() {
+    window.close();
   }
 }
