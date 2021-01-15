@@ -1,22 +1,22 @@
 <div>
-  <div class="modal-header p-3" *ngIf="modalTitle">
+  <div class="modal-header p-4" *ngIf="modalTitle">
     <h4 class="modal-title text-center w-100 mb-0" id="modal-basic-title">{{modalTitle}}</h4>
     <img src="./assets/img/close-icon.svg" class="cursor-pointer" (click)="closeModal()">
   </div>
-  <div class="modal-body p-5">
+  <div class="modal-body p-4">
     <oc-form [formJsonData]="formData"
              (createdForm)="onFormCreated($event)"
              [showButton]="false"></oc-form>
-    <div class="d-flex justify-content-center">
-      <oc-button class="confirm-modal-button mr-2"
-                 (click)="onSubmit()"
-                 [class]="'w-100'"
-                 text="Send"></oc-button>
-      <oc-button class="confirm-modal-button"
+    <div class="mt-4 d-flex flex-column-reverse flex-sm-row justify-content-sm-between">
+      <oc-button class="confirm-modal-button mt-1 mt-sm-0"
                  [class]="'w-100'"
                  text="Cancel"
                  type="secondary"
                  (click)="closeModal()"></oc-button>
+      <oc-button class="confirm-modal-button"
+                 (click)="onSubmit()"
+                 [class]="'w-100'"
+                 text="Send"></oc-button>
     </div>
   </div>
 </div>
