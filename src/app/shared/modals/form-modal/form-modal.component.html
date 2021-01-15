@@ -1,7 +1,7 @@
 <div>
-  <div class="modal-header p-4" *ngIf="modalTitle">
-    <h4 class="modal-title text-center w-100 mb-0" id="modal-basic-title">{{modalTitle}}</h4>
-    <img src="./assets/img/close-icon.svg" class="cursor-pointer" (click)="closeModal()">
+  <div class="px-3 py-2 d-flex align-items-center" [ngClass]="modalTitle ? 'modal-header' : ''">
+    <h3 *ngIf="modalTitle" class="modal-title text-center w-100 mb-0" id="modal-basic-title">{{modalTitle}}</h3>
+    <img src="./assets/img/close-icon.svg" class="cursor-pointer close-icon" (click)="closeModal()">
   </div>
   <div class="modal-body p-4">
     <oc-form [formJsonData]="formData"
