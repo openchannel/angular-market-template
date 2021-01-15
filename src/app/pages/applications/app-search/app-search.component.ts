@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {AppsService, Filter, FrontendService, FullAppData, Page} from 'oc-ng-common-service';
-import {debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap} from 'rxjs/operators';
-import {Observable, Subject} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
-import {pageConfig} from '../../../../assets/data/configData';
-import {LoaderService} from '@core/services/loader.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AppsService, Filter, FrontendService, FullAppData, Page } from 'oc-ng-common-service';
+import { debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { pageConfig } from '../../../../assets/data/configData';
+import { LoaderService } from '@core/services/loader.service';
 
 @Component({
   selector: 'app-app-search',
@@ -54,9 +54,12 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
           this.loaderService.closeLoader('1');
 
-          this.getData();
+          if (this.searchText) {
+            this.getData();
+          } else {
+            this.getSortedData(filterId, filterValueId)
+          }
         });
-
     this.subscribeToSearchChange();
   }
 
@@ -94,6 +97,29 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             error => this.loaderService.closeLoader('2'));
   }
 
+  getSortedData(filterId: string, valueId: string) {
+    let filter: string;
+    let sort: string;
+
+    this.loaderService.showLoader('sortedApps');
+
+    pageConfig.appListPage.forEach(list => {
+      if (list.valueId === valueId && list.filterId === filterId) {
+        filter = list.filter;
+        sort = list.sort;
+      }
+    });
+    this.appService.getApps(1, 100, sort, filter)
+      .pipe(takeUntil(this.destroy$),
+        map((data: Page<FullAppData>) => {
+          data.list = data.list.map(value => new FullAppData(value, pageConfig.fieldMappings));
+          return data;
+        }),
+        tap((data: Page<FullAppData>) => this.appPage = data))
+      .subscribe(() => this.loaderService.closeLoader('sortedApps'),
+        () => this.loaderService.closeLoader('sortedApps'));
+  }
+
   onFilterChange() {
     this.getData();
   }
@@ -107,7 +133,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   goToAppDetails(app: FullAppData) {
-    this.route.navigate(['/app-detail', app.appId]);
+    this.route.navigate(['/app/detail', app.appId]);
   }
 
   private getFilterQuery() {
