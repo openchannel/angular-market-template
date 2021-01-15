@@ -133,7 +133,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   goToAppDetails(app: FullAppData) {
-    this.route.navigate(['/app-detail', app.appId]);
+    this.route.navigate(['/app/detail', app.appId]);
   }
 
   private getFilterQuery() {
