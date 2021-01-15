@@ -1,4 +1,5 @@
 @import "~oc-ng-common-component/assets/styles/styles.scss";
+@import "assets/styles/mixins";
 
 $link-gray: #333333;
 $category-color-mix1: #ff0606;
@@ -234,8 +235,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
-@media (min-width: 730px) {
-  .modal-dialog {
-    max-width: 750px;
+.modal-sm {
+  max-width: 410px;
+  @include media-breakpoint-sm() {
+    max-width: 100%;
   }
 }
