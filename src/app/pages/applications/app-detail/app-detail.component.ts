@@ -150,7 +150,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   }
 
   openContactForm() {
-    const modalRef = this.modalService.open(FormModalComponent, { size: 'lg' });
+    const modalRef = this.modalService.open(FormModalComponent, { size: 'sm' });
     modalRef.componentInstance.formData = this.contactForm;
     modalRef.componentInstance.modalTitle = 'Contact form';
 
