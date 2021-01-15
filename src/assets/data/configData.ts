@@ -32,7 +32,7 @@
        "filterId": "collections",
        "valueId": "newest",
        "filter": "{\"status.value\":\"approved\"}",
-       "sort": "{newest: 1}"
+       "sort": "{created: -1}"
      },
      {
        "name": "Categories to explore",
@@ -57,7 +57,7 @@
        "filterId": "categories",
        "valueId": "analytics",
        "filter": "{\"status.value\":\"approved\",\"customData.categories\":\"Analytics\"}",
-       "sort": null
+       "sort": "{created: -1}"
      }
    ]
  }
