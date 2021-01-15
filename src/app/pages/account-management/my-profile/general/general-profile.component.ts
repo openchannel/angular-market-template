@@ -91,7 +91,11 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
       if (this.dynamicForm.customForm.valid) {
         this.isSaveInProcess = true;
 
-        this.userService.updateUserAccount(this.dynamicForm.customForm.value)
+        const accountData = {
+          ...this.dynamicForm.customForm.value,
+          type: this.myProfile.type,
+        };
+        this.userService.updateUserAccount(accountData)
           .pipe(
             mergeMap(value => this.authService.refreshTokenSilent().pipe(
               catchError(err => {
