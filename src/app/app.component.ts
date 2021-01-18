@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import {InitService} from "oc-ng-common-service";
+import { InitService, TitleService } from "oc-ng-common-service";
 import {first} from "rxjs/operators";
 
 @Component({
@@ -19,7 +19,8 @@ export class AppComponent {
   csrfInited = false;
 
   constructor(private router: Router,
-              private initService: InitService) {
+              private initService: InitService,
+              private titleService: TitleService) {
 
   }
 
@@ -32,5 +33,5 @@ export class AppComponent {
           this.csrfInited = true;
         }, error => this.csrfInited = true);
   }
-  
+
 }
