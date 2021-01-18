@@ -143,16 +143,18 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
 
   // register invited user and deleting invite on success
   submitForm() {
-    this.inProcess = true;
-    this.inviteFormData.inviteToken = this.userInviteData.token;
-    this.requestSubscriber.add(this.usersService.signupByInvite({
-      userCustomData: this.inviteFormData,
-      inviteToken: this.userInviteData.token
-    }).subscribe(resp => {
-      this.inProcess = false;
-      this.router.navigate(['login']);
-    }, () => {
-      this.inProcess = false;
-    }));
+    if ((!this.isTerms && this.isFormInvalid) || this.inProcess) {
+      this.inProcess = true;
+      this.inviteFormData.inviteToken = this.userInviteData.token;
+      this.requestSubscriber.add(this.usersService.signupByInvite({
+        userCustomData: this.inviteFormData,
+        inviteToken: this.userInviteData.token
+      }).subscribe(resp => {
+        this.inProcess = false;
+        this.router.navigate(['login']);
+      }, () => {
+        this.inProcess = false;
+      }));
+    }
   }
 }

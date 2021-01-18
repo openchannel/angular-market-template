@@ -58,6 +58,7 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriber.unsubscribe();
+    this.loaderService.closeLoader('myProfile');
   }
 
   getMyProfileDetails() {
@@ -71,6 +72,10 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
             .subscribe(definition => {
               this.formDefinition = definition;
               this.fillFormDefinitionByValue();
+            }, () => {
+              this.formDefinition = this.defaultFormDefinition;
+              this.fillFormDefinitionByValue();
+              this.loaderService.closeLoader('myProfile');
             }));
         } else {
           this.formDefinition = this.defaultFormDefinition;
@@ -82,21 +87,31 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
 
 
   saveGeneralProfile() {
-    this.isSaveInProcess = true;
+    if (!this.isSaveInProcess && this.dynamicForm) {
+      if (this.dynamicForm.customForm.valid) {
+        this.isSaveInProcess = true;
 
-    this.userService.updateUserAccount(this.dynamicForm.customForm.value)
-      .pipe(
-        mergeMap(value => this.authService.refreshTokenSilent().pipe(
-          catchError(err => {
-            this.router.navigate(['login']);
-            return throwError(err);
-          }))))
-      .subscribe(value => {
-        this.toasterService.success('Your profile has been updated');
-        this.isSaveInProcess = false;
-      }, () => {
-        this.isSaveInProcess = false;
-      });
+        const accountData = {
+          ...this.dynamicForm.customForm.value,
+          type: this.myProfile.type,
+        };
+        this.userService.updateUserAccount(accountData)
+          .pipe(
+            mergeMap(value => this.authService.refreshTokenSilent().pipe(
+              catchError(err => {
+                this.router.navigate(['login']);
+                return throwError(err);
+              }))))
+          .subscribe(value => {
+            this.toasterService.success('Your profile has been updated');
+            this.isSaveInProcess = false;
+          }, () => {
+            this.isSaveInProcess = false;
+          });
+      } else {
+        this.dynamicForm.customForm.markAllAsTouched();
+      }
+    }
   }
 
   private fillFormDefinitionByValue() {

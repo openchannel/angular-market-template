@@ -7,7 +7,7 @@
                     <div class="d-flex flex-row align-items-center">
                         <img src="./assets/img/arrow-left.svg"
                              alt="arrow-icon">
-                        <a routerLink="/app-store" class="font-m font-med pl-1">Back to App Store</a>
+                    <a routerLink="" class="font-m font-med pl-1">Back to App Store</a>
                     </div>
                     <h3 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h3>
                 </div>
@@ -28,8 +28,10 @@
                         <oc-rating class="mb-2" [rating]="app.rating / 100" [reviewCount]="app.reviewCount"
                                    label="reviews" labelClass="font-med" type="single-star"></oc-rating>
                         <div>
-                            <oc-button *ngIf="isDownloadRendered" type="primary" text="Buy Now" class="mr-2"></oc-button>
-                            <oc-button [type]="isDownloadRendered ? 'secondary' : 'primary'" text="Contact" (click)="openContactForm()"></oc-button>
+                            <oc-button *ngIf="isDownloadRendered" type="primary" text="Buy Now" class="mr-2">
+                            </oc-button>
+                            <oc-button [type]="isDownloadRendered ? 'secondary' : 'primary'" text="Contact"
+                                       (click)="openContactForm()"></oc-button>
                         </div>
                     </div>
                 </div>
