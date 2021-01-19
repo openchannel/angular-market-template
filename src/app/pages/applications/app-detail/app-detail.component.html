@@ -7,9 +7,9 @@
                     <div class="d-flex flex-row align-items-center">
                         <img src="./assets/img/arrow-left.svg"
                              alt="arrow-icon">
-                    <a routerLink="/app/store" class="font-m font-med pl-1">Back to App Store</a>
+                    <a routerLink="" class="font-m font-med pl-1">Back to App Store</a>
                     </div>
-                    <h3 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h3>
+                    <h1 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h1>
                 </div>
                 <div *ngIf="isDeveloperPreviewPage">
                     <oc-button type="secondary" (click)="closeWindow()" [customTemplate]="closePreviewButton"></oc-button>
@@ -22,14 +22,16 @@
                              alt="app-icon">
                     </div>
                     <div class="col-md-6 d-flex flex-column">
-                        <h4 class="mb-2">{{ app.name }}</h4>
+                        <h1 class="mb-2">{{ app.name }}</h1>
                         <a href="#" class="font-med" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
                         <p class="text-secondary mt-2">{{ app.summary }}</p>
                         <oc-rating class="mb-2" [rating]="app.rating / 100" [reviewCount]="app.reviewCount"
                                    label="reviews" labelClass="font-med" type="single-star"></oc-rating>
                         <div>
-                            <oc-button *ngIf="isDownloadRendered" type="primary" text="Buy Now" class="mr-2"></oc-button>
-                            <oc-button [type]="isDownloadRendered ? 'secondary' : 'primary'" text="Contact" (click)="openContactForm()"></oc-button>
+                            <oc-button *ngIf="isDownloadRendered" type="primary" text="Buy Now" class="mr-2">
+                            </oc-button>
+                            <oc-button [type]="isDownloadRendered ? 'secondary' : 'primary'" text="Contact"
+                                       (click)="openContactForm()"></oc-button>
                         </div>
                     </div>
                 </div>

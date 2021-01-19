@@ -12,10 +12,12 @@ import {HttpConfigInterceptor} from '@core/interceptors/httpconfig.interceptor';
 import {LoaderComponent} from '@shared/components/loader/loader.component';
 import {environment} from '@env';
 import { SharedModule } from '@shared/shared.module';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    HomeComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
