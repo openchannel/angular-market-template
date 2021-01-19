@@ -3,7 +3,7 @@
         <div>
             <img src="assets/img/arrow-left.svg" alt="arrow-icon">
             <a (click)="goBack()" class="font-m font-med pl-1 cursor-pointer link">Back</a>
-            <h3 class="page-title">{{selectedPage?.pageTitle}}</h3>
+            <h3 class="page-title page-title-size">{{selectedPage?.pageTitle}}</h3>
         </div>
         <div class="button-container">
             <oc-button *ngIf="selectedPage?.pageId === pages[1].pageId"
