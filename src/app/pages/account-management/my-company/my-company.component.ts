@@ -21,12 +21,12 @@ export class MyCompanyComponent implements OnInit {
 
   pages: Page[] = [{
     pageId: 'company',
-    pageTitle: 'My Company',
+    pageTitle: 'My company',
     placeholder: 'Company details',
     showByTypes: ['ADMIN', 'GENERAL'],
   }, {
     pageId: 'profile',
-    pageTitle: 'My Company',
+    pageTitle: 'My company',
     placeholder: 'User management',
     showByTypes: ['*'],
   }];

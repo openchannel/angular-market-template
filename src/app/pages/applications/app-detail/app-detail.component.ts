@@ -7,7 +7,7 @@ import {
   OCReviewDetails,
   OverallRatingSummary,
   FrontendService,
-  DropdownModel, AppVersionService, AppFormService, AppFormModel,
+  DropdownModel, AppVersionService, AppFormService, AppFormModel, TitleService,
 } from 'oc-ng-common-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
@@ -59,7 +59,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
               private router: Router,
               private modalService: NgbModal,
               private formService: AppFormService,
-              private toaster: ToastrService) { }
+              private toaster: ToastrService,
+              private titleService: TitleService) { }
 
   ngOnInit(): void {
     const appId = this.route.snapshot.paramMap.get('appId');
@@ -141,7 +142,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     return appData.pipe(takeUntil(this.destroy$),
           map(app => new FullAppData(app, pageConfig.fieldMappings)),
-          tap(app => this.app = app));
+          tap(app => {
+            this.titleService.setSubtitle(app.name);
+             return this.app = app;
+          }));
   }
 
   private countRating(): void {
