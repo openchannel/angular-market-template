@@ -33,7 +33,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           return this.handle401Error(request, next);
         } else if (response.error && response.error['validation-errors']) {
           this.handleValidationError(response.error['validation-errors']);
-        } else if (response?.error?.errors?.size >= 1 && response?.error?.errors[0]?.field) {
+        } else if (response?.error?.errors?.length >= 1 && response?.error?.errors[0]?.field) {
           this.handleValidationError(response.error.errors);
         } else {
           this.handleError(response);
