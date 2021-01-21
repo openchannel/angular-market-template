@@ -14,6 +14,8 @@ import {environment} from '@env';
 import { SharedModule } from '@shared/shared.module';
 import { HomeComponent } from './home/home.component';
 import {HttpErrorInterceptor} from '@core/interceptors/httperror.interceptor';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import {HttpErrorInterceptor} from '@core/interceptors/httperror.interceptor';
     ToastrModule.forRoot(),
     OAuthModule.forRoot(),
     CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl}),
-    SharedModule
+    SharedModule,
+    LoadingBarRouterModule,
+    LoadingBarModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
