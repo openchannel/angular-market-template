@@ -41,9 +41,6 @@ export class ManagementComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject();
   private loader: LoadingBarState;
 
-  private readonly loaderInvites = 'loaderInvites';
-  private readonly loaderUsers = 'loaderUsers';
-
   constructor(private loadingBar: LoadingBarService,
               private userService: UsersService,
               private inviteUserService: InviteUserService,
