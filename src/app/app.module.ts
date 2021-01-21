@@ -36,7 +36,6 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
     OAuthModule.forRoot(),
     CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl}),
     SharedModule,
-    LoadingBarRouterModule,
     LoadingBarModule
   ],
   providers: [
