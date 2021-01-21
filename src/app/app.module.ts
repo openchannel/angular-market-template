@@ -13,6 +13,7 @@ import {LoaderComponent} from '@shared/components/loader/loader.component';
 import {environment} from '@env';
 import { SharedModule } from '@shared/shared.module';
 import { HomeComponent } from './home/home.component';
+import {HttpErrorInterceptor} from '@core/interceptors/httperror.interceptor';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { HomeComponent } from './home/home.component';
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
   entryComponents: [

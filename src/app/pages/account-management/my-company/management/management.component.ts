@@ -202,7 +202,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         () => this.inviteUserService.deleteUserInvite(user?.inviteId).subscribe(() => {
           this.deleteUserFromResultArray(user);
           this.toaster.success('Invite has been deleted');
-        }, error => console.error('deleteDeveloperInvite', error)));
+        }));
   }
 
   deleteAccount(user: UserAccountGridModel): void {
@@ -211,7 +211,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         .subscribe(() => {
           this.deleteUserFromResultArray(user);
           this.toaster.success('User has been deleted from your organization');
-        }, error => console.error('deleteuserAccount', error))
+        })
     );
   }
 
@@ -236,7 +236,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
       console.error('Not implement edit type : ', user?.inviteStatus);
     }
   }
-  
+
   private editUserAccount(userAccount: UserAccount) {
     const modalRef = this.modal.open(InviteUserModalComponent);
     modalRef.componentInstance.modalTitle = 'Edit user details';

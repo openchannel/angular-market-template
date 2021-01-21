@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 }).then(() => {
                     this.loaderService.closeLoader('getAuthConfig');
                 });
-            }, err => console.error('getAuthConfig', err),
+            }, err => {},
             () => this.loaderService.closeLoader('getAuthConfig'));
     }
 

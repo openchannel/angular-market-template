@@ -89,7 +89,6 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
         }, error => {
           this.toastService.error('Sorry! Can\'t update a company data. Please, try again later');
           this.savingCompanyData = false;
-          console.error('updateUserCompany', error);
         }));
     }
   }
