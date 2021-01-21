@@ -9,12 +9,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {OAuthModule} from 'angular-oauth2-oidc';
 import {ToastrModule} from 'ngx-toastr';
 import {HttpConfigInterceptor} from '@core/interceptors/httpconfig.interceptor';
-import {LoaderComponent} from '@shared/components/loader/loader.component';
 import {environment} from '@env';
 import { SharedModule } from '@shared/shared.module';
 import { HomeComponent } from './home/home.component';
 import {HttpErrorInterceptor} from '@core/interceptors/httperror.interceptor';
-import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 
 @NgModule({
@@ -43,9 +41,7 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
     {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
-  entryComponents: [
-    LoaderComponent,
-  ],
+  entryComponents: [],
 })
 export class AppModule {
 
