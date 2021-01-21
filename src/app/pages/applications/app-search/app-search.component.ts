@@ -4,7 +4,6 @@ import { debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap } fro
 import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
-import { LoaderService } from '@core/services/loader.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 
@@ -30,7 +29,6 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   constructor(private appService: AppsService,
               private frontendService: FrontendService,
               private router: ActivatedRoute,
-              private loaderService: LoaderService,
               private loadingBar: LoadingBarService,
               private route: Router) {}
 

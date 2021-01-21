@@ -13,7 +13,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
-import {LoaderService} from '@core/services/loader.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FormModalComponent} from '@shared/modals/form-modal/form-modal.component';
 import {ToastrService} from 'ngx-toastr';
