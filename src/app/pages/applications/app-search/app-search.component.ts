@@ -5,6 +5,8 @@ import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoaderService } from '@core/services/loader.service';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 
 @Component({
   selector: 'app-app-search',
@@ -21,20 +23,24 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   loadFilters$: Observable<Page<Filter>>;
   textChange$: Subject<string> = new Subject();
 
+  loader: LoadingBarState;
+
   private destroy$: Subject<void> = new Subject();
 
   constructor(private appService: AppsService,
               private frontendService: FrontendService,
               private router: ActivatedRoute,
               private loaderService: LoaderService,
+              private loadingBar: LoadingBarService,
               private route: Router) {}
 
   ngOnInit() {
+    this.loader = this.loadingBar.useRef();
     this.searchText = this.router.snapshot.queryParamMap.get('searchText');
     const filterId = this.router.snapshot.queryParamMap.get('filterId');
     const filterValueId = this.router.snapshot.queryParamMap.get('valueId');
 
-    this.loaderService.showLoader('1');
+    this.loader.start();
 
     this.loadFilters$ = this.frontendService.getFilters()
         .pipe(takeUntil(this.destroy$));
@@ -52,7 +58,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             });
           }
 
-          this.loaderService.closeLoader('1');
+          this.loader.complete();
 
           if (this.searchText) {
             this.getData();
@@ -76,12 +82,13 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             mergeMap((value: string) => this.searchAppObservable(value, this.getFilterQuery())))
-        .subscribe((data: Page<FullAppData>) => this.loaderService.closeLoader('2'),
-            error => this.loaderService.closeLoader('2'));
+        .subscribe((data: Page<FullAppData>) => this.loader.complete(),
+            error =>  this.loader.complete());
   }
 
   searchAppObservable(text: string, sort: string): Observable<Page<FullAppData>> {
-    this.loaderService.showLoader('2');
+    this.loader.start();
+
     return this.appService.searchApp(text, sort)
         .pipe(takeUntil(this.destroy$),
               map((data: Page<FullAppData>) => {
@@ -93,15 +100,15 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   getData(): void {
     this.searchAppObservable(this.searchText, this.getFilterQuery())
-        .subscribe(() => this.loaderService.closeLoader('2'),
-            error => this.loaderService.closeLoader('2'));
+        .subscribe(() => this.loader.complete(),
+            error => this.loader.complete());
   }
 
   getSortedData(filterId: string, valueId: string) {
     let filter: string;
     let sort: string;
 
-    this.loaderService.showLoader('sortedApps');
+    this.loader.start();
 
     pageConfig.appListPage.forEach(list => {
       if (list.valueId === valueId && list.filterId === filterId) {
@@ -116,8 +123,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
           return data;
         }),
         tap((data: Page<FullAppData>) => this.appPage = data))
-      .subscribe(() => this.loaderService.closeLoader('sortedApps'),
-        () => this.loaderService.closeLoader('sortedApps'));
+      .subscribe(() => this.loader.complete(),
+        () => this.loader.complete());
   }
 
   onFilterChange() {
