@@ -12,14 +12,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {NotificationComponent} from './components/notification/notification.component';
-import {InviteUserModalComponent} from '@shared/modals/invite-user-modal/invite-user-modal.component';
 
 @NgModule({
   declarations: [
     LoaderComponent,
     FormModalComponent,
     ConfirmationModalComponent,
-    InviteUserModalComponent,
     AddFieldModalComponent,
     FieldPreviewModalComponent,
     FieldOptionsComponent,

@@ -18,7 +18,7 @@ export class AppComponent {
 
   csrfInited = false;
 
-  constructor(private router: Router,
+  constructor(public router: Router,
               private initService: InitService,
               private titleService: TitleService) {
 
