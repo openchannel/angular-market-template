@@ -8,7 +8,6 @@ import {catchError, filter, switchMap, take} from 'rxjs/operators';
 import {AuthenticationService, AuthHolderService, LoginResponse} from 'oc-ng-common-service';
 import {ToastrService} from 'ngx-toastr';
 import {HttpConfigInterceptor} from './httpconfig.interceptor';
-import {LoaderService} from '@core/services/loader.service';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -16,8 +15,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
-  constructor(private loaderService: LoaderService,
-              private router: Router,
+  constructor(private router: Router,
               private errorService: OcErrorService,
               private authHolderService: AuthHolderService,
               private authenticationService: AuthenticationService,
@@ -27,8 +25,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request)
       .pipe(catchError((response: HttpErrorResponse) => {
-        this.loaderService.closeLoader(response.url);
-
         if (response instanceof HttpErrorResponse && response.status === 401) {
           return this.handle401Error(request, next);
         } else if (response.error && response.error['validation-errors']) {

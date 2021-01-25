@@ -1,4 +1,3 @@
-import { LoaderService } from '@core/services/loader.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AuthHolderService,
@@ -9,6 +8,8 @@ import {
 } from 'oc-ng-common-service';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 
 @Component({
   selector: 'app-company-details',
@@ -34,24 +35,25 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   }];
   private companyData: UserCompanyModel;
   private subscriptions: Subscription = new Subscription();
+  private loader: LoadingBarState;
 
-  constructor(private loader: LoaderService,
+  constructor(private loadingBar: LoadingBarService,
               private toastService: ToastrService,
               private authHolderService: AuthHolderService,
               private userAccountService: UserAccountService,
               private usersService: UsersService) { }
 
   ngOnInit(): void {
-    this.loader.showLoader('companyData');
+    this.loader = this.loadingBar.useRef();
     this.getCompanyDataFields();
   }
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.loader.closeLoader('companyData');
   }
 
   getCompanyDataFields() {
+    this.loader.start();
     this.subscriptions.add(this.usersService.getUserCompany().subscribe(
       company => {
         this.companyData = company;
@@ -66,6 +68,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
           this.createFormFields(this.defaultDeveloperTypeFields);
         }
       }, () => {
+        this.loader.complete();
         this.toastService.error('Sorry! Can\'t load company details. Please, reload the page');
       }
     ));
@@ -97,7 +100,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     this.typeFields = {
       fields: this.mapTypeFields(this.companyData, fields)
     };
-    this.loader.closeLoader('companyData');
+    this.loader.complete();
   }
 
   private mapTypeFields(company: UserCompanyModel, fields: DeveloperTypeFieldModel[]): DeveloperTypeFieldModel [] {

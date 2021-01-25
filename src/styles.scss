@@ -255,6 +255,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   padding: 20px 0 16px;
 }
 
+.custom-loader {
+  .ngx-bar {
+    background-color: $primary !important;
+  }
+}
+
 // modals - start
 @media (min-width: 730px) {
   .modal-dialog {

@@ -12,7 +12,8 @@ import { OcFormComponent } from 'oc-ng-common-component';
 import { catchError, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { LoaderService } from '@core/services/loader.service';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 
 @Component({
   selector: 'app-general-profile',
@@ -42,10 +43,11 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
   };
 
   private subscriber: Subscription = new Subscription();
+  private loader: LoadingBarState;
 
   constructor(private userService: UserAccountService,
               private commonService: CommonService,
-              private loaderService: LoaderService,
+              private loadingBar: LoadingBarService,
               private userAccountTypeService: UserAccountTypesService,
               private authService: AuthenticationService,
               private router: Router,
@@ -53,16 +55,16 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loader = this.loadingBar.useRef();
     this.getMyProfileDetails();
   }
 
   ngOnDestroy() {
     this.subscriber.unsubscribe();
-    this.loaderService.closeLoader('myProfile');
   }
 
   getMyProfileDetails() {
-    this.loaderService.showLoader('myProfile');
+    this.loader.start();
 
     this.subscriber.add(this.userService.getUserAccount().subscribe(
       account => {
@@ -75,14 +77,14 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
             }, () => {
               this.formDefinition = this.defaultFormDefinition;
               this.fillFormDefinitionByValue();
-              this.loaderService.closeLoader('myProfile');
+              this.loader.complete();
             }));
         } else {
           this.formDefinition = this.defaultFormDefinition;
           this.fillFormDefinitionByValue();
         }
-      }
-    ));
+      }, () => this.loader.complete())
+    );
   }
 
 
@@ -118,6 +120,6 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
     for (const field of this.formDefinition.fields) {
       field.defaultValue = this.myProfile[field.id];
     }
-    this.loaderService.closeLoader('myProfile');
+    this.loader.complete();
   }
 }

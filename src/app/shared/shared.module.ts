@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {OcCommonLibModule, OcFormComponent} from 'oc-ng-common-component';
-import {LoaderComponent} from './components/loader/loader.component';
+import {OcCommonLibModule} from 'oc-ng-common-component';
 import {FormModalComponent} from './modals/form-modal/form-modal.component';
 import {ConfirmationModalComponent} from './modals/confirmation-modal/confirmation-modal.component';
 import {AddFieldModalComponent} from './modals/add-field-modal/add-field-modal.component';
@@ -15,7 +14,6 @@ import {NotificationComponent} from './components/notification/notification.comp
 
 @NgModule({
   declarations: [
-    LoaderComponent,
     FormModalComponent,
     ConfirmationModalComponent,
     AddFieldModalComponent,
@@ -34,7 +32,6 @@ import {NotificationComponent} from './components/notification/notification.comp
   ],
   exports: [
     OcCommonLibModule,
-    LoaderComponent,
     NotificationComponent,
     CamelCaseToNormalPipe,
     FormsModule

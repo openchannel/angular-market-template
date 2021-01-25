@@ -12,9 +12,10 @@ import {
 import {Subject, Subscription} from 'rxjs';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService} from 'ngx-toastr';
-import {LoaderService} from '@core/services/loader.service';
 import {ConfirmationModalComponent} from '@shared/modals/confirmation-modal/confirmation-modal.component';
 import {OcInviteModalComponent} from 'oc-ng-common-component';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 
 @Component({
   selector: 'app-management',
@@ -38,11 +39,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
   private sortQuery = '{"name": 1}';
 
   private destroy$: Subject<void> = new Subject();
+  private loader: LoadingBarState;
 
-  private readonly loaderInvites = 'loaderInvites';
-  private readonly loaderUsers = 'loaderUsers';
-
-  constructor(public loaderService: LoaderService,
+  constructor(private loadingBar: LoadingBarService,
               private userService: UsersService,
               private inviteUserService: InviteUserService,
               private userAccountService: UserAccountService,
@@ -52,6 +51,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loader = this.loadingBar.useRef();
     this.scroll(1);
   }
 
@@ -88,21 +88,21 @@ export class ManagementComponent implements OnInit, OnDestroy {
   }
 
   private getAllUsers(responseCallBack: () => void) {
-    this.loaderService.showLoader(this.loaderInvites);
+    this.loader.start();
     this.subscriptions.add(
         this.inviteUserService.getUserInvites(this.userProperties.data.pageNumber, 10, this.sortQuery)
         .subscribe(invites => {
-          this.loaderService.closeLoader(this.loaderInvites);
+          this.loader.complete();
           this.getActiveUsers(invites.list.map(userInvite => this.mapToGridUserFromInvite(userInvite)), responseCallBack);
         }, () => {
-          this.loaderService.closeLoader(this.loaderInvites);
+          this.loader.complete();
           this.getActiveUsers([], responseCallBack);
         })
     );
   }
 
   private getActiveUsers(invites: UserAccountGridModel[], responseCallBack: () => void) {
-    this.loaderService.showLoader(this.loaderUsers);
+    this.loader.start();
     this.subscriptions.add(this.userAccountService.getUserAccounts(this.userProperties.data.pageNumber, 10, this.sortQuery)
         .subscribe(activeUsers => {
           responseCallBack();
@@ -122,10 +122,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
           // push new users
           this.userProperties.data.list.push(...activeUsers.list.map(user => this.mapToGridUserFromUser(user)));
-          this.loaderService.closeLoader(this.loaderUsers);
+          this.loader.complete();
         }, (error) => {
           responseCallBack();
-          this.loaderService.closeLoader(this.loaderUsers);
+          this.loader.complete();
         })
     );
   }

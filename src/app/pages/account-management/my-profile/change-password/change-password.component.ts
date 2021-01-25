@@ -6,6 +6,8 @@ import {
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 
 @Component({
   selector: 'app-change-password',
@@ -18,11 +20,16 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   changePassModel: ChangePasswordRequest = {password: '', newPassword: ''};
 
   private subscriber: Subscription = new Subscription();
+  private loader: LoadingBarState;
 
   constructor(private toasterService: ToastrService,
-              private usersService: UsersService) { }
+              private usersService: UsersService,
+              private loadingBar: LoadingBarService) { }
 
   ngOnInit(): void {
+    this.loader = this.loadingBar.useRef();
+    this.loader.start();
+    this.loader.complete();
   }
 
   ngOnDestroy() {
