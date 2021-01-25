@@ -8,12 +8,11 @@
     </div>
     <div class="row" *ngIf="loadFilters$ | async">
         <div class="col-md-3 filter__container">
-            <oc-select-expandable *ngFor="let filter of filters"
+            <oc-sidebar *ngFor="let filter of filters"
                                   class="mb-1"
-                                  [collapsedOnInit]="!hasCheckedValue(filter)"
                                   (selectModelsChange)="onFilterChange()"
                                   [title]="filter.name"
-                                  [(selectModels)]="filter.values"></oc-select-expandable>
+                                  [sidebarModel]="filter.values"></oc-sidebar>
         </div>
         <div class="col-md-9">
             <oc-text-search [(searchText)]="searchText" (searchTextChange)="onTextChange($event)"></oc-text-search>
