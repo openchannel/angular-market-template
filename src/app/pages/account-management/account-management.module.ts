@@ -21,7 +21,7 @@ import { CompanyDetailsComponent } from './my-company/company-details/company-de
     MyAppsComponent,
     ManagementComponent,
     MyCompanyComponent,
-    CompanyDetailsComponent
+    CompanyDetailsComponent,
   ],
   imports: [
     CommonModule,
