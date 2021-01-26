@@ -13,7 +13,8 @@ import {Subject} from 'rxjs';
 import {OAuthService} from 'angular-oauth2-oidc';
 import {JwksValidationHandler} from 'angular-oauth2-oidc-jwks';
 import {ToastrService} from 'ngx-toastr';
-import {LoaderService} from '@core/services/loader.service';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 
 @Component({
     selector: 'app-login',
@@ -32,8 +33,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     loginType: string;
 
     private destroy$: Subject<void> = new Subject();
+    private loader: LoadingBarState;
 
-    constructor(public loaderService: LoaderService,
+    constructor(public loadingBar: LoadingBarService,
                 private router: Router,
                 private awsAuthService: AwsAuthService,
                 private authHolderService: AuthHolderService,
@@ -44,6 +46,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+      this.loader = this.loadingBar.useRef();
         if (this.authHolderService.isLoggedInUser()) {
             this.router.navigate(['']);
         }
@@ -52,7 +55,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.oauthService.logOut();
         }
 
-        this.loaderService.showLoader('getAuthConfig');
+        this.loader.start();
 
         this.openIdAuthService.getAuthConfig()
           .pipe(
@@ -69,19 +72,19 @@ export class LoginComponent implements OnInit, OnDestroy {
                 this.oauthService.tokenValidationHandler = new JwksValidationHandler();
                 this.oauthService.loadDiscoveryDocumentAndLogin({
                     onTokenReceived: receivedTokens => {
-                        this.loaderService.showLoader('internalLogin');
+                        this.loader.start();
                         this.openIdAuthService.login(new LoginRequest(receivedTokens.idToken, receivedTokens.accessToken))
                           .pipe(takeUntil(this.destroy$))
                           .subscribe((response: LoginResponse) => {
                               this.processLoginResponse(response);
-                              this.loaderService.closeLoader('internalLogin');
+                              this.loader.complete();
                           });
                     },
                 }).then(() => {
-                    this.loaderService.closeLoader('getAuthConfig');
+                    this.loader.complete();
                 });
-            }, err => console.error('getAuthConfig', err),
-            () => this.loaderService.closeLoader('getAuthConfig'));
+            }, err => {},
+            () => this.loader.complete());
     }
 
     ngOnDestroy(): void {
