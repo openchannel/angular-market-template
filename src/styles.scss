@@ -248,3 +248,32 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .header-padding {
   padding: 20px 0 16px;
 }
+
+.custom-loader {
+  .ngx-bar {
+    background-color: $primary !important;
+  }
+}
+
+// modals - start
+@media (min-width: 730px) {
+  .modal-dialog {
+    max-width: 750px;
+  }
+}
+
+.modal-sm {
+  max-width: 410px;
+  margin-top: 145px;
+  @include media-breakpoint-sm() {
+    max-width: 100%;
+  }
+}
+.modal-backdrop {
+  background-color: #717486;
+}
+
+.modal-content {
+  border: none;
+}
+// modals - end

@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {AppsService, AuthHolderService, DropdownModel, FrontendService, FullAppData} from 'oc-ng-common-service';
+import {AppsService, DropdownModel, FrontendService, FullAppData} from 'oc-ng-common-service';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {pageConfig} from '../../../../assets/data/configData';
-import {LoaderService} from '@core/services/loader.service';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 
 @Component({
   selector: 'app-my-apps',
@@ -19,13 +20,15 @@ export class MyAppsComponent implements OnInit, OnDestroy {
   private pageNumber = 1;
   private destroy$ = new Subject();
 
+  private loader: LoadingBarState;
+
   constructor(private appsService: AppsService,
               private frontendService: FrontendService,
-              private loaderService: LoaderService,
-              private authHolderService: AuthHolderService) { }
+              private loadingBar: LoadingBarService) { }
 
   ngOnInit(): void {
-    this.loaderService.showLoader('sorts');
+    this.loader = this.loadingBar.useRef();
+    this.loader.start();
 
     this.frontendService.getSorts()
       .pipe(takeUntil(this.destroy$))
@@ -38,15 +41,13 @@ export class MyAppsComponent implements OnInit, OnDestroy {
 
         this.loadApps();
       },
-        error => this.loaderService.closeLoader('sorts'),
-        () => this.loaderService.closeLoader('sorts'));
+        error => this.loader.complete(),
+        () => this.loader.complete());
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-    this.loaderService.closeLoader('sorts');
-    this.loaderService.closeLoader('apps');
   }
 
   private loadApps() {
@@ -56,8 +57,8 @@ export class MyAppsComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.appList = [...this.appList, ...res.list.map(app => new FullAppData(app, pageConfig.fieldMappings))];
       },
-        error => this.loaderService.closeLoader('apps'),
-        () => this.loaderService.closeLoader('apps'));
+        error => this.loader.complete(),
+        () => this.loader.complete());
   }
 
   onSortChange(selected: DropdownModel<string>) {

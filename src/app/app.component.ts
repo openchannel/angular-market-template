@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { InitService, TitleService } from "oc-ng-common-service";
-import {first} from "rxjs/operators";
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {AuthenticationService, TitleService} from 'oc-ng-common-service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -13,20 +13,19 @@ import {first} from "rxjs/operators";
   }
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'template3-marketsite';
 
   csrfInited = false;
 
-  constructor(private router: Router,
-              private initService: InitService,
+  constructor(public router: Router,
+              private authenticationService: AuthenticationService,
               private titleService: TitleService) {
-
   }
 
-  // temporary clearing sesson storage on application load, we might need to do auto login.
+  // temporary clearing session storage on application load, we might need to do auto login.
   ngOnInit() {
-    this.initService.initCsrf()
+    this.authenticationService.initCsrf()
         .pipe(first())
         .subscribe(value => {
           console.log('csrf inited!');
