@@ -4,6 +4,8 @@ import { FilterValue } from '@core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { pageConfig } from '../../assets/data/configData';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 
 @Component({
   selector: 'app-home',
@@ -20,13 +22,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   public homePageConfig;
   public categoriesData: FilterValue [] = [];
 
+  public loader: LoadingBarState;
+
   private subscriber: Subscription = new Subscription();
 
   constructor(private appService: AppsService,
               private router: Router,
-              private frontendService: FrontendService) { }
+              private frontendService: FrontendService,
+              private loadingBar: LoadingBarService) { }
 
   ngOnInit(): void {
+    this.loader = this.loadingBar.useRef();
     this.getPageConfig();
   }
 
@@ -46,6 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.homePageConfig && this.homePageConfig.appListPage && this.homePageConfig.appListPage.length > 0) {
       const featureConfig = this.homePageConfig.appListPage.find(filer => filer.type.includes('featured-apps'));
       if(featureConfig) {
+        this.loader.start();
         this.subscriber.add(
           this.appService.getApps(1, 6, featureConfig.sort, featureConfig.filter)
             .subscribe(res => {
@@ -53,7 +60,8 @@ export class HomeComponent implements OnInit, OnDestroy {
               if (this.featuredApp && this.featuredApp.length > 0) {
                 this.isFeatured = true;
               }
-            })
+              this.loader.complete();
+            }, () => this.loader.complete())
         );
       }
     }
@@ -64,11 +72,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.homePageConfig.appListPage.forEach(element => {
       if (element.type !== 'featured-apps' && element.type !== 'search' &&
         element.type !== 'filter-values-card-list') {
+        this.loader.start();
         this.subscriber.add(
           this.appService.getApps(1, 6, element.sort, element.filter)
             .subscribe(res => {
               element.data = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
-            })
+              this.loader.complete();
+            }, () => this.loader.complete())
         );
       }
     });
@@ -109,6 +119,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const categoryProps = pageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
     let categoryIndex = 0;
     if(categoryProps) {
+      this.loader.start();
       this.subscriber.add(
         this.frontendService.getFilters().subscribe(result => {
           this.categoriesData = [...result.list.find(filter => filter.id === categoryProps.filterId).values];
@@ -129,7 +140,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.categories.push(category);
             categoryIndex++;
           })
-        })
+          this.loader.complete();
+        }, () => this.loader.complete())
       );
     }
   }

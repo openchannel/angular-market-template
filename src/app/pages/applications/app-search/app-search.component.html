@@ -1,4 +1,3 @@
-<app-loader #loader></app-loader>
 <div class="container">
     <div class="row">
         <div class="col-md-12 py-4">
@@ -9,19 +8,17 @@
     </div>
     <div class="row" *ngIf="loadFilters$ | async">
         <div class="col-md-3 filter__container">
-            <oc-select-expandable *ngFor="let filter of filters"
+            <oc-sidebar *ngFor="let filter of filters"
                                   class="mb-1"
-                                  [collapsedOnInit]="!hasCheckedValue(filter)"
                                   (selectModelsChange)="onFilterChange()"
                                   [title]="filter.name"
-                                  [(selectModels)]="filter.values"></oc-select-expandable>
+                                  [sidebarModel]="filter.values"></oc-sidebar>
         </div>
         <div class="col-md-9">
             <oc-text-search [(searchText)]="searchText" (searchTextChange)="onTextChange($event)"></oc-text-search>
             <div class="result">
-                <div class="font-l result__label">
-                    {{ appPage ? appPage.count : 0}} results{{selectedFilterLabels.length > 0 ? ' for "' + selectedFilterLabels.join(', ') + '"' : ''}}
-                </div>
+                <oc-tag-element *ngFor="let filter of selectedFilterLabels"
+                                [title]="filter" [closeMarker]="true"></oc-tag-element>
             </div>
             <oc-app-list-grid [appList]="appPage?.list"
                               (gotoDetails)="goToAppDetails($event)"

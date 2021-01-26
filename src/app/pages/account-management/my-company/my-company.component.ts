@@ -2,8 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService} from 'ngx-toastr';
-import {AuthHolderService} from 'oc-ng-common-service';
-import {InviteUserModalComponent} from '@shared/modals/invite-user-modal/invite-user-modal.component';
+import {
+  AuthHolderService, InviteUserService,
+  ModalInviteUserModel,
+  UserAccountTypesService
+} from 'oc-ng-common-service';
+import {OcInviteModalComponent} from 'oc-ng-common-component';
+import {map} from 'rxjs/operators';
 
 export interface Page {
   pageId: string;
@@ -21,12 +26,12 @@ export class MyCompanyComponent implements OnInit {
 
   pages: Page[] = [{
     pageId: 'company',
-    pageTitle: 'My Company',
+    pageTitle: 'My company',
     placeholder: 'Company details',
     showByTypes: ['ADMIN', 'GENERAL'],
   }, {
     pageId: 'profile',
-    pageTitle: 'My Company',
+    pageTitle: 'My company',
     placeholder: 'User management',
     showByTypes: ['*'],
   }];
@@ -40,7 +45,9 @@ export class MyCompanyComponent implements OnInit {
       private activatedRoute: ActivatedRoute,
       private modal: NgbModal,
       private toaster: ToastrService,
-      private authHolderService: AuthHolderService) {
+      private authHolderService: AuthHolderService,
+      private userAccountTypesService: UserAccountTypesService,
+      private inviteService: InviteUserService) {
   }
 
   ngOnInit(): void {
@@ -74,11 +81,29 @@ export class MyCompanyComponent implements OnInit {
   }
 
   openInviteModal() {
-    const modalRef = this.modal.open(InviteUserModalComponent);
-    modalRef.componentInstance.userId = this.authHolderService.userDetails.organizationId;
+
+    const inviteTemplateId = '5fc663f2217876017548dc25';
+
+    const modalRef = this.modal.open(OcInviteModalComponent, {size: 'sm'});
+    modalRef.componentInstance.ngbModalRef = modalRef;
+
+    const modalData = new ModalInviteUserModel();
+    modalData.modalTitle = 'Invite a member';
+    modalData.successButtonText = 'Save';
+
+    modalData.requestFindUserTypes = () => {
+      return this.userAccountTypesService.getUserAccountTypes(1, 100);
+    };
+
+    modalData.requestSendInvite = (accountData: any) => {
+      return this.inviteService.sendUserInvite(inviteTemplateId, null, accountData);
+    };
+
+    modalRef.componentInstance.modalData = modalData;
+
     modalRef.result.then(result => {
-      if (result.status === 'success') {
-        this.toaster.success('Invitation sent to ' + result.userData.email);
+      if (result) {
+        this.toaster.success('Invitation sent');
       }
     });
   }

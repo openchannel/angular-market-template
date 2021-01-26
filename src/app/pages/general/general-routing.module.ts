@@ -9,13 +9,13 @@ import {ResendActivationComponent} from './resend-activation/resend-activation.c
 import {InvitedSignupComponent} from './invited-signup/invited-signup.component';
 
 const routes: Routes = [
-  {path: 'signup', component: SignupComponent},
-  {path: 'activate', component: ActivationComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'reset-password', component: ResetPasswordComponent},
-  {path: 'forgot-password', component: ForgotPasswordComponent},
+  {path: 'signup', component: SignupComponent, data: {title: 'Signup'}},
+  {path: 'activate', component: ActivationComponent, data: {title: 'Activate account'}},
+  {path: 'login', component: LoginComponent, data: {title: 'Login'}},
+  {path: 'reset-password', component: ResetPasswordComponent, data: {title: 'Reset password'}},
+  {path: 'forgot-password', component: ForgotPasswordComponent, data: {title: 'Forgot password'}},
   {path: 'resend-activation', component: ResendActivationComponent, data: {title: 'Resend activation'}},
-  {path: 'invite/:token', component: InvitedSignupComponent},
+  {path: 'invite/:token', component: InvitedSignupComponent, data: {title: 'Signup'}},
 ];
 
 @NgModule({
