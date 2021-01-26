@@ -17,9 +17,8 @@
         <div class="col-md-9">
             <oc-text-search [(searchText)]="searchText" (searchTextChange)="onTextChange($event)"></oc-text-search>
             <div class="result">
-                <div class="font-l result__label">
-                    {{ appPage ? appPage.count : 0}} results{{selectedFilterLabels.length > 0 ? ' for "' + selectedFilterLabels.join(', ') + '"' : ''}}
-                </div>
+                <oc-tag-element *ngFor="let filter of selectedFilterLabels"
+                                [title]="filter" [closeMarker]="true"></oc-tag-element>
             </div>
             <oc-app-list-grid [appList]="appPage?.list"
                               (gotoDetails)="goToAppDetails($event)"

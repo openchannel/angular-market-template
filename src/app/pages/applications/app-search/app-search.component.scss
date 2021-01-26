@@ -1,8 +1,12 @@
 .result {
-  margin: 35px 0 24px 0;
+  margin: 18px 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  flex-wrap: wrap;
+  oc-tag-element {
+    margin: 0 8px 8px 0;
+  }
 }
 
 .filter__container {

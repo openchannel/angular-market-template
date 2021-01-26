@@ -1,13 +1,10 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import {
-  ChangePasswordRequest,
-  UsersService
-} from 'oc-ng-common-service';
-import { Subscription } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-import { NgForm } from '@angular/forms';
-import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
-import { LoadingBarService } from '@ngx-loading-bar/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangePasswordRequest, NativeLoginService} from 'oc-ng-common-service';
+import {Subscription} from 'rxjs';
+import {ToastrService} from 'ngx-toastr';
+import {NgForm} from '@angular/forms';
+import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
+import {LoadingBarService} from '@ngx-loading-bar/core';
 
 @Component({
   selector: 'app-change-password',
@@ -23,7 +20,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   private loader: LoadingBarState;
 
   constructor(private toasterService: ToastrService,
-              private usersService: UsersService,
+              private nativeLoginService: NativeLoginService,
               private loadingBar: LoadingBarService) { }
 
   ngOnInit(): void {
@@ -42,7 +39,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
         form.form.markAllAsTouched();
       } else {
         this.isSaveInProcess = true;
-        this.subscriber.add(this.usersService.changePassword(form.value)
+        this.subscriber.add(this.nativeLoginService.changePassword(form.value)
           .subscribe(() => {
             for (const controlKey of Object.keys(form.form.controls)) {
               const control = form.form.controls[controlKey];

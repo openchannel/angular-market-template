@@ -1,5 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {SellerSignup, UsersService} from 'oc-ng-common-service';
+import {Component, OnDestroy} from '@angular/core';
+import {NativeLoginService, SellerSignup} from 'oc-ng-common-service';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 
 @Component({
@@ -7,7 +9,7 @@ import {SellerSignup, UsersService} from 'oc-ng-common-service';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnDestroy {
 
   loginUrl = '/login';
   companyLogoUrl = './assets/img/logo-company.png';
@@ -20,17 +22,23 @@ export class SignupComponent implements OnInit {
   signupModel: SellerSignup;
   activationUrl = '/activate';
 
-  constructor(private usersService: UsersService) {
+  private destroy$: Subject<void> = new Subject();
+
+  constructor(private nativeLoginService: NativeLoginService) {
      this.signupModel = new SellerSignup();
   }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   signup(event) {
     if (event === true) {
       this.inProcess = true;
-      this.usersService.signup(this.signupModel).subscribe(res => {
+      this.nativeLoginService.signup(this.signupModel)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(res => {
         this.inProcess = false;
         this.showSignupFeedbackPage = true;
       }, res => {
