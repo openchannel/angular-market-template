@@ -3,8 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {
   DeveloperAccountTypesService,
   InviteUserModel,
-  InviteUserService, UserAccountTypesService,
-  UsersService
+  InviteUserService, NativeLoginService, UserAccountTypesService,
+  UsersService,
 } from 'oc-ng-common-service';
 import {Subscription} from 'rxjs';
 import {FormGroup} from '@angular/forms';
@@ -32,7 +32,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
               private router: Router,
               private inviteUserService: InviteUserService,
               private typeService: UserAccountTypesService,
-              private usersService: UsersService) {
+              private nativeLoginService: NativeLoginService) {
   }
 
   ngOnInit(): void {
@@ -146,7 +146,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
     if ((!this.isTerms && this.isFormInvalid) || this.inProcess) {
       this.inProcess = true;
       this.inviteFormData.inviteToken = this.userInviteData.token;
-      this.requestSubscriber.add(this.usersService.signupByInvite({
+      this.requestSubscriber.add(this.nativeLoginService.signupByInvite({
         userCustomData: this.inviteFormData,
         inviteToken: this.userInviteData.token
       }).subscribe(resp => {

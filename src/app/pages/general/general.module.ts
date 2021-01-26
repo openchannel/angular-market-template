@@ -20,7 +20,7 @@ import {InvitedSignupComponent} from './invited-signup/invited-signup.component'
     ResendActivationComponent,
     ResetPasswordComponent,
     ForgotPasswordComponent,
-    InvitedSignupComponent
+    InvitedSignupComponent,
   ],
   imports: [
     CommonModule,
