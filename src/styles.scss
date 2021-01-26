@@ -193,12 +193,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
-.result {
-  &__label{
-    color: $secondary;
-  }
-}
-
 .app-logo {
   @include media-breakpoint-down(xs) {
     img {
