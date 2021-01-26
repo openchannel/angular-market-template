@@ -13,10 +13,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
-import {LoaderService} from '@core/services/loader.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FormModalComponent} from '@shared/modals/form-modal/form-modal.component';
 import {ToastrService} from 'ngx-toastr';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 
 @Component({
   selector: 'app-app-detail',
@@ -50,11 +51,13 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   private appConfigPipe = pageConfig.fieldMappings;
   private contactForm: AppFormModel;
 
+  private loader: LoadingBarState;
+
   constructor(private appService: AppsService,
               private appVersionService: AppVersionService,
               private reviewsService: ReviewsService,
               private frontendService: FrontendService,
-              private loaderService: LoaderService,
+              private loadingBar: LoadingBarService,
               private route: ActivatedRoute,
               private router: Router,
               private modalService: NgbModal,
@@ -63,18 +66,18 @@ export class AppDetailComponent implements OnInit, OnDestroy {
               private titleService: TitleService) { }
 
   ngOnInit(): void {
+    this.loader = this.loadingBar.useRef();
     const appId = this.route.snapshot.paramMap.get('appId');
     const appVersion = this.route.snapshot.paramMap.get('appVersion');
 
-    this.loaderService.showLoader('1');
+    this.loader.start();
 
     this.appData$ = this.getApp(appId, appVersion)
 
     this.appData$.subscribe(app => {
-          this.loaderService.closeLoader('1');
+          this.loader.complete();
           this.loadReviews();
-        },
-                            err => this.loaderService.closeLoader('1'));
+        },err => this.loader.complete());
 
     this.frontendService.getSorts()
         .pipe(takeUntil(this.destroy$))
@@ -97,18 +100,18 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   }
 
   loadReviews(): void {
-    this.loaderService.showLoader('2');
+    this.loader.start();
     this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null,
         this.selectedFilter ? this.selectedFilter.value : null)
         .pipe(takeUntil(this.destroy$),
             tap((page: Page<OCReviewDetails>) => this.reviewsPage = page))
         .subscribe(page => {
-              this.loaderService.closeLoader('2');
+              this.loader.complete();
               if (this.overallRating.rating === 0) {
                 this.countRating();
               }
             },
-            err => this.loaderService.closeLoader('2'));
+            err => this.loader.complete());
   }
 
   onReviewSortChange(selected: DropdownModel<string>): void {
@@ -122,15 +125,15 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   }
 
   getRecommendedApps(): void {
-    this.loaderService.showLoader('3');
+    this.loader.start();
 
     this.appService.getApps(1, 3, '{randomize: 1}', '{\'status.value\':\'approved\'}').pipe(
       takeUntil(this.destroy$))
       .subscribe(apps => {
         this.recommendedApps = apps.list.map(app => new FullAppData(app, this.appConfigPipe));
-        this.loaderService.closeLoader('3');
+        this.loader.complete();
       }, () => {
-        this.loaderService.closeLoader('3');
+        this.loader.complete();
       });
   }
 
@@ -160,7 +163,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     modalRef.result.then(value => {
       if (value) {
-        this.loaderService.showLoader('contactForm');
+        this.loader.start();
         this.formService.createFormSubmission(this.contactForm.formId, {
           appId: this.app.appId,
           name: value.name,
@@ -171,11 +174,11 @@ export class AppDetailComponent implements OnInit, OnDestroy {
           },
         }).pipe(takeUntil(this.destroy$))
         .subscribe(() => {
-              this.loaderService.closeLoader('contactForm');
+              this.loader.complete();
               this.toaster.success('Your message was sent to the Developer');
             },
             () => {
-              this.loaderService.closeLoader('contactForm');
+              this.loader.complete();
               this.toaster.error('Your message wasn\'t sent to the Developer');
             });
       }

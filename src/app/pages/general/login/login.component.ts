@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
-    AuthenticationService,
-    AuthHolderService,
-    AwsAuthService,
-    LoginRequest,
-    LoginResponse,
-    SellerSignin, UsersService,
+  AuthenticationService,
+  AuthHolderService,
+  LoginRequest,
+  LoginResponse,
+  NativeLoginService,
+  SellerSignin,
 } from 'oc-ng-common-service';
 import {Router} from '@angular/router';
 import {filter, takeUntil} from 'rxjs/operators';
@@ -13,7 +13,8 @@ import {Subject} from 'rxjs';
 import {OAuthService} from 'angular-oauth2-oidc';
 import {JwksValidationHandler} from 'angular-oauth2-oidc-jwks';
 import {ToastrService} from 'ngx-toastr';
-import {LoaderService} from '@core/services/loader.service';
+import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
+import {LoadingBarService} from '@ngx-loading-bar/core';
 
 @Component({
     selector: 'app-login',
@@ -32,29 +33,30 @@ export class LoginComponent implements OnInit, OnDestroy {
     loginType: string;
 
     private destroy$: Subject<void> = new Subject();
+    private loader: LoadingBarState;
 
-    constructor(public loaderService: LoaderService,
+    constructor(public loadingBar: LoadingBarService,
                 private router: Router,
-                private awsAuthService: AwsAuthService,
                 private authHolderService: AuthHolderService,
                 private oauthService: OAuthService,
                 private openIdAuthService: AuthenticationService,
-                private usersService: UsersService,
+                private nativeLoginService: NativeLoginService,
                 private toastService: ToastrService) {
     }
 
     ngOnInit(): void {
-        if (this.authHolderService.isLoggedInUser()) {
+      this.loader = this.loadingBar.useRef();
+      if (this.authHolderService.isLoggedInUser()) {
             this.router.navigate(['']);
         }
 
-        if (this.oauthService.hasValidIdToken()) {
+      if (this.oauthService.hasValidIdToken()) {
             this.oauthService.logOut();
         }
 
-        this.loaderService.showLoader('getAuthConfig');
+      this.loader.start();
 
-        this.openIdAuthService.getAuthConfig()
+      this.openIdAuthService.getAuthConfig()
           .pipe(
             takeUntil(this.destroy$),
             filter(value => value))
@@ -69,19 +71,19 @@ export class LoginComponent implements OnInit, OnDestroy {
                 this.oauthService.tokenValidationHandler = new JwksValidationHandler();
                 this.oauthService.loadDiscoveryDocumentAndLogin({
                     onTokenReceived: receivedTokens => {
-                        this.loaderService.showLoader('internalLogin');
+                        this.loader.start();
                         this.openIdAuthService.login(new LoginRequest(receivedTokens.idToken, receivedTokens.accessToken))
                           .pipe(takeUntil(this.destroy$))
                           .subscribe((response: LoginResponse) => {
                               this.processLoginResponse(response);
-                              this.loaderService.closeLoader('internalLogin');
+                              this.loader.complete();
                           });
                     },
                 }).then(() => {
-                    this.loaderService.closeLoader('getAuthConfig');
+                    this.loader.complete();
                 });
             }, err => {},
-            () => this.loaderService.closeLoader('getAuthConfig'));
+            () => this.loader.complete());
     }
 
     ngOnDestroy(): void {
@@ -92,7 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     login(event) {
         if (event === true) {
             this.inProcess = true;
-            this.awsAuthService.signIn(this.signIn)
+            this.nativeLoginService.signIn(this.signIn)
               .pipe(takeUntil(this.destroy$))
               .subscribe((response: LoginResponse) => {
                     this.processLoginResponse(response);
@@ -108,7 +110,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     sendActivationEmail(email: string) {
-        this.usersService.resendActivationMail(email)
+        this.nativeLoginService.sendActivationCode(email)
           .pipe(takeUntil(this.destroy$))
           .subscribe(value => {
               this.toastService.success('Activation email was sent to your inbox!');

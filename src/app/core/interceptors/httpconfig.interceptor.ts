@@ -1,16 +1,12 @@
 import {Injectable} from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
-
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
 import {AuthHolderService} from 'oc-ng-common-service';
-import {LoaderService} from '@core/services/loader.service';
 
 @Injectable()
 export class HttpConfigInterceptor implements HttpInterceptor {
 
-  constructor(private loaderService: LoaderService,
-              private authHolderService: AuthHolderService) {
+  constructor(private authHolderService: AuthHolderService) {
   }
 
   public static addToken(request: HttpRequest<any>, token: string) {
@@ -27,12 +23,6 @@ export class HttpConfigInterceptor implements HttpInterceptor {
       request = HttpConfigInterceptor.addToken(request, this.authHolderService.accessToken);
     }
 
-    return next.handle(request).pipe(
-      map((event: HttpEvent<any>) => {
-        if (event instanceof HttpResponse) {
-          this.loaderService.closeLoader(event.url);
-        }
-        return event;
-      }));
+    return next.handle(request);
   }
 }

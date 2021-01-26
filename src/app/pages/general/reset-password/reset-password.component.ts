@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {SellerResetPassword, UsersService} from 'oc-ng-common-service';
+import {NativeLoginService, SellerResetPassword} from 'oc-ng-common-service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -17,7 +17,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
-    constructor(private usersService: UsersService,
+    constructor(private nativeLoginService: NativeLoginService,
                 private router: Router,
                 private route: ActivatedRoute) {
         this.resetModel.code = this.route.snapshot.queryParamMap.get('token');
@@ -34,7 +34,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     reset(event) {
         if (event === true) {
             this.inProcess = true;
-            this.usersService.recoverPassword(this.resetModel)
+            this.nativeLoginService.resetPassword(this.resetModel)
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(res => {
                     this.inProcess = false;

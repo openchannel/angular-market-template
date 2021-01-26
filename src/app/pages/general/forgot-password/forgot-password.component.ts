@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {SellerSignin, UsersService} from 'oc-ng-common-service';
+import {NativeLoginService, SellerSignin, UsersService} from 'oc-ng-common-service';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
-    constructor(private userService: UsersService) {
+    constructor(private nativeLoginService: NativeLoginService) {
     }
 
     ngOnInit(): void {
@@ -34,7 +34,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     resetPwd(event) {
         if (event === true) {
             this.inProcess = true;
-            this.userService.resetForgotPassword(this.signIn.email)
+            this.nativeLoginService.sendResetCode(this.signIn.email)
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(res => {
                     this.showResultPage = true;
