@@ -8,7 +8,7 @@ import {
   SellerSignin,
 } from 'oc-ng-common-service';
 import {Router} from '@angular/router';
-import {filter, takeUntil} from 'rxjs/operators';
+import {filter, takeUntil, tap} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {OAuthService} from 'angular-oauth2-oidc';
 import {JwksValidationHandler} from 'angular-oauth2-oidc-jwks';
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     inProcess = false;
     isLoading = false;
 
-    loginType: string;
+    isSsoLogin = true;
 
     private destroy$: Subject<void> = new Subject();
     private loader: LoadingBarState;
@@ -58,11 +58,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       this.openIdAuthService.getAuthConfig()
           .pipe(
-            takeUntil(this.destroy$),
-            filter(value => value))
+            tap(value => this.isSsoLogin = !!value),
+            filter(value => value),
+            takeUntil(this.destroy$))
           .subscribe((authConfig) => {
-                this.loginType = authConfig.type;
-
                 this.oauthService.configure({
                     ...authConfig,
                     redirectUri: authConfig.redirectUri || window.location.href,
@@ -82,7 +81,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 }).then(() => {
                     this.loader.complete();
                 });
-            }, err => {},
+            }, err => this.isSsoLogin = false,
             () => this.loader.complete());
     }
 

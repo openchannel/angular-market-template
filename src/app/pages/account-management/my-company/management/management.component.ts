@@ -47,7 +47,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
               private userAccountService: UserAccountService,
               private toaster: ToastrService,
               private modal: NgbModal,
-              private userAccountTypesService : UserAccountTypesService) {
+              private userAccountTypesService: UserAccountTypesService) {
   }
 
   ngOnInit(): void {
@@ -231,7 +231,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
   private editUser(userAction: UserGridActionModel, user: UserAccountGridModel) {
     const userAccount = {...user};
-    if(user?.inviteStatus === 'ACTIVE') {
+    if (user?.inviteStatus === 'ACTIVE') {
       this.editUserAccount(userAccount);
     } else {
       console.error('Not implement edit type : ', user?.inviteStatus);
@@ -254,7 +254,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     modalData.requestUpdateAccount = (accountId: string, accountData: any) => {
       return this.userAccountService.updateUserAccountFieldsForAnotherUser(accountId, true, accountData);
-    }
+    };
 
     modalRef.componentInstance.modalData = modalData;
 

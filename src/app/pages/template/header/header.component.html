@@ -18,12 +18,12 @@
                     <a class="nav-link" [routerLink]="''">Browse <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item"
-                    *ngIf="userName"
+                    *ngIf="authHolderService.isLoggedInUser()"
                     [ngClass]="{active: router.url.includes('/management/apps')}">
                     <a class="nav-link" [routerLink]="'/management/apps'">My apps</a>
                 </li>
             </ul>
-            <div class="d-flex my-2 my-lg-0 ml-0 ml-lg-4" *ngIf="this.userName">
+            <div class="d-flex my-2 my-lg-0 ml-0 ml-lg-4" *ngIf="authHolderService.isLoggedInUser()">
                 <div class="profile text-primary">{{initials}}</div>
                 <div class="nav-item dropdown" ngbDropdown placement="left">
                     <div class="dropdown-toggle pr-0 d-flex align-items-center" id="navbarDropdown" role="button"
@@ -44,9 +44,9 @@
                     </div>
                 </div>
             </div>
-            <div class="form-inline my-2 my-lg-0 button-section ml-0 ml-lg-4" *ngIf="!this.userName">
-                <button class="btn header-login-btn header-btn mr-2" routerLink="/login">Log in</button>
-                <button class="btn btn-primary header-btn" routerLink="/signup">Sign up</button>
+            <div class="d-flex my-2 my-lg-0 ml-0 ml-lg-4" *ngIf="!authHolderService.isLoggedInUser()">
+                <button class="btn header-login-btn header-btn" routerLink="/login">Log in</button>
+                <button class="btn btn-primary header-btn ml-2" routerLink="/signup" *ngIf="!isSsoConfigExist">Sign up</button>
             </div>
         </div>
     </div>
