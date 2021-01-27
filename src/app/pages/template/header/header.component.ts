@@ -1,37 +1,49 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthHolderService} from 'oc-ng-common-service';
+import {AuthenticationService, AuthHolderService} from 'oc-ng-common-service';
 import {LogOutService} from '@core/services/logout-service/log-out.service';
+import {map, takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
 
-    userName: string;
-    isSSO: any;
+  isSSO: any;
+  isSsoConfigExist = true;
 
-    constructor(public router: Router,
-                public authHolderService: AuthHolderService,
-                private logOut: LogOutService) {
-        this.displayUserInfo();
-    }
+  private destroy$: Subject<void> = new Subject();
 
-    ngOnInit(): void {
-        this.isSSO = this.authHolderService?.userDetails?.isSSO;
-    }
+  constructor(public router: Router,
+              public authHolderService: AuthHolderService,
+              private openIdAuthService: AuthenticationService,
+              private logOut: LogOutService) {
+  }
 
-    displayUserInfo() {
-        this.userName = this.authHolderService.accessToken;
-    }
+  ngOnInit(): void {
+    this.isSSO = this.authHolderService?.userDetails?.isSSO;
 
-    get initials(): string {
-        return this.authHolderService.userDetails ? this.authHolderService.getUserName().split(' ').map(value => value.substring(0, 1)).join('') : '';
-    }
+    this.openIdAuthService.getAuthConfig()
+      .pipe(
+        takeUntil(this.destroy$),
+        map(value => !!value))
+      .subscribe((authConfigExistence) => this.isSsoConfigExist = authConfigExistence);
+  }
 
-    logout() {
-        this.logOut.logOut();
-    }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  get initials(): string {
+    return this.authHolderService.userDetails ?
+      this.authHolderService.getUserName().split(' ').map(value => value.substring(0, 1)).join('') : '';
+  }
+
+  logout() {
+    this.logOut.logOut();
+  }
 }

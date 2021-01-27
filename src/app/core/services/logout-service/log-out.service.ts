@@ -31,6 +31,6 @@ export class LogOutService {
   private internalLogout(): void {
       this.authService.clearTokensInStorage();
       this.oAuthService.logOut();
-      this.router.navigateByUrl('/login');
+      this.router.navigateByUrl('/');
   }
 }

@@ -18,37 +18,35 @@
                     <a class="nav-link" [routerLink]="''">Browse <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item"
-                    *ngIf="userName"
+                    *ngIf="authHolderService.isLoggedInUser()"
                     [ngClass]="{active: router.url.includes('/management/apps')}">
                     <a class="nav-link" [routerLink]="'/management/apps'">My apps</a>
                 </li>
             </ul>
-            <div class="form-inline my-2 my-lg-0 button-section ml-0 ml-lg-4">
-                <div class="form-inline my-2 my-lg-0 ml-0 ml-lg-4" *ngIf="this.userName != null">
-                    <div class="profile text-primary">{{initials}}</div>
-                    <div class="nav-item dropdown" ngbDropdown placement="left">
-                        <div class="dropdown-toggle pr-0 d-flex align-items-center" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
-                            <div class="d-flex flex-column mr-1">
-                                <span class="font-m font-med text-dark">{{authHolderService.getUserName()}}</span>
-                                <span class="font-s text-muted">{{authHolderService.userDetails.roleLabel}}</span>
-                            </div>
-                        </div>
-                        <div ngbDropdownMenu aria-labelledby="navbarDropdown" class="mt-2"
-                             *ngIf="authHolderService.isLoggedInUser()">
-                            <div class="dropdown-item cursor-pointer" *ngIf="!isSSO"
-                               routerLink="/management/profile">My Profile</div>
-                            <div class="dropdown-item cursor-pointer"
-                               *ngIf="authHolderService.userDetails.role === 'ADMIN'"
-                               routerLink="/management/company">My Company</div>
-                            <div class="dropdown-item cursor-pointer" (click)="logout()">Logout</div>
+            <div class="d-flex my-2 my-lg-0 ml-0 ml-lg-4" *ngIf="authHolderService.isLoggedInUser()">
+                <div class="profile text-primary">{{initials}}</div>
+                <div class="nav-item dropdown" ngbDropdown placement="left">
+                    <div class="dropdown-toggle pr-0 d-flex align-items-center" id="navbarDropdown" role="button"
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
+                        <div class="d-flex flex-column mr-1">
+                            <span class="font-m font-med text-dark">{{authHolderService.getUserName()}}</span>
+                            <span class="font-s text-muted">{{authHolderService.userDetails.roleLabel}}</span>
                         </div>
                     </div>
+                    <div ngbDropdownMenu aria-labelledby="navbarDropdown" class="mt-2"
+                         *ngIf="authHolderService.isLoggedInUser()">
+                        <div class="dropdown-item cursor-pointer" *ngIf="!isSSO"
+                             routerLink="/management/profile">My Profile</div>
+                        <div class="dropdown-item cursor-pointer"
+                             *ngIf="authHolderService.userDetails.role === 'ADMIN'"
+                             routerLink="/management/company">My Company</div>
+                        <div class="dropdown-item cursor-pointer" (click)="logout()">Logout</div>
+                    </div>
                 </div>
-                <div *ngIf="!userName">
-                    <button class="btn header-login-btn header-btn mr-2" routerLink="/login">Log in</button>
-                    <button class="btn btn-primary header-btn" routerLink="/signup">Sign up</button>
-                </div>
+            </div>
+            <div class="d-flex my-2 my-lg-0 ml-0 ml-lg-4" *ngIf="!authHolderService.isLoggedInUser()">
+                <button class="btn header-login-btn header-btn" routerLink="/login">Log in</button>
+                <button class="btn btn-primary header-btn ml-2" routerLink="/signup" *ngIf="!isSsoConfigExist">Sign up</button>
             </div>
         </div>
     </div>
