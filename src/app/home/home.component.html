@@ -14,28 +14,39 @@
     </div>
 </div>
 <div class="container">
-    <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
-        <div [ngSwitch]="configElement?.type">
-            <div class="pt-8 pb-5" *ngSwitchCase="'apps-list'">
-                <oc-app-gallery *ngIf="configElement?.data"
-                                [appsArr]="configElement?.data"
-                                routerLinkForOneApp="/app/detail/"
-                                seeAllUrl="/app/search"
-                                [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
-                                [appGalleryTitle]="configElement.name"
-                                [appGalleryDescription]="configElement.description">
-                </oc-app-gallery>
-            </div>
-            <div *ngSwitchCase="'filter-values-card-list'">
-                <oc-app-categories
-                        *ngIf="categoriesData"
-                        [data]="categories"
-                        [categoryHeaderTitle]="configElement.name"
-                        categoryRouterLink="app/search">
-                </oc-app-categories>
-            </div>
+    <div class="row mt-7">
+        <div class="col-md-3 filter__container">
+            <oc-sidebar *ngFor="let filter of sidebarFilters"
+                        class="mb-1"
+                        (selectModelsChange)="onFilterChange()"
+                        [title]="filter.name"
+                        [sidebarModel]="filter.values"></oc-sidebar>
         </div>
-    </ng-container>
+        <div class="col-md-9">
+            <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
+                <div [ngSwitch]="configElement?.type">
+                    <div class="pb-7" *ngSwitchCase="'apps-list'" >
+                        <oc-app-gallery *ngIf="configElement?.data"
+                                        [appsArr]="configElement?.data"
+                                        routerLinkForOneApp="/app/detail/"
+                                        seeAllUrl="/app/search"
+                                        [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
+                                        [appGalleryTitle]="configElement.name"
+                                        [appGalleryDescription]="configElement.description">
+                        </oc-app-gallery>
+                    </div>
+                    <div *ngSwitchCase="'filter-values-card-list'" class="mb-7">
+                        <oc-app-categories
+                                *ngIf="categoriesData"
+                                [data]="categories"
+                                [categoryHeaderTitle]="configElement.name"
+                                categoryRouterLink="app/search">
+                        </oc-app-categories>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
 </div>
 <div class="bg-container mt-5 py-8 min-height-auto">
     <div class="container">
