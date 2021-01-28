@@ -1,5 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AppCategoryDetail, FullAppData, AppsService, FrontendService } from 'oc-ng-common-service';
+import {
+  AppCategoryDetail,
+  FullAppData,
+  AppsService,
+  FrontendService,
+  Filter,
+  SidebarModel
+} from 'oc-ng-common-service';
 import { FilterValue } from '@core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -16,6 +23,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public featuredApp: FullAppData[] = [];
   public categories: AppCategoryDetail[] = [];
+  public sidebarFilters: SidebarModel[];
 
   public appsFilter: FilterValue [] = [];
   public isFeatured = false;
@@ -44,7 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.homePageConfig = pageConfig;
     this.getFeaturedApps();
     this.appsForCategory();
-    this.getCategoriesToExplore();
+    this.getFilters();
   }
 
   // Getting featured apps separately
@@ -84,7 +92,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  getCategoriesToExplore() {
+  getCategoriesToExplore(filters: Filter []) {
     const categoriesConfig = [
       { background: '',
         logo: '../../../../assets/img/all-apps-category-icon.svg',
@@ -119,31 +127,35 @@ export class HomeComponent implements OnInit, OnDestroy {
     const categoryProps = pageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
     let categoryIndex = 0;
     if(categoryProps) {
-      this.loader.start();
-      this.subscriber.add(
-        this.frontendService.getFilters().subscribe(result => {
-          this.categoriesData = [...result.list.find(filter => filter.id === categoryProps.filterId).values];
-          this.categoriesData.forEach(data => {
-            if (categoryIndex === categoriesConfig.length) {
-              categoryIndex = 0;
-            }
-            const category: AppCategoryDetail = {
-              categoryLogo: categoriesConfig[categoryIndex].logo,
-              categoryBackgroundImage: categoriesConfig[categoryIndex].background,
-              categoryName: data.label,
-              categoryTitleColor: categoriesConfig[categoryIndex].color,
-              categoryQuery: {
-                filterId: categoryProps.filterId,
-                valueId: data.id
-              }
-            };
-            this.categories.push(category);
-            categoryIndex++;
-          })
-          this.loader.complete();
-        }, () => this.loader.complete())
-      );
+      this.categoriesData = [...filters.find(filter => filter.id === categoryProps.filterId).values];
+      this.categoriesData.forEach(data => {
+        if (categoryIndex === categoriesConfig.length) {
+          categoryIndex = 0;
+        }
+        const category: AppCategoryDetail = {
+          categoryLogo: categoriesConfig[categoryIndex].logo,
+          categoryBackgroundImage: categoriesConfig[categoryIndex].background,
+          categoryName: data.label,
+          categoryTitleColor: categoriesConfig[categoryIndex].color,
+          categoryQuery: {
+            filterId: categoryProps.filterId,
+            valueId: data.id
+          }
+        };
+        this.categories.push(category);
+        categoryIndex++;
+      })
     }
+  }
+
+  getFilters() {
+    this.loader.start();
+    this.subscriber.add(
+      this.frontendService.getFilters().subscribe(result => {
+        this.getCategoriesToExplore(result.list);
+        this.loader.complete();
+      }, () => this.loader.complete())
+    );
   }
 
   catchSearchText(searchText) {
