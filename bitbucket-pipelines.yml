@@ -47,6 +47,8 @@ definitions:
         caches:
           - sonar
         script:
+          - npm install
+          - npm run build
           - pipe: sonarsource/sonarcloud-scan:0.1.5
             variables:
               SONAR_SCANNER_OPTS: -Xmx512m
@@ -71,5 +73,7 @@ pipelines:
           <<: *build-app-and-deploy
           deployment: stage1
   branches:
+    develop:
+      - step: *build-test-sonarcloud
     master:
       - step: *build-test-sonarcloud
