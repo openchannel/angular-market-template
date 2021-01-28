@@ -5,7 +5,6 @@ import {
   AppsService,
   FrontendService,
   Filter,
-  SidebarModel
 } from 'oc-ng-common-service';
 import { FilterValue } from '@core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
@@ -23,7 +22,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public featuredApp: FullAppData[] = [];
   public categories: AppCategoryDetail[] = [];
-  public sidebarFilters: SidebarModel[];
+  public sidebarFilters: Filter[];
 
   public appsFilter: FilterValue [] = [];
   public isFeatured = false;
@@ -148,11 +147,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  getSidebarFilters(filters: Filter []) {
+    this.sidebarFilters = [...filters];
+    for (const filterModel of this.sidebarFilters) {
+      filterModel.values = filterModel.values.map(filterValue => {
+        return {
+          ...filterValue,
+          checked: false
+        };
+      });
+    }
+    console.log(this.sidebarFilters);
+  }
+
   getFilters() {
     this.loader.start();
     this.subscriber.add(
       this.frontendService.getFilters().subscribe(result => {
         this.getCategoriesToExplore(result.list);
+        this.getSidebarFilters(result.list);
         this.loader.complete();
       }, () => this.loader.complete())
     );
