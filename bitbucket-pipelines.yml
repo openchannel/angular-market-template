@@ -1,4 +1,7 @@
 definitions:
+  services:
+    docker:
+      memory: 2048
   caches:
     sonar: ~/.sonar/cache
   steps:
@@ -46,12 +49,13 @@ definitions:
         name: Build, test and analyze on SonarCloud
         caches:
           - sonar
+          - node
         script:
           - npm install
           - npm run build
           - pipe: sonarsource/sonarcloud-scan:0.1.5
             variables:
-              SONAR_SCANNER_OPTS: -Xmx512m
+              SONAR_SCANNER_OPTS: -Xmx2048m
               SONAR_TOKEN: ${SONAR_TOKEN}
               EXTRA_ARGS: '-Dsonar.sources=src/app
               -Dsonar.tests=src
