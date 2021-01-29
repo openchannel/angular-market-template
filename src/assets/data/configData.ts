@@ -35,13 +35,6 @@
        "sort": "{created: -1}"
      },
      {
-       "name": "Categories to explore",
-       "description": null,
-       "type": "filter-values-card-list",
-       "filterId": "categories",
-       "count": 5
-     },
-     {
        "name": "Most Popular",
        "description": "The most used apps that help you and your team get more done",
        "type": "apps-list",
@@ -61,3 +54,11 @@
      }
    ]
  }
+
+ // {
+ //   "name": "Categories to explore",
+ //   "description": null,
+ //   "type": "filter-values-card-list",
+ //   "filterId": "categories",
+ //   "count": 5
+ // },
