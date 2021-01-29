@@ -1,4 +1,9 @@
 definitions:
+  services:
+    docker:
+      memory: 2048
+  caches:
+    sonar: ~/.sonar/cache
   steps:
     - step: &build-app-and-deploy
         name: "Build and Deploy"
@@ -40,8 +45,29 @@ definitions:
           - export AWS_S3="`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/AWS_S3 --output text --query Parameter.Value`"
           - aws s3 sync --delete dist/ s3://$AWS_S3
           - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths /index.html "/assets*"
+    - step: &build-test-sonarcloud
+        name: Build, test and analyze on SonarCloud
+        image: node:15.7.0
+        caches:
+          - sonar
+          - node
+        script:
+          - npm install
+          - npm run build
+          - pipe: sonarsource/sonarcloud-scan:0.1.5
+            variables:
+              SONAR_SCANNER_OPTS: -Xmx2048m
+              SONAR_TOKEN: ${SONAR_TOKEN}
+              EXTRA_ARGS: '-Dsonar.sources=src/app
+              -Dsonar.tests=src
+              -Dsonar.test.inclusions="**/*.spec.ts
+              -Dsonar.coverage.exclusions="**/node_modules/**,**/*.spec.ts
+              -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info'
 
 pipelines:
+  pull-requests:
+    '**':
+      - step: *build-test-sonarcloud
   custom:
     dev1:
       - step:
@@ -51,3 +77,8 @@ pipelines:
       - step:
           <<: *build-app-and-deploy
           deployment: stage1
+  branches:
+    develop:
+      - step: *build-test-sonarcloud
+    master:
+      - step: *build-test-sonarcloud
