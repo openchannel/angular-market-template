@@ -81,7 +81,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         element.type !== 'filter-values-card-list') {
         this.loader.start();
         this.subscriber.add(
-          this.appService.getApps(1, 6, element.sort, element.filter)
+          this.appService.getApps(1, 4, element.sort, element.filter)
             .subscribe(res => {
               element.data = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
               this.loader.complete();
