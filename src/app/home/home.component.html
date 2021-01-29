@@ -18,7 +18,7 @@
         <div class="col-md-3 filter__container">
             <oc-sidebar *ngFor="let filter of sidebarFilters"
                         class="mb-1"
-                        (selectModelsChange)="onFilterChange()"
+                        (selectedLabelChange)="onLabelChange($event)"
                         [title]="filter.name"
                         [sidebarModel]="filter.values"></oc-sidebar>
         </div>

@@ -4,7 +4,7 @@ import {
   FullAppData,
   AppsService,
   FrontendService,
-  Filter,
+  Filter, SidebarValue,
 } from 'oc-ng-common-service';
 import { FilterValue } from '@core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
@@ -176,7 +176,22 @@ export class HomeComponent implements OnInit, OnDestroy {
         {filterId: 'collections', valueId: 'allApps', searchText: searchText}}).then();
   }
 
-  onFilterChange() {
+  onLabelChange(chosenFilterValue: SidebarValue) {
+    let chosenFilterId: string = '';
+    let chosenValueId: string = chosenFilterValue.id;
 
+    if (!chosenFilterValue.checked) {
+      chosenValueId = chosenFilterValue.values.find(value => value.checked).id;
+    }
+    this.sidebarFilters.forEach(filter => {
+      filter.values.forEach(value => {
+        if (value.id === chosenFilterValue.id) {
+          chosenFilterId = filter.id;
+        }
+      })
+    });
+    this.router.navigate(['app/search'], {queryParams:
+        {filterId: chosenFilterId, valueId: chosenValueId, searchText: ''}}).then();
   }
+
 }
