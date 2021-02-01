@@ -277,7 +277,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+.modal.fade .modal-dialog {
+  background-color: unset;
+  transition: none;
+}
+
 .modal-backdrop {
+  transition: background-color 0.3s;
   background-color: #717486;
 }
 
