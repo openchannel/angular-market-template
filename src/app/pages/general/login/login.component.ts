@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
-  AuthenticationService,
-  AuthHolderService,
-  LoginRequest,
-  LoginResponse,
-  NativeLoginService,
-  SellerSignin,
+    AuthenticationService,
+    AuthHolderService,
+    LoginRequest,
+    LoginResponse,
+    NativeLoginService,
+    SellerSignin,
 } from 'oc-ng-common-service';
-import {Router} from '@angular/router';
-import {filter, takeUntil} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
+import {filter, takeUntil, tap} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {OAuthService} from 'angular-oauth2-oidc';
 import {JwksValidationHandler} from 'angular-oauth2-oidc-jwks';
@@ -30,13 +30,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     inProcess = false;
     isLoading = false;
 
-    loginType: string;
+    isSsoLogin = true;
 
     private destroy$: Subject<void> = new Subject();
     private loader: LoadingBarState;
+    private returnUrl: string;
 
     constructor(public loadingBar: LoadingBarService,
                 private router: Router,
+                private route: ActivatedRoute,
                 private authHolderService: AuthHolderService,
                 private oauthService: OAuthService,
                 private openIdAuthService: AuthenticationService,
@@ -45,45 +47,43 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-      this.loader = this.loadingBar.useRef();
-      if (this.authHolderService.isLoggedInUser()) {
+        this.loader = this.loadingBar.useRef();
+        if (this.authHolderService.isLoggedInUser()) {
             this.router.navigate(['']);
         }
 
-      if (this.oauthService.hasValidIdToken()) {
-            this.oauthService.logOut();
-        }
+        this.retrieveRedirectUrl();
 
-      this.loader.start();
+        this.loader.start();
 
-      this.openIdAuthService.getAuthConfig()
-          .pipe(
-            takeUntil(this.destroy$),
-            filter(value => value))
-          .subscribe((authConfig) => {
-                this.loginType = authConfig.type;
+        this.openIdAuthService.getAuthConfig()
+            .pipe(
+                tap(value => this.isSsoLogin = !!value),
+                filter(value => value),
+                takeUntil(this.destroy$))
+            .subscribe((authConfig) => {
+                    this.oauthService.configure({
+                        ...authConfig,
+                        redirectUri: authConfig.redirectUri || window.location.href,
+                    });
 
-                this.oauthService.configure({
-                    ...authConfig,
-                    redirectUri: authConfig.redirectUri || window.location.href,
-                });
-
-                this.oauthService.tokenValidationHandler = new JwksValidationHandler();
-                this.oauthService.loadDiscoveryDocumentAndLogin({
-                    onTokenReceived: receivedTokens => {
-                        this.loader.start();
-                        this.openIdAuthService.login(new LoginRequest(receivedTokens.idToken, receivedTokens.accessToken))
-                          .pipe(takeUntil(this.destroy$))
-                          .subscribe((response: LoginResponse) => {
-                              this.processLoginResponse(response);
-                              this.loader.complete();
-                          });
-                    },
-                }).then(() => {
-                    this.loader.complete();
-                });
-            }, err => {},
-            () => this.loader.complete());
+                    this.oauthService.tokenValidationHandler = new JwksValidationHandler();
+                    this.oauthService.loadDiscoveryDocumentAndLogin({
+                        onTokenReceived: receivedTokens => {
+                            this.loader.start();
+                            this.openIdAuthService.login(new LoginRequest(receivedTokens.idToken, receivedTokens.accessToken))
+                                .pipe(takeUntil(this.destroy$))
+                                .subscribe((response: LoginResponse) => {
+                                    this.processLoginResponse(response, this.oauthService.state);
+                                    this.loader.complete();
+                                });
+                        },
+                        state: this.returnUrl,
+                    }).then(() => {
+                        this.loader.complete();
+                    });
+                }, err => this.isSsoLogin = false,
+                () => this.loader.complete());
     }
 
     ngOnDestroy(): void {
@@ -95,25 +95,29 @@ export class LoginComponent implements OnInit, OnDestroy {
         if (event === true) {
             this.inProcess = true;
             this.nativeLoginService.signIn(this.signIn)
-              .pipe(takeUntil(this.destroy$))
-              .subscribe((response: LoginResponse) => {
-                    this.processLoginResponse(response);
-                    this.inProcess = false;
-                },
-                () => this.inProcess = false);
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((response: LoginResponse) => {
+                        this.processLoginResponse(response, this.returnUrl);
+                        this.inProcess = false;
+                    },
+                    () => this.inProcess = false);
         }
-    }
-
-    private processLoginResponse(response: LoginResponse) {
-        this.authHolderService.persist(response.accessToken, response.refreshToken);
-        this.router.navigate(['']);
     }
 
     sendActivationEmail(email: string) {
         this.nativeLoginService.sendActivationCode(email)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(value => {
-              this.toastService.success('Activation email was sent to your inbox!');
-          });
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(value => {
+                this.toastService.success('Activation email was sent to your inbox!');
+            });
+    }
+
+    private retrieveRedirectUrl() {
+        this.returnUrl = this.route.snapshot.queryParams.returnUrl || '';
+    }
+
+    private processLoginResponse(response: LoginResponse, redirectUrl: string) {
+        this.authHolderService.persist(response.accessToken, response.refreshToken);
+        this.router.navigate([redirectUrl || '']);
     }
 }
