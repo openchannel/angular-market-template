@@ -269,6 +269,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+.modal-md {
+  max-width: 700px;
+  margin-top: 145px;
+  @include media-breakpoint-sm() {
+    max-width: 100%;
+  }
+}
+
 .modal.fade .modal-dialog {
   background-color: unset;
   transition: none;
