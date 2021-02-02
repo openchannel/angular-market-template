@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthenticationService, TitleService} from 'oc-ng-common-service';
-import {first} from 'rxjs/operators';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,23 +15,18 @@ import {first} from 'rxjs/operators';
 })
 
 export class AppComponent implements OnInit {
-  title = 'template3-marketsite';
 
-  csrfInited = false;
+  private destroy$: Subject<void> = new Subject();
 
   constructor(public router: Router,
               private authenticationService: AuthenticationService,
               private titleService: TitleService) {
   }
 
-  // temporary clearing session storage on application load, we might need to do auto login.
   ngOnInit() {
-    this.authenticationService.initCsrf()
-        .pipe(first())
-        .subscribe(value => {
-          console.log('csrf inited!');
-          this.csrfInited = true;
-        }, error => this.csrfInited = true);
+    // refresh JWT token if exists
+    this.authenticationService.isLoggedUserByAccessOrRefreshToken()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(() => {});
   }
-
 }
