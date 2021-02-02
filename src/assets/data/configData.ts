@@ -54,11 +54,3 @@
      }
    ]
  }
-
- // {
- //   "name": "Categories to explore",
- //   "description": null,
- //   "type": "filter-values-card-list",
- //   "filterId": "categories",
- //   "count": 5
- // },
