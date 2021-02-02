@@ -12,8 +12,7 @@ import {
 import {Subject, Subscription} from 'rxjs';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService} from 'ngx-toastr';
-import {ConfirmationModalComponent} from '@shared/modals/confirmation-modal/confirmation-modal.component';
-import {OcInviteModalComponent} from 'oc-ng-common-component';
+import {OcConfirmationModalComponent, OcInviteModalComponent} from 'oc-ng-common-component';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 
@@ -123,7 +122,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
           // push new users
           this.userProperties.data.list.push(...activeUsers.list.map(user => this.mapToGridUserFromUser(user)));
           this.loader.complete();
-        }, (error) => {
+        }, () => {
           responseCallBack();
           this.loader.complete();
         })
@@ -199,7 +198,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteInvite(user: UserAccountGridModel): void {
-    this.openDeleteModal('Delete invite', 'Are you sure you want to delete this invite?',
+    this.openDeleteModal('Delete invite', 'Are you sure you want to delete this invite?', 'Yes, delete invite',
         () => this.inviteUserService.deleteUserInvite(user?.inviteId).subscribe(() => {
           this.deleteUserFromResultArray(user);
           this.toaster.success('Invite has been deleted');
@@ -207,7 +206,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
   }
 
   deleteAccount(user: UserAccountGridModel): void {
-    this.openDeleteModal('Delete user', 'Are you sure you want to delete this user?', () =>
+    this.openDeleteModal('Delete user', 'Delete this user from the marketplace now?', 'Yes, delete user', () =>
         this.userAccountService.deleteUserAccount(user?.userAccountId)
         .subscribe(() => {
           this.deleteUserFromResultArray(user);
@@ -216,15 +215,16 @@ export class ManagementComponent implements OnInit, OnDestroy {
     );
   }
 
-  private openDeleteModal(modalTitle: string, modalText: string, deleteCallback: () => Subscription) {
-    const modalSuspendRef = this.modal.open(ConfirmationModalComponent);
+  private openDeleteModal(modalTitle: string, modalText: string, confirmText: string, deleteCallback: () => void) {
+    const modalSuspendRef = this.modal.open(OcConfirmationModalComponent, {size: 'md'});
+    modalSuspendRef.componentInstance.ngbModalRef = modalSuspendRef;
     modalSuspendRef.componentInstance.modalTitle = modalTitle;
     modalSuspendRef.componentInstance.modalText = modalText;
-    modalSuspendRef.componentInstance.buttonText = 'Yes, delete it';
-    modalSuspendRef.componentInstance.buttonType = 'danger';
-    modalSuspendRef.result.then(deleteAction => {
-      if (deleteAction) {
-        this.subscriptions.add(deleteCallback());
+    modalSuspendRef.componentInstance.confirmButtonText = confirmText;
+    modalSuspendRef.componentInstance.confirmButtonType = 'danger';
+    modalSuspendRef.result.then(result => {
+      if (result) {
+        deleteCallback();
       }
     });
   }
