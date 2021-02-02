@@ -26,6 +26,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isSSO = this.authHolderService?.userDetails?.isSSO;
 
+    console.log(this.authHolderService.isLoggedInUser());
+
     this.openIdAuthService.getAuthConfig()
       .pipe(
         takeUntil(this.destroy$),
@@ -36,6 +38,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  login() {
+    this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.routerState.snapshot.url }});
   }
 
   get initials(): string {
