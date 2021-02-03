@@ -9,11 +9,7 @@ import {LoadingBarService} from '@ngx-loading-bar/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  host: {
-  '[class.not-found]' : 'this.router.url.split("?")[0] == "/not-found"',
-  '[class.my-applications]' : 'this.router.url.split("?")[0] == "/my-applications"'
-  }
+  styleUrls: ['./app.component.scss']
 })
 
 export class AppComponent implements OnInit {
@@ -31,7 +27,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     // refresh JWT token if exists
     this.loader.start();
-    this.authenticationService.isLoggedUserByAccessOrRefreshToken()
+    this.authenticationService.tryLoginByRefreshToken()
     .pipe(takeUntil(this.destroy$))
     .subscribe(() => this.loader.stop(), () => this.loader.stop());
 
