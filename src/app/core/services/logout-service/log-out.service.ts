@@ -25,16 +25,25 @@ export class LogOutService {
                         postLogoutRedirectUri: window.location.origin,
                     });
                     this.oAuthService.loadDiscoveryDocument().then(value => {
-                        this.authService.clearTokensInStorage();
-                        this.oAuthService.logOut();
+                        this.authenticationService.logOut()
+                            .pipe(first())
+                            .subscribe(() => {
+                                this.authService.clearTokensInStorage();
+                                this.oAuthService.logOut();
+                            });
                     });
+                } else {
+                    this.nativeLogOut();
                 }
-                this.internalLogout();
-            }, error => this.internalLogout());
+            }, error => this.nativeLogOut());
     }
 
-    private internalLogout(): void {
-        this.authService.clearTokensInStorage();
-        this.router.navigateByUrl('/');
+    private nativeLogOut(): void {
+        this.authenticationService.logOut()
+            .pipe(first())
+            .subscribe(() => {
+                this.authService.clearTokensInStorage();
+                this.router.navigateByUrl('/');
+            });
     }
 }
