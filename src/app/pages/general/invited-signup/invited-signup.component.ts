@@ -1,10 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  DeveloperAccountTypesService,
   InviteUserModel,
   InviteUserService, NativeLoginService, UserAccountTypesService,
-  UsersService,
 } from 'oc-ng-common-service';
 import {Subscription} from 'rxjs';
 import {FormGroup} from '@angular/forms';
@@ -36,7 +34,6 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('getInviteDetails');
     this.getInviteDetails();
   }
 
@@ -149,7 +146,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
       this.requestSubscriber.add(this.nativeLoginService.signupByInvite({
         userCustomData: this.inviteFormData,
         inviteToken: this.userInviteData.token
-      }).subscribe(resp => {
+      }).subscribe(() => {
         this.inProcess = false;
         this.router.navigate(['login']);
       }, () => {

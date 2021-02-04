@@ -33,6 +33,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private subscriber: Subscription = new Subscription();
 
+  routerAppIdentifier = (app: FullAppData) => app.safeName[0];
+
   constructor(private appService: AppsService,
               private router: Router,
               private frontendService: FrontendService,
@@ -157,7 +159,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         };
       });
     }
-    console.log(this.sidebarFilters);
   }
 
   getFilters() {
@@ -172,7 +173,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   catchSearchText(searchText) {
-    this.router.navigate(['app/search'], {queryParams:
+    this.router.navigate(['details/search'], {queryParams:
         {filterId: 'collections', valueId: 'allApps', searchText: searchText}}).then();
   }
 
@@ -190,7 +191,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       })
     });
-    this.router.navigate(['app/search'], {queryParams:
+    this.router.navigate(['details/search'], {queryParams:
         {filterId: chosenFilterId, valueId: chosenValueId, searchText: ''}}).then();
   }
 

@@ -26,8 +26,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isSSO = this.authHolderService?.userDetails?.isSSO;
 
-    console.log(this.authHolderService.isLoggedInUser());
-
     this.openIdAuthService.getAuthConfig()
       .pipe(
         takeUntil(this.destroy$),

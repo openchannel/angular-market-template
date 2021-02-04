@@ -80,8 +80,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             mergeMap((value: string) => this.searchAppObservable(value, this.getFilterQuery())))
-        .subscribe((data: Page<FullAppData>) => this.loader.complete(),
-            error =>  this.loader.complete());
+        .subscribe(() => this.loader.complete(),
+            () =>  this.loader.complete());
   }
 
   searchAppObservable(text: string, sort: string): Observable<Page<FullAppData>> {
@@ -99,7 +99,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   getData(): void {
     this.searchAppObservable(this.searchText, this.getFilterQuery())
         .subscribe(() => this.loader.complete(),
-            error => this.loader.complete());
+            () => this.loader.complete());
   }
 
   getSortedData(filterId: string, valueId: string) {
@@ -138,7 +138,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   goToAppDetails(app: FullAppData) {
-    this.route.navigate(['/app/detail', app.appId]);
+    this.route.navigate(['/details', app.safeName[0]]);
   }
 
   private getFilterQuery() {
@@ -153,7 +153,6 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         }
       });
     });
-
     return queries.length > 0 ? `{ "$and":[${queries.join(',')}] }` : null;
   }
 }
