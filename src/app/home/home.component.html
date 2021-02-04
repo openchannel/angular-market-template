@@ -9,8 +9,7 @@
         </div>
         <oc-featured-apps *ngIf="isFeatured"
                           [data]="featuredApp"
-                          mainRouterLink="/details"
-                          [routerAppIdentifier]="routerAppIdentifier"
+                          (clickByAppCard)="goToAppDetails($event)"
                           label="Featured"></oc-featured-apps>
     </div>
 </div>
@@ -26,12 +25,11 @@
         <div class="col-md-9">
             <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
                 <div [ngSwitch]="configElement?.type">
-                    <div class="pb-7" *ngSwitchCase="'apps-list'" >
+                    <div class="pb-7" *ngSwitchCase="'apps-list'">
                         <oc-app-gallery *ngIf="configElement?.data"
                                         [appsArr]="configElement?.data"
-                                        routerLinkForOneApp="/details"
-                                        [routerAppIdentifier]="routerAppIdentifier"
-                                        seeAllUrl="/details/search"
+                                        (clickByAppCard)="goToAppDetails($event)"
+                                        seeAllUrl="/app/search"
                                         [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
                                         [appGalleryTitle]="configElement.name"
                                         [appGalleryDescription]="configElement.description">
@@ -42,7 +40,7 @@
                                 *ngIf="categoriesData"
                                 [data]="categories"
                                 [categoryHeaderTitle]="configElement.name"
-                                categoryRouterLink="/details/search">
+                                categoryRouterLink="/app/search">
                         </oc-app-categories>
                     </div>
                 </div>

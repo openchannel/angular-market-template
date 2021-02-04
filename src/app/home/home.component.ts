@@ -33,8 +33,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private subscriber: Subscription = new Subscription();
 
-  routerAppIdentifier = (app: FullAppData) => app.safeName[0];
-
   constructor(private appService: AppsService,
               private router: Router,
               private frontendService: FrontendService,
@@ -173,7 +171,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   catchSearchText(searchText) {
-    this.router.navigate(['details/search'], {queryParams:
+    this.router.navigate(['app/search'], {queryParams:
         {filterId: 'collections', valueId: 'allApps', searchText: searchText}}).then();
   }
 
@@ -191,8 +189,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       })
     });
-    this.router.navigate(['details/search'], {queryParams:
+    this.router.navigate(['app/search'], {queryParams:
         {filterId: chosenFilterId, valueId: chosenValueId, searchText: ''}}).then();
   }
 
+  goToAppDetails(appData: FullAppData) {
+    this.router.navigate(['details', appData.safeName[0]]).then();
+  }
 }

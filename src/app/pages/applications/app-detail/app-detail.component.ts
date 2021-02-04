@@ -53,7 +53,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   private loader: LoadingBarState;
 
-  routerAppIdentifier = (app: FullAppData) => app.safeName[0];
 
   constructor(private appService: AppsService,
               private appVersionService: AppVersionService,
@@ -198,6 +197,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   get isDownloadRendered(): boolean {
     return true;
+  }
+
+  navigateTo(parts: any []): void {
+    this.router.navigate(parts).then();
   }
 
   closeWindow() {
