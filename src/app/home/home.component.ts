@@ -4,7 +4,7 @@ import {
   FullAppData,
   AppsService,
   FrontendService,
-  Filter, SidebarValue,
+  Filter, SidebarValue, TitleService,
 } from 'oc-ng-common-service';
 import { FilterValue } from '@core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { pageConfig } from '../../assets/data/configData';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { siteConfig } from '../../assets/data/siteConfig';
 
 @Component({
   selector: 'app-home',
@@ -36,9 +37,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private appService: AppsService,
               private router: Router,
               private frontendService: FrontendService,
-              private loadingBar: LoadingBarService) { }
+              private loadingBar: LoadingBarService,
+              private titleService: TitleService) { }
 
   ngOnInit(): void {
+    this.titleService.setPostfix(siteConfig.tagline);
     this.loader = this.loadingBar.useRef();
     this.getPageConfig();
   }
