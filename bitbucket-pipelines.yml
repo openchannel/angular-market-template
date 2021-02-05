@@ -50,7 +50,6 @@ definitions:
         image: node:15.7.0
         caches:
           - sonar
-          - node
         script:
           - npm install
           - npm run build
