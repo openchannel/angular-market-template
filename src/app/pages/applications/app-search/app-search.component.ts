@@ -1,11 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AppsService, Filter, FrontendService, FullAppData, Page } from 'oc-ng-common-service';
+import {
+  AppsService,
+  Filter,
+  FrontendService,
+  FullAppData,
+  Page
+} from 'oc-ng-common-service';
 import { debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import {FilterValue} from 'oc-ng-common-service/lib/model/frontend.model';
 
 @Component({
   selector: 'app-app-search',
@@ -17,7 +24,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   searchText: string;
   appPage: Page<FullAppData>;
   filters: Filter[];
-  selectedFilterLabels: string[] = [];
+  selectedFilterValues: FilterValue [] = [];
 
   loadFilters$: Observable<Page<Filter>>;
   textChange$: Subject<string> = new Subject();
@@ -61,6 +68,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
           if (this.searchText) {
             this.getData();
           } else {
+            this.selectedFilterValues = this.getSelectedFilterValues();
             this.getSortedData(filterId, filterValueId)
           }
         });
@@ -141,18 +149,32 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     this.route.navigate(['/details', app.safeName[0]]);
   }
 
-  private getFilterQuery() {
-    const queries: string[] = [];
-    this.selectedFilterLabels = [];
+  disableFilterValue(filterValue: FilterValue): void {
+    if (filterValue) {
+      filterValue.checked = false;
+      this.getData();
+    }
+  }
 
+  private getFilterQuery() {
+
+    let filterValues = this.getSelectedFilterValues();
+    let queries = filterValues.map(filterValue => filterValue.query).filter(q => q);
+
+    this.selectedFilterValues = filterValues;
+
+    return queries.length > 0 ? `{ "$and":[${queries.join(',')}] }` : null;
+  }
+
+  private getSelectedFilterValues(): FilterValue [] {
+    const filterValues = [];
     this.filters.forEach(filter => {
       filter.values.forEach(value => {
         if (value.checked) {
-          queries.push(value.query);
-          this.selectedFilterLabels.push(value.label);
+          filterValues.push(value);
         }
       });
     });
-    return queries.length > 0 ? `{ "$and":[${queries.join(',')}] }` : null;
+    return filterValues;
   }
 }
