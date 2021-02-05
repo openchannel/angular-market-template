@@ -1,7 +1,7 @@
 <div>
   <form [formGroup]="optionsForm">
     <div class="form-group">
-      <oc-checkbox [(isChecked)]="isRequired" labelText="Required"></oc-checkbox>
+      <oc-checkbox labelText="Required"></oc-checkbox>
     </div>
     <div class="form-group" *ngFor="let control of optionsForm.controls | keyvalue">
       <ng-container *ngIf="control.key !== 'required' && control.key !== 'accept' && control.key !== 'hash'">
