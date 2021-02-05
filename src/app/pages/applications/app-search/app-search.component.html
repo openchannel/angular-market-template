@@ -10,15 +10,16 @@
         <div class="col-md-3 filter__container">
             <oc-sidebar *ngFor="let filter of filters"
                                   class="mb-1"
-                                  (selectModelsChange)="onFilterChange()"
+                                  (selectedLabelChange)="onFilterChange()"
                                   [title]="filter.name"
                                   [sidebarModel]="filter.values"></oc-sidebar>
         </div>
         <div class="col-md-9">
             <oc-text-search [(searchText)]="searchText" (searchTextChange)="onTextChange($event)"></oc-text-search>
             <div class="result">
-                <oc-tag-element *ngFor="let filter of selectedFilterLabels"
-                                [title]="filter" [closeMarker]="true"></oc-tag-element>
+                <oc-tag-element *ngFor="let filter of selectedFilterValues"
+                                [title]="filter?.label" [closeMarker]="true"
+                                (clickEmitter)="disableFilterValue(filter)"></oc-tag-element>
             </div>
             <oc-app-list-grid [appList]="appPage?.list"
                               (gotoDetails)="goToAppDetails($event)"
