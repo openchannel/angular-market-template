@@ -12,13 +12,10 @@
         </div>
         <oc-form [formJsonData]="formConfig"
                  (createdForm)="getCreatedForm($event)"
-                 [showButton]="false"
-                 (formDataUpdated)="getFormValues($event)"></oc-form>
+                 [showButton]="false"></oc-form>
         <div class="form-group">
           <div class="d-flex align-items-center">
-            <input type="checkbox" [(ngModel)]="isTerms"
-                   [ngModelOptions]="{standalone: true}"
-                   class="agree-checkbox mr-1">
+            <oc-checkbox [formControl]="termsControl"></oc-checkbox>
             <div class="font-s">
               I agree to
               <a class="font-s font-med" href="https://my.openchannel.io/terms-of-service" target="_blank">
@@ -30,6 +27,8 @@
               </a>
             </div>
           </div>
+          <oc-error [control]="termsControl"
+                    [modifyErrors]="[{validator: 'required', message: 'Please confirm this checkbox'}]"></oc-error>
         </div>
         <oc-button (click)="submitForm()"
                    [process]="inProcess"
