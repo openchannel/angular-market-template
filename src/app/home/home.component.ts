@@ -157,7 +157,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         };
       });
     }
-    console.log(this.sidebarFilters);
   }
 
   getFilters() {
@@ -194,4 +193,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         {filterId: chosenFilterId, valueId: chosenValueId, searchText: ''}}).then();
   }
 
+  goToAppDetails(appData: FullAppData) {
+    this.router.navigate(['details', appData.safeName[0]]).then();
+  }
 }

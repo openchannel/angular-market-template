@@ -53,6 +53,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   private loader: LoadingBarState;
 
+
   constructor(private appService: AppsService,
               private appVersionService: AppVersionService,
               private reviewsService: ReviewsService,
@@ -67,17 +68,19 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loader = this.loadingBar.useRef();
+
     const appId = this.route.snapshot.paramMap.get('appId');
     const appVersion = this.route.snapshot.paramMap.get('appVersion');
+    const safeName = this.route.snapshot.paramMap.get('safeName');
 
     this.loader.start();
 
-    this.appData$ = this.getApp(appId, appVersion)
+    this.appData$ = this.getApp(safeName, appId, appVersion)
 
-    this.appData$.subscribe(app => {
+    this.appData$.subscribe(() => {
           this.loader.complete();
           this.loadReviews();
-        },err => this.loader.complete());
+        },() => this.loader.complete());
 
     this.frontendService.getSorts()
         .pipe(takeUntil(this.destroy$))
@@ -105,13 +108,13 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.selectedFilter ? this.selectedFilter.value : null)
         .pipe(takeUntil(this.destroy$),
             tap((page: Page<OCReviewDetails>) => this.reviewsPage = page))
-        .subscribe(page => {
+        .subscribe(() => {
               this.loader.complete();
               if (this.overallRating.rating === 0) {
                 this.countRating();
               }
             },
-            err => this.loader.complete());
+            () => this.loader.complete());
   }
 
   onReviewSortChange(selected: DropdownModel<string>): void {
@@ -137,11 +140,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  private getApp(appId: string, appVersion: string): Observable<FullAppData> {
-    this.isDeveloperPreviewPage = appVersion && Number(appVersion) > 0;
-    const appData = (this.isDeveloperPreviewPage) ?
-        this.appVersionService.getAppByVersion(appId, Number(appVersion)):
-        this.appService.getAppById(appId);
+  private getApp(safeName: string, appId: string, appVersion: string): Observable<FullAppData> {
+    const appData = safeName ?
+        this.appService.getAppBySafeName(safeName) :
+        this.appVersionService.getAppByVersion(appId, Number(appVersion));
 
     return appData.pipe(takeUntil(this.destroy$),
           map(app => new FullAppData(app, pageConfig.fieldMappings)),
@@ -195,6 +197,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   get isDownloadRendered(): boolean {
     return true;
+  }
+
+  navigateTo(parts: any []): void {
+    this.router.navigate(parts).then();
   }
 
   closeWindow() {
