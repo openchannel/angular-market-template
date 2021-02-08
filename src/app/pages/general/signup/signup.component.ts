@@ -32,7 +32,7 @@ export class SignupComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  signup(event) {
+  onSignup(event) {
     if (event === true) {
       this.inProcess = true;
       this.nativeLoginService.signup(this.signupModel)
