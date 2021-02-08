@@ -4,7 +4,7 @@ import {
   Filter,
   FrontendService,
   FullAppData,
-  Page
+  Page, TitleService
 } from 'oc-ng-common-service';
 import { debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
@@ -37,7 +37,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
               private frontendService: FrontendService,
               private router: ActivatedRoute,
               private loadingBar: LoadingBarService,
-              private route: Router) {}
+              private route: Router,
+              private titleService: TitleService) {}
 
   ngOnInit() {
     this.loader = this.loadingBar.useRef();
@@ -168,13 +169,16 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   private getSelectedFilterValues(): FilterValue [] {
     const filterValues = [];
+    const filterLabels = [];
     this.filters.forEach(filter => {
       filter.values.forEach(value => {
         if (value.checked) {
           filterValues.push(value);
+          filterLabels.push(filter.name);
         }
       });
     });
+    this.titleService.setPrefix(filterLabels.join(', '));
     return filterValues;
   }
 }
