@@ -6,7 +6,6 @@ import {
   FrontendService,
   Filter, SidebarValue, TitleService,
 } from 'oc-ng-common-service';
-import { FilterValue } from '@core/services/apps-services/model/apps-model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { pageConfig } from '../../assets/data/configData';
@@ -25,10 +24,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   public categories: AppCategoryDetail[] = [];
   public sidebarFilters: Filter[];
 
-  public appsFilter: FilterValue [] = [];
   public isFeatured = false;
   public homePageConfig;
-  public categoriesData: FilterValue [] = [];
+  public categoriesData: any [] = [];
 
   public loader: LoadingBarState;
 
@@ -61,7 +59,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   getFeaturedApps(): void {
     if (this.homePageConfig && this.homePageConfig.appListPage && this.homePageConfig.appListPage.length > 0) {
       const featureConfig = this.homePageConfig.appListPage.find(filer => filer.type.includes('featured-apps'));
-      if(featureConfig) {
+      if (featureConfig) {
         this.loader.start();
         this.subscriber.add(
           this.appService.getApps(1, 6, featureConfig.sort, featureConfig.filter)
@@ -128,7 +126,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     ];
     const categoryProps = pageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
     let categoryIndex = 0;
-    if(categoryProps) {
+    if (categoryProps) {
       this.categoriesData = [...filters.find(filter => filter.id === categoryProps.filterId).values];
       this.categoriesData.forEach(data => {
         if (categoryIndex === categoriesConfig.length) {
@@ -146,7 +144,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         };
         this.categories.push(category);
         categoryIndex++;
-      })
+      });
     }
   }
 
@@ -175,11 +173,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   catchSearchText(searchText) {
     this.router.navigate(['app/search'], {queryParams:
-        {filterId: 'collections', valueId: 'allApps', searchText: searchText}}).then();
+        {filterId: 'collections', valueId: 'allApps', searchText}}).then();
   }
 
   onLabelChange(chosenFilterValue: SidebarValue) {
-    let chosenFilterId: string = '';
+    let chosenFilterId = '';
     let chosenValueId: string = chosenFilterValue.id;
 
     if (!chosenFilterValue.checked) {
@@ -190,7 +188,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (value.id === chosenFilterValue.id) {
           chosenFilterId = filter.id;
         }
-      })
+      });
     });
     this.router.navigate(['app/search'], {queryParams:
         {filterId: chosenFilterId, valueId: chosenValueId, searchText: ''}}).then();

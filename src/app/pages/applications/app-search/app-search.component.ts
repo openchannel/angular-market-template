@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
-import {FilterValue} from 'oc-ng-common-service/lib/model/frontend.model';
+import {FilterValue} from 'oc-ng-common-service';
 
 @Component({
   selector: 'app-app-search',

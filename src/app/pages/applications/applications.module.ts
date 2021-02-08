@@ -5,8 +5,6 @@ import { ApplicationsRoutingModule } from './applications-routing.module';
 import {AppDetailComponent} from './app-detail/app-detail.component';
 import {AppSearchComponent} from './app-search/app-search.component';
 import {SharedModule} from '@shared/shared.module';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
-
 
 @NgModule({
   declarations: [
@@ -17,7 +15,6 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
     CommonModule,
     ApplicationsRoutingModule,
     SharedModule,
-    FontAwesomeModule,
   ]
 })
 export class ApplicationsModule { }
