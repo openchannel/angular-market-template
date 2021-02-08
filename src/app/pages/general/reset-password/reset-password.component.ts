@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NativeLoginService, SellerResetPassword} from 'oc-ng-common-service';
+import {NativeLoginService, UserResetPassword} from 'oc-ng-common-service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -13,7 +13,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
     companyLogoUrl = './assets/img/logo-company.png';
     inProcess = false;
-    resetModel = new SellerResetPassword();
+    resetModel = new UserResetPassword();
 
     private destroy$: Subject<void> = new Subject();
 
