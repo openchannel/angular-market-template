@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   AuthenticationService,
-  CommonService,
-  DeveloperDetailsModel,
   UserAccount,
   UserAccountService,
   UserAccountTypesService
@@ -25,7 +23,6 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
   @ViewChild('form') dynamicForm: OcFormComponent;
 
   myProfile: UserAccount;
-  developerDetails = new DeveloperDetailsModel();
   isSaveInProcess = false;
   formDefinition: any;
   defaultFormDefinition = {
@@ -46,7 +43,6 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
   private loader: LoadingBarState;
 
   constructor(private userService: UserAccountService,
-              private commonService: CommonService,
               private loadingBar: LoadingBarService,
               private userAccountTypeService: UserAccountTypesService,
               private authService: AuthenticationService,

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SellerMyProfile } from 'oc-ng-common-service';
 
 @Component({
   selector: 'app-my-profile',
@@ -8,7 +7,7 @@ import { SellerMyProfile } from 'oc-ng-common-service';
 })
 export class MyProfileComponent implements OnInit {
 
-  selectedPage : 'myProfile' | 'changePassword'  = 'myProfile';
+  selectedPage: 'myProfile' | 'changePassword'  = 'myProfile';
 
   constructor() { }
 

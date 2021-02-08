@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NativeLoginService, SellerSignin, UsersService} from 'oc-ng-common-service';
+import {NativeLoginService, UserRegistrationModel} from 'oc-ng-common-service';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     companyLogoUrl = './assets/img/logo-company.png';
     forgotPasswordDoneIconPath = './assets/img/forgot-password-complete-icon.svg';
     showResultPage = false;
-    signIn = new SellerSignin();
+    signIn = new UserRegistrationModel();
     inProcess = false;
 
     private destroy$: Subject<void> = new Subject();
