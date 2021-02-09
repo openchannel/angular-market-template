@@ -178,7 +178,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         }
       });
     });
-    this.siteService.setPrefix(filterLabels.join(', '));
+    this.siteService.setSpecialTitle(filterLabels.join(', '));
     return filterValues;
   }
 }

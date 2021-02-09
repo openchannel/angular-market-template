@@ -38,7 +38,7 @@ export class HomeComponent implements OnInit, OnDestroy {
               private siteService: SiteConfigService) { }
 
   ngOnInit(): void {
-    this.siteService.setPostfix(this.siteService.siteConfig.tagline);
+    this.siteService.setSpecialTitle(this.siteService.siteConfig.tagline, true);
     this.loader = this.loadingBar.useRef();
     this.getPageConfig();
   }
