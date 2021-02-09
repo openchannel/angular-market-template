@@ -4,7 +4,7 @@ import {
   FullAppData,
   AppsService,
   FrontendService,
-  Filter, SidebarValue, SiteConfigService,
+  Filter, SidebarValue, SiteConfigService, TitleService,
 } from 'oc-ng-common-service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -35,10 +35,11 @@ export class HomeComponent implements OnInit, OnDestroy {
               private router: Router,
               private frontendService: FrontendService,
               private loadingBar: LoadingBarService,
-              private siteService: SiteConfigService) { }
+              private siteService: SiteConfigService,
+              private titleService: TitleService) { }
 
   ngOnInit(): void {
-    this.siteService.setSpecialTitle(this.siteService.siteConfig.tagline, true);
+    this.titleService.setSpecialTitle(this.siteService.siteConfig.tagline, true);
     this.loader = this.loadingBar.useRef();
     this.getPageConfig();
   }

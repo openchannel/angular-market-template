@@ -7,7 +7,7 @@ import {
   OCReviewDetails,
   OverallRatingSummary,
   FrontendService,
-  DropdownModel, AppVersionService, AppFormService, AppFormModel, SiteConfigService,
+  DropdownModel, AppVersionService, AppFormService, AppFormModel, SiteConfigService, TitleService,
 } from 'oc-ng-common-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
@@ -64,7 +64,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
               private modalService: NgbModal,
               private formService: AppFormService,
               private toaster: ToastrService,
-              private siteService: SiteConfigService) { }
+              private titleService: TitleService) { }
 
   ngOnInit(): void {
     this.loader = this.loadingBar.useRef();
@@ -148,7 +148,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     return appData.pipe(takeUntil(this.destroy$),
           map(app => new FullAppData(app, pageConfig.fieldMappings)),
           tap(app => {
-            this.siteService.setSpecialTitle(app.name);
+            this.titleService.setSpecialTitle(app.name);
              return this.app = app;
           }));
   }

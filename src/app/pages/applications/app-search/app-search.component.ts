@@ -4,7 +4,7 @@ import {
   Filter,
   FrontendService,
   FullAppData,
-  Page, SiteConfigService
+  Page, SiteConfigService, TitleService
 } from 'oc-ng-common-service';
 import { debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
@@ -38,7 +38,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
               private router: ActivatedRoute,
               private loadingBar: LoadingBarService,
               private route: Router,
-              private siteService: SiteConfigService) {}
+              private titleService: TitleService) {}
 
   ngOnInit() {
     this.loader = this.loadingBar.useRef();
@@ -178,7 +178,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         }
       });
     });
-    this.siteService.setSpecialTitle(filterLabels.join(', '));
+    this.titleService.setSpecialTitle(filterLabels.join(', '));
     return filterValues;
   }
 }
