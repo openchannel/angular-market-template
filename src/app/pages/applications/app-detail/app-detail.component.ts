@@ -7,7 +7,7 @@ import {
   OCReviewDetails,
   OverallRatingSummary,
   FrontendService,
-  DropdownModel, AppVersionService, AppFormService, AppFormModel, TitleService,
+  DropdownModel, AppVersionService, AppFormService, AppFormModel, SiteConfigService, TitleService,
 } from 'oc-ng-common-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
@@ -148,7 +148,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     return appData.pipe(takeUntil(this.destroy$),
           map(app => new FullAppData(app, pageConfig.fieldMappings)),
           tap(app => {
-            this.titleService.setPrefix(app.name);
+            this.titleService.setSpecialTitle(app.name);
              return this.app = app;
           }));
   }

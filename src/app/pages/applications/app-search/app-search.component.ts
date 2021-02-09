@@ -4,7 +4,7 @@ import {
   Filter,
   FrontendService,
   FullAppData,
-  Page, TitleService
+  Page, SiteConfigService, TitleService
 } from 'oc-ng-common-service';
 import { debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
@@ -178,7 +178,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         }
       });
     });
-    this.titleService.setPrefix(filterLabels.join(', '));
+    this.titleService.setSpecialTitle(filterLabels.join(', '));
     return filterValues;
   }
 }
