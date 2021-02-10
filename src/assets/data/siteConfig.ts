@@ -7,5 +7,9 @@ export const siteConfig: SiteConfig = {
     {name: 'author', content: 'OpenChannel'},
     {name: 'description', content: 'OpenChannel'},
     {name: 'generator', content: 'OpenChannel'}
-  ]
+  ],
+  favicon: {
+    href: 'assets/img/favicon.png',
+    type: 'image/x-icon'
+  }
 }
