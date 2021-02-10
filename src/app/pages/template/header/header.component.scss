@@ -3,11 +3,14 @@
 .navbar {
   padding: 0 1rem;
   border-bottom: 1px solid rgba(201, 213, 234, 0.5);
+  .container {
+    height: 80px;
+  }
 }
 .navbar-light .navbar-nav .nav-item.active > .nav-link {
   opacity: 1;
   border-bottom: 3px solid $primary;
-  padding-bottom: 25px;
+  padding-bottom: 30px;
 }
 .navbar-light .navbar-nav .nav-item .nav-link {
   opacity: 0.5;
