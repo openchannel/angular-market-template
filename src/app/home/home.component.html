@@ -26,7 +26,7 @@
             <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
                 <div [ngSwitch]="configElement?.type">
                     <div class="pb-7" *ngSwitchCase="'apps-list'">
-                        <oc-app-gallery *ngIf="configElement?.data"
+                        <oc-app-gallery *ngIf="configElement?.data && configElement?.data.length > 0"
                                         [appsArr]="configElement?.data"
                                         (clickByAppCard)="goToAppDetails($event)"
                                         seeAllUrl="/app/search"
@@ -37,7 +37,7 @@
                     </div>
                     <div *ngSwitchCase="'filter-values-card-list'" class="mb-7">
                         <oc-app-categories
-                                *ngIf="categoriesData"
+                                *ngIf="categoriesData && categories.length > 0"
                                 [data]="categories"
                                 [categoryHeaderTitle]="configElement.name"
                                 categoryRouterLink="/app/search">
