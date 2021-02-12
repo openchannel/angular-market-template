@@ -22,12 +22,12 @@ import {FilterValue} from 'oc-ng-common-service';
 export class AppSearchComponent implements OnDestroy, OnInit {
 
   searchText: string;
+  searchTextTag: string;
   appPage: Page<FullAppData>;
   filters: Filter[];
   selectedFilterValues: FilterValue [] = [];
 
   loadFilters$: Observable<Page<Filter>>;
-  textChange$: Subject<string> = new Subject();
 
   loader: LoadingBarState;
 
@@ -73,24 +73,11 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             this.getSortedData(filterId, filterValueId)
           }
         });
-    this.subscribeToSearchChange();
   }
 
   ngOnDestroy(): void {
-    this.textChange$.complete();
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  subscribeToSearchChange(): void {
-    this.textChange$
-        .pipe(
-            takeUntil(this.destroy$),
-            debounceTime(300),
-            distinctUntilChanged(),
-            mergeMap((value: string) => this.searchAppObservable(value, this.getFilterQuery())))
-        .subscribe(() => this.loader.complete(),
-            () =>  this.loader.complete());
   }
 
   searchAppObservable(text: string, sort: string): Observable<Page<FullAppData>> {
@@ -139,7 +126,11 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   onTextChange(text: string) {
-    this.textChange$.next(text);
+    this.searchTextTag = text;
+    this.searchAppObservable(text, this.getFilterQuery()).subscribe(
+      () => this.loader.complete(),
+          () =>  this.loader.complete()
+    );
   }
 
   hasCheckedValue(filter: Filter): boolean {
@@ -155,6 +146,11 @@ export class AppSearchComponent implements OnDestroy, OnInit {
       filterValue.checked = false;
       this.getData();
     }
+  }
+
+  clearSearchText() {
+    this.searchText = '';
+    this.onTextChange('');
   }
 
   private getFilterQuery() {
