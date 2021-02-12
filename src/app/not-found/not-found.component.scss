@@ -1,0 +1,17 @@
+.main-container {
+  min-height: 100vh;
+
+  & header {
+    height: 80px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.logo {
+  height: 27px;
+}
+
+.subtitle {
+  font-size: 20px;
+}

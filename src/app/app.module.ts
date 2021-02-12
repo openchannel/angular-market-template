@@ -14,11 +14,13 @@ import { SharedModule } from '@shared/shared.module';
 import { HomeComponent } from './home/home.component';
 import {HttpErrorInterceptor} from '@core/interceptors/httperror.interceptor';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    NotFoundComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
