@@ -1,10 +1,16 @@
 import {Injectable} from '@angular/core';
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
+} from '@angular/common/http';
 
 import {BehaviorSubject, Observable, throwError} from 'rxjs';
 import {Router} from '@angular/router';
 import {OcErrorService} from 'oc-ng-common-component';
-import {catchError, filter, switchMap, take} from 'rxjs/operators';
+import {catchError, switchMap, take} from 'rxjs/operators';
 import {AuthenticationService, AuthHolderService, LoginResponse} from 'oc-ng-common-service';
 import {ToastrService} from 'ngx-toastr';
 import {HttpConfigInterceptor} from './httpconfig.interceptor';
@@ -24,20 +30,20 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request)
-      .pipe(catchError((response: HttpErrorResponse) => {
-        if (response instanceof HttpErrorResponse && response.status === 401) {
-          return this.handle401Error(request, next);
-        } else if (response.error && response.error['validation-errors']) {
-          this.handleValidationError(response.error['validation-errors']);
-        } else if (response?.error?.errors?.length >= 1 && response?.error?.errors[0]?.field) {
-          this.handleValidationError(response.error.errors);
-        } else if (this.isCsrfError(response)) {
-          return throwError(response);
-        } else {
-          this.handleError(response);
-        }
+    .pipe(catchError((response: HttpErrorResponse) => {
+      if (response instanceof HttpErrorResponse && response.status === 401) {
+        return this.handle401Error(request, next);
+      } else if (response.error && response.error['validation-errors']) {
+        this.handleValidationError(response.error['validation-errors']);
+      } else if (response?.error?.errors?.length >= 1 && response?.error?.errors[0]?.field) {
+        this.handleValidationError(response.error.errors);
+      } else if (this.isCsrfError(response)) {
         return throwError(response);
-      }));
+      } else {
+        this.handleError(response);
+      }
+      return throwError(response);
+    }));
   }
 
   private handleValidationError(validationErrorList: any[]) {
@@ -49,29 +55,33 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
-      this.refreshTokenSubject.next(null);
-
       return this.authenticationService.refreshToken({refreshToken: this.authHolderService.refreshToken}).pipe(
-        catchError(response => {
-          this.authHolderService.clearTokensInStorage();
-          this.router.navigate(['/login']);
-          return throwError(response);
-        }),
-        switchMap((response: LoginResponse) => {
-          this.isRefreshing = false;
-          this.authHolderService.persist(response.accessToken, response.refreshToken);
-          this.refreshTokenSubject.next(response.accessToken);
-          return next.handle(HttpConfigInterceptor.addToken(request, response.accessToken));
-        }));
+          catchError(response => {
+            this.authHolderService.clearTokensInStorage();
+            this.router.navigate(['/login'])
+            .then(() => this.isRefreshing = false);
+            this.refreshTokenSubject.next(null);
+            return throwError(response);
+          }),
+          switchMap((response: LoginResponse) => {
+            this.authHolderService.persist(response.accessToken, response.refreshToken);
+            this.refreshTokenSubject.next(response.accessToken);
+            this.isRefreshing = false;
+            return next.handle(HttpConfigInterceptor.addToken(request, response.accessToken));
+          }));
     } else {
       return this.refreshTokenSubject.pipe(
-        filter(token => token != null),
-        take(1),
-        switchMap(jwt => {
-          return next.handle(HttpConfigInterceptor.addToken(request, jwt));
-        }));
+          take(1),
+          switchMap((jwt, e) => {
+            if (jwt != null) {
+              return next.handle(HttpConfigInterceptor.addToken(request, jwt));
+            } else {
+              return next.handle(request);
+            }
+          }));
     }
   }
+
 
   private handleError(error) {
     let errorMessage: string;
