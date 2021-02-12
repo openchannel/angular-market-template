@@ -54,7 +54,7 @@ Compodoc show project structure. (modules, components, routes and etc.)
 
   ``npm run start-compodoc``
   
-* Documentation [http://localhost:8888](http://localhost:8888)
+* Documentation [http://localhost:8804](http://localhost:8804)
 
 <!-- CONTACT -->
 ## Contact
