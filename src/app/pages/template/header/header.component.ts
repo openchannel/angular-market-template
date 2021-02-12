@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   generateDropdownMenuItems() {
-    if (this.isSSO) {
+    if (!this.isSSO) {
       this.menuItems.push({
         value: '/management/profile',
         label: 'My Profile'
