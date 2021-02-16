@@ -175,23 +175,27 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   catchSearchText(searchText: string) {
-    this.router.navigate(
-        ['app/browse', this.DEFAULT_FILTER_ID, this.DEFAULT_FILTER_VALUE_ID],
-        {queryParams: {search: searchText}}).then();
+    this.goToBrowsePage(this.DEFAULT_FILTER_ID, this.DEFAULT_FILTER_VALUE_ID, searchText);
   }
 
   onSidebarFilterChange(filter: Filter, sidebarSelectModel: OcSidebarSelectModel) {
     if(sidebarSelectModel) {
-      let selectValueId = '';
+      let filterValueId = '';
       if(sidebarSelectModel?.parent) {
         sidebarSelectModel.parent.checked = true;
-        selectValueId = sidebarSelectModel.parent.id;
+        filterValueId = sidebarSelectModel.parent.id;
       }
-      this.router.navigate(['app/browse', filter.id, selectValueId]).then();
+      this.goToBrowsePage(filter.id, filterValueId);
     }
   }
 
-  goToAppDetails(appData: FullAppData) {
+  goToAppDetailsPage(appData: FullAppData) {
     this.router.navigate(['details', appData.safeName[0]]).then();
+  }
+
+  goToBrowsePage(filterId: string, filterValueId: string, searchText?: string) {
+    this.router.navigate(['app/browse', filterId, filterValueId],
+        {queryParams: searchText ? {search: searchText} : {}})
+    .then(() => window.scrollTo(0, 0));
   }
 }
