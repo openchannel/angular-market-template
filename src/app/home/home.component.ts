@@ -31,6 +31,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private subscriber: Subscription = new Subscription();
 
+  private readonly DEFAULT_FILTER_ID = 'collections'
+  private readonly DEFAULT_FILTER_VALUE_ID = 'allApps'
+
   constructor(private appService: AppsService,
               private router: Router,
               private frontendService: FrontendService,
@@ -171,9 +174,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
   }
 
-  catchSearchText(searchText) {
-    this.router.navigate(['app/search'], {queryParams:
-        {filterId: 'collections', valueId: 'allApps', searchText}}).then();
+  catchSearchText(searchText: string) {
+    this.router.navigate(
+        ['app/browse', this.DEFAULT_FILTER_ID, this.DEFAULT_FILTER_VALUE_ID],
+        {queryParams: {search: searchText}}).then();
   }
 
   onSidebarFilterChange(filter: Filter, sidebarSelectModel: OcSidebarSelectModel) {
@@ -183,17 +187,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         sidebarSelectModel.parent.checked = true;
         selectValueId = sidebarSelectModel.parent.id;
       }
-      if(sidebarSelectModel?.child) {
-        sidebarSelectModel.child.checked = true;
-        selectValueId = sidebarSelectModel.child.id;
-      }
-      this.router.navigate(['app/search'], {
-        queryParams: {
-          filterId: filter.id,
-          valueId: selectValueId,
-          searchText: ''
-        }
-      }).then();
+      this.router.navigate(['app/browse', filter.id, selectValueId]).then();
     }
   }
 
