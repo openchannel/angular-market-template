@@ -3,16 +3,15 @@ import {
   AppsService,
   Filter,
   FrontendService,
-  FullAppData,
-  Page, SiteConfigService, TitleService
+  FullAppData, OcSidebarSelectModel,
+  Page, SidebarValue, TitleService
 } from 'oc-ng-common-service';
-import { debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
-import {FilterValue} from 'oc-ng-common-service';
 
 @Component({
   selector: 'app-app-search',
@@ -24,14 +23,19 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   searchText: string;
   searchTextTag: string;
   appPage: Page<FullAppData>;
-  filters: Filter[];
-  selectedFilterValues: FilterValue [] = [];
+  filters: Filter[] = [];
+  selectedFilterValues: {
+    filterId: string;
+    value: SidebarValue;
+  }[];
 
   loadFilters$: Observable<Page<Filter>>;
 
   loader: LoadingBarState;
 
   private destroy$: Subject<void> = new Subject();
+
+  public readonly SINGLE_FILTER = 'collections';
 
   constructor(private appService: AppsService,
               private frontendService: FrontendService,
@@ -121,6 +125,24 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         () => this.loader.complete());
   }
 
+  onSingleFilterChange(currentFilter: Filter, singleFilterValue: OcSidebarSelectModel): void {
+    const parentCheckedValue = singleFilterValue.parent?.checked;
+    this.filters.forEach(filter => {
+      filter?.values?.forEach(value => {
+        if (value?.checked) {
+          value.checked = false;
+        }
+      });
+    });
+    singleFilterValue.parent.checked = !parentCheckedValue;
+    this.getData();
+  }
+
+  onMultiFilterChange(currentFilter: Filter, multiFilterValue: OcSidebarSelectModel): void {
+    multiFilterValue.parent.checked = !multiFilterValue.parent?.checked;
+    this.getData();
+  }
+
   onFilterChange() {
     this.getData();
   }
@@ -141,10 +163,12 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     this.route.navigate(['/details', app.safeName[0]]);
   }
 
-  disableFilterValue(filterValue: FilterValue): void {
-    if (filterValue) {
-      filterValue.checked = false;
-      this.getData();
+  disableFilterValue(filterId: string, filterValue: SidebarValue): void {
+    const currentFilter = this.filters.filter(filter => filter.id === filterId)[0];
+    if(filterId === this.SINGLE_FILTER) {
+      this.onSingleFilterChange(currentFilter, {parent: filterValue, child: filterValue});
+    } else {
+      this.onMultiFilterChange(currentFilter, {parent: filterValue, child: filterValue});
     }
   }
 
@@ -156,20 +180,21 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   private getFilterQuery() {
 
     let filterValues = this.getSelectedFilterValues();
-    let queries = filterValues.map(filterValue => filterValue.query).filter(q => q);
+    let queries = filterValues.map(filterValue => filterValue.value.query).filter(q => q);
 
     this.selectedFilterValues = filterValues;
 
     return queries.length > 0 ? `{ "$and":[${queries.join(',')}] }` : null;
   }
 
-  private getSelectedFilterValues(): FilterValue [] {
-    const filterValues = [];
+  private getSelectedFilterValues(): {filterId: string, value: SidebarValue} [] {
+    const filterValues: {filterId: string; value: SidebarValue }[] = [];
     const filterLabels = [];
     this.filters.forEach(filter => {
       filter.values.forEach(value => {
         if (value.checked) {
-          filterValues.push(value);
+          const sidebarValue = <SidebarValue> value;
+          filterValues.push({filterId: filter.id, value: sidebarValue});
           filterLabels.push(filter.name);
         }
       });

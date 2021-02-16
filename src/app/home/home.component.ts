@@ -4,7 +4,7 @@ import {
   FullAppData,
   AppsService,
   FrontendService,
-  Filter, SidebarValue, SiteConfigService, TitleService,
+  Filter, SiteConfigService, TitleService, OcSidebarSelectModel,
 } from 'oc-ng-common-service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -176,22 +176,25 @@ export class HomeComponent implements OnInit, OnDestroy {
         {filterId: 'collections', valueId: 'allApps', searchText}}).then();
   }
 
-  onLabelChange(chosenFilterValue: SidebarValue) {
-    let chosenFilterId = '';
-    let chosenValueId: string = chosenFilterValue.id;
-
-    if (!chosenFilterValue.checked) {
-      chosenValueId = chosenFilterValue.values.find(value => value.checked).id;
-    }
-    this.sidebarFilters.forEach(filter => {
-      filter.values.forEach(value => {
-        if (value.id === chosenFilterValue.id) {
-          chosenFilterId = filter.id;
+  onSidebarFilterChange(filter: Filter, sidebarSelectModel: OcSidebarSelectModel) {
+    if(sidebarSelectModel) {
+      let selectValueId = '';
+      if(sidebarSelectModel?.parent) {
+        sidebarSelectModel.parent.checked = true;
+        selectValueId = sidebarSelectModel.parent.id;
+      }
+      if(sidebarSelectModel?.child) {
+        sidebarSelectModel.child.checked = true;
+        selectValueId = sidebarSelectModel.child.id;
+      }
+      this.router.navigate(['app/search'], {
+        queryParams: {
+          filterId: filter.id,
+          valueId: selectValueId,
+          searchText: ''
         }
-      });
-    });
-    this.router.navigate(['app/search'], {queryParams:
-        {filterId: chosenFilterId, valueId: chosenValueId, searchText: ''}}).then();
+      }).then();
+    }
   }
 
   goToAppDetails(appData: FullAppData) {
