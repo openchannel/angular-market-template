@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AppCategoryDetail, FullAppData, AppsService, FrontendService } from 'oc-ng-common-service';
-import { FilterValue } from '@core/services/apps-services/model/apps-model';
+import {
+  AppCategoryDetail,
+  FullAppData,
+  AppsService,
+  FrontendService,
+  Filter, SiteConfigService, TitleService, OcSidebarSelectModel,
+} from 'oc-ng-common-service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { pageConfig } from '../../assets/data/configData';
@@ -16,11 +21,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public featuredApp: FullAppData[] = [];
   public categories: AppCategoryDetail[] = [];
+  public sidebarFilters: Filter[];
 
-  public appsFilter: FilterValue [] = [];
   public isFeatured = false;
   public homePageConfig;
-  public categoriesData: FilterValue [] = [];
+  public categoriesData: any [] = [];
 
   public loader: LoadingBarState;
 
@@ -29,9 +34,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private appService: AppsService,
               private router: Router,
               private frontendService: FrontendService,
-              private loadingBar: LoadingBarService) { }
+              private loadingBar: LoadingBarService,
+              private siteService: SiteConfigService,
+              private titleService: TitleService) { }
 
   ngOnInit(): void {
+    this.titleService.setSpecialTitle(this.siteService.siteConfig.tagline, true);
     this.loader = this.loadingBar.useRef();
     this.getPageConfig();
   }
@@ -44,14 +52,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.homePageConfig = pageConfig;
     this.getFeaturedApps();
     this.appsForCategory();
-    this.getCategoriesToExplore();
+    this.getFilters();
   }
 
   // Getting featured apps separately
   getFeaturedApps(): void {
     if (this.homePageConfig && this.homePageConfig.appListPage && this.homePageConfig.appListPage.length > 0) {
       const featureConfig = this.homePageConfig.appListPage.find(filer => filer.type.includes('featured-apps'));
-      if(featureConfig) {
+      if (featureConfig) {
         this.loader.start();
         this.subscriber.add(
           this.appService.getApps(1, 6, featureConfig.sort, featureConfig.filter)
@@ -74,7 +82,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         element.type !== 'filter-values-card-list') {
         this.loader.start();
         this.subscriber.add(
-          this.appService.getApps(1, 6, element.sort, element.filter)
+          this.appService.getApps(1, 4, element.sort, element.filter)
             .subscribe(res => {
               element.data = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
               this.loader.complete();
@@ -84,7 +92,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  getCategoriesToExplore() {
+  getCategoriesToExplore(filters: Filter []) {
     const categoriesConfig = [
       { background: '',
         logo: '../../../../assets/img/all-apps-category-icon.svg',
@@ -118,36 +126,78 @@ export class HomeComponent implements OnInit, OnDestroy {
     ];
     const categoryProps = pageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
     let categoryIndex = 0;
-    if(categoryProps) {
-      this.loader.start();
-      this.subscriber.add(
-        this.frontendService.getFilters().subscribe(result => {
-          this.categoriesData = [...result.list.find(filter => filter.id === categoryProps.filterId).values];
-          this.categoriesData.forEach(data => {
-            if (categoryIndex === categoriesConfig.length) {
-              categoryIndex = 0;
-            }
-            const category: AppCategoryDetail = {
-              categoryLogo: categoriesConfig[categoryIndex].logo,
-              categoryBackgroundImage: categoriesConfig[categoryIndex].background,
-              categoryName: data.label,
-              categoryTitleColor: categoriesConfig[categoryIndex].color,
-              categoryQuery: {
-                filterId: categoryProps.filterId,
-                valueId: data.id
-              }
-            };
-            this.categories.push(category);
-            categoryIndex++;
-          })
-          this.loader.complete();
-        }, () => this.loader.complete())
-      );
+    if (categoryProps) {
+      this.categoriesData = [...filters.find(filter => filter.id === categoryProps.filterId).values];
+      this.categoriesData.forEach(data => {
+        if (categoryIndex === categoriesConfig.length) {
+          categoryIndex = 0;
+        }
+        const category: AppCategoryDetail = {
+          categoryLogo: categoriesConfig[categoryIndex].logo,
+          categoryBackgroundImage: categoriesConfig[categoryIndex].background,
+          categoryName: data.label,
+          categoryTitleColor: categoriesConfig[categoryIndex].color,
+          categoryQuery: {
+            filterId: categoryProps.filterId,
+            valueId: data.id
+          }
+        };
+        this.categories.push(category);
+        categoryIndex++;
+      });
     }
+  }
+
+  getSidebarFilters(filters: Filter []) {
+    this.sidebarFilters = [...filters];
+    for (const filterModel of this.sidebarFilters) {
+      filterModel.values = filterModel.values.map(filterValue => {
+        return {
+          ...filterValue,
+          checked: false
+        };
+      });
+    }
+  }
+
+  getFilters() {
+    this.loader.start();
+    this.subscriber.add(
+      this.frontendService.getFilters().subscribe(result => {
+        this.getCategoriesToExplore(result.list);
+        this.getSidebarFilters(result.list);
+        this.loader.complete();
+      }, () => this.loader.complete())
+    );
   }
 
   catchSearchText(searchText) {
     this.router.navigate(['app/search'], {queryParams:
-        {filterId: 'collections', valueId: 'allApps', searchText: searchText}}).then();
+        {filterId: 'collections', valueId: 'allApps', searchText}}).then();
+  }
+
+  onSidebarFilterChange(filter: Filter, sidebarSelectModel: OcSidebarSelectModel) {
+    if(sidebarSelectModel) {
+      let selectValueId = '';
+      if(sidebarSelectModel?.parent) {
+        sidebarSelectModel.parent.checked = true;
+        selectValueId = sidebarSelectModel.parent.id;
+      }
+      if(sidebarSelectModel?.child) {
+        sidebarSelectModel.child.checked = true;
+        selectValueId = sidebarSelectModel.child.id;
+      }
+      this.router.navigate(['app/search'], {
+        queryParams: {
+          filterId: filter.id,
+          valueId: selectValueId,
+          searchText: ''
+        }
+      }).then();
+    }
+  }
+
+  goToAppDetails(appData: FullAppData) {
+    this.router.navigate(['details', appData.safeName[0]]).then();
   }
 }

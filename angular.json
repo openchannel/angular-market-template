@@ -27,7 +27,9 @@
             "assets": [
               "src/assets",
               "src/robots.txt",
-              "src/_redirects"
+              "src/_redirects",
+              {"glob": "**/*", "input": "node_modules/oc-ng-common-component/assets/img",
+                "output": "/assets/oc-ng-common-component"}
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css",

@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthenticationService, AuthHolderService} from 'oc-ng-common-service';
+import {AuthenticationService, AuthHolderService, DropdownModel} from 'oc-ng-common-service';
 import {LogOutService} from '@core/services/logout-service/log-out.service';
 import {map, takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
@@ -26,8 +26,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isSSO = this.authHolderService?.userDetails?.isSSO;
 
-    console.log(this.authHolderService.isLoggedInUser());
-
     this.openIdAuthService.getAuthConfig()
       .pipe(
         takeUntil(this.destroy$),
@@ -42,11 +40,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   login() {
     this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.routerState.snapshot.url }});
-  }
-
-  get initials(): string {
-    return this.authHolderService.userDetails ?
-      this.authHolderService.getUserName().split(' ').map(value => value.substring(0, 1)).join('') : '';
   }
 
   logout() {

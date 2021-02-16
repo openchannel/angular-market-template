@@ -8,7 +8,6 @@ import {
   UserAccountTypesService
 } from 'oc-ng-common-service';
 import {OcInviteModalComponent} from 'oc-ng-common-component';
-import {map} from 'rxjs/operators';
 
 export interface Page {
   pageId: string;
@@ -89,7 +88,7 @@ export class MyCompanyComponent implements OnInit {
 
     const modalData = new ModalInviteUserModel();
     modalData.modalTitle = 'Invite a member';
-    modalData.successButtonText = 'Save';
+    modalData.successButtonText = 'Send Invite';
 
     modalData.requestFindUserTypes = () => {
       return this.userAccountTypesService.getUserAccountTypes(1, 100);

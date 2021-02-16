@@ -1,6 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AppsService, Filter, FrontendService, FullAppData, Page } from 'oc-ng-common-service';
-import { debounceTime, distinctUntilChanged, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  AppsService,
+  Filter,
+  FrontendService,
+  FullAppData, OcSidebarSelectModel,
+  Page, SidebarValue, TitleService
+} from 'oc-ng-common-service';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
@@ -15,22 +21,28 @@ import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 export class AppSearchComponent implements OnDestroy, OnInit {
 
   searchText: string;
+  searchTextTag: string;
   appPage: Page<FullAppData>;
-  filters: Filter[];
-  selectedFilterLabels: string[] = [];
+  filters: Filter[] = [];
+  selectedFilterValues: {
+    filterId: string;
+    value: SidebarValue;
+  }[];
 
   loadFilters$: Observable<Page<Filter>>;
-  textChange$: Subject<string> = new Subject();
 
   loader: LoadingBarState;
 
   private destroy$: Subject<void> = new Subject();
 
+  public readonly SINGLE_FILTER = 'collections';
+
   constructor(private appService: AppsService,
               private frontendService: FrontendService,
               private router: ActivatedRoute,
               private loadingBar: LoadingBarService,
-              private route: Router) {}
+              private route: Router,
+              private titleService: TitleService) {}
 
   ngOnInit() {
     this.loader = this.loadingBar.useRef();
@@ -61,27 +73,15 @@ export class AppSearchComponent implements OnDestroy, OnInit {
           if (this.searchText) {
             this.getData();
           } else {
+            this.selectedFilterValues = this.getSelectedFilterValues();
             this.getSortedData(filterId, filterValueId)
           }
         });
-    this.subscribeToSearchChange();
   }
 
   ngOnDestroy(): void {
-    this.textChange$.complete();
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  subscribeToSearchChange(): void {
-    this.textChange$
-        .pipe(
-            takeUntil(this.destroy$),
-            debounceTime(300),
-            distinctUntilChanged(),
-            mergeMap((value: string) => this.searchAppObservable(value, this.getFilterQuery())))
-        .subscribe((data: Page<FullAppData>) => this.loader.complete(),
-            error =>  this.loader.complete());
   }
 
   searchAppObservable(text: string, sort: string): Observable<Page<FullAppData>> {
@@ -99,7 +99,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   getData(): void {
     this.searchAppObservable(this.searchText, this.getFilterQuery())
         .subscribe(() => this.loader.complete(),
-            error => this.loader.complete());
+            () => this.loader.complete());
   }
 
   getSortedData(filterId: string, valueId: string) {
@@ -125,12 +125,34 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         () => this.loader.complete());
   }
 
+  onSingleFilterChange(currentFilter: Filter, singleFilterValue: OcSidebarSelectModel): void {
+    const parentCheckedValue = singleFilterValue.parent?.checked;
+    this.filters.forEach(filter => {
+      filter?.values?.forEach(value => {
+        if (value?.checked) {
+          value.checked = false;
+        }
+      });
+    });
+    singleFilterValue.parent.checked = !parentCheckedValue;
+    this.getData();
+  }
+
+  onMultiFilterChange(currentFilter: Filter, multiFilterValue: OcSidebarSelectModel): void {
+    multiFilterValue.parent.checked = !multiFilterValue.parent?.checked;
+    this.getData();
+  }
+
   onFilterChange() {
     this.getData();
   }
 
   onTextChange(text: string) {
-    this.textChange$.next(text);
+    this.searchTextTag = text;
+    this.searchAppObservable(text, this.getFilterQuery()).subscribe(
+      () => this.loader.complete(),
+          () =>  this.loader.complete()
+    );
   }
 
   hasCheckedValue(filter: Filter): boolean {
@@ -138,22 +160,46 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   goToAppDetails(app: FullAppData) {
-    this.route.navigate(['/app/detail', app.appId]);
+    this.route.navigate(['/details', app.safeName[0]]);
+  }
+
+  disableFilterValue(filterId: string, filterValue: SidebarValue): void {
+    const currentFilter = this.filters.filter(filter => filter.id === filterId)[0];
+    if(filterId === this.SINGLE_FILTER) {
+      this.onSingleFilterChange(currentFilter, {parent: filterValue, child: filterValue});
+    } else {
+      this.onMultiFilterChange(currentFilter, {parent: filterValue, child: filterValue});
+    }
+  }
+
+  clearSearchText() {
+    this.searchText = '';
+    this.onTextChange('');
   }
 
   private getFilterQuery() {
-    const queries: string[] = [];
-    this.selectedFilterLabels = [];
 
+    let filterValues = this.getSelectedFilterValues();
+    let queries = filterValues.map(filterValue => filterValue.value.query).filter(q => q);
+
+    this.selectedFilterValues = filterValues;
+
+    return queries.length > 0 ? `{ "$and":[${queries.join(',')}] }` : null;
+  }
+
+  private getSelectedFilterValues(): {filterId: string, value: SidebarValue} [] {
+    const filterValues: {filterId: string; value: SidebarValue }[] = [];
+    const filterLabels = [];
     this.filters.forEach(filter => {
       filter.values.forEach(value => {
         if (value.checked) {
-          queries.push(value.query);
-          this.selectedFilterLabels.push(value.label);
+          const sidebarValue = <SidebarValue> value;
+          filterValues.push({filterId: filter.id, value: sidebarValue});
+          filterLabels.push(filter.name);
         }
       });
     });
-
-    return queries.length > 0 ? `{ "$and":[${queries.join(',')}] }` : null;
+    this.titleService.setSpecialTitle(filterLabels.join(', '));
+    return filterValues;
   }
 }

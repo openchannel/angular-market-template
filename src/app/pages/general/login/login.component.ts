@@ -5,7 +5,7 @@ import {
     LoginRequest,
     LoginResponse,
     NativeLoginService,
-    SellerSignin,
+    UserLoginModel,
 } from 'oc-ng-common-service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {filter, takeUntil, tap} from 'rxjs/operators';
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     companyLogoUrl = './assets/img/logo-company.png';
     signupUrl = '/signup';
     forgotPwdUrl = '/forgot-password';
-    signIn = new SellerSignin();
+    signIn = new UserLoginModel();
     inProcess = false;
     isLoading = false;
 

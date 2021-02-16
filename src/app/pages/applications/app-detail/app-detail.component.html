@@ -47,33 +47,37 @@
             <oc-app-description  class="col-md-8"
                         [appDescription]="app.description"
                         header="About"
-                        expandDescriptionText="Show full description"></oc-app-description>
+                        expandDescriptionText="Show full description"
+                        headerClass="mb-2"></oc-app-description>
             <div class="col-md ml-md-8 mt-2 mt-md-0">
-                <h4 class="mb-5">Support</h4>
+                <h4 class="mb-2">Support</h4>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <img src="https://drive.google.com/u/0/uc?id=19l_PmHX-o41r6i_iy6jM1tjFgpnTndxs&export=download"
+                        <img src="./assets/img/icon-help.svg"
                              class="pr-2" alt="icon">
-                        <a class="font-m font-med black-link" [href]="app.customData['terms-of-service-url']">F.A.Q.</a>
+                        <a class="font-m font-med link" [href]="app.customData['terms-of-service-url']">F.A.Q.</a>
                     </li>
                     <li class="list-group-item"><img
-                            src="https://drive.google.com/u/0/uc?id=15OqGirdDRuOu9fOrtJm22mDNZKfUvFpG&export=download"
+                            src="./assets/img/internet.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med black-link" [href]="app.customData['website-url']">Developer website</a>
+                        <a class="font-m font-med link" [href]="app.customData['website-url']">Developer website</a>
                     </li>
                     <li class="list-group-item"><img
-                            src="https://drive.google.com/u/0/uc?id=1HSmib71yx3xSlqZAxdS1lobMmLpKMedi&export=download"
+                            src="./assets/img/padlock.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med black-link" [href]="app.customData['terms-of-service-url']">Privacy Policy</a>
+                        <a class="font-m font-med link" [href]="app.customData['terms-of-service-url']">Privacy Policy</a>
                     </li>
-                    <li class="list-group-item"><img
-                            src="https://drive.google.com/u/0/uc?id=1ZOT4RuSOtGgjgL_ayCym-J_wjnoMwtGZ&export=download"
-                            class="pr-2" alt="icon">{{app.customData['contact-email']}}
-                    </li>
-                    <li class="list-group-item"><img
-                            src="https://drive.google.com/u/0/uc?id=1elm03rFroYXt0mCt_URMBQNRmDe1dTXP&export=download"
+                    <li class="list-group-item link"><img
+                            src="./assets/img/icon-email.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med black-link" [href]="app.customData['support-url']">Support website</a>
+                        <a class="font-m font-med link" [href]="'mailto:' + app.customData['contact-email']">
+                            {{app.customData['contact-email']}}
+                        </a>
+                    </li>
+                    <li class="list-group-item"><img
+                            src="./assets/img/speech-bubble.svg"
+                            class="pr-2" alt="icon">
+                        <a class="font-m font-med link" [href]="app.customData['support-url']">Support website</a>
                     </li>
                 </ul>
             </div>
@@ -105,7 +109,8 @@
         <div class="container">
             <oc-recommended-apps recommendedAppTitle="Recommended For You"
                                  [appList]="recommendedApps"
-                                 appsMainLink="/app/detail/"></oc-recommended-apps>
+                                 (clickByAppCard)="navigateTo(['details', $event.safeName[0]])">
+            </oc-recommended-apps>
         </div>
     </div>
 </div>

@@ -1,13 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  DeveloperAccountTypesService,
   InviteUserModel,
   InviteUserService, NativeLoginService, UserAccountTypesService,
-  UsersService,
 } from 'oc-ng-common-service';
 import {Subscription} from 'rxjs';
-import {FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-invited-signup',
@@ -18,15 +16,15 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
 
   public userInviteData: InviteUserModel;
   public isExpired = false;
-  public inviteFormData: any;
   public formConfig: any;
-  public isTerms = false;
-  public isFormInvalid = true;
-  public inProcess = false;
-  private inviteForm: FormGroup;
 
+  public signUpGroup: FormGroup;
+
+  public inProcess = false;
 
   private requestSubscriber: Subscription = new Subscription();
+
+  public termsControl = new FormControl(false, Validators.requiredTrue);
 
   constructor(private activeRouter: ActivatedRoute,
               private router: Router,
@@ -36,7 +34,6 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('getInviteDetails');
     this.getInviteDetails();
   }
 
@@ -60,7 +57,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
       this.formConfig = {
         fields: [
           {
-            id: 'name',
+            id: 'uname',
             label: 'Name',
             type: 'text',
             attributes: {required: false}
@@ -109,13 +106,16 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
       } else if (field.id.includes('company')) {
         field.defaultValue = this.userInviteData.customData?.company;
       }
+      if(field.id === 'name') {
+        field.id = 'uname';
+      }
       return field;
     });
     mappedFields.push({
       id: 'password',
       label: 'Password',
       type: 'password',
-      attributes: {required: true},
+      attributes: {},
     });
 
     return mappedFields;
@@ -128,28 +128,25 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
     if (companyKey) {
       form.get(companyKey).disable();
     }
-    this.inviteForm = form;
-  }
+    this.signUpGroup = form;
 
-  // getting last values of form for submission
-  getFormValues(form) {
-    this.inviteFormData = form;
-  }
-
-  // Active form validation
-  getFormValidity(status) {
-    this.isFormInvalid = status;
+    // add terms control into signup form
+    this.signUpGroup.addControl('terms', this.termsControl);
   }
 
   // register invited user and deleting invite on success
   submitForm() {
-    if ((!this.isTerms && this.isFormInvalid) || this.inProcess) {
+    this.signUpGroup.markAllAsTouched();
+    if (this.signUpGroup.valid && !this.inProcess) {
       this.inProcess = true;
-      this.inviteFormData.inviteToken = this.userInviteData.token;
+
+      const request = this.signUpGroup.getRawValue();
+      delete request['terms'];
+
       this.requestSubscriber.add(this.nativeLoginService.signupByInvite({
-        userCustomData: this.inviteFormData,
+        userCustomData: request,
         inviteToken: this.userInviteData.token
-      }).subscribe(resp => {
+      }).subscribe(() => {
         this.inProcess = false;
         this.router.navigate(['login']);
       }, () => {

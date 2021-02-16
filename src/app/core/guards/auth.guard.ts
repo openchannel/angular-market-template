@@ -19,11 +19,12 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     this.loader = this.loadingBar.useRef();
     this.loader.start();
-    return this.authService.isLoggedUserByAccessOrRefreshToken()
+    return this.authService.tryLoginByRefreshToken()
     .pipe(tap(isLogged => {
       this.loader.complete();
       if (!isLogged) {
-        this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+        this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }})
+        .then();
       }
     }));
   }

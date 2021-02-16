@@ -8,17 +8,30 @@
     </div>
     <div class="row" *ngIf="loadFilters$ | async">
         <div class="col-md-3 filter__container">
-            <oc-sidebar *ngFor="let filter of filters"
-                                  class="mb-1"
-                                  (selectModelsChange)="onFilterChange()"
-                                  [title]="filter.name"
-                                  [sidebarModel]="filter.values"></oc-sidebar>
+            <div *ngFor="let filter of filters">
+                <div [ngSwitch]="filter?.id">
+                    <oc-sidebar *ngSwitchCase="SINGLE_FILTER"
+                                class="mb-1"
+                                (sidebarChange)="onSingleFilterChange(filter, $event)"
+                                [title]="filter.name"
+                                [sidebarModel]="filter.values"></oc-sidebar>
+                    <oc-sidebar *ngSwitchDefault
+                                class="mb-1"
+                                (sidebarChange)="onMultiFilterChange(filter, $event)"
+                                [title]="filter.name"
+                                [sidebarModel]="filter.values"></oc-sidebar>
+                </div>
+            </div>
         </div>
         <div class="col-md-9">
-            <oc-text-search [(searchText)]="searchText" (searchTextChange)="onTextChange($event)"></oc-text-search>
+            <oc-text-search [(searchText)]="searchText" (enterSearch)="onTextChange($event)"></oc-text-search>
             <div class="result">
-                <oc-tag-element *ngFor="let filter of selectedFilterLabels"
-                                [title]="filter" [closeMarker]="true"></oc-tag-element>
+                <oc-tag-element *ngFor="let filter of selectedFilterValues"
+                                [title]="filter?.value.label" [closeMarker]="true"
+                                (clickEmitter)="disableFilterValue(filter.filterId, filter.value)"></oc-tag-element>
+                <oc-tag-element *ngIf="searchTextTag"
+                                [title]="searchTextTag" [closeMarker]="true"
+                                (clickEmitter)="clearSearchText()"></oc-tag-element>
             </div>
             <oc-app-list-grid [appList]="appPage?.list"
                               (gotoDetails)="goToAppDetails($event)"

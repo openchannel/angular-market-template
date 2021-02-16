@@ -1,5 +1,5 @@
 import {Component, OnDestroy} from '@angular/core';
-import {NativeLoginService, SellerSignup} from 'oc-ng-common-service';
+import {NativeLoginService, UserRegistrationModel} from 'oc-ng-common-service';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
@@ -19,13 +19,12 @@ export class SignupComponent implements OnDestroy {
   showSignupFeedbackPage = false;
   inProcess = false;
   signupUrl = '/signup';
-  signupModel: SellerSignup;
+  signupModel: UserRegistrationModel = new UserRegistrationModel();
   activationUrl = '/activate';
 
   private destroy$: Subject<void> = new Subject();
 
   constructor(private nativeLoginService: NativeLoginService) {
-     this.signupModel = new SellerSignup();
   }
 
   ngOnDestroy(): void {
@@ -33,7 +32,7 @@ export class SignupComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  signup(event) {
+  onSignup(event) {
     if (event === true) {
       this.inProcess = true;
       this.nativeLoginService.signup(this.signupModel)
