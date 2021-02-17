@@ -1,9 +1,0 @@
-export HOSTED_ZONE_NAME="openchannel.io."
-export REGION="us-east-1"
-export CLUSTER_NAME="market-us1-cluster"
-export ENVIRONMENT="us1"
-
-export APP_SITENAME="${CNAME}.${HOSTED_ZONE_NAME:0:-1}"
-export CLOUDFORMATION_STACKNAME="${CLUSTER_NAME}-${CNAME}"
-export PROJECTNAME="us1-${CNAME}"
-export APP_NAME="${CNAME}"
