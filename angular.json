@@ -39,7 +39,35 @@
             "scripts": []
           },
           "configurations": {
-			"stage1": {
+            "us1": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.us1.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "stage1": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -67,7 +95,7 @@
                 }
               ]
             },
-			"dev1": {
+            "dev1": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -111,6 +139,9 @@
             },
             "stage1": {
               "browserTarget": "template3-marketsite:build:stage1"
+            },
+            "us1": {
+              "browserTarget": "template3-marketsite:build:us1"
             },
             "us1-test": {
               "browserTarget": "template3-marketsite:build:us1-test"

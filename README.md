@@ -47,7 +47,7 @@ npm install file:<absolute path to common component project dist/oc-ng-common-co
 <!-- USAGE EXAMPLES -->
 ### Usage
 
-####  Run project with the remote site configs :
+####  Run project with the remote site configs (dev1, stage1) :
 1. Update hosts:
     * Open file :<br>
       ```/etc/hosts```
@@ -68,7 +68,23 @@ npm install file:<absolute path to common component project dist/oc-ng-common-co
       ``
       sudo npm run start-dev1
       ``
-      
+
+####  Run project with the remote site configs (us1) :
+Note: replace  <font color="red">YOUR_SITE_DOMAIN</font> with your market domain.
+
+1. Update hosts:
+    * Open file :<br>
+      ```/etc/hosts```
+    * Add to file this line:<br>
+      ``
+      127.0.0.1 YOUR_SITE_DOMAIN
+      ``
+2. Run project:
+    * Run project with the us1 environment:<br>
+      ``
+      sudo npm run start-us1 YOUR_SITE_DOMAIN
+      ``
+
 #### Run project with the local site configs :
 
 1. Run <font color="red">ONE</font> of this :
