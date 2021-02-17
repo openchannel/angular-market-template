@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
 import {
   AppsService,
   Filter,
@@ -9,11 +8,10 @@ import {
 } from 'oc-ng-common-service';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
-import {HttpParams} from '@angular/common/http';
 
 @Component({
   selector: 'app-app-search',
@@ -41,29 +39,20 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   constructor(private appService: AppsService,
               private frontendService: FrontendService,
-              private activatedRouter: ActivatedRoute,
+              private router: ActivatedRoute,
               private loadingBar: LoadingBarService,
-              private router: Router,
-              private titleService: TitleService,
-              private location: Location) {}
+              private route: Router,
+              private titleService: TitleService) {}
 
   ngOnInit() {
     this.loader = this.loadingBar.useRef();
-    this.searchText = this.activatedRouter.snapshot.queryParamMap.get('search');
+    this.searchText = this.router.snapshot.queryParamMap.get('search');
+    const filterId = this.router.snapshot.paramMap.get('filterId');
+    const filterValueId = this.router.snapshot.paramMap.get('valueId');
 
-    const filterValues: any = {};
-
-    // put filter values from the URL path
-    const filterId = this.activatedRouter.snapshot.paramMap.get('filterId');
-    const filterValueId = this.activatedRouter.snapshot.paramMap.get('valueId');
-    if(filterId&&filterValueId) {
-      filterValues[filterId] = [filterValueId];
-    }
-    // put filter values from the URL params
-    const queryParams = this.activatedRouter.snapshot.queryParams;
-    for(let key of Object.keys(queryParams)) {
-      filterValues[key] = (queryParams[key] as string) ? queryParams[key].split(',') : [];
-    }
+    console.log('value -> search text -> ', this.searchText);
+    console.log('value -> filter id   -> ', filterId);
+    console.log('value -> f. value id -> ', filterValueId);
 
     this.loader.start();
 
@@ -75,21 +64,20 @@ export class AppSearchComponent implements OnDestroy, OnInit {
           this.filters = data.list;
 
           for (const filterModel of this.filters) {
-            let checkedValues = filterValues[filterModel.id] as string [];
             filterModel.values = filterModel.values.map(filterValue => {
               return {
                 ...filterValue,
-                checked: checkedValues?.includes(filterValue.id),
+                checked: filterId === filterModel.id && filterValue.id === filterValueId,
               };
             });
           }
 
           this.loader.complete();
 
-          this.selectedFilterValues = this.getSelectedFilterValues();
           if (this.searchText) {
             this.onTextChange(this.searchText);
           } else {
+            this.selectedFilterValues = this.getSelectedFilterValues();
             this.getSortedData(filterId, filterValueId)
           }
         });
@@ -154,13 +142,11 @@ export class AppSearchComponent implements OnDestroy, OnInit {
       });
     });
     singleFilterValue.parent.checked = !parentCheckedValue;
-    this.updateCurrentURL(false)
     this.getData();
   }
 
   onMultiFilterChange(currentFilter: Filter, multiFilterValue: OcSidebarSelectModel): void {
     multiFilterValue.parent.checked = !multiFilterValue.parent?.checked;
-    this.updateCurrentURL(true)
     this.getData();
   }
 
@@ -169,7 +155,6 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   onTextChange(text: string) {
-    this.replaceSearchIntoCurrentURL(text);
     this.searchTextTag = text;
     this.searchAppObservable(text, this.getFilterQuery()).subscribe(
       () => this.loader.complete(),
@@ -182,7 +167,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   goToAppDetails(app: FullAppData) {
-    this.router.navigate(['/details', app.safeName[0]]);
+    this.route.navigate(['/details', app.safeName[0]]);
   }
 
   disableFilterValue(filterId: string, filterValue: SidebarValue): void {
@@ -196,7 +181,6 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   clearSearchText() {
     this.searchText = '';
-    this.replaceSearchIntoCurrentURL(this.searchText);
     this.onTextChange('');
   }
 
@@ -224,54 +208,5 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     });
     this.titleService.setSpecialTitle(filterLabels.join(', '));
     return filterValues;
-  }
-
-  private updateCurrentURL(multiFilter: boolean) : void {
-    const queryParams: Params = {};
-
-    const filterValues: any = {};
-    this.getSelectedFilterValues().forEach(filterValue => {
-      let values = filterValues[filterValue.filterId] as string[];
-      filterValues[filterValue.filterId] = values ?
-          [...values, filterValue.value.id] : [filterValue.value.id];
-    });
-
-    if(multiFilter) {
-      for(let key of Object.keys(filterValues)) {
-        if(Array.isArray(filterValues[key])){
-          queryParams[key] = (filterValues[key] as string []).join(',');
-        }
-      }
-      this.replaceCurrentURL(null, null, this.searchText, queryParams);
-    } else {
-      let filterId = Object.keys(filterValues)[0];
-      if(filterId) {
-        let filterValueId = (filterValues[filterId] as string [])[0];
-        this.replaceCurrentURL(filterId, filterValueId, this.searchText, queryParams);
-      } else {
-        this.replaceCurrentURL(null, null, this.searchText, queryParams);
-      }
-    }
-  }
-
-  private replaceCurrentURL(filterId: string, filterValueId: string, searchText: string, queryParams: any): void {
-    let httpParams = new HttpParams({fromObject: queryParams});
-    httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
-    const filterPath = filterId && filterValueId ? `/${filterId}/${filterValueId}` : '';
-   this.location.replaceState(`app/browse${filterPath}`, httpParams.toString());
-  }
-
-  private replaceSearchIntoCurrentURL(searchText: string): void {
-    let httpParams = new HttpParams({fromString: window.location.search});
-    httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
-    this.location.replaceState(window.location.pathname, httpParams.toString());
-  }
-
-  private updateSearchTextQueryParam(searchText: string, queryParams: HttpParams): HttpParams {
-    if(searchText) {
-      return queryParams.set('search', searchText);
-    } else {
-      return queryParams.delete('search');
-    }
   }
 }
