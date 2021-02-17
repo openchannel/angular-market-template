@@ -109,6 +109,9 @@
             "dev1": {
               "browserTarget": "template3-marketsite:build:dev1"
             },
+            "stage1": {
+              "browserTarget": "template3-marketsite:build:stage1"
+            },
             "us1-test": {
               "browserTarget": "template3-marketsite:build:us1-test"
             }

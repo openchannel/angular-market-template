@@ -29,22 +29,59 @@ Install node.js and npm [Guide](https://linuxize.com/post/how-to-install-node-js
 
 ### Installation
 
-1. `npm install`
+1. Install NPM packages
+```
+   npm install
+```
 
-2. For Developers. If need connect oc-ng-common-service.<br>
-   `npm install file:<absolute path to common service project dist/oc-ng-common-service>`
+2. Optional. Dependency with oc-ng-common-service.
+```
+npm install file:<absolute path to common service project dist/oc-ng-common-service>
+```
 
-3. For Developers. If need connect oc-ng-common-components.<br>
-   `npm install file:<absolute path to common component project dist/oc-ng-common-components>`
+3. Optional. Dependency with oc-ng-common-components.
+```
+npm install file:<absolute path to common component project dist/oc-ng-common-components>
+```
 
-4. Then run <font color="red">ONE</font> of this : 
-    * start app with the Okta SSO <br>
+<!-- USAGE EXAMPLES -->
+### Usage
+
+####  Run project with the remote site configs :
+1. Update hosts:
+    * Open file :<br>
+      ```/etc/hosts```
+    * Add to file two lines:<br>
+      ``
+      127.0.0.1 stage1-local-template-market.openchannel.io
+      ``<br>
+      ``
+      127.0.0.1 dev1-local-template-market.openchannel.io
+      ``
+
+2. Run project:
+    * Run project with the stage1 environment:<br>
+      ``
+      sudo npm run start-stage1
+      ``
+    * Run project with the dev1 environment:<br>
+      ``
+      sudo npm run start-dev1
+      ``
+      
+#### Run project with the local site configs :
+
+1. Run <font color="red">ONE</font> of this :
+    * Project with the Okta SSO <br>
       ``npm run start-okta``
-    * start app with the Google SSO <br>
-       ``npm run start-google``
+    * Project with Google SSO <br>
+      ``npm run start-google``
 
 ## Documentation Compodoc
 Compodoc show project structure. (modules, components, routes and etc.)
+
+* Install NPM packages :<br>
+  ``npm install``
 
 * Generate Documentation :<br>
 

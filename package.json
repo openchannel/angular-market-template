@@ -7,6 +7,8 @@
     "start-google": "ng serve --port=4200",
     "start-aws": "ng serve --port=4206",
     "build": "./node_modules/.bin/ng build --configuration=dev1",
+    "start-stage1": "./node_modules/.bin/ng serve -c stage1 --host stage1-local-template-market.openchannel.io --port 80",
+    "start-dev1": "./node_modules/.bin/ng serve -c dev1 --host dev1-local-template-market.openchannel.io --port 80",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
