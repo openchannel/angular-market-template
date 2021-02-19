@@ -18,6 +18,7 @@ import {FormModalComponent} from '@shared/modals/form-modal/form-modal.component
 import {ToastrService} from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import {ButtonAction} from './button-action/models/button-action.model';
 
 @Component({
   selector: 'app-app-detail',
@@ -49,10 +50,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject();
   private appConfigPipe = pageConfig.fieldMappings;
+  public appListingActions: ButtonAction[];
   private contactForm: AppFormModel;
 
   private loader: LoadingBarState;
-
 
   constructor(private appService: AppsService,
               private appVersionService: AppVersionService,
@@ -79,6 +80,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     this.appData$.subscribe(() => {
           this.loader.complete();
+          this.appListingActions = this.getButtonActions(pageConfig);
           this.loadReviews();
         },() => this.loader.complete());
 
@@ -205,5 +207,13 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   closeWindow() {
     window.close();
+  }
+
+  private getButtonActions(pageConfig: any): ButtonAction[] {
+    const buttonActions =  pageConfig?.appDetailsPage['listing-actions'];
+    if (buttonActions && this.app?.type) {
+      return buttonActions.filter(action => action?.appTypes?.includes(this.app.type));
+    }
+    return [];
   }
 }

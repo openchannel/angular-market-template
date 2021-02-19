@@ -52,5 +52,35 @@
        "filter": "{\"status.value\":\"approved\",\"customData.categories\":\"Analytics\"}",
        "sort": "{created: -1}"
      }
-   ]
+   ],
+   "appDetailsPage": {
+     "listing-actions": [
+       {
+         "type": "form",
+         "appTypes": ["informational", "other", "web-plugin"],
+         "formId": "contact-us",
+         "message": {
+           "success": "Thank you for submitting, we'll get back to you shortly",
+           "fail": "Due to an error, we were not able to send your form"
+         },
+         "button": {
+           "class": "btn-secondary",
+           "text": "Contact"
+         }
+       },
+       {
+         "type": "form",
+         "appTypes": ["informational", "other", "web-plugin"],
+         "formId": "buy-now",
+         "message": {
+           "success": "Thank you for submitting, we'll get back to you shortly",
+           "fail": "Due to an error, we were not able to send your form"
+         },
+         "button": {
+           "class": "btn-primary",
+           "text": "Buy Now"
+         }
+       },
+     ]
+   }
  }
