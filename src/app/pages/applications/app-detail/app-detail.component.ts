@@ -14,10 +14,10 @@ import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {FormModalComponent} from '@shared/modals/form-modal/form-modal.component';
 import {ToastrService} from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import {FormModalComponent} from '../form-modal/form-modal.component';
 
 @Component({
   selector: 'app-app-detail',
@@ -75,12 +75,12 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     this.loader.start();
 
-    this.appData$ = this.getApp(safeName, appId, appVersion)
+    this.appData$ = this.getApp(safeName, appId, appVersion);
 
     this.appData$.subscribe(() => {
           this.loader.complete();
           this.loadReviews();
-        },() => this.loader.complete());
+        }, () => this.loader.complete());
 
     this.frontendService.getSorts()
         .pipe(takeUntil(this.destroy$))
@@ -149,7 +149,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
           map(app => new FullAppData(app, pageConfig.fieldMappings)),
           tap(app => {
             this.titleService.setSpecialTitle(app.name);
-             return this.app = app;
+            return this.app = app;
           }));
   }
 

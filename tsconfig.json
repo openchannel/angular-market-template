@@ -15,7 +15,10 @@
       "@angular/*": ["./node_modules/@angular/*"],
       "@env": ["environments/environment"],
       "@shared/*": ["app/shared/*"],
-      "@core/*": ["app/core/*"]
+      "@core/*": ["app/core/*"],
+      "moment": [
+        "../node_modules/moment/min/moment.min.js"
+      ],
     },
     "typeRoots": [
       "node_modules/@types"

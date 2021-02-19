@@ -1,13 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ToastrService} from 'ngx-toastr';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import {
-  AuthHolderService, InviteUserService,
+  AuthHolderService,
+  InviteUserService,
   ModalInviteUserModel,
-  UserAccountTypesService
+  UserAccountTypesService,
 } from 'oc-ng-common-service';
-import {OcInviteModalComponent} from 'oc-ng-common-component';
+import { OcInviteModalComponent } from 'oc-ng-common-component';
 
 export interface Page {
   pageId: string;

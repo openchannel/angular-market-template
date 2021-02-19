@@ -9,8 +9,8 @@
 }
 .navbar-light .navbar-nav .nav-item.active > .nav-link {
   opacity: 1;
-  border-bottom: 3px solid $primary;
-  padding-bottom: 30px;
+  border-bottom: 3px inset $primary;
+  padding-bottom: 26px;
 }
 .navbar-light .navbar-nav .nav-item .nav-link {
   opacity: 0.5;
@@ -19,7 +19,7 @@
 .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-nav .nav-item.dropdown .nav-link {
   opacity: 1;
-  padding: 28px 20px;
+  padding: 30px 20px;
   font-size: 14px;
   color: #333333;
   font-family: "Rubik-Medium";
