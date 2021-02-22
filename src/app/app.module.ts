@@ -1,26 +1,27 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {CustomHttpClientXsrfModule, OcCommonServiceModule} from 'oc-ng-common-service';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import {OAuthModule} from 'angular-oauth2-oidc';
-import {ToastrModule} from 'ngx-toastr';
-import {HttpConfigInterceptor} from '@core/interceptors/httpconfig.interceptor';
-import {environment} from '@env';
+import { BrowserModule } from '@angular/platform-browser';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { CustomHttpClientXsrfModule, OcCommonServiceModule } from 'oc-ng-common-service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { ToastrModule } from 'ngx-toastr';
+import { HttpConfigInterceptor } from '@core/interceptors/httpconfig.interceptor';
+import { environment } from '@env';
 import { SharedModule } from '@shared/shared.module';
 import { HomeComponent } from './home/home.component';
-import {HttpErrorInterceptor} from '@core/interceptors/httperror.interceptor';
+import { HttpErrorInterceptor } from '@core/interceptors/httperror.interceptor';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { OcAppCategoriesModule } from 'oc-ng-common-component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    NotFoundComponent
+    NotFoundComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -36,7 +37,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     OAuthModule.forRoot(),
     CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl}),
     SharedModule,
-    LoadingBarModule
+    OcAppCategoriesModule,
+    LoadingBarModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},

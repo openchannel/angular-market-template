@@ -9,7 +9,7 @@
         </div>
         <oc-featured-apps *ngIf="isFeatured"
                           [data]="featuredApp"
-                          (clickByAppCard)="goToAppDetails($event)"
+                          (clickByAppCard)="goToAppDetailsPage($event)"
                           label="Featured"></oc-featured-apps>
     </div>
 </div>
@@ -28,9 +28,10 @@
                     <div class="pb-7" *ngSwitchCase="'apps-list'">
                         <oc-app-gallery *ngIf="configElement?.data && configElement?.data.length > 0"
                                         [appsArr]="configElement?.data"
-                                        (clickByAppCard)="goToAppDetails($event)"
-                                        seeAllUrl="/app/search"
-                                        [seeAllLinkQuery]="{filterId: configElement.filterId, valueId: configElement.valueId}"
+                                        (clickAppCard)="goToAppDetailsPage($event)"
+                                        moreAppsTitle="See All"
+                                        (clickMoreApps)="goToBrowsePage(
+                                        configElement.filterId, configElement.valueId)"
                                         [appGalleryTitle]="configElement.name"
                                         [appGalleryDescription]="configElement.description">
                         </oc-app-gallery>
