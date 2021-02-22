@@ -71,7 +71,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
           this.loader.complete();
 
           if (this.searchText) {
-            this.getData();
+            this.onTextChange(this.searchText);
           } else {
             this.selectedFilterValues = this.getSelectedFilterValues();
             this.getSortedData(filterId, filterValueId)
@@ -82,6 +82,9 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if(this.loader) {
+      this.loader.complete();
+    }
   }
 
   searchAppObservable(text: string, sort: string): Observable<Page<FullAppData>> {
