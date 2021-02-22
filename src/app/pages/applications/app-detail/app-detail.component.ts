@@ -17,7 +17,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService} from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import {FormModalComponent} from '../form-modal/form-modal.component';
+import {ButtonAction} from './button-action/models/button-action.model';
 
 @Component({
   selector: 'app-app-detail',
@@ -49,10 +49,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject();
   private appConfigPipe = pageConfig.fieldMappings;
+  public appListingActions: ButtonAction[];
   private contactForm: AppFormModel;
 
   private loader: LoadingBarState;
-
 
   constructor(private appService: AppsService,
               private appVersionService: AppVersionService,
@@ -79,6 +79,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     this.appData$.subscribe(() => {
           this.loader.complete();
+          this.appListingActions = this.getButtonActions(pageConfig);
           this.loadReviews();
         }, () => this.loader.complete());
 
@@ -158,35 +159,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
   }
 
-  openContactForm() {
-    const modalRef = this.modalService.open(FormModalComponent, { size: 'sm' });
-    modalRef.componentInstance.formData = this.contactForm;
-    modalRef.componentInstance.modalTitle = 'Contact form';
-
-    modalRef.result.then(value => {
-      if (value) {
-        this.loader.start();
-        this.formService.createFormSubmission(this.contactForm.formId, {
-          appId: this.app.appId,
-          name: value.name,
-          userId: '',
-          email: value.email,
-          formData: {
-            ...value,
-          },
-        }).pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-              this.loader.complete();
-              this.toaster.success('Your message was sent to the Developer');
-            },
-            () => {
-              this.loader.complete();
-              this.toaster.error('Your message wasn\'t sent to the Developer');
-            });
-      }
-    });
-  }
-
   private getContactForm() {
     this.formService.getForm('lead')
     .pipe(takeUntil(this.destroy$))
@@ -205,5 +177,13 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
   closeWindow() {
     window.close();
+  }
+
+  private getButtonActions(pageConfig: any): ButtonAction[] {
+    const buttonActions =  pageConfig?.appDetailsPage['listing-actions'];
+    if (buttonActions && this.app?.type) {
+      return buttonActions.filter(action => action?.appTypes?.includes(this.app.type));
+    }
+    return [];
   }
 }
