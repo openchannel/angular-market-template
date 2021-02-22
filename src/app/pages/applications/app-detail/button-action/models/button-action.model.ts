@@ -1,5 +1,5 @@
 export interface ButtonAction {
-  type: 'install' | 'form' | string,
+  type: 'install' | 'form' | 'download' | string,
   appTypes: string [],
 }
 
@@ -10,6 +10,11 @@ export interface FormButtonAction extends ButtonAction, ViewData {
 export interface OwnershipButtonAction extends ButtonAction {
   unowned: ViewData;
   owned: ViewData;
+}
+
+export interface DownloadButtonAction extends ButtonAction {
+  fileField: string;
+  button: ButtonForm;
 }
 
 export interface ViewData {
