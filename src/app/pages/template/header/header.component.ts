@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isSSO: any;
   isSsoConfigExist = true;
+  isCollapsed = true;
 
   private destroy$: Subject<void> = new Subject();
 
