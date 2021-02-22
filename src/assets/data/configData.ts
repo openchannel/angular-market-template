@@ -108,7 +108,7 @@
        {
          "type":"download",
          "appTypes": ["downloadable"],
-         "fileField": "customData.releases.0.file",
+         "fileField": "customData.releases[0].file",
          "button": {
            "class": "btn-primary",
            "text": "Download"

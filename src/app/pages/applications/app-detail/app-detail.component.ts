@@ -18,7 +18,8 @@ import {FormModalComponent} from '@shared/modals/form-modal/form-modal.component
 import {ToastrService} from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import {ButtonAction} from './button-action/models/button-action.model';
+import {ButtonAction, DownloadButtonAction} from './button-action/models/button-action.model';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-app-detail',
@@ -212,7 +213,11 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   private getButtonActions(pageConfig: any): ButtonAction[] {
     const buttonActions =  pageConfig?.appDetailsPage['listing-actions'];
     if (buttonActions && this.app?.type) {
-      return buttonActions.filter(action => action?.appTypes?.includes(this.app.type));
+      return buttonActions.filter(action => {
+        if (action?.appTypes?.includes(this.app.type)) {
+          return !(action?.type === 'download' && !_.get(this.app, (action as DownloadButtonAction).fileField));
+        }
+      });
     }
     return [];
   }
