@@ -11,7 +11,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {filter, takeUntil, tap} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {OAuthService} from 'angular-oauth2-oidc';
-import {JwksValidationHandler} from 'angular-oauth2-oidc-jwks';
 import {ToastrService} from 'ngx-toastr';
 import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
 import {LoadingBarService} from '@ngx-loading-bar/core';
@@ -67,7 +66,6 @@ export class LoginComponent implements OnInit, OnDestroy {
                         redirectUri: authConfig.redirectUri || window.location.href,
                     });
 
-                    this.oauthService.tokenValidationHandler = new JwksValidationHandler();
                     this.oauthService.loadDiscoveryDocumentAndLogin({
                         onTokenReceived: receivedTokens => {
                             this.loader.start();
