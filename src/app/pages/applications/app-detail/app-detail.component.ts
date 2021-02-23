@@ -14,7 +14,6 @@ import {Subject, Observable} from 'rxjs';
 import {map, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {FormModalComponent} from '@shared/modals/form-modal/form-modal.component';
 import {ToastrService} from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -77,13 +76,13 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     this.loader.start();
 
-    this.appData$ = this.getApp(safeName, appId, appVersion)
+    this.appData$ = this.getApp(safeName, appId, appVersion);
 
     this.appData$.subscribe(() => {
           this.loader.complete();
           this.appListingActions = this.getButtonActions(pageConfig);
           this.loadReviews();
-        },() => this.loader.complete());
+        }, () => this.loader.complete());
 
     this.frontendService.getSorts()
         .pipe(takeUntil(this.destroy$))
@@ -152,42 +151,13 @@ export class AppDetailComponent implements OnInit, OnDestroy {
           map(app => new FullAppData(app, pageConfig.fieldMappings)),
           tap(app => {
             this.titleService.setSpecialTitle(app.name);
-             return this.app = app;
+            return this.app = app;
           }));
   }
 
   private countRating(): void {
     this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.reviewsPage.count);
     this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
-  }
-
-  openContactForm() {
-    const modalRef = this.modalService.open(FormModalComponent, { size: 'sm' });
-    modalRef.componentInstance.formData = this.contactForm;
-    modalRef.componentInstance.modalTitle = 'Contact form';
-
-    modalRef.result.then(value => {
-      if (value) {
-        this.loader.start();
-        this.formService.createFormSubmission(this.contactForm.formId, {
-          appId: this.app.appId,
-          name: value.name,
-          userId: '',
-          email: value.email,
-          formData: {
-            ...value,
-          },
-        }).pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-              this.loader.complete();
-              this.toaster.success('Your message was sent to the Developer');
-            },
-            () => {
-              this.loader.complete();
-              this.toaster.error('Your message wasn\'t sent to the Developer');
-            });
-      }
-    });
   }
 
   private getContactForm() {
