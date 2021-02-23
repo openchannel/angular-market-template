@@ -1,13 +1,14 @@
 import {Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {
-  ButtonAction,
+  ButtonAction, DownloadButtonAction,
   FormButtonAction,
   OwnershipButtonAction, ViewData,
 } from './models/button-action.model';
 import {
   AppFormService,
   AuthHolderService,
-  FullAppData, OwnershipService
+  FullAppData, OwnershipService,
+  FileUploadDownloadService
 } from 'oc-ng-common-service';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -17,6 +18,7 @@ import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {OcButtonComponent, OcFormModalComponent} from 'oc-ng-common-component';
 import {Router} from '@angular/router';
+import * as _ from 'lodash';
 
 declare type ActionType = 'OWNED' | 'UNOWNED';
 
@@ -47,6 +49,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
               private toasterService: ToastrService,
               private authService: AuthHolderService,
               private ownershipService: OwnershipService,
+              private fileService: FileUploadDownloadService,
               private router: Router) {
   }
 
@@ -76,6 +79,12 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
           this.setViewData('UNOWNED', (this.buttonAction as OwnershipButtonAction)?.unowned);
         }
         break;
+      case 'download':
+          this.viewData = {
+            button: (this.buttonAction as DownloadButtonAction).button,
+            message: null
+          }
+        break;
       default:
         this.toasterService.error(`Error: invalid button type: ${this.buttonAction.type}`);
     }
@@ -93,6 +102,9 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         break;
       case 'install':
         this.processOwnership(this.appData.appId, this.buttonAction as OwnershipButtonAction);
+        break;
+      case 'download':
+        this.downloadFile(this.buttonAction as DownloadButtonAction);
         break;
       default:
         this.toasterService.error(`Error: invalid button type: ${this.buttonAction.type}`);
@@ -218,5 +230,19 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       fields: formFields
     };
     modalRef.result.then(result => callback(result));
+  }
+
+  private downloadFile(actionConfig: DownloadButtonAction) {
+    const file = _.get(this.appData, actionConfig.fileField);
+    const regex: RegExp = new RegExp(/^(http(s)?:)?\/\//gm);
+    if (regex.test(file)) {
+      window.open(file);
+    } else {
+      this.fileService.downloadFileDetails(file).pipe(takeUntil(this.$destroy))
+        .subscribe(fileInfo => this.fileService.getFileUrl(fileInfo.fileId).pipe(takeUntil(this.$destroy))
+          .subscribe(res => {
+            window.open(res.url);
+          }));
+    }
   }
 }
