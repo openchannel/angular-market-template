@@ -1,18 +1,20 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   InviteUserModel,
-  InviteUserService, ModalUpdateUserModel,
+  InviteUserService,
+  ModalUpdateUserModel,
   UserAccount,
   UserAccountGridModel,
-  UserAccountService, UserAccountTypesService,
+  UserAccountService,
+  UserAccountTypesService,
   UserGridActionModel,
   UsersGridParametersModel,
-  UsersService
+  UsersService,
 } from 'oc-ng-common-service';
-import {Subject, Subscription} from 'rxjs';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ToastrService} from 'ngx-toastr';
-import {OcConfirmationModalComponent, OcInviteModalComponent} from 'oc-ng-common-component';
+import { Subject, Subscription } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { OcConfirmationModalComponent, OcInviteModalComponent } from 'oc-ng-common-component';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 

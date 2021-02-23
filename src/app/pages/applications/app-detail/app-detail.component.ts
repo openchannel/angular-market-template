@@ -136,7 +136,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
           map(app => new FullAppData(app, pageConfig.fieldMappings)),
           tap(app => {
             this.titleService.setSpecialTitle(app.name);
-             return this.app = app;
+            return this.app = app;
           }));
   }
 
