@@ -29,7 +29,8 @@
                         <div *ngIf="appListingActions?.length > 0">
                             <app-button-action *ngFor="let action of appListingActions"
                                                [appData]="app"
-                                               [buttonAction]="action" class="mr-2"></app-button-action>
+                                               [buttonAction]="action"
+                                               (updateAppData)="getAppData()" class="mr-2"></app-button-action>
                         </div>
                     </div>
                 </div>

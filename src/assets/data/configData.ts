@@ -57,7 +57,7 @@
      "listing-actions": [
        {
          "type": "form",
-         "appTypes": ["informational", "other", "web-plugin", "simple-type"],
+         "appTypes": ["informational", "other", "web_plugin"],
          "formId": "contact-us",
          "message": {
            "success": "Thank you for submitting, we'll get back to you shortly",
@@ -70,7 +70,7 @@
        },
        {
          "type": "form",
-         "appTypes": ["informational", "other", "web-plugin", "simple-type"],
+         "appTypes": ["informational", "other", "web_plugin"],
          "formId": "buy-now",
          "message": {
            "success": "Thank you for submitting, we'll get back to you shortly",
@@ -83,7 +83,7 @@
        },
        {
          "type": "install",
-         "appTypes": ["web-plugin", "web-integration", "internal-feature", "simple-type"],
+         "appTypes": ["web_plugin", "web_integration", "internal_feature"],
          "unowned": {
            "message": {
              "success": "Your app has been installed",
