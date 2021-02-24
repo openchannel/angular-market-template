@@ -180,13 +180,15 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     window.close();
   }
 
-  private getButtonActions(pageConfig: any): ButtonAction[] {
-    const buttonActions =  pageConfig?.appDetailsPage['listing-actions'];
+  private getButtonActions(config: any): ButtonAction[] {
+    const buttonActions =  config?.appDetailsPage['listing-actions'];
     if (buttonActions && this.app?.type) {
       return buttonActions.filter(action => {
-        if (action?.appTypes?.includes(this.app.type)) {
-          return !(action?.type === 'download' && !_.get(this.app, (action as DownloadButtonAction).fileField));
-        }
+        const isTypeSupported = action?.appTypes?.includes(this.app.type);
+        const isNoDownloadType = action?.type !== 'download';
+        const isFileFieldPresent = !!_.get(this.app, (action as DownloadButtonAction).fileField);
+
+        return isTypeSupported && (isNoDownloadType || isFileFieldPresent);
       });
     }
     return [];
