@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://7505ceedbb4a.ngrok.io/',
+  apiUrl: 'http://localhost:8091/',
   marketplaceName: 'OpenChannel'
 };
 
