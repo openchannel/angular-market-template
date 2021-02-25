@@ -1,4 +1,13 @@
-import {Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {
   ButtonAction, DownloadButtonAction,
   FormButtonAction,
@@ -10,8 +19,8 @@ import {
   FullAppData, OwnershipService,
   FileUploadDownloadService
 } from 'oc-ng-common-service';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {Observable, Subject, throwError} from 'rxjs';
+import {catchError, takeUntil, tap} from 'rxjs/operators';
 import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
 import {LoadingBarService} from '@ngx-loading-bar/core';
 import {ToastrService} from 'ngx-toastr';
@@ -31,6 +40,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
 
   @Input() buttonAction: ButtonAction;
   @Input() appData: FullAppData;
+  @Output() updateAppData: EventEmitter<void> = new EventEmitter<void>();
 
   @ViewChild('rejectButton') rejectButton: TemplateRef<OcButtonComponent>;
   @ViewChild('confirmButton') confirmButton: TemplateRef<OcButtonComponent>;
@@ -42,6 +52,8 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
   private $destroy: Subject<void> = new Subject();
 
   private loader: LoadingBarState;
+
+  public inProcess = false;
 
   constructor(private formService: AppFormService,
               private modal: NgbModal,
@@ -98,10 +110,10 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
   onClick() {
     switch (this.buttonAction.type) {
       case 'form':
-        this.processForm(this.appData.appId, this.buttonAction as FormButtonAction);
+        this.processForm(this.buttonAction as FormButtonAction);
         break;
       case 'install':
-        this.processOwnership(this.appData.appId, this.buttonAction as OwnershipButtonAction);
+        this.processOwnership();
         break;
       case 'download':
         this.downloadFile(this.buttonAction as DownloadButtonAction);
@@ -111,7 +123,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
     }
   }
 
-  private processForm(appId: string, formAction: FormButtonAction): void {
+  private processForm(formAction: FormButtonAction): void {
     this.loader.start();
 
     // get form from API
@@ -123,22 +135,10 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       // open modal with this form
       this.openFormModal(form.name, form.fields, (result) => {
         if (result) {
-          result.appId = appId ? appId : null;
-          this.loader.start();
+          result.appId = this.appData.appId ? this.appData.appId : null;
 
           // create submission by this form
-          this.formService.createFormSubmission(form.formId, result)
-          .pipe(takeUntil(this.$destroy)).subscribe(() => {
-            this.loader.complete();
-            if (formAction?.message?.success) {
-              this.toasterService.success(formAction?.message?.success);
-            }
-          }, () => {
-            this.loader.complete();
-            if (formAction?.message?.fail) {
-              this.toasterService.error(formAction?.message?.fail);
-            }
-          });
+          this.processAction(this.formService.createFormSubmission(form.formId, result));
         }
       });
     }, () => {
@@ -146,7 +146,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
     });
   }
 
-  private processOwnership(appId: string, ownAction: OwnershipButtonAction): void {
+  private processOwnership(): void {
     if (this.authService.isLoggedInUser()) {
       switch (this.actionType) {
         case 'OWNED':
@@ -165,58 +165,37 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
   }
 
   private installOwnership(): void {
-    // get all models
     if (this.appData?.model?.length > 0) {
-      const modelOptions = this.appData?.model.map(model => model.modelId);
-      const fields = [{
-        id: 'modelId',
-        label: 'Select Model',
-        description: '',
-        defaultValue: modelOptions[0],
-        type: 'dropdownList',
-        required: true,
-        attributes: {required: true},
-        options: modelOptions,
-        subFieldDefinitions: null
-      }];
-
-      // open modal for creating a new ownership with model
-      this.openFormModal('Install ownership', fields, (formData) => {
-        if(formData) {
-          this.loader.start()
-          // create ownership
-          this.ownershipService.installOwnership({
-            appId: this.appData.appId,
-            modelId: formData.modelId
-          }).pipe(takeUntil(this.$destroy)).subscribe(() => {
-            this.loader.complete();
-            if(this.viewData?.message?.success) {
-              this.toasterService.success(this.viewData?.message?.success);
-            }
-          }, () => {
-            this.loader.complete();
-            if(this.viewData?.message?.fail) {
-              this.toasterService.error(this.viewData?.message?.fail);
-            }
-          })
-        }
-      })
+      this.processAction(this.ownershipService.installOwnership({
+          appId: this.appData.appId,
+          modelId: this.appData?.model[0].modelId
+        }));
     } else {
       this.toasterService.error('Missed any models for creating ownership.')
     }
   }
 
   private uninstallOwnership(): void {
-    this.ownershipService.uninstallOwnership(this.appData.ownership.ownershipId)
-    .pipe(takeUntil(this.$destroy)).subscribe(() => {
-      if(this.viewData?.message?.success) {
-        this.toasterService.success(this.viewData?.message?.success);
-      }
-    }, () => {
-      if(this.viewData?.message?.fail) {
-        this.toasterService.error(this.viewData?.message?.fail);
-      }
-    })
+    this.processAction(this.ownershipService.uninstallOwnership(this.appData.ownership.ownershipId));
+  }
+
+  private processAction<T>(action: Observable<T>): void {
+    if (!this.inProcess) {
+      this.inProcess = true;
+      action.pipe(takeUntil(this.$destroy), catchError(error => {
+        this.inProcess = false;
+        if (this.viewData?.message?.fail) {
+          this.toasterService.error(this.viewData?.message?.success);
+        }
+        return throwError(error);
+      }), tap(() => {
+        this.inProcess = false;
+        if (this.viewData?.message?.success) {
+          this.toasterService.success(this.viewData?.message?.success);
+        }
+        this.updateAppData.emit();
+      })).subscribe();
+    }
   }
 
   private openFormModal(modalTitle: string, formFields: any, callback: (formData: any) => void): void {
