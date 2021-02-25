@@ -17,7 +17,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService} from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import {ButtonAction} from './button-action/models/button-action.model';
+import {ButtonAction, DownloadButtonAction} from './button-action/models/button-action.model';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-app-detail',
@@ -157,10 +158,16 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     window.close();
   }
 
-  private getButtonActions(pageConfig: any): ButtonAction[] {
-    const buttonActions =  pageConfig?.appDetailsPage['listing-actions'];
+  private getButtonActions(config: any): ButtonAction[] {
+    const buttonActions =  config?.appDetailsPage['listing-actions'];
     if (buttonActions && this.app?.type) {
-      return buttonActions.filter(action => action?.appTypes?.includes(this.app.type));
+      return buttonActions.filter(action => {
+        const isTypeSupported = action?.appTypes?.includes(this.app.type);
+        const isNoDownloadType = action?.type !== 'download';
+        const isFileFieldPresent = !!_.get(this.app, (action as DownloadButtonAction).fileField);
+
+        return isTypeSupported && (isNoDownloadType || isFileFieldPresent);
+      });
     }
     return [];
   }
