@@ -28,8 +28,9 @@
                                    label="reviews" labelClass="font-med" type="single-star"></oc-rating>
                         <div *ngIf="appListingActions?.length > 0">
                             <app-button-action *ngFor="let action of appListingActions"
-                                               [appId]="this.app?.appId"
-                                               [buttonAction]="action" class="mr-2"></app-button-action>
+                                               [appData]="app"
+                                               [buttonAction]="action"
+                                               (updateAppData)="getAppData()" class="mr-2"></app-button-action>
                         </div>
                     </div>
                 </div>

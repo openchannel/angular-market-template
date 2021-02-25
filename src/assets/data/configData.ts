@@ -57,7 +57,7 @@
      "listing-actions": [
        {
          "type": "form",
-         "appTypes": ["informational", "other", "web-plugin"],
+         "appTypes": ["informational", "other", "web_plugin"],
          "formId": "contact-us",
          "message": {
            "success": "Thank you for submitting, we'll get back to you shortly",
@@ -70,7 +70,7 @@
        },
        {
          "type": "form",
-         "appTypes": ["informational", "other", "web-plugin"],
+         "appTypes": ["informational", "other", "web_plugin"],
          "formId": "buy-now",
          "message": {
            "success": "Thank you for submitting, we'll get back to you shortly",
@@ -79,6 +79,30 @@
          "button": {
            "class": "btn-primary",
            "text": "Buy Now"
+         }
+       },
+       {
+         "type": "install",
+         "appTypes": ["web_plugin", "web_integration", "internal_feature"],
+         "unowned": {
+           "message": {
+             "success": "Your app has been installed",
+             "fail": "Due to an error we were not able to install your app"
+           },
+           "button": {
+             "class": "btn-primary",
+             "text": "Install",
+           }
+         },
+         "owned": {
+           "message": {
+             "success": "Your app has been uninstalled",
+             "fail": "Due to an error we were not able to uninstall your app"
+           },
+           "button": {
+             "class": "btn-primary",
+             "text": "Uninstall",
+           }
          }
        },
      ]

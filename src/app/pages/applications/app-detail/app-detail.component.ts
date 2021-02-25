@@ -7,7 +7,7 @@ import {
   OCReviewDetails,
   OverallRatingSummary,
   FrontendService,
-  DropdownModel, AppVersionService, AppFormService, AppFormModel, SiteConfigService, TitleService,
+  DropdownModel, AppVersionService, AppFormService, TitleService,
 } from 'oc-ng-common-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
@@ -50,7 +50,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject();
   private appConfigPipe = pageConfig.fieldMappings;
   public appListingActions: ButtonAction[];
-  private contactForm: AppFormModel;
 
   private loader: LoadingBarState;
 
@@ -69,19 +68,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loader = this.loadingBar.useRef();
 
-    const appId = this.route.snapshot.paramMap.get('appId');
-    const appVersion = this.route.snapshot.paramMap.get('appVersion');
-    const safeName = this.route.snapshot.paramMap.get('safeName');
-
-    this.loader.start();
-
-    this.appData$ = this.getApp(safeName, appId, appVersion);
-
-    this.appData$.subscribe(() => {
-          this.loader.complete();
-          this.appListingActions = this.getButtonActions(pageConfig);
-          this.loadReviews();
-        }, () => this.loader.complete());
+    this.getAppData();
 
     this.frontendService.getSorts()
         .pipe(takeUntil(this.destroy$))
@@ -91,7 +78,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     });
 
     this.getRecommendedApps();
-    this.getContactForm();
 
     this.router.routeReuseStrategy.shouldReuseRoute = () => {
       return false;
@@ -159,14 +145,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
   }
 
-  private getContactForm() {
-    this.formService.getForm('lead')
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(form => {
-      this.contactForm = form;
-    });
-  }
-
   get isDownloadRendered(): boolean {
     return true;
   }
@@ -185,5 +163,20 @@ export class AppDetailComponent implements OnInit, OnDestroy {
       return buttonActions.filter(action => action?.appTypes?.includes(this.app.type));
     }
     return [];
+  }
+
+  getAppData(): void {
+    this.loader.start();
+
+    const appId = this.route.snapshot.paramMap.get('appId');
+    const appVersion = this.route.snapshot.paramMap.get('appVersion');
+    const safeName = this.route.snapshot.paramMap.get('safeName');
+
+    this.appData$ = this.getApp(safeName, appId, appVersion)
+    this.appData$.subscribe(() => {
+      this.loader.complete();
+      this.appListingActions = this.getButtonActions(pageConfig);
+      this.loadReviews();
+    },() => this.loader.complete());
   }
 }
