@@ -6,6 +6,7 @@ import {
 } from 'oc-ng-common-service';
 import {Subscription} from 'rxjs';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {merge} from 'lodash';
 
 @Component({
   selector: 'app-invited-signup',
@@ -17,6 +18,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
   public userInviteData: InviteUserModel;
   public isExpired = false;
   public formConfig: any;
+  public formResultData: any;
 
   public signUpGroup: FormGroup;
 
@@ -60,13 +62,15 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             id: 'uname',
             label: 'Name',
             type: 'text',
-            attributes: {required: false}
+            attributes: {required: false},
+            defaultValue: this.userInviteData?.name
           },
           {
             id: 'email',
             label: 'Email',
             type: 'emailAddress',
             attributes: {required: true},
+            defaultValue: this.userInviteData?.email
           },
           {
             id: 'password',
@@ -122,7 +126,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
   }
 
   // getting generated form group for disabling special fields
-  getCreatedForm(form) {
+  setCreatedForm(form) {
     form.get('email').disable();
     const companyKey = Object.keys(form.value).find(key => key.includes('company'));
     if (companyKey) {
@@ -140,8 +144,8 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
     if (this.signUpGroup.valid && !this.inProcess) {
       this.inProcess = true;
 
-      const request = this.signUpGroup.getRawValue();
-      delete request['terms'];
+      const request = merge(this.userInviteData, this.formResultData);
+      delete request.terms;
 
       this.requestSubscriber.add(this.nativeLoginService.signupByInvite({
         userCustomData: request,
@@ -153,5 +157,9 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         this.inProcess = false;
       }));
     }
+  }
+
+  setFormData(resultData: any) {
+    this.formResultData = resultData;
   }
 }

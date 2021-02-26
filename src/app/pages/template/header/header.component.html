@@ -30,8 +30,7 @@
                     <ng-container>
                         <div class="dropdown-item cursor-pointer" *ngIf="!isSSO"
                              routerLink="/management/profile">My Profile</div>
-                        <div class="dropdown-item cursor-pointer"
-                             *ngIf="authHolderService.userDetails.role === 'ADMIN'"
+                        <div [appPermissions]="companyPermissions" class="dropdown-item cursor-pointer"
                              routerLink="/management/company">My Company</div>
                         <div class="dropdown-item cursor-pointer" (click)="logout()">Logout</div>
                     </ng-container>
