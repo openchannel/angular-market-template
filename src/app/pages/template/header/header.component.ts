@@ -1,6 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthenticationService, AuthHolderService, DropdownModel} from 'oc-ng-common-service';
+import {
+  AccessLevel,
+  AuthenticationService,
+  AuthHolderService,
+  Permission, PermissionType
+} from 'oc-ng-common-service';
 import {LogOutService} from '@core/services/logout-service/log-out.service';
 import {map, takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
@@ -15,6 +20,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isSSO: any;
   isSsoConfigExist = true;
   isCollapsed = true;
+
+  readonly companyPermissions: Permission[] = [
+    {
+      type: PermissionType.ORGANIZATIONS,
+      access: [AccessLevel.MODIFY]
+    }
+  ];
 
   private destroy$: Subject<void> = new Subject();
 

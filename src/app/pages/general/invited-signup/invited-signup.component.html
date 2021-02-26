@@ -11,7 +11,8 @@
           <oc-label text="Enter your account details below" class="mb-3"></oc-label>
         </div>
         <oc-form [formJsonData]="formConfig"
-                 (createdForm)="getCreatedForm($event)"
+                 (formDataUpdated)="setFormData($event)"
+                 (createdForm)="setCreatedForm($event)"
                  [showButton]="false"></oc-form>
         <div class="form-group">
           <div class="d-flex align-items-center">

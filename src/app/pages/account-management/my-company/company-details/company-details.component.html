@@ -5,6 +5,7 @@
             (formDataUpdated)="setCompanyData($event)">
   </oc-form>
   <oc-button type="primary" text="Save" class="save-button ml-auto mr-0" [class]="'w-100'"
+             [appPermissions]="savePermissions"
              [process]="savingCompanyData"
              (click)="saveType()">
   </oc-button>
