@@ -1,16 +1,22 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   AccessLevel,
   AuthHolderService,
-  DeveloperModel,
-  DeveloperTypeFieldModel, Permission, PermissionType,
-  UserAccountService, UserCompanyModel,
-  UsersService
+  DeveloperTypeFieldModel,
+  Permission,
+  PermissionType,
+  TypeMapperUtils,
+  TypeModel,
+  UserAccountService,
+  UserCompanyModel,
+  UsersService,
 } from 'oc-ng-common-service';
-import { Subscription } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {ToastrService} from 'ngx-toastr';
+import {LoadingBarService} from '@ngx-loading-bar/core';
+import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
+import {FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-company-details',
@@ -19,24 +25,24 @@ import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 })
 export class CompanyDetailsComponent implements OnInit, OnDestroy {
 
-  typeFields: {
-    fields: DeveloperTypeFieldModel [];
-  };
-  isInvalidForm = false;
-  savingCompanyData = false;
+  public inProcess = false;
+  public formConfig: TypeModel<DeveloperTypeFieldModel>;
 
-  private newCustomData: any;
-  private defaultDeveloperTypeFields: DeveloperTypeFieldModel [] = [{
-    id: 'name',
-    label: 'Company Name',
-    type: 'text',
-    attributes: {
-      required: true
-    }
-  }];
-  private companyData: UserCompanyModel;
-  private subscriptions: Subscription = new Subscription();
+  private defaultFormConfig: TypeModel<DeveloperTypeFieldModel> = {
+    fields: [{
+      id: 'name',
+      label: 'Company Name',
+      type: 'text',
+      attributes: {
+        required: true
+      }
+    }]
+  };
+
   private loader: LoadingBarState;
+  private organizationForm: FormGroup;
+  private organizationResult: any;
+  private $destroy: Subject<void> = new Subject<void>();
 
   readonly savePermissions: Permission[] = [{
     type: PermissionType.ORGANIZATIONS,
@@ -47,109 +53,68 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
               private toastService: ToastrService,
               private authHolderService: AuthHolderService,
               private userAccountService: UserAccountService,
-              private usersService: UsersService) { }
+              private usersService: UsersService) {
+  }
 
   ngOnInit(): void {
     this.loader = this.loadingBar.useRef();
-    this.getCompanyDataFields();
+    this.initCompanyForm();
   }
 
   ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    this.$destroy.next();
+    this.$destroy.complete();
     if (this.loader) {
       this.loader.complete();
     }
   }
 
-  getCompanyDataFields() {
+  initCompanyForm() {
     this.loader.start();
-    this.subscriptions.add(this.usersService.getUserCompany().subscribe(
-      company => {
-        this.companyData = company;
-        if(company.type) {
-          this.subscriptions.add(this.usersService.getUserTypeDefinition(company.type)
-          .subscribe(resultDefinition => {
-            this.createFormFields(resultDefinition.fields);
-          }, () => {
-            this.createFormFields(this.defaultDeveloperTypeFields);
-          }));
-        } else {
-          this.createFormFields(this.defaultDeveloperTypeFields);
-        }
-      }, () => {
-        this.loader.complete();
-        this.toastService.error('Sorry! Can\'t load company details. Please, reload the page');
-      }
-    ));
-  }
-
-  setCompanyData(newCustomData: any): void {
-    this.newCustomData = newCustomData;
-  }
-
-  setIsFormInvalid(isInvalidForm: boolean): void {
-    this.isInvalidForm = isInvalidForm;
-  }
-
-  saveType(): void {
-    if (this.newCustomData && !this.savingCompanyData && !this.isInvalidForm) {
-      this.savingCompanyData = true;
-      this.subscriptions.add(this.usersService.updateUserCompany(this.newCustomData)
-        .subscribe(() => {
-          this.savingCompanyData = false;
-          this.toastService.success('Your company details has been updated');
+    this.usersService.getUserCompany()
+    .pipe(takeUntil(this.$destroy)).subscribe(
+        companyData => {
+          if (companyData.type) {
+            this.usersService.getUserTypeDefinition(companyData.type)
+            .pipe(takeUntil(this.$destroy)).subscribe(typeDefinition => {
+              this.createFormFields(typeDefinition, companyData);
+            }, () => {
+              this.createFormFields(this.defaultFormConfig, companyData);
+            });
+          } else {
+            this.createFormFields(this.defaultFormConfig, companyData);
+          }
         }, () => {
-          this.toastService.error('Sorry! Can\'t update a company data. Please, try again later');
-          this.savingCompanyData = false;
-        }));
+          this.loader.complete();
+          this.toastService.error('Sorry! Can\'t load company details. Please, reload the page');
+        }
+    );
+  }
+
+  setCreatedForm(organizationForm: FormGroup): void {
+    this.organizationForm = organizationForm;
+  }
+
+  setResultData(organizationData: any): void {
+    this.organizationResult = organizationData;
+  }
+
+  saveOrganization(): void {
+    if (this.organizationForm?.valid && this.organizationResult && !this.inProcess) {
+      this.inProcess = true;
+      this.usersService.updateUserCompany(TypeMapperUtils.buildDataForSaving(this.organizationResult))
+      .pipe(takeUntil(this.$destroy)).subscribe(() => {
+        this.inProcess = false;
+        this.toastService.success('Your company details has been updated');
+      }, () => {
+        this.inProcess = false;
+        this.toastService.error('Sorry! Can\'t update a company data. Please, try again later');
+      });
     }
   }
 
-  private createFormFields(fields: DeveloperTypeFieldModel[]): void {
-    this.typeFields = {
-      fields: this.mapTypeFields(this.companyData, fields)
-    };
+  private createFormFields(type: TypeModel<DeveloperTypeFieldModel>, companyData: UserCompanyModel): void {
+    this.formConfig = TypeMapperUtils.createFormConfig(type, companyData);
     this.loader.complete();
-  }
-
-  private mapTypeFields(company: UserCompanyModel, fields: DeveloperTypeFieldModel[]): DeveloperTypeFieldModel [] {
-    if (fields) {
-      const defaultValues = this.getDefaultValues(company);
-      return fields.filter(field => field?.id).map(field => this.mapField(field, defaultValues));
-    }
-    return [];
-  }
-
-  private getDefaultValues(developer: DeveloperModel): Map<string, any> {
-    const map = new Map<string, any>();
-    Object.entries(developer?.customData ? developer.customData : {})
-      .forEach(([key, value]) => map.set(`customData.${key}`, value));
-    map.set('name', developer.name);
-    return map;
-  }
-
-  private mapField(field: DeveloperTypeFieldModel, defaultValues: Map<string, any>): DeveloperTypeFieldModel {
-    if (field) {
-      // map options
-      if (field?.options) {
-        field.options = this.mapOptions(field);
-      }
-      if (defaultValues.has(field?.id)) {
-        field.defaultValue = defaultValues.get(field?.id);
-      }
-      // map other fields
-      if (field?.fields) {
-        field.fields.forEach(child => this.mapField(child, defaultValues));
-        field.subFieldDefinitions = field.fields;
-        field.fields = null;
-      }
-    }
-    return field;
-  }
-
-  private mapOptions(appTypeFiled: DeveloperTypeFieldModel): string [] {
-    const newOptions = [];
-    appTypeFiled.options.forEach(o => newOptions.push(o?.value ? o.value : o));
-    return newOptions;
   }
 }
