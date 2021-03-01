@@ -122,8 +122,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   getSortedData(filterId: string, valueId: string) {
-    let filter: string;
-    let sort: string;
+    let filter: string = null;
+    let sort: string = null;
 
     this.loader.start();
 
@@ -258,17 +258,18 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     let httpParams = new HttpParams({fromObject: queryParams});
     httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
     const filterPath = filterId && filterValueId ? `/${filterId}/${filterValueId}` : '';
-   this.location.replaceState(`app/browse${filterPath}`, httpParams.toString());
+   this.location.replaceState(`browse${filterPath}`, httpParams.toString());
   }
 
   private replaceSearchIntoCurrentURL(searchText: string): void {
-    let httpParams = new HttpParams({fromString: window.location.search});
+    const urlQuery = window.location.search;
+    let httpParams = new HttpParams({fromString: urlQuery?.startsWith('?') ? urlQuery.substring(1): urlQuery});
     httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
     this.location.replaceState(window.location.pathname, httpParams.toString());
   }
 
   private updateSearchTextQueryParam(searchText: string, queryParams: HttpParams): HttpParams {
-    if(searchText) {
+    if (searchText) {
       return queryParams.set('search', searchText);
     } else {
       return queryParams.delete('search');

@@ -194,7 +194,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   goToBrowsePage(filterId: string, filterValueId: string, searchText?: string) {
-    this.router.navigate(['app/browse', filterId, filterValueId],
+    this.router.navigate(['browse', filterId, filterValueId],
         {queryParams: searchText ? {search: searchText} : {}})
     .then(() => window.scrollTo(0, 0));
   }

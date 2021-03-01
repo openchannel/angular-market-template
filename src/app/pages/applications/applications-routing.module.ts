@@ -4,18 +4,25 @@ import {AppSearchComponent} from './app-search/app-search.component';
 import {AppDetailComponent} from './app-detail/app-detail.component';
 
 const routes: Routes = [
-  {path: 'browse',
+  {
+    path: 'browse',
     children: [
       {path: ':filterId/:valueId', component: AppSearchComponent, data: {title: 'Search apps'}},
       {path: '', component: AppSearchComponent, data: {title: 'Search apps'}},
     ]
   },
-  {path: ':appId/:appVersion', component: AppDetailComponent},
-  {path: ':safeName', component: AppDetailComponent},
+  {
+    path: 'details',
+    children: [
+      {path: ':appId/:appVersion', component: AppDetailComponent},
+      {path: ':safeName', component: AppDetailComponent},
+    ]
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ApplicationsRoutingModule { }
+export class ApplicationsRoutingModule {
+}
