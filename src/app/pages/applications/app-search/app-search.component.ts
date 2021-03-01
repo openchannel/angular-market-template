@@ -262,13 +262,14 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   private replaceSearchIntoCurrentURL(searchText: string): void {
-    let httpParams = new HttpParams({fromString: window.location.search});
+    const urlQuery = window.location.search;
+    let httpParams = new HttpParams({fromString: urlQuery?.startsWith('?') ? urlQuery.substring(1): urlQuery});
     httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
     this.location.replaceState(window.location.pathname, httpParams.toString());
   }
 
   private updateSearchTextQueryParam(searchText: string, queryParams: HttpParams): HttpParams {
-    if(searchText) {
+    if (searchText) {
       return queryParams.set('search', searchText);
     } else {
       return queryParams.delete('search');
