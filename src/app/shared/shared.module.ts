@@ -6,11 +6,13 @@ import { CamelCaseToNormalPipe } from './pipes/camel-case-to-normal.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { PermissionDirective } from './directive/permission.directive';
 
 @NgModule({
   declarations: [
     ConfirmationModalComponent,
     CamelCaseToNormalPipe,
+    PermissionDirective,
   ],
   imports: [
     CommonModule,
@@ -26,6 +28,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     OcMarketComponentsModule,
     CamelCaseToNormalPipe,
     FormsModule,
+    PermissionDirective,
   ],
 })
 export class SharedModule {

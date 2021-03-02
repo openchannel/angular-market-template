@@ -4,7 +4,12 @@ import {AppSearchComponent} from './app-search/app-search.component';
 import {AppDetailComponent} from './app-detail/app-detail.component';
 
 const routes: Routes = [
-  {path: 'search', component: AppSearchComponent, data: {title: 'Search apps'}},
+  {path: 'browse',
+    children: [
+      {path: ':filterId/:valueId', component: AppSearchComponent, data: {title: 'Search apps'}},
+      {path: '', component: AppSearchComponent, data: {title: 'Search apps'}},
+    ]
+  },
   {path: ':appId/:appVersion', component: AppDetailComponent},
   {path: ':safeName', component: AppDetailComponent},
 ];

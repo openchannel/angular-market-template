@@ -3,15 +3,29 @@
 .navbar {
   padding: 0 1rem;
   border-bottom: 1px solid rgba(201, 213, 234, 0.5);
+
   .container {
-    height: 80px;
+
+    .navbar-wrapper {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-grow: 1;
+    }
   }
 }
+
 .navbar-light .navbar-nav .nav-item.active > .nav-link {
   opacity: 1;
   border-bottom: 3px inset $primary;
   padding-bottom: 26px;
 }
+
+.navbar-light .navbar-toggler {
+  border: none;
+}
+
 .navbar-light .navbar-nav .nav-item .nav-link {
   opacity: 0.5;
 }

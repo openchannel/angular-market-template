@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
+  AccessLevel,
   AuthHolderService,
   DeveloperModel,
-  DeveloperTypeFieldModel,
+  DeveloperTypeFieldModel, Permission, PermissionType,
   UserAccountService, UserCompanyModel,
   UsersService
 } from 'oc-ng-common-service';
@@ -37,6 +38,11 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
   private loader: LoadingBarState;
 
+  readonly savePermissions: Permission[] = [{
+    type: PermissionType.ORGANIZATIONS,
+    access: [AccessLevel.MODIFY]
+  }];
+
   constructor(private loadingBar: LoadingBarService,
               private toastService: ToastrService,
               private authHolderService: AuthHolderService,
@@ -50,6 +56,9 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    if (this.loader) {
+      this.loader.complete();
+    }
   }
 
   getCompanyDataFields() {
@@ -89,7 +98,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
         .subscribe(() => {
           this.savingCompanyData = false;
           this.toastService.success('Your company details has been updated');
-        }, error => {
+        }, () => {
           this.toastService.error('Sorry! Can\'t update a company data. Please, try again later');
           this.savingCompanyData = false;
         }));

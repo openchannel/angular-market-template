@@ -7,12 +7,14 @@ import { AppSearchComponent } from './app-search/app-search.component';
 import { SharedModule } from '@shared/shared.module';
 import { FormModalComponent } from './form-modal/form-modal.component';
 import { OcFormComponentsModule } from 'oc-ng-common-component';
+import { ButtonActionComponent } from './app-detail/button-action/button-action.component';
 
 @NgModule({
   declarations: [
     AppDetailComponent,
     AppSearchComponent,
     FormModalComponent,
+    ButtonActionComponent,
   ],
   imports: [
     CommonModule,
