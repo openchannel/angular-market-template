@@ -52,5 +52,68 @@
        "filter": "{\"status.value\":\"approved\",\"customData.categories\":\"Analytics\"}",
        "sort": "{created: -1}"
      }
-   ]
+   ],
+   "appDetailsPage": {
+     "listing-actions": [
+       {
+         "type": "form",
+         "appTypes": ["informational", "other", "web_plugin"],
+         "formId": "contact-us",
+         "message": {
+           "success": "Thank you for submitting, we'll get back to you shortly",
+           "fail": "Due to an error, we were not able to send your form"
+         },
+         "button": {
+           "class": "btn-secondary",
+           "text": "Contact"
+         }
+       },
+       {
+         "type": "form",
+         "appTypes": ["informational", "other", "web_plugin"],
+         "formId": "buy-now",
+         "message": {
+           "success": "Thank you for submitting, we'll get back to you shortly",
+           "fail": "Due to an error, we were not able to send your form"
+         },
+         "button": {
+           "class": "btn-primary",
+           "text": "Buy Now"
+         }
+       },
+       {
+         "type": "install",
+         "appTypes": ["web_plugin", "web_integration", "internal_feature"],
+         "unowned": {
+           "message": {
+             "success": "Your app has been installed",
+             "fail": "Due to an error we were not able to install your app"
+           },
+           "button": {
+             "class": "btn-primary",
+             "text": "Install",
+           }
+         },
+         "owned": {
+           "message": {
+             "success": "Your app has been uninstalled",
+             "fail": "Due to an error we were not able to uninstall your app"
+           },
+           "button": {
+             "class": "btn-primary",
+             "text": "Uninstall",
+           }
+         }
+       },
+       {
+         "type":"download",
+         "appTypes": ["downloadable"],
+         "fileField": "customData.releases[0].file",
+         "button": {
+           "class": "btn-primary",
+           "text": "Download"
+         }
+       }
+     ]
+   }
  }

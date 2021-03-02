@@ -1,19 +1,23 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ToastrService} from 'ngx-toastr';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import {
-  AuthHolderService, InviteUserService,
+  AccessLevel,
+  AuthHolderService,
+  InviteUserService,
   ModalInviteUserModel,
-  UserAccountTypesService
+  Permission,
+  PermissionType,
+  UserRoleService,
 } from 'oc-ng-common-service';
-import {OcInviteModalComponent} from 'oc-ng-common-component';
+import { OcInviteModalComponent } from 'oc-ng-common-component';
 
 export interface Page {
   pageId: string;
   pageTitle: string;
   placeholder: string;
-  showByTypes: string [];
+  permissions: Permission [];
 }
 
 @Component({
@@ -27,12 +31,18 @@ export class MyCompanyComponent implements OnInit {
     pageId: 'company',
     pageTitle: 'My company',
     placeholder: 'Company details',
-    showByTypes: ['ADMIN', 'GENERAL'],
+    permissions: [{
+      type: PermissionType.ORGANIZATIONS,
+      access: [AccessLevel.MODIFY]
+    }]
   }, {
     pageId: 'profile',
     pageTitle: 'My company',
     placeholder: 'User management',
-    showByTypes: ['*'],
+    permissions: [{
+      type: PermissionType.ACCOUNTS,
+      access: [AccessLevel.MODIFY]
+    }],
   }];
 
   currentPages: Page[] = [];
@@ -45,12 +55,12 @@ export class MyCompanyComponent implements OnInit {
       private modal: NgbModal,
       private toaster: ToastrService,
       private authHolderService: AuthHolderService,
-      private userAccountTypesService: UserAccountTypesService,
+      private userRolesService: UserRoleService,
       private inviteService: InviteUserService) {
   }
 
   ngOnInit(): void {
-    this.currentPages = this.filterPagesByUserType(this.authHolderService.userDetails.role);
+    this.currentPages = this.filterPagesByUserType();
     this.initMainPage();
   }
 
@@ -74,9 +84,8 @@ export class MyCompanyComponent implements OnInit {
     }
   }
 
-  private filterPagesByUserType(userType: string): Page [] {
-    return this.currentPages = this.pages.filter(page =>
-        page.showByTypes.filter(pattern => pattern === '*' || pattern === userType).length > 0);
+  private filterPagesByUserType(): Page [] {
+    return this.currentPages = this.pages.filter(page => this.authHolderService.hasAnyPermission(page.permissions));
   }
 
   openInviteModal() {
@@ -90,8 +99,8 @@ export class MyCompanyComponent implements OnInit {
     modalData.modalTitle = 'Invite a member';
     modalData.successButtonText = 'Send Invite';
 
-    modalData.requestFindUserTypes = () => {
-      return this.userAccountTypesService.getUserAccountTypes(1, 100);
+    modalData.requestFindUserRoles = () => {
+      return this.userRolesService.getUserRoles(1, 100)
     };
 
     modalData.requestSendInvite = (accountData: any) => {

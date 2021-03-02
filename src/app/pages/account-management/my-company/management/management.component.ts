@@ -1,18 +1,20 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   InviteUserModel,
-  InviteUserService, ModalUpdateUserModel,
+  InviteUserService,
+  ModalUpdateUserModel,
   UserAccount,
   UserAccountGridModel,
-  UserAccountService, UserAccountTypesService,
+  UserAccountService,
   UserGridActionModel,
+  UserRoleService,
   UsersGridParametersModel,
-  UsersService
+  UsersService,
 } from 'oc-ng-common-service';
-import {Subject, Subscription} from 'rxjs';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ToastrService} from 'ngx-toastr';
-import {OcConfirmationModalComponent, OcInviteModalComponent} from 'oc-ng-common-component';
+import { Subject, Subscription } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { OcConfirmationModalComponent, OcInviteModalComponent } from 'oc-ng-common-component';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 
@@ -44,9 +46,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
               private userService: UsersService,
               private inviteUserService: InviteUserService,
               private userAccountService: UserAccountService,
+              private userRolesService: UserRoleService,
               private toaster: ToastrService,
-              private modal: NgbModal,
-              private userAccountTypesService: UserAccountTypesService) {
+              private modal: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -57,6 +59,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.loader) {
+      this.loader.complete();
+    }
   }
 
   scroll(pageNumber: number) {
@@ -248,8 +253,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
     modalData.modalTitle = 'Edit member';
     modalData.successButtonText = 'Save';
 
-    modalData.requestFindUserTypes = () => {
-      return this.userAccountTypesService.getUserAccountTypes(1, 100);
+    modalData.requestFindUserRoles = () => {
+      return this.userRolesService.getUserRoles(1, 100)
     };
 
     modalData.requestUpdateAccount = (accountId: string, accountData: any) => {
