@@ -56,7 +56,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     // put filter values from the URL path
     const filterId = this.activatedRouter.snapshot.paramMap.get('filterId');
     const filterValueId = this.activatedRouter.snapshot.paramMap.get('valueId');
-    if(filterId&&filterValueId) {
+    if(filterId && filterValueId) {
       filterValues[filterId] = [filterValueId];
     }
     // put filter values from the URL params
@@ -87,10 +87,11 @@ export class AppSearchComponent implements OnDestroy, OnInit {
           this.loader.complete();
 
           this.selectedFilterValues = this.getSelectedFilterValues();
-          if (this.searchText) {
-            this.onTextChange(this.searchText);
-          } else {
+
+          if(filterId && filterValueId ){
             this.getSortedData(filterId, filterValueId)
+          } else {
+            this.onTextChange(this.searchText);
           }
         });
   }
@@ -122,10 +123,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   getSortedData(filterId: string, valueId: string) {
-    let filter: string;
-    let sort: string;
-
-    this.loader.start();
+    let filter: string = null;
+    let sort: string = null;
 
     pageConfig.appListPage.forEach(list => {
       if (list.valueId === valueId && list.filterId === filterId) {
@@ -133,15 +132,21 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         sort = list.sort;
       }
     });
-    this.appService.getApps(1, 100, sort, filter)
+
+    if (filter || sort) {
+      this.loader.start();
+      this.appService.getApps(1, 100, sort, filter)
       .pipe(takeUntil(this.destroy$),
-        map((data: Page<FullAppData>) => {
-          data.list = data.list.map(value => new FullAppData(value, pageConfig.fieldMappings));
-          return data;
-        }),
-        tap((data: Page<FullAppData>) => this.appPage = data))
-      .subscribe(() => this.loader.complete(),
-        () => this.loader.complete());
+          map((data: Page<FullAppData>) => {
+            data.list = data.list.map(value => new FullAppData(value, pageConfig.fieldMappings));
+            return data;
+          }),
+          tap((data: Page<FullAppData>) => this.appPage = data))
+      .subscribe(() => this.loader.complete(), () => this.loader.complete());
+
+    } else {
+      this.getData();
+    }
   }
 
   onSingleFilterChange(currentFilter: Filter, singleFilterValue: OcSidebarSelectModel): void {
@@ -171,10 +176,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   onTextChange(text: string) {
     this.replaceSearchIntoCurrentURL(text);
     this.searchTextTag = text;
-    this.searchAppObservable(text, this.getFilterQuery()).subscribe(
-      () => this.loader.complete(),
-          () =>  this.loader.complete()
-    );
+    this.getData();
   }
 
   hasCheckedValue(filter: Filter): boolean {
@@ -218,7 +220,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         if (value.checked) {
           const sidebarValue = <SidebarValue> value;
           filterValues.push({filterId: filter.id, value: sidebarValue});
-          filterLabels.push(filter.name);
+          filterLabels.push(value.label);
         }
       });
     });
