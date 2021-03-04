@@ -1,12 +1,12 @@
-<div *ngIf="typeFields?.fields" class="d-flex flex-column form-max-width">
-  <oc-form  [formJsonData]="typeFields"
+<div *ngIf="formConfig?.fields" class="d-flex flex-column form-max-width">
+  <oc-form  [formJsonData]="formConfig"
             [showButton]="false"
-            (isFormInvalid)="setIsFormInvalid($event)"
-            (formDataUpdated)="setCompanyData($event)">
+            (createdForm)="setCreatedForm($event)"
+            (formDataUpdated)="setResultData($event)">
   </oc-form>
   <oc-button type="primary" text="Save" class="save-button ml-auto mr-0" [class]="'w-100'"
              [appPermissions]="savePermissions"
-             [process]="savingCompanyData"
-             (click)="saveType()">
+             [process]="inProcess"
+             (click)="saveOrganization()">
   </oc-button>
 </div>
