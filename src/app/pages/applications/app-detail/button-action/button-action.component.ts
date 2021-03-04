@@ -199,16 +199,19 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
   }
 
   private openFormModal(modalTitle: string, formFields: any, callback: (formData: any) => void): void {
+    if(!this.modal.hasOpenModals()) {
+      this.modal.dismissAll("Opening a new button action modal");
 
-    const modalRef = this.modal.open(OcFormModalComponent, {size: 'sm'});
-    modalRef.componentInstance.ngbModalRef = modalRef;
-    modalRef.componentInstance.modalTitle = modalTitle;
-    modalRef.componentInstance.confirmButton = this.confirmButton;
-    modalRef.componentInstance.rejectButton = this.rejectButton;
-    modalRef.componentInstance.formJsonData = {
-      fields: formFields
-    };
-    modalRef.result.then(result => callback(result));
+      const modalRef = this.modal.open(OcFormModalComponent, {size: 'sm'});
+      modalRef.componentInstance.ngbModalRef = modalRef;
+      modalRef.componentInstance.modalTitle = modalTitle;
+      modalRef.componentInstance.confirmButton = this.confirmButton;
+      modalRef.componentInstance.rejectButton = this.rejectButton;
+      modalRef.componentInstance.formJsonData = {
+        fields: formFields
+      };
+      modalRef.result.then(result => callback(result));
+    }
   }
 
   private downloadFile(actionConfig: DownloadButtonAction) {
