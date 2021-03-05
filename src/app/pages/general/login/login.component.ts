@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             .subscribe((authConfig) => {
                     this.oauthService.configure({
                         ...authConfig,
-                        redirectUri: authConfig.redirectUri || window.location.href,
+                        redirectUri: authConfig.redirectUri || (window.location.origin + '/login'),
                     });
 
                     this.oauthService.loadDiscoveryDocumentAndLogin({
@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                     }).then(() => {
                         this.loader.complete();
                     });
-                }, err => this.isSsoLogin = false,
+                }, () => this.isSsoLogin = false,
                 () => this.loader.complete());
     }
 
@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     sendActivationEmail(email: string) {
         this.nativeLoginService.sendActivationCode(email)
             .pipe(takeUntil(this.destroy$))
-            .subscribe(value => {
+            .subscribe(() => {
                 this.toastService.success('Activation email was sent to your inbox!');
             });
     }

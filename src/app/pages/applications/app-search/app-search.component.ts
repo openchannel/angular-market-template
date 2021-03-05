@@ -56,7 +56,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     // put filter values from the URL path
     const filterId = this.activatedRouter.snapshot.paramMap.get('filterId');
     const filterValueId = this.activatedRouter.snapshot.paramMap.get('valueId');
-    if(filterId&&filterValueId) {
+    if(filterId && filterValueId) {
       filterValues[filterId] = [filterValueId];
     }
     // put filter values from the URL params
@@ -87,10 +87,11 @@ export class AppSearchComponent implements OnDestroy, OnInit {
           this.loader.complete();
 
           this.selectedFilterValues = this.getSelectedFilterValues();
-          if (this.searchText) {
-            this.onTextChange(this.searchText);
-          } else {
+
+          if(filterId && filterValueId ){
             this.getSortedData(filterId, filterValueId)
+          } else {
+            this.onTextChange(this.searchText);
           }
         });
   }
@@ -125,23 +126,27 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     let filter: string = null;
     let sort: string = null;
 
-    this.loader.start();
-
     pageConfig.appListPage.forEach(list => {
       if (list.valueId === valueId && list.filterId === filterId) {
         filter = list.filter;
         sort = list.sort;
       }
     });
-    this.appService.getApps(1, 100, sort, filter)
+
+    if (filter || sort) {
+      this.loader.start();
+      this.appService.getApps(1, 100, sort, filter)
       .pipe(takeUntil(this.destroy$),
-        map((data: Page<FullAppData>) => {
-          data.list = data.list.map(value => new FullAppData(value, pageConfig.fieldMappings));
-          return data;
-        }),
-        tap((data: Page<FullAppData>) => this.appPage = data))
-      .subscribe(() => this.loader.complete(),
-        () => this.loader.complete());
+          map((data: Page<FullAppData>) => {
+            data.list = data.list.map(value => new FullAppData(value, pageConfig.fieldMappings));
+            return data;
+          }),
+          tap((data: Page<FullAppData>) => this.appPage = data))
+      .subscribe(() => this.loader.complete(), () => this.loader.complete());
+
+    } else {
+      this.getData();
+    }
   }
 
   onSingleFilterChange(currentFilter: Filter, singleFilterValue: OcSidebarSelectModel): void {
@@ -171,10 +176,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   onTextChange(text: string) {
     this.replaceSearchIntoCurrentURL(text);
     this.searchTextTag = text;
-    this.searchAppObservable(text, this.getFilterQuery()).subscribe(
-      () => this.loader.complete(),
-          () =>  this.loader.complete()
-    );
+    this.getData();
   }
 
   hasCheckedValue(filter: Filter): boolean {
@@ -218,7 +220,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         if (value.checked) {
           const sidebarValue = <SidebarValue> value;
           filterValues.push({filterId: filter.id, value: sidebarValue});
-          filterLabels.push(filter.name);
+          filterLabels.push(value.label);
         }
       });
     });
@@ -258,18 +260,17 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     let httpParams = new HttpParams({fromObject: queryParams});
     httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
     const filterPath = filterId && filterValueId ? `/${filterId}/${filterValueId}` : '';
-   this.location.replaceState(`browse${filterPath}`, httpParams.toString());
+   this.location.replaceState(`app/browse${filterPath}`, httpParams.toString());
   }
 
   private replaceSearchIntoCurrentURL(searchText: string): void {
-    const urlQuery = window.location.search;
-    let httpParams = new HttpParams({fromString: urlQuery?.startsWith('?') ? urlQuery.substring(1): urlQuery});
+    let httpParams = new HttpParams({fromString: window.location.search});
     httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
     this.location.replaceState(window.location.pathname, httpParams.toString());
   }
 
   private updateSearchTextQueryParam(searchText: string, queryParams: HttpParams): HttpParams {
-    if (searchText) {
+    if(searchText) {
       return queryParams.set('search', searchText);
     } else {
       return queryParams.delete('search');
