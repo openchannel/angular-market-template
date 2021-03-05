@@ -149,23 +149,44 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     }
   }
 
-  onSingleFilterChange(currentFilter: Filter, singleFilterValue: OcSidebarSelectModel): void {
-    const parentCheckedValue = singleFilterValue.parent?.checked;
-    this.filters.forEach(filter => {
-      filter?.values?.forEach(value => {
-        if (value?.checked) {
-          value.checked = false;
-        }
-      });
-    });
-    singleFilterValue.parent.checked = !parentCheckedValue;
-    this.updateCurrentURL(false)
-    this.getData();
+  onSingleFilterChange(currentFilter: Filter, filterValue: OcSidebarSelectModel,
+                       cleanAnotherFilters: boolean): void {
+    this.updateFilterValues(false, currentFilter,
+        filterValue, cleanAnotherFilters, true);
   }
 
-  onMultiFilterChange(currentFilter: Filter, multiFilterValue: OcSidebarSelectModel): void {
-    multiFilterValue.parent.checked = !multiFilterValue.parent?.checked;
-    this.updateCurrentURL(true)
+  onMultiFilterChange(currentFilter: Filter, filterValue: OcSidebarSelectModel): void {
+    this.updateFilterValues(true, currentFilter,
+        filterValue, false, false);
+  }
+
+  updateFilterValues(isMultiFilter: boolean,
+                     currentFilter: Filter, selectModel: OcSidebarSelectModel,
+                     cleanAnotherFilters: boolean,
+                     cleanValuesFromCurrentFilter: boolean) {
+    const currentParentValue = selectModel?.parent?.checked;
+    this.filters.forEach(filter => {
+
+      const isCurrentFilter = selectModel?.parent?.id == filter?.id;
+
+      let cleanRequired;
+
+      if (isCurrentFilter) {
+        cleanRequired = cleanValuesFromCurrentFilter;
+      } else {
+        cleanRequired = cleanAnotherFilters;
+      }
+
+      if (cleanRequired) {
+        filter?.values?.forEach(value => {
+          if (value?.checked) {
+            value.checked = false;
+          }
+        });
+      }
+    });
+    selectModel.parent.checked = !currentParentValue;
+    this.updateCurrentURL(isMultiFilter)
     this.getData();
   }
 
@@ -188,11 +209,15 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   disableFilterValue(filterId: string, filterValue: SidebarValue): void {
+    const filterValueModel = {
+      parent: filterValue,
+      child: filterValue
+    }
     const currentFilter = this.filters.filter(filter => filter.id === filterId)[0];
     if(filterId === this.SINGLE_FILTER) {
-      this.onSingleFilterChange(currentFilter, {parent: filterValue, child: filterValue});
+      this.onSingleFilterChange(currentFilter, filterValueModel, false);
     } else {
-      this.onMultiFilterChange(currentFilter, {parent: filterValue, child: filterValue});
+      this.onMultiFilterChange(currentFilter, filterValueModel);
     }
   }
 
@@ -260,7 +285,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     let httpParams = new HttpParams({fromObject: queryParams});
     httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
     const filterPath = filterId && filterValueId ? `/${filterId}/${filterValueId}` : '';
-   this.location.replaceState(`app/browse${filterPath}`, httpParams.toString());
+   this.location.replaceState(`browse${filterPath}`, httpParams.toString());
   }
 
   private replaceSearchIntoCurrentURL(searchText: string): void {
