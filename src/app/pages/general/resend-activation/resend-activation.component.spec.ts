@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ResendActivationComponent } from './resend-activation.component';
 
@@ -6,7 +6,7 @@ describe('ResendActivationComponent', () => {
   let component: ResendActivationComponent;
   let fixture: ComponentFixture<ResendActivationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ResendActivationComponent ]
     })
