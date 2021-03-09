@@ -135,10 +135,16 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       // open modal with this form
       this.openFormModal(form.name, form.fields, (result) => {
         if (result) {
-          result.appId = this.appData.appId ? this.appData.appId : null;
-
           // create submission by this form
-          this.processAction(this.formService.createFormSubmission(form.formId, result));
+          this.processAction(this.formService.createFormSubmission(form.formId, {
+            appId: this.appData.appId,
+            name: result.name,
+            userId: '',
+            email: result.email,
+            formData: {
+              ...result,
+            },
+          }));
         }
       });
     }, () => {

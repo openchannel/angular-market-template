@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CommonLayoutComponent } from './common-layout.component';
 
@@ -6,7 +6,7 @@ describe('CommonLayoutComponent', () => {
   let component: CommonLayoutComponent;
   let fixture: ComponentFixture<CommonLayoutComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CommonLayoutComponent ]
     })

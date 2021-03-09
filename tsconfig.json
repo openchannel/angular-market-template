@@ -7,7 +7,7 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "esnext",
+    "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
@@ -18,7 +18,7 @@
       "@core/*": ["app/core/*"],
       "moment": [
         "../node_modules/moment/min/moment.min.js"
-      ],
+      ]
     },
     "typeRoots": [
       "node_modules/@types"
