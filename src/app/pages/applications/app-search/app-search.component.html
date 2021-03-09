@@ -12,7 +12,7 @@
                 <div [ngSwitch]="filter?.id">
                     <oc-sidebar *ngSwitchCase="SINGLE_FILTER"
                                 class="mb-1"
-                                (sidebarChange)="onSingleFilterChange(filter, $event)"
+                                (sidebarChange)="onSingleFilterChange(filter, $event, true)"
                                 [title]="filter.name"
                                 [sidebarModel]="filter.values"></oc-sidebar>
                     <oc-sidebar *ngSwitchDefault
