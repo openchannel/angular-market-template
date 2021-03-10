@@ -1,4 +1,6 @@
 @import "~oc-ng-common-component/assets/styles/theme.scss";
+@import "../../../../assets/styles/mixins";
+
 
 .navbar {
   padding: 0 1rem;
@@ -12,6 +14,12 @@
       align-items: center;
       justify-content: space-between;
       flex-grow: 1;
+    }
+
+    @include media-breakpoint-sm() {
+      .navbar-collapse{
+        height: 100vh;
+      }
     }
   }
 }
@@ -48,6 +56,11 @@
   border-radius: 4px;
   font-size: 14px;
   font-family: Rubik-Medium;
+  @include media-breakpoint-sm() {
+    width: 256px;
+    height: 52px;
+    margin-bottom: 16px;
+  }
 }
 
 .btn-primary {
@@ -58,4 +71,12 @@
 
 a:hover {
   text-decoration: none;
+}
+
+.auth-button{
+  @include media-breakpoint-sm() {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 }
