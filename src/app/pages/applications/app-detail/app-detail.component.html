@@ -55,28 +55,28 @@
                     <li class="list-group-item" *ngIf="app.customData['terms-of-service-url']">
                         <img src="./assets/img/icon-help.svg"
                              class="pr-2" alt="icon">
-                        <a class="font-m font-med link" [href]="app.customData['terms-of-service-url']">F.A.Q.</a>
+                        <a class="font-m font-med support-link" [href]="app.customData['terms-of-service-url']">F.A.Q.</a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['website-url']">
                         <img src="./assets/img/internet.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med link" [href]="app.customData['website-url']">Developer website</a>
+                        <a class="font-m font-med support-link" [href]="app.customData['website-url']">Developer website</a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['terms-of-service-url']">
                         <img src="./assets/img/padlock.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med link" [href]="app.customData['terms-of-service-url']">Privacy Policy</a>
+                        <a class="font-m font-med support-link" [href]="app.customData['terms-of-service-url']">Privacy Policy</a>
                     </li>
                     <li class="list-group-item link" *ngIf="app.customData['contact-email']">
                         <img src="./assets/img/icon-email.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med link"
+                        <a class="font-m font-med support-link"
                            [href]="'mailto:' + app.customData['contact-email']">{{app.customData['contact-email']}}</a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['support-url']">
                         <img src="./assets/img/speech-bubble.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med link" [href]="app.customData['support-url']">Support website</a>
+                        <a class="font-m font-med support-link" [href]="app.customData['support-url']">Support website</a>
                     </li>
                 </ul>
             </div>

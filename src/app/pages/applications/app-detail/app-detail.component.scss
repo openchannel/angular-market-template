@@ -9,6 +9,24 @@
   }
 }
 
+.support-link {
+  cursor: pointer;
+  color: $primary;
+  &:hover {
+    color: $primary;
+  }
+  &:focus {
+    border: 2px solid $focus-border;
+    border-radius: 4px;
+    text-decoration: underline;
+    color:$primary;
+  }
+  &:active {
+    color: mix($black, $primary, 10%);
+    text-decoration: underline;
+  }
+}
+
 .review-column {
   flex-grow: 1;
 }
