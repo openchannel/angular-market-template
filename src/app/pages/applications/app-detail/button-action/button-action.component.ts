@@ -27,7 +27,7 @@ import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {OcButtonComponent, OcFormModalComponent} from 'oc-ng-common-component';
 import {Router} from '@angular/router';
-import * as _ from 'lodash';
+import {get} from 'lodash';
 
 declare type ActionType = 'OWNED' | 'UNOWNED';
 
@@ -191,7 +191,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       action.pipe(takeUntil(this.$destroy), catchError(error => {
         this.inProcess = false;
         if (this.viewData?.message?.fail) {
-          this.toasterService.error(this.viewData?.message?.success);
+          this.toasterService.error(this.viewData?.message?.fail);
         }
         return throwError(error);
       }), tap(() => {
@@ -221,7 +221,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
   }
 
   private downloadFile(actionConfig: DownloadButtonAction) {
-    const file = _.get(this.appData, actionConfig.fileField);
+    const file = get(this.appData, actionConfig.fileField);
     const regex: RegExp = new RegExp(/^(http(s)?:)?\/\//gm);
     if (regex.test(file)) {
       window.open(file);
