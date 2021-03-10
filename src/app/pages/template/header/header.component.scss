@@ -107,15 +107,17 @@ a:hover {
 
   .navbar-light .navbar-nav .nav-item.active > .nav-link {
     border-bottom: none;
-    border-left: 3px inset $primary;
-    padding-bottom: 18px;
+    border-left: 3px solid $primary;
+    padding-bottom: 10px;
     padding-left: 30px;
+    margin: 8px 0;
   }
 
   .navbar-light .navbar-nav .nav-link,
   .navbar-light .navbar-nav .nav-item.dropdown .nav-link {
     font-size: 16px;
-    padding: 18px 32px;
+    padding: 10px 32px;
+    margin: 8px 0;
   }
 
   .header-btn {
