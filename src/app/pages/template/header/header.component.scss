@@ -83,6 +83,15 @@ a:hover {
   }
 }
 
+.close-icon {
+  background-image: url(../../../../assets/img/close-icon.svg);
+}
+
+.navbar-icon {
+  width: 16px;
+  height: 16px;
+  background-image: url(../../../../assets/img/navbar-menu.svg);
+}
 
 @include media-breakpoint-sm() {
   .navbar {
@@ -91,7 +100,7 @@ a:hover {
         height: 100vh;
       }
       .navbar-wrapper {
-        padding: 0 1rem;
+        padding: 0 0 0 1rem;
       }
     }
   }
