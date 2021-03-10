@@ -93,7 +93,7 @@ a:hover {
   background-image: url(../../../../assets/img/navbar-menu.svg);
 }
 
-@include media-breakpoint-sm() {
+@include media-breakpoint-md() {
   .navbar {
     .container {
       .navbar-collapse{
