@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isSSO: any;
   isSsoConfigExist = true;
   isCollapsed = true;
+  isMenuCollapsed = true;
 
   readonly companyPermissions: Permission[] = [
     {
@@ -57,5 +58,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     this.logOut.logOut();
+  }
+
+  closedMenu(link: string){
+    this.isMenuCollapsed = true;
+    this.isCollapsed = true;
+    this.router.navigate([link]);
   }
 }
