@@ -9,11 +9,12 @@ import {
 } from 'oc-ng-common-service';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import {HttpParams} from '@angular/common/http';
+import {isString, forEach} from 'lodash';
 
 @Component({
   selector: 'app-app-search',
@@ -60,10 +61,16 @@ export class AppSearchComponent implements OnDestroy, OnInit {
       filterValues[filterId] = [filterValueId];
     }
     // put filter values from the URL params
-    const queryParams = this.activatedRouter.snapshot.queryParams;
-    for(let key of Object.keys(queryParams)) {
-      filterValues[key] = (queryParams[key] as string) ? queryParams[key].split(',') : [];
-    }
+    const queryParams = {...this.activatedRouter.snapshot.queryParams};
+    delete queryParams['search'];
+
+    forEach(queryParams, (value, key) => {
+      if(isString(value)) {
+        filterValues[key] = queryParams[key].split(',');
+      } else {
+        filterValues[key] = queryParams[key];
+      }
+    });
 
     this.loader.start();
 
@@ -117,6 +124,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   getData(): void {
+    this.updateCurrentUrlPath();
     this.searchAppObservable(this.searchText, this.getFilterQuery())
         .subscribe(() => this.loader.complete(),
             () => this.loader.complete());
@@ -134,6 +142,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     });
 
     if (filter || sort) {
+      this.updateCurrentUrlPath();
       this.loader.start();
       this.appService.getApps(1, 100, sort, filter)
       .pipe(takeUntil(this.destroy$),
@@ -149,23 +158,43 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     }
   }
 
-  onSingleFilterChange(currentFilter: Filter, singleFilterValue: OcSidebarSelectModel): void {
-    const parentCheckedValue = singleFilterValue.parent?.checked;
-    this.filters.forEach(filter => {
-      filter?.values?.forEach(value => {
-        if (value?.checked) {
-          value.checked = false;
-        }
-      });
-    });
-    singleFilterValue.parent.checked = !parentCheckedValue;
-    this.updateCurrentURL(false)
-    this.getData();
+  onSingleFilterChange(currentFilter: Filter, filterValue: OcSidebarSelectModel,
+                       cleanAnotherFilters: boolean): void {
+    this.updateFilterValues(false, currentFilter,
+        filterValue, cleanAnotherFilters, true);
   }
 
-  onMultiFilterChange(currentFilter: Filter, multiFilterValue: OcSidebarSelectModel): void {
-    multiFilterValue.parent.checked = !multiFilterValue.parent?.checked;
-    this.updateCurrentURL(true)
+  onMultiFilterChange(currentFilter: Filter, filterValue: OcSidebarSelectModel): void {
+    this.updateFilterValues(true, currentFilter,
+        filterValue, false, false);
+  }
+
+  updateFilterValues(isMultiFilter: boolean,
+                     currentFilter: Filter, selectModel: OcSidebarSelectModel,
+                     cleanAnotherFilters: boolean,
+                     cleanValuesFromCurrentFilter: boolean) {
+    const currentParentValue = selectModel?.parent?.checked;
+    this.filters.forEach(filter => {
+
+      const isCurrentFilter = selectModel?.parent?.id == filter?.id;
+
+      let cleanRequired;
+
+      if (isCurrentFilter) {
+        cleanRequired = cleanValuesFromCurrentFilter;
+      } else {
+        cleanRequired = cleanAnotherFilters;
+      }
+
+      if (cleanRequired) {
+        filter?.values?.forEach(value => {
+          if (value?.checked) {
+            value.checked = false;
+          }
+        });
+      }
+    });
+    selectModel.parent.checked = !currentParentValue;
     this.getData();
   }
 
@@ -174,7 +203,6 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   onTextChange(text: string) {
-    this.replaceSearchIntoCurrentURL(text);
     this.searchTextTag = text;
     this.getData();
   }
@@ -188,17 +216,20 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   disableFilterValue(filterId: string, filterValue: SidebarValue): void {
+    const filterValueModel = {
+      parent: filterValue,
+      child: filterValue
+    }
     const currentFilter = this.filters.filter(filter => filter.id === filterId)[0];
     if(filterId === this.SINGLE_FILTER) {
-      this.onSingleFilterChange(currentFilter, {parent: filterValue, child: filterValue});
+      this.onSingleFilterChange(currentFilter, filterValueModel, false);
     } else {
-      this.onMultiFilterChange(currentFilter, {parent: filterValue, child: filterValue});
+      this.onMultiFilterChange(currentFilter, filterValueModel);
     }
   }
 
   clearSearchText() {
     this.searchText = '';
-    this.replaceSearchIntoCurrentURL(this.searchText);
     this.onTextChange('');
   }
 
@@ -228,31 +259,34 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     return filterValues;
   }
 
-  private updateCurrentURL(multiFilter: boolean) : void {
-    const queryParams: Params = {};
+  private updateCurrentUrlPath() : void {
 
-    const filterValues: any = {};
-    this.getSelectedFilterValues().forEach(filterValue => {
-      let values = filterValues[filterValue.filterId] as string[];
-      filterValues[filterValue.filterId] = values ?
-          [...values, filterValue.value.id] : [filterValue.value.id];
+    const selectedFilters = this.getSelectedFilterValues();
+
+    const urlFilterData: any = {};
+
+    selectedFilters.forEach(filterValue => {
+      let values = urlFilterData[filterValue.filterId] as string[];
+      urlFilterData[filterValue.filterId] = values ? [...values, filterValue.value.id] : [filterValue.value.id];
     });
 
-    if(multiFilter) {
-      for(let key of Object.keys(filterValues)) {
-        if(Array.isArray(filterValues[key])){
-          queryParams[key] = (filterValues[key] as string []).join(',');
-        }
+    const urlFilterDataKeys = Object.keys(urlFilterData);
+
+    let isMonoFilterId = urlFilterDataKeys.length === 1;
+    let isMonoValueId = true;
+
+    urlFilterDataKeys.forEach(key => {
+      const filterValueIdArray = urlFilterData[key];
+      if(isMonoValueId && filterValueIdArray?.length !== 1) {
+        isMonoValueId = false;
       }
-      this.replaceCurrentURL(null, null, this.searchText, queryParams);
+      urlFilterData[key] = (urlFilterData[key] as string []).join(',');
+    });
+
+    if(isMonoFilterId && isMonoValueId && urlFilterDataKeys.includes(this.SINGLE_FILTER)) {
+      this.replaceCurrentURL(urlFilterDataKeys[0], urlFilterData[urlFilterDataKeys[0]], this.searchText, {});
     } else {
-      let filterId = Object.keys(filterValues)[0];
-      if(filterId) {
-        let filterValueId = (filterValues[filterId] as string [])[0];
-        this.replaceCurrentURL(filterId, filterValueId, this.searchText, queryParams);
-      } else {
-        this.replaceCurrentURL(null, null, this.searchText, queryParams);
-      }
+      this.replaceCurrentURL(null, null, this.searchText, urlFilterData);
     }
   }
 
@@ -260,13 +294,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     let httpParams = new HttpParams({fromObject: queryParams});
     httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
     const filterPath = filterId && filterValueId ? `/${filterId}/${filterValueId}` : '';
-   this.location.replaceState(`app/browse${filterPath}`, httpParams.toString());
-  }
-
-  private replaceSearchIntoCurrentURL(searchText: string): void {
-    let httpParams = new HttpParams({fromString: window.location.search});
-    httpParams = this.updateSearchTextQueryParam(searchText, httpParams);
-    this.location.replaceState(window.location.pathname, httpParams.toString());
+   this.location.replaceState(`browse${filterPath}`, httpParams.toString());
   }
 
   private updateSearchTextQueryParam(searchText: string, queryParams: HttpParams): HttpParams {
