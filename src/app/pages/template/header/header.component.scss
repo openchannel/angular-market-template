@@ -20,8 +20,8 @@
 
 .navbar-light .navbar-nav .nav-item.active > .nav-link {
   opacity: 1;
-  border-bottom: 3px inset $primary;
-  padding-bottom: 26px;
+  border-bottom: 3px solid $primary;
+  padding-bottom: 27px;
 }
 
 .navbar-light .navbar-toggler {
@@ -35,9 +35,10 @@
 .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-nav .nav-item.dropdown .nav-link {
   opacity: 1;
-  padding: 30px 20px;
+  padding: 30px 0;
   font-size: 14px;
   color: #333333;
+  margin-left: 48px;
   font-family: "Rubik-Medium";
 }
 
