@@ -8,7 +8,7 @@
                              alt="arrow-icon">
                     <a routerLink="" class="font-m font-med pl-1">Back to App Store</a>
                     </div>
-                    <h1 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h1>
+                    <h3 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h3>
                 </div>
                 <div *ngIf="isDeveloperPreviewPage">
                     <oc-button type="secondary" (click)="closeWindow()" [customTemplate]="closePreviewButton"></oc-button>
@@ -50,7 +50,7 @@
                         expandDescriptionText="Show full description"
                         headerClass="mb-2"></oc-app-description>
             <div class="col-md ml-md-8 mt-3 mt-md-0">
-                <h2 class="mb-2">Support</h2>
+                <h4 class="mb-2">Support</h4>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" *ngIf="app.customData['terms-of-service-url']">
                         <img src="./assets/img/icon-help.svg"
