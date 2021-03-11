@@ -97,11 +97,11 @@ a:hover {
 @include media-breakpoint-md() {
   .navbar {
     .container {
-      .navbar-collapse{
+      .navbar-collapse {
         height: 100vh;
       }
       .navbar-wrapper {
-        padding: 0 0 0 1rem;
+        padding: 0 24px 0 24px;
       }
     }
   }
