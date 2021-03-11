@@ -1,11 +1,25 @@
-@import "~oc-ng-common-component/assets/styles/theme.scss";
+@import '~oc-ng-common-component/assets/styles/theme';
+@import '~oc-ng-common-component/assets/styles/mixins';
+
+.app-detail {
+  &__back-link {
+    @include media-breakpoint-md {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+    display: flex;
+    justify-content: space-between;
+    padding: 5rem 0;
+  }
+}
+
 
 .list-group.list-group-flush {
   .list-group-item {
+    @include font-family-rubik('Medium');
     padding: 0 0 10px;
     border-width: 0;
     font-size: 14px;
-    font-family: "Rubik-Medium";
   }
 }
 
@@ -28,6 +42,9 @@
 }
 
 .review-column {
+  @include media-breakpoint-sm {
+    margin-top: 4rem;
+  }
   flex-grow: 1;
 }
 
@@ -37,4 +54,17 @@
   background-color: $secondary;
   -webkit-mask: url("~assets/img/close-icon.svg") no-repeat center;
   mask: url("~assets/img/close-icon.svg") no-repeat center;
+}
+
+.action-button {
+  display: block;
+  margin-right: 2rem;
+  margin-bottom: 2rem;
+}
+
+.container_custom {
+  @include media-breakpoint-md {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
 }

@@ -70,8 +70,8 @@
     "ngx-color-picker": "^10.1.0",
     "ngx-embed-video": "^1.0.4",
     "ngx-infinite-scroll": "^10.0.0",
-    "protractor": "~7.0.0",
     "ngx-spinner": "^10.0.1",
+    "protractor": "~7.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.7"
