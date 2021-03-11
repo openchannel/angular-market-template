@@ -21,14 +21,6 @@
         <oc-app-short-info *ngFor="let app of appList"
                            [app]="app"
                            class="mb-2">
-            <div ngbDropdown placement="bottom-right" class="mr-2">
-                <button class="btn btn-secondary menu-button" ngbDropdownToggle>
-                    <img src="assets/img/dots-hr-icon.svg" alt="more-icon" class="icon-dots">
-                </button>
-                <div ngbDropdownMenu>
-                    <button class="dropdown-item">To Do...</button>
-                </div>
-            </div>
         </oc-app-short-info>
     </div>
 </div>
