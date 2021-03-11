@@ -16,28 +16,29 @@
             <ul class="navbar-nav justify-content-end w-100 mb-0">
                 <li class="nav-item"
                     [ngClass]="{active: router.isActive('', true) || router.isActive('/', true)}">
-                    <a (click)="closedMenu('')" class="nav-link">Browse
+                    <a routerLink=""
+                       (click)="closedMenu()" class="nav-link cursor-pointer">Browse
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
                 <li class="nav-item"
                     *ngIf="authHolderService.isLoggedInUser()"
-                    [ngClass]="{active: router.url.includes('/management/apps')}">
-                    <a (click)="closedMenu('/management/apps')" class="nav-link">My apps</a>
+                    [class.active]="checkIncludesUrl('/management/apps')">
+                    <a routerLink="/management/apps"
+                       (click)="closedMenu()" class="nav-link cursor-pointer">My apps</a>
                 </li>
 
                 <li class="nav-item collaps-none justify-content-between align-items-center"
                     *ngIf="authHolderService.isLoggedInUser()"
-                    [ngClass]="{active: router.url.includes('/management/profile') || router.url.includes('/management/company')}"
+                    [class.active]="checkIncludesUrl('/management/profile', '/management/company')"
                     (click)="isMenuCollapsed = !isMenuCollapsed"
                     data-target="#collapsMoreContent"
                     aria-controls="collapsMoreContent">
-                    <a class="nav-link">More</a>
+                    <a class="nav-link cursor-pointer">More</a>
                     <div class="pr-3">
                         <svg-icon src="./assets/img/select-down.svg"
                                   [class.rotate-img]="!isMenuCollapsed"
-                                  [svgClass]="router.url.includes('/management/profile')
-                                     || router.url.includes('/management/company')? '':'change-icon-color'">
+                                  [svgClass]="checkIncludesUrl('/management/profile', '/management/company')? '':'change-icon-color'">
                         </svg-icon>
                     </div>
                 </li>
@@ -48,22 +49,24 @@
                     <ul class="navbar-nav ml-5">
                         <li class="nav-item">
                             <a *ngIf="!isSSO"
-                               class="nav-link"
-                               (click)="closedMenu('/management/profile')">My Profile</a>
+                               class="nav-link cursor-pointer"
+                               routerLink="/management/profile"
+                               (click)="closedMenu()">My Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"
-                               (click)="closedMenu('/management/company')"
+                            <a class="nav-link cursor-pointer"
+                               routerLink="/management/company"
+                               (click)="closedMenu()"
                                [appPermissions]="companyPermissions">My Company</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" (click)="logout()">Logout</a>
+                            <a class="nav-link cursor-pointer" (click)="logout()">Logout</a>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="my-2 my-lg-0 ml-0 ml-lg-4 navbar-none" *ngIf="authHolderService.isLoggedInUser()">
+            <div class="my-2 my-lg-0 ml-md-3 navbar-none" *ngIf="authHolderService.isLoggedInUser()">
                 <oc-profile-navbar username="More">
                     <ng-container>
                         <div class="dropdown-item cursor-pointer" *ngIf="!isSSO"

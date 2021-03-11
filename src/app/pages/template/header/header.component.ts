@@ -60,9 +60,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.logOut.logOut();
   }
 
-  closedMenu(link: string){
+  closedMenu(){
     this.isMenuCollapsed = true;
     this.isCollapsed = true;
-    this.router.navigate([link]);
+  }
+
+  checkIncludesUrl(url1, url2?) {
+    return this.router.url.includes(url1) || (url2 && this.router.url.includes(url2));
   }
 }
