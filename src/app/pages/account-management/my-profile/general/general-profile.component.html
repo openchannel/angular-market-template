@@ -1,9 +1,12 @@
-<oc-form *ngIf="formDefinition" #form
-         [formJsonData]="formDefinition"
-         [showButton]="false"></oc-form>
-<div class="w-100 mt-2">
+<oc-form *ngIf="this.formConfig"
+         [formJsonData]="formConfig"
+         [showButton]="false"
+         (createdForm)="setCreatedForm($event)"
+         (formDataUpdated)="setResultData($event)">
+</oc-form>
+<div *ngIf="this.formConfig" class="w-100 mt-2">
     <oc-button type="primary" text="Save" class="btn-block w-100"
-               [process]="isSaveInProcess"
-               (click)="saveGeneralProfile()">
+               [process]="inProcess"
+               (click)="saveAccountData()">
     </oc-button>
 </div>

@@ -283,7 +283,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
       urlFilterData[key] = (urlFilterData[key] as string []).join(',');
     });
 
-    if(isMonoFilterId && isMonoValueId && urlFilterDataKeys.includes(this.SINGLE_FILTER)) {
+    if(isMonoFilterId && isMonoValueId) {
       this.replaceCurrentURL(urlFilterDataKeys[0], urlFilterData[urlFilterDataKeys[0]], this.searchText, {});
     } else {
       this.replaceCurrentURL(null, null, this.searchText, urlFilterData);
