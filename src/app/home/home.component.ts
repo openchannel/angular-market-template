@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (featureConfig) {
         this.loader.start();
         this.subscriber.add(
-          this.appService.getApps(1, 6, featureConfig.sort, featureConfig.filter)
+          this.appService.getApps(1, 4, featureConfig.sort, featureConfig.filter)
             .subscribe(res => {
               this.featuredApp = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
               if (this.featuredApp && this.featuredApp.length > 0) {
