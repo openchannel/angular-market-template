@@ -26,7 +26,7 @@
                         <p class="text-secondary mt-1">{{ app.summary }}</p>
                         <oc-rating class="mb-3" [rating]="app.rating / 100 || 0" [reviewCount]="app.reviewCount || 0"
                                    label="reviews" labelClass="font-med" type="single-star"></oc-rating>
-                        <div *ngIf="appListingActions?.length > 0">
+                        <div *ngIf="appListingActions?.length > 0" class="actions-container">
                             <app-button-action *ngFor="let action of appListingActions"
                                                [appData]="app"
                                                [buttonAction]="action"
