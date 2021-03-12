@@ -6,7 +6,7 @@
                     <div class="d-flex flex-row align-items-center">
                         <img src="./assets/img/arrow-left.svg"
                              alt="arrow-icon">
-                    <a routerLink="" class="font-m font-med pl-1">Back to App Store</a>
+                    <a routerLink="" class="font-m font-med pl-1">Back</a>
                     </div>
                     <h3 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h3>
                 </div>
@@ -17,8 +17,7 @@
             <div class="row mb-1">
                 <div class="col-sm-10 d-flex flex-column flex-md-row p-0">
                     <div class="col-md-auto mb-2 app-logo" *ngIf="app.logo">
-                        <img [src]="app.logo"
-                             alt="app-icon">
+                        <img [src]="app.logo" alt="app-icon">
                     </div>
                     <div class="col-md-6 d-flex flex-column">
                         <h1 class="mb-2">{{ app.name }}</h1>
@@ -106,7 +105,7 @@
     </div>
     <div class="bg-container mt-5 pt-3 pb-4 px-3 px-md-0 py-md-8 min-height-auto" *ngIf="recommendedApps">
         <div class="container">
-            <oc-recommended-apps recommendedAppTitle="Recommended For You"
+            <oc-recommended-apps recommendedAppTitle="Recommended for you"
                                  [appList]="recommendedApps"
                                  (clickByAppCard)="navigateTo(['details', $event.safeName[0]])">
             </oc-recommended-apps>
