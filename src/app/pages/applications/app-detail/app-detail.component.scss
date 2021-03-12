@@ -56,10 +56,20 @@
   mask: url("~assets/img/close-icon.svg") no-repeat center;
 }
 
+.actions-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .action-button {
+  @include media-breakpoint-md {
+    max-width: 100%;
+    width: 100%;
+  }
   display: block;
   margin-right: 2rem;
   margin-bottom: 2rem;
+  max-width: 160px;
 }
 
 .container_custom {
