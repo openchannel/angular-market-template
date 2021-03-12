@@ -1,0 +1,7 @@
+<div class="filters-collapse d-flex d-md-none justify-content-between mb-3"
+     (click)="changeCollapseStatus()">
+  <a class="font-m font-med link">{{collapsed ? titleForOpen : titleForClose}}</a>
+  <img src="./assets/img/select-up.svg"
+       [ngClass]="{rotate: collapsed}"
+       alt="arrow-icon">
+</div>

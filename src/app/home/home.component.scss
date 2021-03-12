@@ -9,10 +9,6 @@
   flex-direction: column;
 }
 
-.rotate {
-  transform: rotate(180deg);
-}
-
 .featured-apps-container {
   @include media-breakpoint-md {
     max-width: 100%;

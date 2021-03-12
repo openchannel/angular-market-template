@@ -18,21 +18,16 @@
     <div class="row mt-7">
         <div class="col-md-3 filter__container">
             <oc-text-search class="mb-3" (enterSearch)="catchSearchText($event)"></oc-text-search>
-
-            <div class="filters-collapse d-flex d-md-none justify-content-between mb-3" (click)="filterCollapsed = !filterCollapsed">
-                <a class="font-m font-med link">Back to App Store</a>
-                <img src="./assets/img/select-up.svg"
-                     [ngClass]="{rotate: filterCollapsed}"
-                     alt="arrow-icon">
-            </div>
-
+            <app-collapse-with-title titleForClose="Close filer options"
+                                     titleForOpen="Open filer options"
+                                     [(ngModel)]="filterCollapsed">
+            </app-collapse-with-title>
             <oc-sidebar *ngFor="let filter of sidebarFilters"
                         class="d-md-block mb-1"
                         [ngbCollapse]="filterCollapsed"
                         (sidebarChange)="onSidebarFilterChange(filter, $event)"
                         [title]="filter.name"
                         [sidebarModel]="filter.values"></oc-sidebar>
-
         </div>
         <div class="col-md-9">
             <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
