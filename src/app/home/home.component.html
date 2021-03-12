@@ -1,4 +1,4 @@
-<div class="bg-container height-unset d-flex align-items-center">
+<div class="bg-container height-unset d-flex flex-column align-items-center">
     <div class="container">
         <div class="row">
             <div class="page-info col-md-9 col-lg-7 text-center mx-auto">
@@ -6,6 +6,8 @@
                 <p class="page-description mb-4 text-secondary">A design template for implementing your app store with OpenChannel</p>
             </div>
         </div>
+    </div>
+    <div class="container featured-apps-container">
         <oc-featured-apps *ngIf="isFeatured"
                           [data]="featuredApp"
                           (clickByAppCard)="goToAppDetailsPage($event)"
