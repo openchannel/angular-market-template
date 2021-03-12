@@ -13,6 +13,16 @@ div.menu {
   height: 42px;
   min-height: 42px;
   padding: 0;
+  &:not(.disabled):hover {
+    background-color: unset;
+  }
+  &:not(.disabled):active {
+    background-color: unset;
+  }
+
+  &.dropdown-toggle {
+    background-color: unset;
+  }
 
   &:after {
     display: none;

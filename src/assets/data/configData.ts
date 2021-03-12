@@ -64,7 +64,7 @@
            "fail": "Due to an error, we were not able to send your form"
          },
          "button": {
-           "class": "btn-primary",
+           "class": "oc-button_primary",
            "text": "Buy now"
          }
        },
@@ -77,7 +77,7 @@
            "fail": "Due to an error, we were not able to send your form"
          },
          "button": {
-           "class": "btn-secondary",
+           "class": "oc-button_secondary",
            "text": "Contact"
          }
        },
@@ -90,7 +90,7 @@
              "fail": "Due to an error we were not able to install your app"
            },
            "button": {
-             "class": "btn-primary",
+             "class": "oc-button_primary",
              "text": "Install",
            }
          },
@@ -100,7 +100,7 @@
              "fail": "Due to an error we were not able to uninstall your app"
            },
            "button": {
-             "class": "btn-primary",
+             "class": "oc-button_primary",
              "text": "Uninstall",
            }
          }
@@ -110,7 +110,7 @@
          "appTypes": ["downloadable"],
          "fileField": "customData.releases[0].file",
          "button": {
-           "class": "btn-primary",
+           "class": "oc-button_primary",
            "text": "Download"
          }
        }
