@@ -1,10 +1,9 @@
 <div class="bg-container height-unset d-flex align-items-center">
     <div class="container">
         <div class="row">
-            <div class="col-md-7 py-7 px-4 text-center mx-auto">
-                <h1>Your App Store Platform</h1>
-                <p class="mb-4 text-secondary">A design template for implementing your app store with OpenChannel</p>
-                <oc-text-search (enterSearch)="catchSearchText($event)"></oc-text-search>
+            <div class="page-info col-md-9 col-lg-7 text-center mx-auto">
+                <h1 class="page-title">Your App Store Platform</h1>
+                <p class="page-description mb-4 text-secondary">A design template for implementing your app store with OpenChannel</p>
             </div>
         </div>
         <oc-featured-apps *ngIf="isFeatured"
@@ -16,11 +15,22 @@
 <div class="container">
     <div class="row mt-7">
         <div class="col-md-3 filter__container">
+            <oc-text-search class="mb-3" (enterSearch)="catchSearchText($event)"></oc-text-search>
+
+            <div class="filters-collapse d-flex d-md-none justify-content-between mb-3" (click)="filterCollapsed = !filterCollapsed">
+                <a class="font-m font-med link">Back to App Store</a>
+                <img src="./assets/img/select-up.svg"
+                     [ngClass]="{rotate: filterCollapsed}"
+                     alt="arrow-icon">
+            </div>
+
             <oc-sidebar *ngFor="let filter of sidebarFilters"
-                        class="mb-1"
+                        class="d-md-block mb-1"
+                        [ngbCollapse]="filterCollapsed"
                         (sidebarChange)="onSidebarFilterChange(filter, $event)"
                         [title]="filter.name"
                         [sidebarModel]="filter.values"></oc-sidebar>
+
         </div>
         <div class="col-md-9">
             <ng-container *ngFor="let configElement of homePageConfig?.appListPage">

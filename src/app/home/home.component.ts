@@ -26,13 +26,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   public isFeatured = false;
   public homePageConfig;
   public categoriesData: any [] = [];
+  filterCollapsed = true;
 
   public loader: LoadingBarState;
 
   private subscriber: Subscription = new Subscription();
 
-  private readonly DEFAULT_FILTER_ID = 'collections'
-  private readonly DEFAULT_FILTER_VALUE_ID = 'allApps'
+  private readonly DEFAULT_FILTER_ID = 'collections';
+  private readonly DEFAULT_FILTER_VALUE_ID = 'allApps';
 
   constructor(private appService: AppsService,
               private router: Router,

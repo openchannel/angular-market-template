@@ -1,3 +1,16 @@
+.page-info {
+  margin: 4rem 0;
+}
+
+.filter__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
 .section-hero {
     background-image: url(/assets/img/hero-img1.svg);
     background-repeat: no-repeat;
@@ -66,10 +79,18 @@
 
   // Media Query - max-width: 767px Start
   @media (max-width: 767px) {
+    .page-title {
+      font-size: 24px;
+    }
+    .page-description {
+      font-size: 14px;
+    }
+    .page-info {
+      margin: 3rem 0;
+    }
     // Hero Sec Media Css
     .section-hero {
       margin-top: 60px;
-      padding-top: 200px;
       background-size: cover !important;
       padding: 250px 0 44px;
       height: 100%;
