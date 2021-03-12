@@ -4,7 +4,7 @@
             (createdForm)="setCreatedForm($event)"
             (formDataUpdated)="setResultData($event)">
   </oc-form>
-  <oc-button type="primary" text="Save" class="save-button ml-auto mr-0" [class]="'w-100'"
+  <oc-button type="primary" text="Save" class="save-button ml-auto mr-0"
              [appPermissions]="savePermissions"
              [process]="inProcess"
              (click)="saveOrganization()">
