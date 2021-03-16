@@ -1,3 +1,22 @@
+@import '~oc-ng-common-component/assets/styles/theme';
+
 oc-checkbox {
   height: 16px;
+}
+
+.card-body {
+  font-size: 14px;
+  line-height: 16px;
+  padding: 40px 30px 38px;
+}
+
+.border-card {
+  border-radius: 4px;
+  border: 1px solid $info;
+}
+
+.signup-position {
+  display: block;
+  margin: 5rem auto 0;
+  width: 412px;
 }

@@ -97,6 +97,7 @@ a:hover {
 @include media-breakpoint-md() {
   .navbar {
     .container {
+      max-width: 100%;
       .navbar-collapse {
         height: 100vh;
       }
