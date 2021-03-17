@@ -1,7 +1,17 @@
-.form-max-width {
-  max-width: 730px;
-}
+@import '~assets/styles/mixins';
 
-.save-button {
-  min-width: 15rem;
+.company-container {
+  display: flex;
+  flex-direction: column;
+  width: 730px;
+  @include media-breakpoint-md {
+    width: auto;
+  }
+  .save-button {
+    margin-left: auto;
+    min-width: 256px;
+    @include media-breakpoint-md {
+      min-width: auto;
+    }
+  }
 }
