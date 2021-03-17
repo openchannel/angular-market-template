@@ -27,7 +27,7 @@ import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {OcButtonComponent, OcFormModalComponent} from 'oc-ng-common-component';
 import {Router} from '@angular/router';
-import * as _ from 'lodash';
+import {get} from 'lodash';
 
 declare type ActionType = 'OWNED' | 'UNOWNED';
 
@@ -135,10 +135,16 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       // open modal with this form
       this.openFormModal(form.name, form.fields, (result) => {
         if (result) {
-          result.appId = this.appData.appId ? this.appData.appId : null;
-
           // create submission by this form
-          this.processAction(this.formService.createFormSubmission(form.formId, result));
+          this.processAction(this.formService.createFormSubmission(form.formId, {
+            appId: this.appData.appId,
+            name: result.name,
+            userId: '',
+            email: result.email,
+            formData: {
+              ...result,
+            },
+          }));
         }
       });
     }, () => {
@@ -185,7 +191,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       action.pipe(takeUntil(this.$destroy), catchError(error => {
         this.inProcess = false;
         if (this.viewData?.message?.fail) {
-          this.toasterService.error(this.viewData?.message?.success);
+          this.toasterService.error(this.viewData?.message?.fail);
         }
         return throwError(error);
       }), tap(() => {
@@ -199,20 +205,23 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
   }
 
   private openFormModal(modalTitle: string, formFields: any, callback: (formData: any) => void): void {
+    if(!this.modal.hasOpenModals()) {
+      this.modal.dismissAll("Opening a new button action modal");
 
-    const modalRef = this.modal.open(OcFormModalComponent, {size: 'sm'});
-    modalRef.componentInstance.ngbModalRef = modalRef;
-    modalRef.componentInstance.modalTitle = modalTitle;
-    modalRef.componentInstance.confirmButton = this.confirmButton;
-    modalRef.componentInstance.rejectButton = this.rejectButton;
-    modalRef.componentInstance.formJsonData = {
-      fields: formFields
-    };
-    modalRef.result.then(result => callback(result));
+      const modalRef = this.modal.open(OcFormModalComponent, {size: 'sm'});
+      modalRef.componentInstance.ngbModalRef = modalRef;
+      modalRef.componentInstance.modalTitle = modalTitle;
+      modalRef.componentInstance.confirmButton = this.confirmButton;
+      modalRef.componentInstance.rejectButton = this.rejectButton;
+      modalRef.componentInstance.formJsonData = {
+        fields: formFields
+      };
+      modalRef.result.then(result => callback(result));
+    }
   }
 
   private downloadFile(actionConfig: DownloadButtonAction) {
-    const file = _.get(this.appData, actionConfig.fileField);
+    const file = get(this.appData, actionConfig.fileField);
     const regex: RegExp = new RegExp(/^(http(s)?:)?\/\//gm);
     if (regex.test(file)) {
       window.open(file);

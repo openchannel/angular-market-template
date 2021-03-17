@@ -29,6 +29,7 @@ import { PermissionDirective } from './directive/permission.directive';
     CamelCaseToNormalPipe,
     FormsModule,
     PermissionDirective,
+    NgbModule,
   ],
 })
 export class SharedModule {

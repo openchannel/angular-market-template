@@ -201,8 +201,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .rating-column {
   width: 255px;
   margin-right: 150px;
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-sm {
     margin-bottom: 1rem;
+    margin-top: 7rem;
+    margin-right: 0;
+    padding: 0 2rem;
+    width: 100%;
   }
 }
 

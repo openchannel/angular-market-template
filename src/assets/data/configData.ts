@@ -57,28 +57,28 @@
      "listing-actions": [
        {
          "type": "form",
-         "appTypes": ["informational", "other", "web_plugin"],
-         "formId": "contact-us",
-         "message": {
-           "success": "Thank you for submitting, we'll get back to you shortly",
-           "fail": "Due to an error, we were not able to send your form"
-         },
-         "button": {
-           "class": "btn-secondary",
-           "text": "Contact"
-         }
-       },
-       {
-         "type": "form",
-         "appTypes": ["informational", "other", "web_plugin"],
+         "appTypes": ["web_plugin", "marketing", "code_with_fun"],
          "formId": "buy-now",
          "message": {
            "success": "Thank you for submitting, we'll get back to you shortly",
            "fail": "Due to an error, we were not able to send your form"
          },
          "button": {
-           "class": "btn-primary",
-           "text": "Buy Now"
+           "class": "oc-button_primary",
+           "text": "Buy now"
+         }
+       },
+       {
+         "type": "form",
+         "appTypes": ["web_plugin", "marketing", "code_with_fun"],
+         "formId": "contact-us",
+         "message": {
+           "success": "Thank you for submitting, we'll get back to you shortly",
+           "fail": "Due to an error, we were not able to send your form"
+         },
+         "button": {
+           "class": "oc-button_secondary",
+           "text": "Contact"
          }
        },
        {
@@ -90,7 +90,7 @@
              "fail": "Due to an error we were not able to install your app"
            },
            "button": {
-             "class": "btn-primary",
+             "class": "oc-button_primary",
              "text": "Install",
            }
          },
@@ -100,7 +100,7 @@
              "fail": "Due to an error we were not able to uninstall your app"
            },
            "button": {
-             "class": "btn-primary",
+             "class": "oc-button_primary",
              "text": "Uninstall",
            }
          }
@@ -110,7 +110,7 @@
          "appTypes": ["downloadable"],
          "fileField": "customData.releases[0].file",
          "button": {
-           "class": "btn-primary",
+           "class": "oc-button_primary",
            "text": "Download"
          }
        }
