@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -12,6 +12,7 @@ import {
   UserRoleService,
 } from 'oc-ng-common-service';
 import { OcInviteModalComponent } from 'oc-ng-common-component';
+import {ManagementComponent} from './management/management.component';
 
 export interface Page {
   pageId: string;
@@ -26,6 +27,7 @@ export interface Page {
   styleUrls: ['./my-company.component.scss']
 })
 export class MyCompanyComponent implements OnInit {
+  @ViewChild('AppManagement') appManagement: ManagementComponent;
 
   pages: Page[] = [{
     pageId: 'company',
@@ -112,6 +114,7 @@ export class MyCompanyComponent implements OnInit {
     modalRef.result.then(result => {
       if (result) {
         this.toaster.success('Invitation sent');
+        this.appManagement.updateUsersAfterInvite();
       }
     });
   }
