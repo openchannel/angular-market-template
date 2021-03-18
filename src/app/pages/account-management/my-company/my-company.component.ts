@@ -27,7 +27,7 @@ export interface Page {
   styleUrls: ['./my-company.component.scss']
 })
 export class MyCompanyComponent implements OnInit {
-  @ViewChild('AppManagement') appManagement: ManagementComponent;
+  @ViewChild('appManagement') appManagement: ManagementComponent;
 
   pages: Page[] = [{
     pageId: 'company',
