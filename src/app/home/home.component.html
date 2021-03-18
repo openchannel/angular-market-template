@@ -20,7 +20,8 @@
             <oc-text-search class="mb-3" (enterSearch)="catchSearchText($event)"></oc-text-search>
             <app-collapse-with-title titleForClose="Close filer options"
                                      titleForOpen="Open filer options"
-                                     [(ngModel)]="filterCollapsed">
+                                     [collapsed]="filterCollapsed"
+                                     (collapseChanged)="onCollapseChanged($event)">
             </app-collapse-with-title>
             <oc-sidebar *ngFor="let filter of sidebarFilters"
                         class="d-md-block mb-1"
