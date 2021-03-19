@@ -88,9 +88,11 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     if (error.error instanceof ErrorEvent) {
       // client-side error
       errorMessage = `Error: ${error.error.message}`;
-    } else if (error.error.message) {
+    } else if (error.error?.message) {
       // server-side error
       errorMessage = `Error Code: ${error.error.status}\nMessage: ${error.error.message}`;
+    } else if (error.status === 403) {
+      errorMessage = `Error Code: ${error.status}\nYou are not authorized to perform this action`;
     } else {
       // server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
