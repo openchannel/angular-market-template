@@ -22,7 +22,7 @@ import {LoadingBarService} from '@ngx-loading-bar/core';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-    companyLogoUrl = './assets/img/logo-company.png';
+    companyLogoUrl = './assets/img/company-logo-2x.png';
     signupUrl = '/signup';
     forgotPwdUrl = '/forgot-password';
     signIn = new UserLoginModel();
