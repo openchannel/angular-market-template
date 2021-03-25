@@ -24,9 +24,9 @@
                 </li>
             </ul>
         </div>
-        <div [ngSwitch]="selectedPage?.pageId" class="col pt-1">
+        <div [ngSwitch]="selectedPage?.pageId" class="col-md-9 pt-1">
             <app-company-details *ngSwitchCase="pages[0].pageId"></app-company-details>
-            <app-management *ngSwitchCase="pages[1].pageId"></app-management>
+            <app-management #appManagement *ngSwitchCase="pages[1].pageId"></app-management>
         </div>
     </div>
 </div>

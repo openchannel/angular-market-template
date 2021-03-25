@@ -20,16 +20,20 @@
          infiniteScroll>
         <oc-app-short-info *ngFor="let app of appList"
                            [app]="app"
-                           class="mb-2">
-            <div ngbDropdown placement="bottom-right" class="mr-2">
-                <button class="btn btn-outline-info menu-button" ngbDropdownToggle>
-                    <img src="assets/img/dots-hr-icon.svg" alt="more-icon" class="icon-dots">
-                </button>
-                <div ngbDropdownMenu>
-                    <button class="dropdown-item">To Do...</button>
-                </div>
-            </div>
+                           class="mb-2"
+                           [customDropdown]="dropdownTemplate">
         </oc-app-short-info>
     </div>
 </div>
 <div class="divider mt-8"></div>
+
+<ng-template #dropdownTemplate>
+    <div ngbDropdown placement="bottom-right" class="mr-2">
+        <button class="btn btn-outline-info menu-button" ngbDropdownToggle>
+            <img src="assets/img/dots-hr-icon.svg" alt="more-icon" class="icon-dots">
+        </button>
+        <div ngbDropdownMenu>
+            <button class="dropdown-item">To Do...</button>
+        </div>
+    </div>
+</ng-template>
