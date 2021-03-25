@@ -11,7 +11,7 @@ import {takeUntil} from 'rxjs/operators';
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
 
-    companyLogoUrl = './assets/img/logo-company.png';
+    companyLogoUrl = './assets/img/company-logo-2x.png';
     inProcess = false;
     resetModel = new UserResetPassword();
 
