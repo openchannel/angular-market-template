@@ -1,3 +1,39 @@
-oc-checkbox {
-  height: 16px;
+@import '~oc-ng-common-component/assets/styles/theme';
+@import "~assets/styles/mixins";
+
+.card-body {
+  font-size: 14px;
+  line-height: 16px;
+  padding: 40px 30px 38px;
+}
+
+.border-card {
+  border-radius: 4px;
+  border: 1px solid $info;
+}
+
+.signup-position {
+  display: block;
+  margin: 5rem auto 0;
+  width: 412px;
+}
+
+.consent-checkbox {
+  height: 2rem;
+}
+
+@include media-breakpoint-sm {
+  .card-body {
+    padding: 4rem 2rem 5rem;
+    min-height: 100vh;
+  }
+
+  .signup-position {
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .border-card {
+    border: none;
+  }
 }

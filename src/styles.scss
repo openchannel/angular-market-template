@@ -170,17 +170,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   min-height: auto;
 }
 
-.result {
-  margin: 35px 0 24px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  &__label{
-    color: $secondary;
-  }
-}
-
 .get-dev {
   &__container {
     background-color: $light;

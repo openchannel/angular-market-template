@@ -1,10 +1,10 @@
-<div *ngIf="formConfig?.fields" class="d-flex flex-column form-max-width">
+<div *ngIf="formConfig?.fields" class="company-container">
   <oc-form  [formJsonData]="formConfig"
             [showButton]="false"
             (createdForm)="setCreatedForm($event)"
             (formDataUpdated)="setResultData($event)">
   </oc-form>
-  <oc-button type="primary" text="Save" class="save-button ml-auto mr-0"
+  <oc-button type="primary" text="Save" class="save-button"
              [appPermissions]="savePermissions"
              [process]="inProcess"
              (click)="saveOrganization()">
