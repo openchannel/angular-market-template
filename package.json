@@ -14,7 +14,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "create-compodoc": "npx compodoc -p tsconfig.json src -d ./development/documentation",
-    "start-compodoc": " compodoc -s -r 8804 -d ./development/documentation/"
+    "start-compodoc": " compodoc -s -r 8804 -d ./development/documentation/",
+    "postinstall": "ngcc"
   },
   "private": true,
   "dependencies": {
