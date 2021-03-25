@@ -12,7 +12,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
     signupUrl = '/signup';
     loginUrl = '/login';
-    companyLogoUrl = './assets/img/logo-company.png';
+    companyLogoUrl = './assets/img/company-logo-2x.png';
     forgotPasswordDoneIconPath = './assets/img/forgot-password-complete-icon.svg';
     showResultPage = false;
     signIn = new UserRegistrationModel();
