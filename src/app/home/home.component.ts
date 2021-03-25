@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public isFeatured = false;
   public homePageConfig;
   public categoriesData: any [] = [];
+  filterCollapsed = true;
 
   public gallery: GalleryItem[];
   public loader: LoadingBarState;
@@ -219,5 +220,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['browse', filterId, filterValueId],
         {queryParams: searchText ? {search: searchText} : {}})
     .then(() => window.scrollTo(0, 0));
+  }
+
+  onCollapseChanged(status: boolean) {
+    this.filterCollapsed = status;
   }
 }

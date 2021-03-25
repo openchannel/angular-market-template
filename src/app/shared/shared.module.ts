@@ -7,12 +7,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PermissionDirective } from './directive/permission.directive';
+import { CollapseWithTitleComponent } from './components/collapse-with-title/collapse-with-title.component';
 
 @NgModule({
   declarations: [
     ConfirmationModalComponent,
     CamelCaseToNormalPipe,
     PermissionDirective,
+    CollapseWithTitleComponent,
   ],
   imports: [
     CommonModule,
@@ -30,6 +32,7 @@ import { PermissionDirective } from './directive/permission.directive';
     FormsModule,
     PermissionDirective,
     NgbModule,
+    CollapseWithTitleComponent
   ],
 })
 export class SharedModule {
