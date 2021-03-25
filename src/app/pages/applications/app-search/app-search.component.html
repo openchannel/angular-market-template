@@ -30,11 +30,11 @@
         </div>
         <div class="col-md-9">
             <oc-text-search [(searchText)]="searchText" (enterSearch)="onTextChange($event)"></oc-text-search>
-            <div class="result">
-                <oc-tag-element *ngFor="let filter of selectedFilterValues"
+            <div class="search-tags">
+                <oc-tag-element class="search-tags__element" *ngFor="let filter of selectedFilterValues"
                                 [title]="filter?.value.label" [closeMarker]="true"
                                 (clickEmitter)="disableFilterValue(filter.filterId, filter.value)"></oc-tag-element>
-                <oc-tag-element *ngIf="searchTextTag"
+                <oc-tag-element  class="search-tags__element"*ngIf="searchTextTag"
                                 [title]="searchTextTag" [closeMarker]="true"
                                 (clickEmitter)="clearSearchText()"></oc-tag-element>
             </div>

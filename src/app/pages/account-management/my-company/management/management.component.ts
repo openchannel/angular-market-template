@@ -70,6 +70,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
     });
   }
 
+  updateUsersAfterInvite() {
+    this.getAllUsers(() => this.userProperties.data.list = []);
+  }
+
   catchSortChanges(sortBy) {
     switch (sortBy) {
       case 'name':

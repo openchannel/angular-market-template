@@ -1,23 +1,17 @@
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  TemplateRef,
-  ViewChild
-} from '@angular/core';
-import {
-  ButtonAction, DownloadButtonAction,
+  ButtonAction,
+  DownloadButtonAction,
   FormButtonAction,
-  OwnershipButtonAction, ViewData,
+  OwnershipButtonAction,
+  ViewData,
 } from './models/button-action.model';
 import {
   AppFormService,
   AuthHolderService,
-  FullAppData, OwnershipService,
-  FileUploadDownloadService
+  FileUploadDownloadService,
+  FullAppData,
+  OwnershipService,
 } from 'oc-ng-common-service';
 import {Observable, Subject, throwError} from 'rxjs';
 import {catchError, takeUntil, tap} from 'rxjs/operators';
@@ -28,6 +22,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {OcButtonComponent, OcFormModalComponent} from 'oc-ng-common-component';
 import {Router} from '@angular/router';
 import {get} from 'lodash';
+import { HttpHeaders } from '@angular/common/http';
 
 declare type ActionType = 'OWNED' | 'UNOWNED';
 
@@ -85,7 +80,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         this.setViewData(null, (this.buttonAction as FormButtonAction));
         break;
       case 'install':
-        if(this.appData?.ownership?.ownershipStatus === 'active') {
+        if (this.appData?.ownership?.ownershipStatus === 'active') {
           this.setViewData('OWNED', (this.buttonAction as OwnershipButtonAction)?.owned);
         } else {
           this.setViewData('UNOWNED', (this.buttonAction as OwnershipButtonAction)?.unowned);
@@ -95,8 +90,8 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
           this.viewData = {
             button: (this.buttonAction as DownloadButtonAction).button,
             message: null
-          }
-        break;
+          };
+          break;
       default:
         this.toasterService.error(`Error: invalid button type: ${this.buttonAction.type}`);
     }
@@ -174,10 +169,21 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
     if (this.appData?.model?.length > 0) {
       this.processAction(this.ownershipService.installOwnership({
           appId: this.appData.appId,
-          modelId: this.appData?.model[0].modelId
-        }));
+          modelId: this.appData?.model[0].modelId,
+        },
+        new HttpHeaders({'x-handle-error': '403, 500'})),
+        (error) => {
+          this.inProcess = false;
+          if (error.status === 403) {
+            this.toasterService.error('You don’t have permission to install this app');
+          } else if (this.viewData?.message?.fail) {
+            this.toasterService.error(this.viewData?.message?.fail);
+          }
+          return throwError(error);
+        },
+      );
     } else {
-      this.toasterService.error('Missed any models for creating ownership.')
+      this.toasterService.error('Missed any models for creating ownership.');
     }
   }
 
@@ -185,28 +191,31 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
     this.processAction(this.ownershipService.uninstallOwnership(this.appData.ownership.ownershipId));
   }
 
-  private processAction<T>(action: Observable<T>): void {
+  private processAction<T>(action: Observable<T>, errorHandler?: (error: any) => Observable<any>): void {
     if (!this.inProcess) {
       this.inProcess = true;
-      action.pipe(takeUntil(this.$destroy), catchError(error => {
-        this.inProcess = false;
-        if (this.viewData?.message?.fail) {
-          this.toasterService.error(this.viewData?.message?.fail);
-        }
-        return throwError(error);
-      }), tap(() => {
-        this.inProcess = false;
-        if (this.viewData?.message?.success) {
-          this.toasterService.success(this.viewData?.message?.success);
-        }
-        this.updateAppData.emit();
-      })).subscribe();
+      action.pipe(
+        catchError(errorHandler ? errorHandler : error => {
+          this.inProcess = false;
+          if (this.viewData?.message?.fail) {
+            this.toasterService.error(this.viewData?.message?.fail);
+          }
+          return throwError(error);
+        }),
+        tap(() => {
+          this.inProcess = false;
+          if (this.viewData?.message?.success) {
+            this.toasterService.success(this.viewData?.message?.success);
+          }
+          this.updateAppData.emit();
+        }),
+        takeUntil(this.$destroy)).subscribe();
     }
   }
 
   private openFormModal(modalTitle: string, formFields: any, callback: (formData: any) => void): void {
-    if(!this.modal.hasOpenModals()) {
-      this.modal.dismissAll("Opening a new button action modal");
+    if (!this.modal.hasOpenModals()) {
+      this.modal.dismissAll('Opening a new button action modal');
 
       const modalRef = this.modal.open(OcFormModalComponent, {size: 'sm'});
       modalRef.componentInstance.ngbModalRef = modalRef;
