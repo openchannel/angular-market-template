@@ -12,7 +12,7 @@ import {takeUntil} from 'rxjs/operators';
 export class SignupComponent implements OnDestroy {
 
   loginUrl = '/login';
-  companyLogoUrl = './assets/img/logo-company.png';
+  companyLogoUrl = './assets/img/company-logo-2x.png';
   termsAndConditionPageUrl = 'https://my.openchannel.io/terms-of-service';
   dataProcessingPolicyUrl = 'https://my.openchannel.io/data-processing-policy';
   forgotPasswordDoneIconPath = './assets/img/forgot-password-complete-icon.svg';

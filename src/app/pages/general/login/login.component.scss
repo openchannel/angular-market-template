@@ -1,6 +1,14 @@
+@import "~assets/styles/mixins";
 
 .login-position {
   display: block;
   margin: 5rem auto 0;
   width: 412px;
+}
+
+@include media-breakpoint-sm {
+  .login-position {
+    margin: 0 auto;
+    width: 100%;
+  }
 }
