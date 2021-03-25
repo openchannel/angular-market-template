@@ -7,7 +7,7 @@ import {
   HttpRequest
 } from '@angular/common/http';
 
-import {BehaviorSubject, Observable, throwError} from 'rxjs';
+import {Observable, Subject, throwError} from 'rxjs';
 import {Router} from '@angular/router';
 import {OcErrorService} from 'oc-ng-common-component';
 import {catchError, switchMap, take} from 'rxjs/operators';
@@ -19,7 +19,7 @@ import {HttpConfigInterceptor} from './httpconfig.interceptor';
 export class HttpErrorInterceptor implements HttpInterceptor {
 
   private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private refreshTokenSubject: Subject<string> = new Subject<string>();
 
   constructor(private router: Router,
               private errorService: OcErrorService,
@@ -29,7 +29,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request)
+    const errorHeader = request.headers.get('x-handle-error');
+    const notHandledErrors = errorHeader ? errorHeader.split(',').map(Number) : [];
+
+    return next.handle(request.clone({
+      headers: request.headers.delete('x-handle-error'),
+    }))
     .pipe(catchError((response: HttpErrorResponse) => {
       if (response instanceof HttpErrorResponse && response.status === 401) {
         return this.handle401Error(request, next);
@@ -40,7 +45,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       } else if (this.isCsrfError(response)) {
         return throwError(response);
       } else {
-        this.handleError(response);
+        if (!notHandledErrors.includes(response.status)) {
+          this.handleError(response);
+        }
       }
       return throwError(response);
     }));
@@ -88,9 +95,11 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     if (error.error instanceof ErrorEvent) {
       // client-side error
       errorMessage = `Error: ${error.error.message}`;
-    } else if (error.error.message) {
+    } else if (error.error?.message) {
       // server-side error
       errorMessage = `Error Code: ${error.error.status}\nMessage: ${error.error.message}`;
+    } else if (error.status === 403) {
+      errorMessage = `Error Code: ${error.status}\nYou are not authorized to perform this action`;
     } else {
       // server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
