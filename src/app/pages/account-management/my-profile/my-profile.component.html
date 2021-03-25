@@ -1,16 +1,18 @@
 <div class="bg-container height-unset">
     <div class="container header-padding">
-        <img src="assets/img/arrow-left.svg" alt="arrow-icon">
-        <a (click)="goBack()" class="font-m font-med pl-1 cursor-pointer" style="color: #537cfd ;">Back</a>
+        <div class="breadcrumbs-wrapper">
+            <img class="breadcrumbs-icon" src="assets/img/arrow-left.svg" alt="arrow-icon">
+            <a (click)="goBack()" class="font-m font-med pl-1 cursor-pointer" style="color: #537cfd ;">Back</a>
+        </div>
         <h3 class="page-title page-title-size">My profile</h3>
     </div>
 </div>
 
 <div class="container">
-    <div class="row pt-5">
+    <div class="page-navigation row">
         <div class="col-md-3">
             <ul class="list-unstyled">
-                <li class="py-1">
+                <li>
                     <a (click)="gotoPage('myProfile')" class="font-m"
                         [ngClass]="{'active-link' : selectedPage === 'myProfile' }"> Profile Details </a>
                 </li>
@@ -22,8 +24,7 @@
         </div>
         <div class="col-md-4 pt-1">
             <app-general-profile *ngIf='selectedPage === "myProfile"'></app-general-profile>
-            <app-change-password *ngIf='selectedPage === "changePassword"'>
-            </app-change-password>
+            <app-change-password *ngIf='selectedPage === "changePassword"'></app-change-password>
         </div>
     </div>
 </div>
