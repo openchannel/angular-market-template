@@ -1,8 +1,5 @@
 @import '~oc-ng-common-component/assets/styles/theme';
-
-oc-checkbox {
-  height: 16px;
-}
+@import "~assets/styles/mixins";
 
 .card-body {
   font-size: 14px;
@@ -19,4 +16,24 @@ oc-checkbox {
   display: block;
   margin: 5rem auto 0;
   width: 412px;
+}
+
+.consent-checkbox {
+  height: 2rem;
+}
+
+@include media-breakpoint-sm {
+  .card-body {
+    padding: 4rem 2rem 5rem;
+    min-height: 100vh;
+  }
+
+  .signup-position {
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .border-card {
+    border: none;
+  }
 }

@@ -1,4 +1,4 @@
-<div class="bg-container pt-5">
+<div class="bg-container pt-sm-5">
   <div class="card border-card signup-position" >
     <div class="card-body">
       <h5 class="text-primary" *ngIf="isExpired">Sorry! Your invite token has been expired!</h5>
@@ -7,7 +7,7 @@
           <img alt="logo" class="img-fluid mb-4 company-logo" src="./assets/img/logo-company.png">
         </div>
         <div class="text-center">
-          <h4>Sign Up</h4>
+          <h4 class="mb-1">Sign Up</h4>
           <oc-label text="Enter your account details below" class="mb-3"></oc-label>
         </div>
         <oc-form [formJsonData]="formConfig"
@@ -15,8 +15,8 @@
                  (createdForm)="setCreatedForm($event)"
                  [showButton]="false"></oc-form>
         <div class="form-group">
-          <div class="d-flex align-items-center">
-            <oc-checkbox [formControl]="termsControl"></oc-checkbox>
+          <div class="d-flex align-items-start">
+            <oc-checkbox class="consent-checkbox" [formControl]="termsControl"></oc-checkbox>
             <div class="font-s">
               I agree to
               <a class="font-s font-med" href="https://my.openchannel.io/terms-of-service" target="_blank">
