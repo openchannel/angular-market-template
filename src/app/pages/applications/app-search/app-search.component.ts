@@ -23,6 +23,8 @@ import {isString, forEach} from 'lodash';
 })
 export class AppSearchComponent implements OnDestroy, OnInit {
 
+  public isHideFilter = false;
+
   searchText: string;
   searchTextTag: string;
   appPage: Page<FullAppData>;
@@ -35,7 +37,6 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   loadFilters$: Observable<Page<Filter>>;
 
   loader: LoadingBarState;
-
   private destroy$: Subject<void> = new Subject();
 
   public readonly SINGLE_FILTER = 'collections';

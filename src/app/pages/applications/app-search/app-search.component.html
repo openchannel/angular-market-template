@@ -1,13 +1,18 @@
 <div class="container">
-    <div class="row">
-        <div class="col-md-12 py-4">
+    <div class="navigation-container d-flex flex-row">
             <img src="./assets/img/path_arrow.svg"
                  alt="arrow-icon">
-            <a href="#" class="font-m font-med pl-1">Back to App Store</a>
-        </div>
+            <a href="#" class="font-m font-med pl-1">Back</a>
     </div>
-    <div class="row" *ngIf="loadFilters$ | async">
-        <div class="col-md-3 filter__container">
+    <div class="filter-open-close">
+        <a class="font-m font-med cursor-pointer" (click)="isHideFilter = !isHideFilter">
+            {{isHideFilter ? 'Open' : 'Close'}} filter options</a>
+        <svg-icon src="./assets/img/select-down.svg" (click)="isHideFilter = !isHideFilter"
+                  class="cursor-pointer" [class.rotate-img]="!isHideFilter">
+        </svg-icon>
+    </div>
+    <div class="filter-container row" *ngIf="loadFilters$ | async">
+        <div class="col-md-3" [class.hide-filters]="isHideFilter">
             <div *ngFor="let filter of filters">
                 <div [ngSwitch]="filter?.id">
                     <oc-sidebar *ngSwitchCase="SINGLE_FILTER"
@@ -38,8 +43,4 @@
                               defaultAppIcon="./assets/img/default-app-icon.svg"></oc-app-list-grid>
         </div>
     </div>
-</div>
-<div class="get-dev__container d-flex flex-column align-items-center justify-content-center">
-    <h1 class="mb-5 pl-2 pl-md-0">List Your App in our AppStore</h1>
-    <oc-button type="primary" text="Get Started"></oc-button>
 </div>
