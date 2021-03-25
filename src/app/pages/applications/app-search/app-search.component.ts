@@ -50,7 +50,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   ngOnInit() {
     this.loader = this.loadingBar.useRef();
-    this.searchText = this.activatedRouter.snapshot.queryParamMap.get('search');
+    this.searchTextTag = this.searchText = this.activatedRouter.snapshot.queryParamMap.get('search');
 
     const filterValues: any = {};
 
