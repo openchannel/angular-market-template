@@ -3,7 +3,6 @@
 .company-container {
   display: flex;
   flex-direction: column;
-  width: 730px;
   @include media-breakpoint-md {
     width: auto;
   }
