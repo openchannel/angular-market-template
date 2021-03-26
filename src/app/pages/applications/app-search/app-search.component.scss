@@ -38,14 +38,13 @@
         display: none;
       }
     }
-    .result {
+    .search-tags {
       margin: 18px 0;
       display: flex;
       justify-content: flex-start;
       align-items: center;
       flex-wrap: wrap;
-
-      oc-tag-element {
+      &__element {
         margin: 0 8px 8px 0;
       }
     }
