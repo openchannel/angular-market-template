@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://stage1-client-api-proxy.openchannel.io/',
+  apiUrl: 'http://localhost:8091/',
   marketplaceName: 'OpenChannel'
 };
 
