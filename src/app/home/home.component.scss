@@ -4,6 +4,16 @@
   margin: 4rem 0;
 }
 
+.section-wrapper {
+
+  & + .section-wrapper {
+    @include media-breakpoint-md {
+      display: block;
+      margin-top: 4rem;
+    }
+  }
+}
+
 .filter__container {
   display: flex;
   flex-direction: column;
