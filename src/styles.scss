@@ -218,13 +218,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
-.modal-sm {
-  max-width: 410px;
-  @include media-breakpoint-sm() {
-    max-width: 100%;
-  }
-}
-
 .close-icon {
   width: 16px;
   height: 16px;
@@ -232,6 +225,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .page-title-size {
   font-size: 28px;
+  @include media-breakpoint-md {
+    font-size: 24px;
+  }
 }
 
 .header-padding {
@@ -257,6 +253,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-top: 145px;
   @include media-breakpoint-sm() {
     max-width: 100%;
+    margin-left: 2rem;
+    margin-right: 2rem;
   }
 }
 
