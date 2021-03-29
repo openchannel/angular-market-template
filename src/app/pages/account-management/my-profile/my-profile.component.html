@@ -1,11 +1,5 @@
 <div class="bg-container height-unset">
-    <div class="container header-padding">
-        <div class="breadcrumbs-wrapper">
-            <img class="breadcrumbs-icon" src="assets/img/arrow-left.svg" alt="arrow-icon">
-            <a (click)="goBack()" class="font-m font-med pl-1 cursor-pointer" style="color: #537cfd ;">Back</a>
-        </div>
-        <h3 class="page-title page-title-size">My profile</h3>
-    </div>
+    <app-page-title pageTitle="My profile" navigateText="Back" (navigateClick)="goBack()"></app-page-title>
 </div>
 
 <div class="container">
