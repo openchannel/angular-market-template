@@ -20,7 +20,7 @@
                         <img [src]="app.logo" alt="app-icon">
                     </div>
                     <div class="col-md-6 d-flex flex-column">
-                        <h1 class="mb-2">{{ app.name }}</h1>
+                        <h1 class="mb-2 page-title-size">{{ app.name }}</h1>
                         <a href="#" class="font-med" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
                         <p class="text-secondary mt-1">{{ app.summary }}</p>
                         <oc-rating class="mb-3" [rating]="app.rating / 100 || 0" [reviewCount]="app.reviewCount || 0"
