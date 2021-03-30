@@ -119,32 +119,35 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
   }
 
   private processForm(formAction: FormButtonAction): void {
-    this.loader.start();
+    if (!this.inProcess) {
+      this.loader.start();
+      this.inProcess = true;
+      // get form from API
+      this.formService.getForm(formAction?.formId)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(form => {
+          this.loader.complete();
+          this.inProcess = false;
 
-    // get form from API
-    this.formService.getForm(formAction?.formId)
-    .pipe(takeUntil(this.$destroy))
-    .subscribe(form => {
-      this.loader.complete();
-
-      // open modal with this form
-      this.openFormModal(form.name, form.fields, (result) => {
-        if (result) {
-          // create submission by this form
-          this.processAction(this.formService.createFormSubmission(form.formId, {
-            appId: this.appData.appId,
-            name: result.name,
-            userId: '',
-            email: result.email,
-            formData: {
-              ...result,
-            },
-          }));
-        }
-      });
-    }, () => {
-      this.loader.complete();
-    });
+          // open modal with this form
+          this.openFormModal(form.name, form.fields, (result) => {
+            if (result) {
+              // create submission by this form
+              this.processAction(this.formService.createFormSubmission(form.formId, {
+                appId: this.appData.appId,
+                name: result.name,
+                userId: '',
+                email: result.email,
+                formData: {
+                  ...result,
+                },
+              }));
+            }
+          });
+        }, () => {
+          this.loader.complete();
+        });
+    }
   }
 
   private processOwnership(): void {
@@ -225,7 +228,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.formJsonData = {
         fields: formFields
       };
-      modalRef.result.then(result => callback(result));
+      modalRef.result.then(result => callback(result), () => {});
     }
   }
 
