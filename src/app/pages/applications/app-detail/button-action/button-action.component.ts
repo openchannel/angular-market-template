@@ -146,6 +146,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
           });
         }, () => {
           this.loader.complete();
+          this.inProcess = false;
         });
     }
   }
@@ -228,7 +229,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.formJsonData = {
         fields: formFields
       };
-      modalRef.result.then(result => callback(result), () => {});
+      modalRef.result.then(result => callback(result)).catch();
     }
   }
 
