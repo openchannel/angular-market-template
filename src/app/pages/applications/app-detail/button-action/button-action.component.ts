@@ -228,7 +228,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.formJsonData = {
         fields: formFields
       };
-      modalRef.result.then(result => callback(result)).catch();
+      modalRef.result.then(result => callback(result), () => {});
     }
   }
 
