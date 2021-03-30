@@ -114,7 +114,7 @@ export class MyCompanyComponent implements OnInit {
     modalRef.result.then(result => {
       if (result) {
         this.toaster.success('Invitation sent');
-        this.appManagement.updateUsersAfterInvite();
+        this.appManagement.getAllUsers(true);
       }
     });
   }

@@ -3,7 +3,7 @@
           menuUrl="../../../../assets/img/dots-hr-icon.svg"
           [properties]="userProperties"
           (menuClicked)="userAction($event)"
-          (pageScrolled)="scroll($event)"
+          (pageScrolled)="getAllUsers(false)"
           (sortChosen)="catchSortChanges($event)">
   </oc-menu-user-grid>
 </div>
