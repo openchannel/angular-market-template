@@ -220,17 +220,13 @@ export class ManagementComponent implements OnInit, OnDestroy {
   }
 
   private openDeleteModal(modalTitle: string, modalText: string, confirmText: string, deleteCallback: () => void) {
+
     const modalSuspendRef = this.modal.open(OcConfirmationModalComponent, {size: 'md'});
-    modalSuspendRef.componentInstance.ngbModalRef = modalSuspendRef;
     modalSuspendRef.componentInstance.modalTitle = modalTitle;
     modalSuspendRef.componentInstance.modalText = modalText;
     modalSuspendRef.componentInstance.confirmButtonText = confirmText;
     modalSuspendRef.componentInstance.confirmButtonType = 'danger';
-    modalSuspendRef.result.then(result => {
-      if (result) {
-        deleteCallback();
-      }
-    });
+    modalSuspendRef.result.then(() => deleteCallback(), () => {});
   }
 
   private editUser(userAction: UserGridActionModel, user: UserAccountGridModel) {
@@ -261,12 +257,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     };
 
     modalRef.componentInstance.modalData = modalData;
-
-    modalRef.result.then(result => {
-      if (result) {
-        this.toaster.success('User details have been updated');
-      }
-    });
+    modalRef.result.then(() => this.toaster.success('User details have been updated'), () => {});
   }
 
   private deleteUserFromResultArray(user: UserAccountGridModel) {

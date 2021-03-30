@@ -18,8 +18,8 @@
     <div class="row mt-7">
         <div class="col-md-3 filter__container">
             <oc-text-search class="mb-3" (enterSearch)="catchSearchText($event)"></oc-text-search>
-            <app-collapse-with-title titleForClose="Close filer options"
-                                     titleForOpen="Open filer options"
+            <app-collapse-with-title titleForClose="Close filter options"
+                                     titleForOpen="Open filter options"
                                      [collapsed]="filterCollapsed"
                                      (collapseChanged)="onCollapseChanged($event)">
             </app-collapse-with-title>
