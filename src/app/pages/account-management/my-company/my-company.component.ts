@@ -108,11 +108,9 @@ export class MyCompanyComponent implements OnInit {
 
     modalRef.componentInstance.modalData = modalData;
 
-    modalRef.result.then(result => {
-      if (result) {
+    modalRef.result.then(() => {
         this.toaster.success('Invitation sent');
         this.appManagement.updateUsersAfterInvite();
-      }
-    });
+    }, () => {});
   }
 }
