@@ -222,7 +222,6 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       this.modal.dismissAll('Opening a new button action modal');
 
       const modalRef = this.modal.open(OcFormModalComponent, {size: 'sm'});
-      modalRef.componentInstance.ngbModalRef = modalRef;
       modalRef.componentInstance.modalTitle = modalTitle;
       modalRef.componentInstance.confirmButton = this.confirmButton;
       modalRef.componentInstance.rejectButton = this.rejectButton;
