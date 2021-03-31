@@ -57,7 +57,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.logOut.logOut();
+    this.logOut.logOutAndRedirect('/');
   }
 
   closedMenu(){
