@@ -25,7 +25,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   readonly companyPermissions: Permission[] = [
     {
       type: PermissionType.ORGANIZATIONS,
-      access: [AccessLevel.MODIFY]
+      access: [AccessLevel.MODIFY, AccessLevel.READ]
+    },
+    {
+      type: PermissionType.ACCOUNTS,
+      access: [AccessLevel.MODIFY, AccessLevel.READ]
     }
   ];
 
