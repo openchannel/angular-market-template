@@ -172,23 +172,18 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
           modelId: this.appData?.model[0].modelId,
         },
         new HttpHeaders({'x-handle-error': '403, 500'})),
-        (error) => {
-          this.inProcess = false;
-          if (error.status === 403) {
-            this.toasterService.error('You don’t have permission to install this app');
-          } else if (this.viewData?.message?.fail) {
-            this.toasterService.error(this.viewData?.message?.fail);
-          }
-          return throwError(error);
-        },
-      );
+          (error) => this.handleOwnershipResponseError(error,
+              "You don’t have permission to install this app"));
     } else {
       this.toasterService.error('Missed any models for creating ownership.');
     }
   }
 
   private uninstallOwnership(): void {
-    this.processAction(this.ownershipService.uninstallOwnership(this.appData.ownership.ownershipId));
+    this.processAction(this.ownershipService.uninstallOwnership(
+        this.appData.ownership.ownershipId, new HttpHeaders({'x-handle-error': '403, 500'})),
+        (error) => this.handleOwnershipResponseError(error,
+            "You don’t have permission to uninstall this app"));
   }
 
   private processAction<T>(action: Observable<T>, errorHandler?: (error: any) => Observable<any>): void {
@@ -240,5 +235,15 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             window.open(res.url);
           }));
     }
+  }
+
+  private handleOwnershipResponseError(error: any, forbiddenMessage: string) {
+    this.inProcess = false;
+    if (error.status === 403) {
+      this.toasterService.error(forbiddenMessage);
+    } else if (this.viewData?.message?.fail) {
+      this.toasterService.error(this.viewData?.message?.fail);
+    }
+    return throwError(error);
   }
 }
