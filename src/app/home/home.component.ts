@@ -93,15 +93,20 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getAppsForFilters(filters: Filter[]): void {
     this.gallery = [];
-    filters?.forEach(filter => filter?.values?.forEach(value =>
-        this.getApps(value.sort, value.query).subscribe(apps => {
-          this.gallery.push({
-            filterId: filter.id,
-            valueId: value.id,
-            label: value.label,
-            description: value.description,
-            data: apps
-          });
+    filters?.filter(f => f?.values.length > 0)
+    .forEach(filter => filter.values.forEach(value =>
+        this.getApps(value.sort, value.query)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(apps => {
+          if(apps?.length > 0) {
+            this.gallery.push({
+              filterId: filter.id,
+              valueId: value.id,
+              label: value.label,
+              description: value.description,
+              data: apps
+            });
+          }
         })));
   }
 
