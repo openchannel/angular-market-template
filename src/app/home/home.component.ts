@@ -1,16 +1,31 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   AppCategoryDetail,
-  FullAppData,
   AppsService,
+  Filter,
   FrontendService,
-  Filter, SiteConfigService, TitleService, OcSidebarSelectModel,
+  FullAppData,
+  OcSidebarSelectModel,
+  SiteConfigService,
+  TitleService,
 } from 'oc-ng-common-service';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
-import { pageConfig } from '../../assets/data/configData';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import {Observable, Subject} from 'rxjs';
+import {Router} from '@angular/router';
+import {pageConfig} from '../../assets/data/configData';
+import {LoadingBarService} from '@ngx-loading-bar/core';
+import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
+import {catchError, map, takeUntil, tap} from 'rxjs/operators';
+import {forkJoin} from 'rxjs/internal/observable/forkJoin';
+import {forIn} from 'lodash';
+
+
+export interface GalleryItem {
+  filterId: string;
+  valueId: string;
+  label: string;
+  description: string;
+  data: FullAppData[];
+}
 
 @Component({
   selector: 'app-home',
@@ -26,20 +41,23 @@ export class HomeComponent implements OnInit, OnDestroy {
   public isFeatured = false;
   public homePageConfig;
   public categoriesData: any [] = [];
+  filterCollapsed = true;
 
+  public gallery: GalleryItem[];
   public loader: LoadingBarState;
 
-  private subscriber: Subscription = new Subscription();
+  private destroy$: Subject<void> = new Subject();
 
-  private readonly DEFAULT_FILTER_ID = 'collections'
-  private readonly DEFAULT_FILTER_VALUE_ID = 'allApps'
+  private readonly DEFAULT_FILTER_ID = 'collections';
+  private readonly DEFAULT_FILTER_VALUE_ID = 'allApps';
 
   constructor(private appService: AppsService,
               private router: Router,
               private frontendService: FrontendService,
               private loadingBar: LoadingBarService,
               private siteService: SiteConfigService,
-              private titleService: TitleService) { }
+              private titleService: TitleService) {
+  }
 
   ngOnInit(): void {
     this.titleService.setSpecialTitle(this.siteService.siteConfig.tagline, true);
@@ -48,56 +66,72 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriber.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.loader?.complete();
   }
 
   getPageConfig(): void {
     this.homePageConfig = pageConfig;
     this.getFeaturedApps();
-    this.appsForCategory();
     this.getFilters();
   }
 
   // Getting featured apps separately
   getFeaturedApps(): void {
-    if (this.homePageConfig && this.homePageConfig.appListPage && this.homePageConfig.appListPage.length > 0) {
+    if (this.homePageConfig?.appListPage?.length > 0) {
       const featureConfig = this.homePageConfig.appListPage.find(filer => filer.type.includes('featured-apps'));
       if (featureConfig) {
-        this.loader.start();
-        this.subscriber.add(
-          this.appService.getApps(1, 4, featureConfig.sort, featureConfig.filter)
-            .subscribe(res => {
-              this.featuredApp = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
-              if (this.featuredApp && this.featuredApp.length > 0) {
-                this.isFeatured = true;
-              }
-              this.loader.complete();
-            }, () => this.loader.complete())
-        );
+        this.getApps(featureConfig.sort, featureConfig.filter)
+        .subscribe(apps => {
+          this.featuredApp = apps;
+          if (this.featuredApp?.length > 0) {
+            this.isFeatured = true;
+          }
+        });
       }
     }
   }
 
-// Getting apps for each filter from page config
-  appsForCategory(): void {
-    this.homePageConfig.appListPage.forEach(element => {
-      if (element.type !== 'featured-apps' && element.type !== 'search' &&
-        element.type !== 'filter-values-card-list') {
-        this.loader.start();
-        this.subscriber.add(
-          this.appService.getApps(1, 4, element.sort, element.filter)
-            .subscribe(res => {
-              element.data = res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings));
-              this.loader.complete();
-            }, () => this.loader.complete())
-        );
-      }
-    });
+  getAppsForFilters(filters: Filter[]): void {
+    this.gallery = [];
+
+    if (filters) {
+      const tempGallery = [].concat(...filters.filter(f => f?.values)
+      .map(filter => [].concat(...filter.values.map(value => {
+        return {
+          valueId: value.id,
+          filterId: filter.id,
+          ...value
+        };
+      }))));
+
+      forkJoin(tempGallery.map(gallery => this.getApps(gallery.sort, gallery.query)))
+      .pipe(
+          tap(allApps => forIn(allApps, (apps, i) => tempGallery[i].data = apps)),
+          takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.gallery = tempGallery.filter(g => g.data.length > 0)
+      });
+    }
+  }
+
+  getApps(sort: string, filter: string): Observable<FullAppData[]> {
+    return this.appService.getApps(1, 4, sort, filter).pipe(
+        takeUntil(this.destroy$),
+        tap(() => this.loader.start()),
+        map(res => res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings))),
+        tap(() => this.loader.complete()),
+        catchError(err => {
+          this.loader.complete();
+          throw err;
+        }));
   }
 
   getCategoriesToExplore(filters: Filter []) {
     const categoriesConfig = [
-      { background: '',
+      {
+        background: '',
         logo: '../../../../assets/img/all-apps-category-icon.svg',
         color: ''
       },
@@ -165,13 +199,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getFilters() {
     this.loader.start();
-    this.subscriber.add(
-      this.frontendService.getFilters().subscribe(result => {
-        this.getCategoriesToExplore(result.list);
-        this.getSidebarFilters(result.list);
-        this.loader.complete();
-      }, () => this.loader.complete())
-    );
+    this.frontendService.getFilters()
+    .pipe(takeUntil(this.destroy$)).subscribe(result => {
+      this.getCategoriesToExplore(result.list);
+      this.getSidebarFilters(result.list);
+      this.getAppsForFilters(result.list);
+      this.loader.complete();
+    }, () => this.loader.complete());
   }
 
   catchSearchText(searchText: string) {
@@ -179,9 +213,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSidebarFilterChange(filter: Filter, sidebarSelectModel: OcSidebarSelectModel) {
-    if(sidebarSelectModel) {
+    if (sidebarSelectModel) {
       let filterValueId = '';
-      if(sidebarSelectModel?.parent) {
+      if (sidebarSelectModel?.parent) {
         sidebarSelectModel.parent.checked = true;
         filterValueId = sidebarSelectModel.parent.id;
       }
@@ -197,5 +231,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['browse', filterId, filterValueId],
         {queryParams: searchText ? {search: searchText} : {}})
     .then(() => window.scrollTo(0, 0));
+  }
+
+  onCollapseChanged(status: boolean) {
+    this.filterCollapsed = status;
   }
 }

@@ -1,15 +1,54 @@
-.result {
-  margin: 18px 0;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  oc-tag-element {
-    margin: 0 8px 8px 0;
+@import "~assets/styles/mixins";
+
+.container {
+  .navigation-container {
+    margin: 24px 0 32px;
+    @include media-breakpoint-sm() {
+      margin: 16px 0 16px;
+    }
+    @include media-breakpoint-md() {
+      margin: 16px 0 16px;
+    }
+  }
+  .filter-open-close {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    @include media-breakpoint-sm() {
+      display: flex;
+    }
+    @include media-breakpoint-md() {
+      display: flex;
+    }
+    .rotate-img {
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .filter-container {
+    .hide-filters {
+      @include media-breakpoint-sm {
+        display: none;
+      }
+      @include media-breakpoint-md {
+        display: none;
+      }
+    }
+    .search-tags {
+      margin: 18px 0;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex-wrap: wrap;
+      &__element {
+        margin: 0 8px 8px 0;
+      }
+    }
   }
 }
 
-.filter__container {
-  display: flex;
-  flex-direction: column;
-}
+

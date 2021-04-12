@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -12,10 +12,10 @@ import {
   UserRoleService,
 } from 'oc-ng-common-service';
 import { OcInviteModalComponent } from 'oc-ng-common-component';
+import {ManagementComponent} from './management/management.component';
 
 export interface Page {
   pageId: string;
-  pageTitle: string;
   placeholder: string;
   permissions: Permission [];
 }
@@ -26,10 +26,10 @@ export interface Page {
   styleUrls: ['./my-company.component.scss']
 })
 export class MyCompanyComponent implements OnInit {
+  @ViewChild('appManagement') appManagement: ManagementComponent;
 
   pages: Page[] = [{
     pageId: 'company',
-    pageTitle: 'My company',
     placeholder: 'Company details',
     permissions: [{
       type: PermissionType.ORGANIZATIONS,
@@ -37,7 +37,6 @@ export class MyCompanyComponent implements OnInit {
     }]
   }, {
     pageId: 'profile',
-    pageTitle: 'My company',
     placeholder: 'User management',
     permissions: [{
       type: PermissionType.ACCOUNTS,
@@ -109,10 +108,9 @@ export class MyCompanyComponent implements OnInit {
 
     modalRef.componentInstance.modalData = modalData;
 
-    modalRef.result.then(result => {
-      if (result) {
+    modalRef.result.then(() => {
         this.toaster.success('Invitation sent');
-      }
-    });
+        this.appManagement.getAllUsers(true);
+    }, () => {});
   }
 }

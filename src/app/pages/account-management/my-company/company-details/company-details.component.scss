@@ -3,15 +3,14 @@
 .company-container {
   display: flex;
   flex-direction: column;
-  width: 730px;
   @include media-breakpoint-md {
     width: auto;
   }
   .save-button {
     margin-left: auto;
     min-width: 256px;
-    @include media-breakpoint-md {
-      min-width: auto;
+    @include media-breakpoint-sm {
+      min-width: 100%;
     }
   }
 }
