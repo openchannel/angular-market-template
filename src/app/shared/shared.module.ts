@@ -8,6 +8,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PermissionDirective } from './directive/permission.directive';
 import { CollapseWithTitleComponent } from './components/collapse-with-title/collapse-with-title.component';
+import {PageTitleComponent} from '@shared/components/page-title/page-title.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { CollapseWithTitleComponent } from './components/collapse-with-title/col
     CamelCaseToNormalPipe,
     PermissionDirective,
     CollapseWithTitleComponent,
+    PageTitleComponent,
   ],
   imports: [
     CommonModule,
@@ -32,7 +34,8 @@ import { CollapseWithTitleComponent } from './components/collapse-with-title/col
     FormsModule,
     PermissionDirective,
     NgbModule,
-    CollapseWithTitleComponent
+    CollapseWithTitleComponent,
+    PageTitleComponent
   ],
 })
 export class SharedModule {

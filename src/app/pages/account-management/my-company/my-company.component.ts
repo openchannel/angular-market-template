@@ -16,7 +16,6 @@ import {ManagementComponent} from './management/management.component';
 
 export interface Page {
   pageId: string;
-  pageTitle: string;
   placeholder: string;
   permissions: Permission [];
 }
@@ -31,7 +30,6 @@ export class MyCompanyComponent implements OnInit {
 
   pages: Page[] = [{
     pageId: 'company',
-    pageTitle: 'My company',
     placeholder: 'Company details',
     permissions: [{
       type: PermissionType.ORGANIZATIONS,
@@ -39,7 +37,6 @@ export class MyCompanyComponent implements OnInit {
     }]
   }, {
     pageId: 'profile',
-    pageTitle: 'My company',
     placeholder: 'User management',
     permissions: [{
       type: PermissionType.ACCOUNTS,
@@ -113,7 +110,7 @@ export class MyCompanyComponent implements OnInit {
 
     modalRef.result.then(() => {
         this.toaster.success('Invitation sent');
-        this.appManagement.updateUsersAfterInvite();
+        this.appManagement.getAllUsers(true);
     }, () => {});
   }
 }

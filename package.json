@@ -42,10 +42,10 @@
     "ngx-multi-line-ellipsis": "^1.0.4",
     "ngx-owl-carousel-o": "^3.1.1",
     "ngx-toastr": "^13.1.0",
-    "oc-ng-common-component": "1.0.4-2",
-    "oc-ng-common-service": "1.0.2-1",
+    "oc-ng-common-component": "1.0.6-0",
+    "oc-ng-common-service": "1.0.3",
     "popper.js": "^1.16.0",
-    "rxjs": "~6.5.5",
+    "rxjs": "~6.6.3",
     "string": "^3.3.3",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

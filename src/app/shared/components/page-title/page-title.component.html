@@ -1,0 +1,13 @@
+<div class="container main-container">
+  <div class="main-container__page-title">
+    <div *ngIf="navigateText"
+         class="main-container__page-title__router-navigate" (click)="navigateClick.emit()">
+      <img src="assets/img/arrow-left.svg" alt="arrow-icon">
+      <a class="font-m font-med">{{navigateText}}</a>
+    </div>
+    <h3 class="main-container__page-title__title">{{pageTitle}}</h3>
+  </div>
+  <oc-button *ngIf="buttonText" class="main-container__custom-button" type="primary"
+             [text]="buttonText"
+             (click)="buttonClick.emit()"></oc-button>
+</div>

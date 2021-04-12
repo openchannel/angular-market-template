@@ -1,17 +1,7 @@
 <div class="bg-container height-unset">
-    <div class="container header-padding">
-        <div>
-            <img src="assets/img/arrow-left.svg" alt="arrow-icon">
-            <a (click)="goBack()" class="font-m font-med pl-1 cursor-pointer link">Back</a>
-            <h3 class="page-title page-title-size">{{selectedPage?.pageTitle}}</h3>
-        </div>
-        <div class="button-container">
-            <oc-button *ngIf="selectedPage?.pageId === pages[1].pageId"
-                       text="Invite a member" type="primary"
-                       (click)="openInviteModal()"
-                       [style]="'min-width: 100%'"></oc-button>
-        </div>
-    </div>
+    <app-page-title pageTitle="My company" navigateText="Back" (navigateClick)="goBack()"
+                    [buttonText]="selectedPage?.pageId === pages[1].pageId ? 'Invite a member' : null"
+                    (buttonClick)="openInviteModal()"></app-page-title>
 </div>
 
 <div class="container">

@@ -15,6 +15,8 @@ import {pageConfig} from '../../assets/data/configData';
 import {LoadingBarService} from '@ngx-loading-bar/core';
 import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
 import {catchError, map, takeUntil, tap} from 'rxjs/operators';
+import {forkJoin} from 'rxjs/internal/observable/forkJoin';
+import {forIn} from 'lodash';
 
 
 export interface GalleryItem {
@@ -93,16 +95,25 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getAppsForFilters(filters: Filter[]): void {
     this.gallery = [];
-    filters?.forEach(filter => filter?.values?.forEach(value =>
-        this.getApps(value.sort, value.query).subscribe(apps => {
-          this.gallery.push({
-            filterId: filter.id,
-            valueId: value.id,
-            label: value.label,
-            description: value.description,
-            data: apps
-          });
-        })));
+
+    if (filters) {
+      const tempGallery = [].concat(...filters.filter(f => f?.values)
+      .map(filter => [].concat(...filter.values.map(value => {
+        return {
+          valueId: value.id,
+          filterId: filter.id,
+          ...value
+        };
+      }))));
+
+      forkJoin(tempGallery.map(gallery => this.getApps(gallery.sort, gallery.query)))
+      .pipe(
+          tap(allApps => forIn(allApps, (apps, i) => tempGallery[i].data = apps)),
+          takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.gallery = tempGallery.filter(g => g.data.length > 0)
+      });
+    }
   }
 
   getApps(sort: string, filter: string): Observable<FullAppData[]> {
