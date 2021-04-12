@@ -119,32 +119,36 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
   }
 
   private processForm(formAction: FormButtonAction): void {
-    this.loader.start();
+    if (!this.inProcess) {
+      this.loader.start();
+      this.inProcess = true;
+      // get form from API
+      this.formService.getForm(formAction?.formId)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(form => {
+          this.loader.complete();
+          this.inProcess = false;
 
-    // get form from API
-    this.formService.getForm(formAction?.formId)
-    .pipe(takeUntil(this.$destroy))
-    .subscribe(form => {
-      this.loader.complete();
-
-      // open modal with this form
-      this.openFormModal(form.name, form.fields, (result) => {
-        if (result) {
-          // create submission by this form
-          this.processAction(this.formService.createFormSubmission(form.formId, {
-            appId: this.appData.appId,
-            name: result.name,
-            userId: '',
-            email: result.email,
-            formData: {
-              ...result,
-            },
-          }));
-        }
-      });
-    }, () => {
-      this.loader.complete();
-    });
+          // open modal with this form
+          this.openFormModal(form.name, form.fields, (result) => {
+            if (result) {
+              // create submission by this form
+              this.processAction(this.formService.createFormSubmission(form.formId, {
+                appId: this.appData.appId,
+                name: result.name,
+                userId: '',
+                email: result.email,
+                formData: {
+                  ...result,
+                },
+              }));
+            }
+          });
+        }, () => {
+          this.loader.complete();
+          this.inProcess = false;
+        });
+    }
   }
 
   private processOwnership(): void {
@@ -172,23 +176,18 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
           modelId: this.appData?.model[0].modelId,
         },
         new HttpHeaders({'x-handle-error': '403, 500'})),
-        (error) => {
-          this.inProcess = false;
-          if (error.status === 403) {
-            this.toasterService.error('You don’t have permission to install this app');
-          } else if (this.viewData?.message?.fail) {
-            this.toasterService.error(this.viewData?.message?.fail);
-          }
-          return throwError(error);
-        },
-      );
+          (error) => this.handleOwnershipResponseError(error,
+              "You don’t have permission to install this app"));
     } else {
       this.toasterService.error('Missed any models for creating ownership.');
     }
   }
 
   private uninstallOwnership(): void {
-    this.processAction(this.ownershipService.uninstallOwnership(this.appData.ownership.ownershipId));
+    this.processAction(this.ownershipService.uninstallOwnership(
+        this.appData.ownership.ownershipId, new HttpHeaders({'x-handle-error': '403, 500'})),
+        (error) => this.handleOwnershipResponseError(error,
+            "You don’t have permission to uninstall this app"));
   }
 
   private processAction<T>(action: Observable<T>, errorHandler?: (error: any) => Observable<any>): void {
@@ -218,14 +217,13 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
       this.modal.dismissAll('Opening a new button action modal');
 
       const modalRef = this.modal.open(OcFormModalComponent, {size: 'sm'});
-      modalRef.componentInstance.ngbModalRef = modalRef;
       modalRef.componentInstance.modalTitle = modalTitle;
       modalRef.componentInstance.confirmButton = this.confirmButton;
       modalRef.componentInstance.rejectButton = this.rejectButton;
       modalRef.componentInstance.formJsonData = {
         fields: formFields
       };
-      modalRef.result.then(result => callback(result));
+      modalRef.result.then(result => callback(result), () => {});
     }
   }
 
@@ -241,5 +239,15 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             window.open(res.url);
           }));
     }
+  }
+
+  private handleOwnershipResponseError(error: any, forbiddenMessage: string) {
+    this.inProcess = false;
+    if (error.status === 403) {
+      this.toasterService.error(forbiddenMessage);
+    } else if (this.viewData?.message?.fail) {
+      this.toasterService.error(this.viewData?.message?.fail);
+    }
+    return throwError(error);
   }
 }

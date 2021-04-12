@@ -18,8 +18,8 @@
     <div class="row mt-7">
         <div class="col-md-3 filter__container">
             <oc-text-search class="mb-3" (enterSearch)="catchSearchText($event)"></oc-text-search>
-            <app-collapse-with-title titleForClose="Close filer options"
-                                     titleForOpen="Open filer options"
+            <app-collapse-with-title titleForClose="Close filter options"
+                                     titleForOpen="Open filter options"
                                      [collapsed]="filterCollapsed"
                                      (collapseChanged)="onCollapseChanged($event)">
             </app-collapse-with-title>
@@ -41,16 +41,16 @@
                         </oc-app-categories>
                     </div>
                 </div>
-                <oc-app-gallery class="section-wrapper"
-                                *ngFor="let gallery of this.gallery"
-                                moreAppsTitle="See All"
-                                [appsArr]="gallery?.data"
-                                [appGalleryTitle]="gallery.label"
-                                [appGalleryDescription]="gallery.description"
-                                (clickAppCard)="goToAppDetailsPage($event)"
-                                (clickMoreApps)="goToBrowsePage(gallery.filterId, gallery.valueId)">
-                </oc-app-gallery>
             </ng-container>
+            <oc-app-gallery class="section-wrapper"
+                            *ngFor="let gallery of this.gallery"
+                            moreAppsTitle="See All"
+                            [appsArr]="gallery?.data"
+                            [appGalleryTitle]="gallery.label"
+                            [appGalleryDescription]="gallery.description"
+                            (clickAppCard)="goToAppDetailsPage($event)"
+                            (clickMoreApps)="goToBrowsePage(gallery.filterId, gallery.valueId)">
+            </oc-app-gallery>
         </div>
     </div>
 </div>

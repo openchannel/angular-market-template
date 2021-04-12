@@ -5,6 +5,7 @@ import {Subject} from 'rxjs';
 import {pageConfig} from '../../../../assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-my-apps',
@@ -22,9 +23,12 @@ export class MyAppsComponent implements OnInit, OnDestroy {
 
   private loader: LoadingBarState;
 
-  constructor(private appsService: AppsService,
-              private frontendService: FrontendService,
-              private loadingBar: LoadingBarService) { }
+  constructor(
+      private appsService: AppsService,
+      private router: Router,
+      private frontendService: FrontendService,
+      private loadingBar: LoadingBarService
+  ) {}
 
   ngOnInit(): void {
     this.loader = this.loadingBar.useRef();
@@ -75,5 +79,9 @@ export class MyAppsComponent implements OnInit, OnDestroy {
 
   goBack() {
     history.back();
+  }
+
+  navigateTo(parts: any []): void {
+    this.router.navigate(parts).then();
   }
 }
