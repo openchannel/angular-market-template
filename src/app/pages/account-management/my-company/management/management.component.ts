@@ -12,13 +12,14 @@ import {
   UsersGridParametersModel,
   UsersService,
 } from 'oc-ng-common-service';
-import {Subject} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService} from 'ngx-toastr';
 import {OcConfirmationModalComponent, OcInviteModalComponent} from 'oc-ng-common-component';
 import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
 import {LoadingBarService} from '@ngx-loading-bar/core';
-import {flatMap, takeUntil, tap} from 'rxjs/operators';
+import {flatMap, map, takeUntil, tap} from 'rxjs/operators';
+import {cloneDeep} from 'lodash';
 
 @Component({
   selector: 'app-management',
@@ -38,6 +39,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     options: ['DELETE', 'EDIT']
   };
 
+  private listRoles: any = {};
   private sortQuery = '{"name": 1}';
 
   private destroy$: Subject<void> = new Subject();
@@ -88,6 +90,15 @@ export class ManagementComponent implements OnInit, OnDestroy {
     this.getAllUsers(true);
   }
 
+  getRoles(startNewPagination: boolean, oldRoles: any): Observable<any> {
+    return startNewPagination ? this.userRolesService.getUserRoles(1, 100)
+        .pipe(map(response => {
+          const tempRoles = {};
+          response.list.forEach(r => tempRoles[r.userRoleId] = r.name);
+          return tempRoles;
+        })) : of(oldRoles);
+  }
+
   public getAllUsers(startNewPagination: boolean) {
     if (!this.inProcessGettingUsers) {
       this.loader.start();
@@ -96,14 +107,18 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.userProperties.data.pageNumber = 1;
       }
       let inviteResponse: Page<InviteUserModel>;
+      let activeResponse: Page<UserAccount>;
       this.inviteUserService.getUserInvites(
           this.userProperties.data.pageNumber, this.USERS_LIMIT_PER_REQUEST, this.sortQuery
       ).pipe(
           tap((response) => inviteResponse = response),
           flatMap(() => this.userAccountService.getUserAccounts(
               this.userProperties.data.pageNumber, this.USERS_LIMIT_PER_REQUEST, this.sortQuery)),
+          tap((response) =>  activeResponse = response),
+          flatMap(() => this.getRoles(startNewPagination, this.listRoles)),
+          tap(mappedRoles =>  this.listRoles = mappedRoles),
           takeUntil(this.destroy$))
-      .subscribe((activeUsers) => {
+      .subscribe(() => {
         this.loader.complete();
 
         if (startNewPagination) {
@@ -125,7 +140,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         // push new users
         this.userProperties.data.pageNumber++;
         this.userProperties.data.list
-        .push(...activeUsers.list.map(user => this.mapToGridUserFromUser(user)));
+        .push(...activeResponse.list.map(user => this.mapToGridUserFromUser(user)));
         this.inProcessGettingUsers = false;
       }, () => {
         this.loader.complete();
@@ -144,7 +159,14 @@ export class ManagementComponent implements OnInit, OnDestroy {
       userAccountId: user.userAccountId,
       created: user.created,
       inviteStatus: 'ACTIVE',
+      roles: this.toRoleName(user.roles),
     };
+  }
+
+  private toRoleName(userRoles: string[]) {
+    const roleName = [];
+    userRoles.forEach(r => roleName.push(this.listRoles[r]));
+    return roleName;
   }
 
   private mapToGridUserFromInvite(user: InviteUserModel): UserAccountGridModel {
@@ -158,7 +180,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
       created: user.createdDate,
       inviteId: user.userInviteId,
       inviteToken: user.token,
-      inviteStatus: 'INVITED'
+      inviteStatus: 'INVITED',
+      roles: this.toRoleName(user.roles),
     };
   }
 
@@ -246,7 +269,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.ngbModalRef = modalRef;
 
     const modalData = new ModalUpdateUserModel();
-    modalData.userData = userAccount;
+    modalData.userData = cloneDeep(userAccount);
     modalData.modalTitle = 'Edit member';
     modalData.successButtonText = 'Save';
 
@@ -259,7 +282,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
     };
 
     modalRef.componentInstance.modalData = modalData;
-    modalRef.result.then(() => this.toaster.success('User details have been updated'), () => {});
+    modalRef.result.then(() => {
+      this.getAllUsers(true);
+      this.toaster.success('User details have been updated');
+    }, () => {});
   }
 
   private deleteUserFromResultArray(user: UserAccountGridModel) {
