@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {first} from 'rxjs/operators';
 import {OAuthService} from 'angular-oauth2-oidc';
 import {Router} from '@angular/router';
 import {AuthenticationService, AuthHolderService} from 'oc-ng-common-service';
+import {from, Observable} from 'rxjs';
+import {first, flatMap, map, tap} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
@@ -15,35 +16,34 @@ export class LogOutService {
                 private router: Router) {
     }
 
-    logOut(): void {
-        this.authenticationService.getAuthConfig()
-            .pipe(first())
-            .subscribe(config => {
-                if (config) {
-                    this.oAuthService.configure({
-                        ...config,
-                        postLogoutRedirectUri: window.location.origin,
-                    });
-                    this.oAuthService.loadDiscoveryDocument().then(value => {
-                        this.authenticationService.logOut()
-                            .pipe(first())
-                            .subscribe(() => {
-                                this.authService.clearTokensInStorage();
-                                this.oAuthService.logOut();
-                            });
-                    });
-                } else {
-                    this.nativeLogOut();
-                }
-            }, error => this.nativeLogOut());
+    logOut(): Observable<boolean> {
+        return this.authenticationService.getAuthConfig()
+        .pipe(
+            flatMap(config => config ? this.logOutSSO(config) : this.logOutNative()),
+            tap(() => this.authService.clearTokensInStorage()));
     }
 
-    private nativeLogOut(): void {
-        this.authenticationService.logOut()
-            .pipe(first())
-            .subscribe(() => {
-                this.authService.clearTokensInStorage();
-                this.router.navigateByUrl('/');
-            });
+    logOutAndRedirect(navigateTo: string): void {
+        this.authenticationService.getAuthConfig()
+        .pipe(
+            flatMap(config => config ? this.logOutSSO(config) : this.logOutNative()),
+            tap(() => this.authService.clearTokensInStorage()))
+        .subscribe(() => this.router.navigateByUrl(navigateTo).then());
+    }
+
+    private logOutSSO(ssoConfig: any): Observable<boolean> {
+        this.oAuthService.configure({
+            ...ssoConfig,
+            postLogoutRedirectUri: window.location.origin,
+        });
+        return from(this.oAuthService.loadDiscoveryDocument())
+        .pipe(
+            flatMap(() => this.authenticationService.logOut().pipe(first())),
+            tap(() => this.oAuthService.logOut()),
+            map(() => true));
+    }
+
+    private logOutNative(): Observable<boolean> {
+        return this.authenticationService.logOut().pipe(first(), map(() => true));
     }
 }
