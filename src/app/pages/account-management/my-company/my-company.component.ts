@@ -99,7 +99,7 @@ export class MyCompanyComponent implements OnInit {
     modalData.successButtonText = 'Send Invite';
 
     modalData.requestFindUserRoles = () => {
-      return this.userRolesService.getUserRoles(1, 100)
+      return this.userRolesService.getUserRoles(1, 100);
     };
 
     modalData.requestSendInvite = (accountData: any) => {
