@@ -9,8 +9,8 @@ import {
   OCReviewDetails,
   OverallRatingSummary,
   Page,
-  RecordStatisticService,
   ReviewsService,
+  StatisticService,
   TitleService,
 } from 'oc-ng-common-service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -69,7 +69,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
               private formService: AppFormService,
               private toaster: ToastrService,
               private titleService: TitleService,
-              private recordStatisticService: RecordStatisticService) { }
+              private statisticService: StatisticService) { }
 
   ngOnInit(): void {
     this.loader = this.loadingBar.useRef();
@@ -191,7 +191,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
           this.appListingActions = this.getButtonActions(pageConfig);
           this.loadReviews();
         }),
-        mergeMap(value => this.recordStatisticService.recordVisitToApp(this.app.appId)),
+        mergeMap(value => this.statisticService.recordVisitToApp(this.app.appId)),
     ).subscribe(() => {},
         () => this.loader.complete());
   }
