@@ -1,22 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
+  AppFormService,
   AppsService,
-  ReviewsService,
+  AppVersionService,
+  DropdownModel,
+  FrontendService,
   FullAppData,
-  Page,
   OCReviewDetails,
   OverallRatingSummary,
-  FrontendService,
-  DropdownModel, AppVersionService, AppFormService, TitleService,
+  Page,
+  RecordStatisticService,
+  ReviewsService,
+  TitleService,
 } from 'oc-ng-common-service';
-import { ActivatedRoute, Router } from '@angular/router';
-import {Subject, Observable} from 'rxjs';
-import {map, takeUntil, tap} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Observable, Subject} from 'rxjs';
+import {map, mergeMap, takeUntil, tap} from 'rxjs/operators';
 import {pageConfig} from '../../../../assets/data/configData';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService} from 'ngx-toastr';
-import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
-import { LoadingBarService } from '@ngx-loading-bar/core';
+import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
+import {LoadingBarService} from '@ngx-loading-bar/core';
 import {ButtonAction, DownloadButtonAction} from './button-action/models/button-action.model';
 import * as _ from 'lodash';
 
@@ -64,7 +68,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
               private modalService: NgbModal,
               private formService: AppFormService,
               private toaster: ToastrService,
-              private titleService: TitleService) { }
+              private titleService: TitleService,
+              private recordStatisticService: RecordStatisticService) { }
 
   ngOnInit(): void {
     this.loader = this.loadingBar.useRef();
@@ -179,11 +184,15 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     const appVersion = this.route.snapshot.paramMap.get('appVersion');
     const safeName = this.route.snapshot.paramMap.get('safeName');
 
-    this.appData$ = this.getApp(safeName, appId, appVersion)
-    this.appData$.subscribe(() => {
-      this.loader.complete();
-      this.appListingActions = this.getButtonActions(pageConfig);
-      this.loadReviews();
-    },() => this.loader.complete());
+    this.appData$ = this.getApp(safeName, appId, appVersion);
+    this.appData$.pipe(
+        tap(x => {
+          this.loader.complete();
+          this.appListingActions = this.getButtonActions(pageConfig);
+          this.loadReviews();
+        }),
+        mergeMap(value => this.recordStatisticService.recordVisitToApp(this.app.appId)),
+    ).subscribe(() => {},
+        () => this.loader.complete());
   }
 }
