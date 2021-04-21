@@ -39,7 +39,8 @@
                                 (clickEmitter)="clearSearchText()"></oc-tag-element>
             </div>
             <oc-app-list-grid [appList]="appPage?.list"
-                              (gotoDetails)="goToAppDetails($event)"
+                              baseLinkForOneApp="/details"
+                              appNavigationParam="safeName[0]"
                               defaultAppIcon="./assets/img/default-app-icon.svg"></oc-app-list-grid>
         </div>
     </div>
