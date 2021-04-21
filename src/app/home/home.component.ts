@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           tap(allApps => forIn(allApps, (apps, i) => tempGallery[i].data = apps)),
           takeUntil(this.destroy$))
       .subscribe(() => {
-        this.gallery = tempGallery.filter(g => g.data.length > 0)
+        this.gallery = tempGallery.filter(g => g.data.length > 0);
       });
     }
   }
@@ -221,10 +221,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       this.goToBrowsePage(filter.id, filterValueId);
     }
-  }
-
-  goToAppDetailsPage(appData: FullAppData) {
-    this.router.navigate(['details', appData.safeName[0]]).then();
   }
 
   goToBrowsePage(filterId: string, filterValueId: string, searchText?: string) {
