@@ -52,10 +52,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  login() {
-    this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.routerState.snapshot.url }});
-  }
-
   logout() {
     this.logOut.logOut();
   }
