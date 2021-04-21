@@ -212,17 +212,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.goToBrowsePage(this.DEFAULT_FILTER_ID, this.DEFAULT_FILTER_VALUE_ID, searchText);
   }
 
-  onSidebarFilterChange(filter: Filter, sidebarSelectModel: OcSidebarSelectModel) {
-    if (sidebarSelectModel) {
-      let filterValueId = '';
-      if (sidebarSelectModel?.parent) {
-        sidebarSelectModel.parent.checked = true;
-        filterValueId = sidebarSelectModel.parent.id;
-      }
-      this.goToBrowsePage(filter.id, filterValueId);
-    }
-  }
-
   goToBrowsePage(filterId: string, filterValueId: string, searchText?: string) {
     this.router.navigate(['browse', filterId, filterValueId],
         {queryParams: searchText ? {search: searchText} : {}})
