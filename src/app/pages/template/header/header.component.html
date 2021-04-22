@@ -78,8 +78,9 @@
                 </oc-profile-navbar>
             </div>
             <div class="d-flex my-2 my-lg-0 ml-0 ml-md-6 auth-button" *ngIf="!authHolderService.isLoggedInUser()">
-                <button class="btn header-login-btn header-btn" (click)="login()">Log in</button>
-                <button class="btn btn-primary header-btn ml-md-2" routerLink="/signup" *ngIf="!isSsoConfigExist">Sign up</button>
+                <a class="btn header-login-btn header-btn" routerLink="/login"
+                   [queryParams]="{ returnUrl: router.routerState.snapshot.url }">Log in</a>
+                <a class="btn btn-primary header-btn ml-md-2" routerLink="/signup" *ngIf="!isSsoConfigExist">Sign up</a>
             </div>
         </div>
     </div>
