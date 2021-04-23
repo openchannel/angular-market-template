@@ -33,14 +33,14 @@ export class MyCompanyComponent implements OnInit {
     placeholder: 'Company details',
     permissions: [{
       type: PermissionType.ORGANIZATIONS,
-      access: [AccessLevel.MODIFY]
+      access: [AccessLevel.MODIFY, AccessLevel.READ]
     }]
   }, {
     pageId: 'profile',
     placeholder: 'User management',
     permissions: [{
       type: PermissionType.ACCOUNTS,
-      access: [AccessLevel.MODIFY]
+      access: [AccessLevel.MODIFY, AccessLevel.READ]
     }],
   }];
 
@@ -99,7 +99,7 @@ export class MyCompanyComponent implements OnInit {
     modalData.successButtonText = 'Send Invite';
 
     modalData.requestFindUserRoles = () => {
-      return this.userRolesService.getUserRoles(1, 100)
+      return this.userRolesService.getUserRoles(1, 100);
     };
 
     modalData.requestSendInvite = (accountData: any) => {

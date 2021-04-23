@@ -4,9 +4,11 @@ import {
   InviteUserModel,
   InviteUserService, NativeLoginService, UserAccountTypesService,
 } from 'oc-ng-common-service';
-import {Subscription} from 'rxjs';
+import {Subject} from 'rxjs';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {merge} from 'lodash';
+import {LogOutService} from '@core/services/logout-service/log-out.service';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-invited-signup',
@@ -24,14 +26,15 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
 
   public inProcess = false;
 
-  private requestSubscriber: Subscription = new Subscription();
-
   public termsControl = new FormControl(false, Validators.requiredTrue);
+
+  private destroy$: Subject<void> = new Subject();
 
   constructor(private activeRouter: ActivatedRoute,
               private router: Router,
               private inviteUserService: InviteUserService,
               private typeService: UserAccountTypesService,
+              private logOutService: LogOutService,
               private nativeLoginService: NativeLoginService) {
   }
 
@@ -40,21 +43,22 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.requestSubscriber.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // making form config according to form type
   getFormType(type) {
     if (type) {
-      this.requestSubscriber.add(
-          this.typeService.getUserAccountType(type).subscribe(
-              resp => {
-                this.formConfig = {
-                  fields: this.mapDataToField(resp.fields)
-                };
-              }
-          )
-      );
+        this.typeService.getUserAccountType(type)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(
+            resp => {
+              this.formConfig = {
+                fields: this.mapDataToField(resp.fields)
+              };
+            }
+        );
     } else {
       this.formConfig = {
         fields: [
@@ -87,7 +91,8 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
   getInviteDetails(): void {
     const userToken = this.activeRouter.snapshot.params.token;
     if (userToken) {
-      this.requestSubscriber.add(this.inviteUserService.getUserInviteInfoByToken(userToken)
+      this.inviteUserService.getUserInviteInfoByToken(userToken)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(response => {
         this.userInviteData = response;
         if (new Date(this.userInviteData.expireDate) < new Date()) {
@@ -96,10 +101,10 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
           this.getFormType(this.userInviteData.type);
         }
       }, () => {
-        this.router.navigate(['']);
-      }));
+        this.router.navigate(['']).then();
+      });
     } else {
-      this.router.navigate(['']);
+      this.router.navigate(['']).then();
     }
   }
 
@@ -147,15 +152,25 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
       const request = merge(this.userInviteData, this.formResultData);
       delete request.terms;
 
-      this.requestSubscriber.add(this.nativeLoginService.signupByInvite({
+      this.nativeLoginService.signupByInvite({
         userCustomData: request,
         inviteToken: this.userInviteData.token
-      }).subscribe(() => {
-        this.inProcess = false;
-        this.router.navigate(['login']);
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+
+        this.logOutService.logOut()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(r => {
+          this.inProcess = false;
+          this.router.navigate(['login']).then();
+        }, () => {
+          this.inProcess = false;
+          this.router.navigate(['login']).then();
+        });
       }, () => {
         this.inProcess = false;
-      }));
+      });
     }
   }
 

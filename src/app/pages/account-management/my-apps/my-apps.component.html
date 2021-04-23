@@ -21,7 +21,8 @@
         <oc-app-short-info *ngFor="let app of appList"
                            [app]="app"
                            class="mb-2"
-                           [customDropdown]="dropdownTemplate">
+                           [customDropdown]="dropdownTemplate"
+                           (clickByAppCard)="navigateTo(['details', $event.safeName[0]])">
         </oc-app-short-info>
     </div>
 </div>
