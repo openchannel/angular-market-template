@@ -38,7 +38,7 @@
             "scripts": []
           },
           "configurations": {
-            "prod": {
+            "production": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
