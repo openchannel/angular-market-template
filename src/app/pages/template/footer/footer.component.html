@@ -28,10 +28,10 @@
         </ul>
       </div>
         <div class="social-networks">
-          <img src="assets/img/facebook-icon.svg"
-               alt="social-media-icon">
-          <img src="assets/img/twitter-icon.svg"
-               alt="social-media-icon">
+          <div class="social-networks__item"
+               *ngFor="let socialLink of socialLinks" >
+            <oc-social-link [data]="socialLink"></oc-social-link>
+          </div>
         </div>
       </div>
     <h6 class="bottom-info">© 2020 Your company. All rights reserved.</h6>

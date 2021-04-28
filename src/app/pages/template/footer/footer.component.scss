@@ -4,35 +4,31 @@
 
 .footer {
   border-top: 1px solid rgba(201, 213, 234, 0.5);
+
   .container {
     padding: 48px 0;
-    @include media-breakpoint-sm() {
-      padding: 32px;
-    }
     @include media-breakpoint-md() {
       padding: 32px;
     }
+
     .footer-direction {
       display: flex;
       flex-direction: row;
-      @include media-breakpoint-sm() {
-        flex-direction: column;
-      }
       @include media-breakpoint-md() {
         flex-direction: column;
       }
+
       .company-logo {
         margin-right: auto;
-        @include media-breakpoint-sm() {
-          margin-bottom: 24px;
-        }
         @include media-breakpoint-md() {
           margin-bottom: 24px;
         }
       }
+
       .info-column {
         white-space: nowrap;
         width: 16%;
+
         h5 {
           color: $body-color;
           font-size: 12px;
@@ -45,6 +41,10 @@
         li {
           padding-top: 3.5px;
           padding-bottom: 1px;
+          @include media-breakpoint-md() {
+            margin-bottom: 16px;
+          }
+
           a {
             color: $secondary;
             @include font-family-rubik('Light');
@@ -52,35 +52,30 @@
             text-align: center;
           }
         }
-        @include media-breakpoint-sm() {
-          margin-bottom: 16px;
-        }
-        @include media-breakpoint-md() {
-          margin-bottom: 16px;
-        }
       }
+
       .min-content {
         width: min-content;
       }
+
       .social-networks {
+        display: flex;
+        align-items: flex-start;
         margin-left: auto;
-        img:first-child {
-          margin-right: 24px;
-        }
-        @include media-breakpoint-sm() {
-          margin: auto auto auto 0;
-          img:first-child {
-            margin-right: 16px;
-          }
-        }
         @include media-breakpoint-md() {
-          margin: auto auto auto 0;
-          img:first-child {
-            margin-right: 16px;
+          margin-right: auto;
+          margin-left: 0;
+        }
+
+        &__item {
+
+          & + .social-networks__item {
+            margin-left: 16px;
           }
         }
       }
     }
+
     .bottom-info {
       margin-top: 32px;
       color: $secondary;
