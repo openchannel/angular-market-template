@@ -4,7 +4,7 @@
                    [defaultAccountData]="formAccountData"
                    (createdFormGroup)="formGroup = $event"
                    (resultFormDataChange)="resultData = $event"></oc-edit-user-form>
-<div *ngIf="formConfigsLoaded && canModifyAccount" class="w-100 mt-2">
+<div *ngIf="formConfigsLoaded" class="w-100 mt-2">
   <oc-button type="primary" text="Save" class="save-button btn-block w-100"
              [process]="inSaveProcess"
              (click)="saveUserData()">
