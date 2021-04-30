@@ -10,7 +10,8 @@
     <div class="container featured-apps-container">
         <oc-featured-apps *ngIf="isFeatured"
                           [data]="featuredApp"
-                          (clickByAppCard)="goToAppDetailsPage($event)"
+                          mainRouterLink="details"
+                          navigationParam="safeName[0]"
                           label="Featured"></oc-featured-apps>
     </div>
 </div>
@@ -26,7 +27,7 @@
             <oc-sidebar *ngFor="let filter of sidebarFilters"
                         class="d-md-block mb-1"
                         [ngbCollapse]="filterCollapsed"
-                        (sidebarChange)="onSidebarFilterChange(filter, $event)"
+                        [baseNavigation]="'browse/' + filter.id"
                         [title]="filter.name"
                         [sidebarModel]="filter.values"></oc-sidebar>
         </div>
@@ -37,7 +38,7 @@
                         <oc-app-categories *ngIf="categoriesData?.length > 0"
                                 [data]="categories"
                                 [categoryHeaderTitle]="configElement.name"
-                                categoryRouterLink="/browse">
+                                categoryRouterLink="browse">
                         </oc-app-categories>
                     </div>
                 </div>
@@ -48,8 +49,9 @@
                             [appsArr]="gallery?.data"
                             [appGalleryTitle]="gallery.label"
                             [appGalleryDescription]="gallery.description"
-                            (clickAppCard)="goToAppDetailsPage($event)"
-                            (clickMoreApps)="goToBrowsePage(gallery.filterId, gallery.valueId)">
+                            [seeAllUrl]="['browse', gallery.filterId, gallery.valueId]"
+                            routerLinkForOneApp="details"
+                            appNavigationParam="safeName[0]">
             </oc-app-gallery>
         </div>
     </div>

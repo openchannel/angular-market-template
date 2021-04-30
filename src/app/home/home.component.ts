@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           tap(allApps => forIn(allApps, (apps, i) => tempGallery[i].data = apps)),
           takeUntil(this.destroy$))
       .subscribe(() => {
-        this.gallery = tempGallery.filter(g => g.data.length > 0)
+        this.gallery = tempGallery.filter(g => g.data.length > 0);
       });
     }
   }
@@ -210,21 +210,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   catchSearchText(searchText: string) {
     this.goToBrowsePage(this.DEFAULT_FILTER_ID, this.DEFAULT_FILTER_VALUE_ID, searchText);
-  }
-
-  onSidebarFilterChange(filter: Filter, sidebarSelectModel: OcSidebarSelectModel) {
-    if (sidebarSelectModel) {
-      let filterValueId = '';
-      if (sidebarSelectModel?.parent) {
-        sidebarSelectModel.parent.checked = true;
-        filterValueId = sidebarSelectModel.parent.id;
-      }
-      this.goToBrowsePage(filter.id, filterValueId);
-    }
-  }
-
-  goToAppDetailsPage(appData: FullAppData) {
-    this.router.navigate(['details', appData.safeName[0]]).then();
   }
 
   goToBrowsePage(filterId: string, filterValueId: string, searchText?: string) {
