@@ -1,11 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
-  AppCategoryDetail,
   AppsService,
-  Filter,
   FrontendService,
-  FullAppData,
-  OcSidebarSelectModel,
   SiteConfigService,
   TitleService,
 } from 'oc-ng-common-service';
@@ -17,6 +13,7 @@ import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
 import {catchError, map, takeUntil, tap} from 'rxjs/operators';
 import {forkJoin} from 'rxjs/internal/observable/forkJoin';
 import {forIn} from 'lodash';
+import { AppCategoryDetail, Filter, FullAppData, OcSidebarSelectModel } from 'oc-ng-common-component';
 
 
 export interface GalleryItem {

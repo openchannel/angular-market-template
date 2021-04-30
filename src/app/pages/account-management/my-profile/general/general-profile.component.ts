@@ -1,26 +1,26 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AccessLevel,
   AuthenticationService,
   AuthHolderService,
-  OCOrganization,
   PermissionType,
   PropertiesService,
   UserAccountService,
   UserAccountTypesService
 } from 'oc-ng-common-service';
-import {Observable, Subject} from 'rxjs';
-import {map, takeUntil, tap} from 'rxjs/operators';
-import {ToastrService} from 'ngx-toastr';
-import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
-import {LoadingBarService} from '@ngx-loading-bar/core';
-import {FormGroup} from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil, tap } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { FormGroup } from '@angular/forms';
 import {
+  OCOrganization,
   OcEditUserFormConfig,
   OcEditUserResult,
-} from 'oc-ng-common-component/src/lib/auth-components';
-import {forkJoin} from 'rxjs/internal/observable/forkJoin';
-import {OcEditUserTypeService} from '@core/services/user-type-service/user-type.service';
+} from 'oc-ng-common-component';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { OcEditUserTypeService } from '@core/services/user-type-service/user-type.service';
 
 @Component({
   selector: 'app-general-profile',

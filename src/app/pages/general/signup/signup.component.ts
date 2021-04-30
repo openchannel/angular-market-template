@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NativeLoginService} from 'oc-ng-common-service';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NativeLoginService } from 'oc-ng-common-service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
 import {LoadingBarService} from '@ngx-loading-bar/core';
 import {

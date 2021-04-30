@@ -1,18 +1,19 @@
-import {Component, OnDestroy} from '@angular/core';
-import {NativeLoginService, UserActivationModel} from 'oc-ng-common-service';
-import {takeUntil} from 'rxjs/operators';
-import {Router} from '@angular/router';
-import {Subject} from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
+import { NativeLoginService } from 'oc-ng-common-service';
+import { takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { ComponentsUserActivationModel } from 'oc-ng-common-component';
 
 @Component({
   selector: 'app-resend-activation',
   templateUrl: './resend-activation.component.html',
   styleUrls: ['./resend-activation.component.scss']
 })
-export class ResendActivationComponent implements OnDestroy{
+export class ResendActivationComponent implements OnDestroy {
 
   inProcess = false;
-  activationModel = new UserActivationModel();
+  activationModel = new ComponentsUserActivationModel();
 
   private destroy$: Subject<void> = new Subject();
 

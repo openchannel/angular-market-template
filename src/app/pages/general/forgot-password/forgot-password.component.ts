@@ -1,29 +1,27 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NativeLoginService, UserRegistrationModel} from 'oc-ng-common-service';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import { Component, OnDestroy } from '@angular/core';
+import { NativeLoginService } from 'oc-ng-common-service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ComponentsUserRegistrationModel } from 'oc-ng-common-component';
 
 @Component({
     selector: 'app-forgot-password',
     templateUrl: './forgot-password.component.html',
     styleUrls: ['./forgot-password.component.scss'],
 })
-export class ForgotPasswordComponent implements OnInit, OnDestroy {
+export class ForgotPasswordComponent implements OnDestroy {
 
     signupUrl = '/signup';
     loginUrl = '/login';
     companyLogoUrl = './assets/img/company-logo-2x.png';
     forgotPasswordDoneIconPath = './assets/img/forgot-password-complete-icon.svg';
     showResultPage = false;
-    signIn = new UserRegistrationModel();
+    signIn = new ComponentsUserRegistrationModel();
     inProcess = false;
 
     private destroy$: Subject<void> = new Subject();
 
     constructor(private nativeLoginService: NativeLoginService) {
-    }
-
-    ngOnInit(): void {
     }
 
     ngOnDestroy(): void {

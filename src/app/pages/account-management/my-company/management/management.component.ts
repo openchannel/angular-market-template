@@ -1,8 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   InviteUserModel,
   InviteUserService,
-  ModalUpdateUserModel,
   Page,
   UserAccount,
   UserAccountGridModel,
@@ -12,14 +11,14 @@ import {
   UsersGridParametersModel,
   UsersService,
 } from 'oc-ng-common-service';
-import {Observable, of, Subject} from 'rxjs';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ToastrService} from 'ngx-toastr';
-import {OcConfirmationModalComponent, OcInviteModalComponent} from 'oc-ng-common-component';
-import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
-import {LoadingBarService} from '@ngx-loading-bar/core';
-import {flatMap, map, takeUntil, tap} from 'rxjs/operators';
-import {cloneDeep} from 'lodash';
+import { Observable, of, Subject } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { OcConfirmationModalComponent, OcInviteModalComponent, ModalUpdateUserModel } from 'oc-ng-common-component';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { flatMap, map, takeUntil, tap } from 'rxjs/operators';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'app-management',

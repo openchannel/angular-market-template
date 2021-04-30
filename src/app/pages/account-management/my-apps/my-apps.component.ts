@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {AppsService, DropdownModel, FrontendService, FullAppData} from 'oc-ng-common-service';
-import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
-import {pageConfig} from '../../../../assets/data/configData';
+import { AppsService, FrontendService } from 'oc-ng-common-service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Router } from '@angular/router';
+import { FullAppData, DropdownModel } from 'oc-ng-common-component';
 
 @Component({
   selector: 'app-my-apps',

@@ -1,9 +1,10 @@
-import {Component, OnDestroy} from '@angular/core';
-import {NativeLoginService, UserActivationModel} from 'oc-ng-common-service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {ToastrService} from 'ngx-toastr';
+import { Component, OnDestroy } from '@angular/core';
+import { NativeLoginService } from 'oc-ng-common-service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+import { ComponentsUserActivationModel } from 'oc-ng-common-component';
 
 @Component({
     selector: 'app-activation',
@@ -17,7 +18,7 @@ export class ActivationComponent implements OnDestroy {
     activationUrl = '';
     inProcess = false;
 
-    activationModel = new UserActivationModel();
+    activationModel = new ComponentsUserActivationModel();
 
     private destroy$: Subject<void> = new Subject();
 

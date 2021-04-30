@@ -1,20 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import {
-  AppsService,
-  Filter,
-  FrontendService,
-  FullAppData, OcSidebarSelectModel,
-  Page, SidebarValue, TitleService
-} from 'oc-ng-common-service';
+import { AppsService, FrontendService, Page, TitleService } from 'oc-ng-common-service';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
-import {HttpParams} from '@angular/common/http';
-import {isString, forEach} from 'lodash';
+import { HttpParams } from '@angular/common/http';
+import { isString, forEach } from 'lodash';
+import { Filter, FullAppData, OcSidebarSelectModel, SidebarValue } from 'oc-ng-common-component';
 
 @Component({
   selector: 'app-app-search',
@@ -66,7 +61,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     delete queryParams['search'];
 
     forEach(queryParams, (value, key) => {
-      if(isString(value)) {
+      if (isString(value)) {
         filterValues[key] = queryParams[key].split(',');
       } else {
         filterValues[key] = queryParams[key];
@@ -83,7 +78,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
           this.filters = data.list;
 
           for (const filterModel of this.filters) {
-            let checkedValues = filterValues[filterModel.id] as string [];
+            const checkedValues = filterValues[filterModel.id] as string [];
             filterModel.values = filterModel.values.map(filterValue => {
               return {
                 ...filterValue,
@@ -96,8 +91,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
           this.selectedFilterValues = this.getSelectedFilterValues();
 
-          if(filterId && filterValueId ){
-            this.getSortedData(filterId, filterValueId)
+          if (filterId && filterValueId) {
+            this.getSortedData(filterId, filterValueId);
           } else {
             this.onTextChange(this.searchText);
           }
@@ -107,7 +102,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    if(this.loader) {
+    if (this.loader) {
       this.loader.complete();
     }
   }
@@ -177,7 +172,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     const currentParentValue = selectModel?.parent?.checked;
     this.filters.forEach(filter => {
 
-      const isCurrentFilter = selectModel?.parent?.id == filter?.id;
+      const isCurrentFilter = selectModel?.parent?.id === filter?.id;
 
       let cleanRequired;
 
@@ -236,8 +231,8 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
   private getFilterQuery() {
 
-    let filterValues = this.getSelectedFilterValues();
-    let queries = filterValues.map(filterValue => filterValue.value.query).filter(q => q);
+    const filterValues = this.getSelectedFilterValues();
+    const queries = filterValues.map(filterValue => filterValue.value.query).filter(q => q);
 
     this.selectedFilterValues = filterValues;
 
@@ -250,7 +245,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     this.filters.forEach(filter => {
       filter.values.forEach(value => {
         if (value.checked) {
-          const sidebarValue = <SidebarValue> value;
+          const sidebarValue =  value as SidebarValue;
           filterValues.push({filterId: filter.id, value: sidebarValue});
           filterLabels.push(value.label);
         }
@@ -299,7 +294,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
   }
 
   private updateSearchTextQueryParam(searchText: string, queryParams: HttpParams): HttpParams {
-    if(searchText) {
+    if (searchText) {
       return queryParams.set('search', searchText);
     } else {
       return queryParams.delete('search');
