@@ -62,6 +62,13 @@ definitions:
               -Dsonar.test.inclusions="**/*.spec.ts
               -Dsonar.coverage.exclusions="**/node_modules/**,**/*.spec.ts
               -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info'
+    - step: &push-to-github
+        name: Push to GitHub
+        script:
+          - git remote set-url origin git@github.com:openchannel/angular-market-template.git
+          - git remote -v
+          - git push origin master:main
+          - git push origin --tags
 
 pipelines:
   pull-requests:
@@ -81,3 +88,4 @@ pipelines:
       - step: *build-test-sonarcloud
     master:
       - step: *build-test-sonarcloud
+      - step: *push-to-github
