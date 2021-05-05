@@ -3,91 +3,75 @@
 @import "~oc-ng-common-component/assets/styles/mixins";
 
 .footer {
-  border-top: 1px solid rgba(201, 213, 234, 0.5);
+    border-top: 1px solid rgba(201, 213, 234, 0.5);
 
-  .container {
-    padding: 48px 0;
-    @include media-breakpoint-md() {
-      padding: 32px;
-    }
-
-    .footer-direction {
-      display: flex;
-      flex-direction: row;
-      @include media-breakpoint-md() {
-        flex-direction: column;
-      }
-
-      .company-logo {
-        margin-right: auto;
+    .container {
+        padding: 48px 0;
         @include media-breakpoint-md() {
-          margin-bottom: 24px;
-        }
-      }
-
-      .info-column {
-        white-space: nowrap;
-        width: 16%;
-
-        h5 {
-          color: $body-color;
-          font-size: 12px;
-          font-weight: 500;
-          letter-spacing: 0.3px;
-          margin-bottom: 12px;
-          @include font-family-rubik('Bold');
+            padding: 32px;
         }
 
-        li {
-          padding-top: 3.5px;
-          padding-bottom: 1px;
-          @include media-breakpoint-md() {
-            margin-bottom: 16px;
-          }
+        .footer-direction {
+            display: flex;
+            justify-content: space-between;
+            @include media-breakpoint-md() {
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
+            }
 
-          a {
+            .company-logo {
+                @include media-breakpoint-md() {
+                    margin-bottom: 24px;
+                }
+            }
+
+            .info-column {
+                white-space: nowrap;
+                width: 16%;
+
+                h5 {
+                    color: $body-color;
+                    font-size: 12px;
+                    font-weight: 500;
+                    letter-spacing: 0.3px;
+                    margin-bottom: 12px;
+                    @include font-family-rubik('Bold');
+                }
+
+                li {
+                    padding-top: 3.5px;
+                    padding-bottom: 1px;
+                    @include media-breakpoint-md() {
+                        margin-bottom: 16px;
+                    }
+
+                    a {
+                        color: $secondary;
+                        @include font-family-rubik('Light');
+                        font-size: 12px;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .min-content {
+                width: min-content;
+            }
+        }
+
+        .bottom-info {
+            margin-top: 32px;
             color: $secondary;
-            @include font-family-rubik('Light');
             font-size: 12px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            letter-spacing: normal;
             text-align: center;
-          }
+            @include font-family-rubik('Light');
         }
-      }
-
-      .min-content {
-        width: min-content;
-      }
-
-      .social-networks {
-        display: flex;
-        align-items: flex-start;
-        margin-left: auto;
-        @include media-breakpoint-md() {
-          margin-right: auto;
-          margin-left: 0;
-        }
-
-        &__item {
-
-          & + .social-networks__item {
-            margin-left: 16px;
-          }
-        }
-      }
     }
-
-    .bottom-info {
-      margin-top: 32px;
-      color: $secondary;
-      font-size: 12px;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      letter-spacing: normal;
-      text-align: center;
-      @include font-family-rubik('Light');
-    }
-  }
 }
 
 

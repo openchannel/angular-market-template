@@ -1,39 +1,36 @@
 <div class="footer">
-  <div class="container">
-    <div class="footer-direction">
-      <div class="company-logo">
-        <img src="assets/img/company-logo-2x.png" alt=" footer-logo" class="company-logo">
-      </div>
-      <div class="info-column">
-        <h5>Browse</h5>
-        <ul class="list-unstyled">
-          <li><a href="#">Most Popular </a></li>
-          <li><a href="#">Essential Apps </a></li>
-        </ul>
-      </div>
-      <div class="info-column">
-        <h5>Developers</h5>
-        <ul class="list-unstyled">
-          <li><a href="#">Documentation </a></li>
-          <li><a href="#">Getting Started </a></li>
-          <li><a href="#">API Reference </a></li>
-          <li><a href="#">Sample Code </a></li>
-        </ul>
-      </div>
-      <div class="info-column min-content">
-        <h5>Company</h5>
-        <ul class="list-unstyled">
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Blog </a></li>
-        </ul>
-      </div>
-        <div class="social-networks">
-          <div class="social-networks__item"
-               *ngFor="let socialLink of socialLinks" >
-            <oc-social-link [data]="socialLink"></oc-social-link>
-          </div>
+    <div class="container">
+        <div class="footer-direction">
+            <div class="company-logo">
+                <img src="assets/img/company-logo-2x.png" alt=" footer-logo" class="company-logo">
+            </div>
+            <div class="info-column">
+                <h5>Browse</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Most Popular </a></li>
+                    <li><a href="#">Essential Apps </a></li>
+                </ul>
+            </div>
+            <div class="info-column">
+                <h5>Developers</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Documentation </a></li>
+                    <li><a href="#">Getting Started </a></li>
+                    <li><a href="#">API Reference </a></li>
+                    <li><a href="#">Sample Code </a></li>
+                </ul>
+            </div>
+            <div class="info-column min-content">
+                <h5>Company</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Blog </a></li>
+                </ul>
+            </div>
+            <div class="social-networks">
+                <oc-social-links [socialLinks]="socialLinks"></oc-social-links>
+            </div>
         </div>
-      </div>
-    <h6 class="bottom-info">© 2020 Your company. All rights reserved.</h6>
-  </div>
+        <h6 class="bottom-info">© 2020 Your company. All rights reserved.</h6>
+    </div>
 </div>
