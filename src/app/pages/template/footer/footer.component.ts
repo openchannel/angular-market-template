@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {SocialLink} from 'oc-ng-common-component/src/lib/common-components/interfaces/social-link.model';
 
 @Component({
     selector: 'app-footer',
@@ -7,7 +8,7 @@ import {Component, OnInit} from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-    socialLinks = [
+    socialLinks: SocialLink[] = [
         {
             link: 'https://facebook.com',
             iconSrc: 'assets/img/facebook-icon.svg',
