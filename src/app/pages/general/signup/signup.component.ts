@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       organization: {
         type: 'default',
         typeData: null,
-        includeFields: ['customData.company']
+        includeFields: ['name', 'customData.company']
       },
       account: {
         type: 'default',
