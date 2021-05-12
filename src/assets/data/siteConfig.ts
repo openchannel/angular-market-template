@@ -1,4 +1,4 @@
-import {SiteConfig} from 'oc-ng-common-service';
+import {SiteConfig} from '@openchannel/angular-common-services';
 
 export const siteConfig: SiteConfig = {
   "title": "App Marketplace",

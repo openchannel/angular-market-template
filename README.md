@@ -34,14 +34,14 @@ Install node.js and npm [Guide](https://linuxize.com/post/how-to-install-node-js
    npm install
 ```
 
-2. Optional. Dependency with oc-ng-common-service.
+2. Optional. Dependency with @openchannel/angular-common-services.
 ```
-npm install file:<absolute path to common service project dist/oc-ng-common-service>
+npm install file:<absolute path to common service project dist/angular-common-services>
 ```
 
-3. Optional. Dependency with oc-ng-common-components.
+3. Optional. Dependency with @openchannel/angular-common-components.
 ```
-npm install file:<absolute path to common component project dist/oc-ng-common-components>
+npm install file:<absolute path to common component project dist/angular-common-components>
 ```
 
 <!-- USAGE EXAMPLES -->

@@ -10,11 +10,11 @@ import {
   UserRoleService,
   UsersGridParametersModel,
   UsersService,
-} from 'oc-ng-common-service';
+} from '@openchannel/angular-common-services';
 import { Observable, of, Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { OcConfirmationModalComponent, OcInviteModalComponent, ModalUpdateUserModel } from 'oc-ng-common-component';
+import { OcConfirmationModalComponent, OcInviteModalComponent, ModalUpdateUserModel } from '@openchannel/angular-common-components';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { flatMap, map, takeUntil, tap } from 'rxjs/operators';

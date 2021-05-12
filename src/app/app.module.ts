@@ -3,7 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CustomHttpClientXsrfModule, OcCommonServiceModule } from 'oc-ng-common-service';
+import { CustomHttpClientXsrfModule, OcCommonServiceModule } from '@openchannel/angular-common-services';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OAuthModule } from 'angular-oauth2-oidc';
@@ -15,7 +15,7 @@ import { HomeComponent } from './home/home.component';
 import { HttpErrorInterceptor } from '@core/interceptors/httperror.interceptor';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { OcAppCategoriesModule } from 'oc-ng-common-component';
+import { OcAppCategoriesModule } from '@openchannel/angular-common-components';
 
 @NgModule({
   declarations: [

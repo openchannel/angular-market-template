@@ -11,14 +11,14 @@ import {
   AuthHolderService,
   FileUploadDownloadService,
   OwnershipService,
-} from 'oc-ng-common-service';
+} from '@openchannel/angular-common-services';
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, takeUntil, tap } from 'rxjs/operators';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { OcButtonComponent, OcFormModalComponent, FullAppData } from 'oc-ng-common-component';
+import { OcButtonComponent, OcFormModalComponent, FullAppData } from '@openchannel/angular-common-components';
 import { Router } from '@angular/router';
 import { get } from 'lodash';
 import { HttpHeaders } from '@angular/common/http';

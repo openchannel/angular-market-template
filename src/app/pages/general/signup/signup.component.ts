@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NativeLoginService } from 'oc-ng-common-service';
+import { NativeLoginService } from '@openchannel/angular-common-services';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
@@ -7,7 +7,7 @@ import {LoadingBarService} from '@ngx-loading-bar/core';
 import {
   OcEditUserFormConfig,
   OcEditUserResult,
-} from 'oc-ng-common-component/src/lib/auth-components';
+} from '@openchannel/angular-common-components';
 import {OcEditUserTypeService} from '@core/services/user-type-service/user-type.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       organization: {
         type: 'default',
         typeData: null,
-        includeFields: ['customData.company']
+        includeFields: ['name', 'customData.company']
       },
       account: {
         type: 'default',

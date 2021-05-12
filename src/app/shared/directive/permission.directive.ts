@@ -1,5 +1,5 @@
 import {Directive, ElementRef, Input, OnInit} from '@angular/core';
-import {AuthHolderService, Permission} from 'oc-ng-common-service';
+import {AuthHolderService, Permission} from '@openchannel/angular-common-services';
 
 @Directive({
   selector: '[appPermissions]'

@@ -9,8 +9,8 @@ import {
   Permission,
   PermissionType,
   UserRoleService,
-} from 'oc-ng-common-service';
-import { ModalInviteUserModel, OcInviteModalComponent } from 'oc-ng-common-component';
+} from '@openchannel/angular-common-services';
+import { ModalInviteUserModel, OcInviteModalComponent } from '@openchannel/angular-common-components';
 import { ManagementComponent } from './management/management.component';
 
 export interface Page {

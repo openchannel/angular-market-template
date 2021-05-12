@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {
   InviteUserModel,
   InviteUserService, NativeLoginService, UserAccountTypesService,
-} from 'oc-ng-common-service';
+} from '@openchannel/angular-common-services';
 import {Subject} from 'rxjs';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {merge} from 'lodash';

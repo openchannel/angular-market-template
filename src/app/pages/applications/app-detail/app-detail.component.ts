@@ -8,7 +8,7 @@ import {
   TitleService,
   FrontendService,
   StatisticService
-} from 'oc-ng-common-service';
+} from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 import {map, mergeMap, takeUntil, tap} from 'rxjs/operators';
@@ -18,7 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ButtonAction, DownloadButtonAction } from './button-action/models/button-action.model';
-import { DropdownModel, FullAppData, OCReviewDetails, OverallRatingSummary } from 'oc-ng-common-component';
+import { DropdownModel, FullAppData, OCReviewDetails, OverallRatingSummary } from '@openchannel/angular-common-components';
 import * as _ from 'lodash';
 
 @Component({

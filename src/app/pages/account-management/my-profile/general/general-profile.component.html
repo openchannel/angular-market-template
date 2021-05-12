@@ -1,6 +1,6 @@
 <oc-edit-user-form *ngIf="formConfigsLoaded"
                    [formConfigs]="formConfigs"
-                   [enableTypesDropdown]="formEnableTypesDropdown"
+                   [enableTypesDropdown]="true"
                    [defaultAccountData]="formAccountData"
                    (createdFormGroup)="formGroup = $event"
                    (resultFormDataChange)="resultData = $event"></oc-edit-user-form>

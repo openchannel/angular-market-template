@@ -1,10 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
-import { NativeLoginService } from 'oc-ng-common-service';
+import { NativeLoginService } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { ComponentsUserActivationModel } from 'oc-ng-common-component';
+import { ComponentsUserActivationModel } from '@openchannel/angular-common-components';
 
 @Component({
     selector: 'app-activation',

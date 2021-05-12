@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { AppsService, FrontendService, Page, TitleService } from 'oc-ng-common-service';
+import { AppsService, FrontendService, Page, TitleService } from '@openchannel/angular-common-services';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { HttpParams } from '@angular/common/http';
 import { isString, forEach } from 'lodash';
-import { Filter, FullAppData, OcSidebarSelectModel, SidebarValue } from 'oc-ng-common-component';
+import { Filter, FullAppData, OcSidebarSelectModel, SidebarValue } from '@openchannel/angular-common-components';
 
 @Component({
   selector: 'app-app-search',

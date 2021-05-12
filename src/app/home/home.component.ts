@@ -4,7 +4,7 @@ import {
   FrontendService,
   SiteConfigService,
   TitleService,
-} from 'oc-ng-common-service';
+} from '@openchannel/angular-common-services';
 import {Observable, Subject} from 'rxjs';
 import {Router} from '@angular/router';
 import {pageConfig} from '../../assets/data/configData';
@@ -13,7 +13,7 @@ import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
 import {catchError, map, takeUntil, tap} from 'rxjs/operators';
 import {forkJoin} from 'rxjs/internal/observable/forkJoin';
 import {forIn} from 'lodash';
-import { AppCategoryDetail, Filter, FullAppData, OcSidebarSelectModel } from 'oc-ng-common-component';
+import { AppCategoryDetail, Filter, FullAppData, OcSidebarSelectModel } from '@openchannel/angular-common-components';
 
 
 export interface GalleryItem {
