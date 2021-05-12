@@ -38,7 +38,7 @@ import { OcAppCategoriesModule } from 'oc-ng-common-component';
     CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl}),
     SharedModule,
     OcAppCategoriesModule,
-    LoadingBarModule,
+    LoadingBarModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},

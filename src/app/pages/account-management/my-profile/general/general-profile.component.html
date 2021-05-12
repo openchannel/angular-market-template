@@ -1,12 +1,12 @@
-<oc-form *ngIf="this.formConfig"
-         [formJsonData]="formConfig"
-         [showButton]="false"
-         (createdForm)="setCreatedForm($event)"
-         (formDataUpdated)="setResultData($event)">
-</oc-form>
-<div *ngIf="this.formConfig" class="w-100 mt-2">
-    <oc-button type="primary" text="Save" class="save-button btn-block w-100"
-               [process]="inProcess"
-               (click)="saveAccountData()">
-    </oc-button>
+<oc-edit-user-form *ngIf="formConfigsLoaded"
+                   [formConfigs]="formConfigs"
+                   [enableTypesDropdown]="true"
+                   [defaultAccountData]="formAccountData"
+                   (createdFormGroup)="formGroup = $event"
+                   (resultFormDataChange)="resultData = $event"></oc-edit-user-form>
+<div *ngIf="formConfigsLoaded" class="w-100 mt-2">
+  <oc-button type="primary" text="Save" class="save-button btn-block w-100"
+             [process]="inSaveProcess"
+             (click)="saveUserData()">
+  </oc-button>
 </div>

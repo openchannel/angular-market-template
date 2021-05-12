@@ -107,7 +107,8 @@
         <div class="container">
             <oc-recommended-apps recommendedAppTitle="Recommended for you"
                                  [appList]="recommendedApps"
-                                 (clickByAppCard)="navigateTo(['details', $event.safeName[0]])">
+                                 routerLinkForOneApp="/details"
+                                 appNavigationParam="safeName[0]">
             </oc-recommended-apps>
         </div>
     </div>
