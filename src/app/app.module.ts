@@ -18,35 +18,27 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { OcAppCategoriesModule } from '@openchannel/angular-common-components';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    NotFoundComponent,
-  ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA,
-  ],
-  imports: [
-    HttpClientModule,
-    AppRoutingModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    OcCommonServiceModule.forRoot(environment),
-    DragDropModule,
-    ToastrModule.forRoot(),
-    OAuthModule.forRoot(),
-    CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl}),
-    SharedModule,
-    OcAppCategoriesModule,
-    LoadingBarModule
-  ],
-  providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
-  ],
-  bootstrap: [AppComponent],
-  entryComponents: [],
+    declarations: [AppComponent, HomeComponent, NotFoundComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [
+        HttpClientModule,
+        AppRoutingModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        OcCommonServiceModule.forRoot(environment),
+        DragDropModule,
+        ToastrModule.forRoot(),
+        OAuthModule.forRoot(),
+        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl }),
+        SharedModule,
+        OcAppCategoriesModule,
+        LoadingBarModule,
+    ],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    ],
+    bootstrap: [AppComponent],
+    entryComponents: [],
 })
-export class AppModule {
-
-}
+export class AppModule {}

@@ -32,8 +32,8 @@
     "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "@ng-select/ng-select": "^6.1.0",
     "@ngx-loading-bar/core": "^5.1.1",
-    "@openchannel/angular-common-components": "file:../angular-template-libraries/angular-template-libraries/dist/angular-common-components",
-    "@openchannel/angular-common-services": "file:../angular-template-libraries/angular-template-libraries/dist/angular-common-services",
+    "@openchannel/angular-common-components": "2.0.0-2",
+    "@openchannel/angular-common-services": "2.0.0-2",
     "@tinymce/tinymce-angular": "^4.2.1",
     "angular-oauth2-oidc": "^10.0.3",
     "bootstrap": "^4.4.1",
@@ -76,6 +76,9 @@
     "protractor": "~7.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.0.7"
+    "typescript": "~4.0.7",
+    "prettier": "^2.2.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.3.0"
   }
 }
