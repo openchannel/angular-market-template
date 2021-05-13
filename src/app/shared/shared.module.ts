@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OcCommonLibModule, OcMarketComponentsModule } from 'oc-ng-common-component';
+import { OcCommonLibModule, OcMarketComponentsModule } from '@openchannel/angular-common-components';
 import { ConfirmationModalComponent } from './modals/confirmation-modal/confirmation-modal.component';
 import { CamelCaseToNormalPipe } from './pipes/camel-case-to-normal.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

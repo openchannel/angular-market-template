@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
-import {AuthenticationService} from 'oc-ng-common-service';
+import {AuthenticationService} from '@openchannel/angular-common-services';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';

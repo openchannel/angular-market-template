@@ -10,7 +10,7 @@ import {
   UserAccountService,
   UserCompanyModel,
   UsersService,
-} from 'oc-ng-common-service';
+} from '@openchannel/angular-common-services';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';

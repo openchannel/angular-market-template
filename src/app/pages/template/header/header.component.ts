@@ -5,7 +5,7 @@ import {
   AuthenticationService,
   AuthHolderService,
   Permission, PermissionType
-} from 'oc-ng-common-service';
+} from '@openchannel/angular-common-services';
 import {LogOutService} from '@core/services/logout-service/log-out.service';
 import {map, takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';

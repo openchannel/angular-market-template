@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {OcEditUserFormConfig} from 'oc-ng-common-component/src/lib/auth-components';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { OcEditUserFormConfig } from '@openchannel/angular-common-components';
 import {
   Page,
   TypeFieldModel,
@@ -8,10 +8,10 @@ import {
   UserAccountService,
   UserAccountTypesService,
   UsersService
-} from 'oc-ng-common-service';
-import {forkJoin} from 'rxjs/internal/observable/forkJoin';
-import {map} from 'rxjs/operators';
-import {cloneDeep, keyBy} from 'lodash';
+} from '@openchannel/angular-common-services';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { map } from 'rxjs/operators';
+import { cloneDeep, keyBy } from 'lodash';
 
 @Injectable({
   providedIn: 'root'

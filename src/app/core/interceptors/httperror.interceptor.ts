@@ -9,9 +9,9 @@ import {
 
 import {Observable, Subject, throwError} from 'rxjs';
 import {Router} from '@angular/router';
-import {OcErrorService} from 'oc-ng-common-component';
+import {OcErrorService} from '@openchannel/angular-common-components';
 import {catchError, switchMap, take} from 'rxjs/operators';
-import {AuthenticationService, AuthHolderService, LoginResponse} from 'oc-ng-common-service';
+import {AuthenticationService, AuthHolderService, LoginResponse} from '@openchannel/angular-common-services';
 import {ToastrService} from 'ngx-toastr';
 import {HttpConfigInterceptor} from './httpconfig.interceptor';
 
