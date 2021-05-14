@@ -6,13 +6,12 @@ import {
   AccessLevel,
   AuthHolderService,
   InviteUserService,
-  ModalInviteUserModel,
   Permission,
   PermissionType,
   UserRoleService,
-} from 'oc-ng-common-service';
-import { OcInviteModalComponent } from 'oc-ng-common-component';
-import {ManagementComponent} from './management/management.component';
+} from '@openchannel/angular-common-services';
+import { ModalInviteUserModel, OcInviteModalComponent } from '@openchannel/angular-common-components';
+import { ManagementComponent } from './management/management.component';
 
 export interface Page {
   pageId: string;

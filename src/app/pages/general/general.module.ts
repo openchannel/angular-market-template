@@ -11,7 +11,7 @@ import { ActivationComponent } from './activation/activation.component';
 import { SharedModule } from '@shared/shared.module';
 import { InvitedSignupComponent } from './invited-signup/invited-signup.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { OcAuthComponentsModule, OcFormComponentsModule } from 'oc-ng-common-component';
+import { OcAuthComponentsModule, OcFormComponentsModule } from '@openchannel/angular-common-components';
 
 
 @NgModule({

@@ -1,116 +1,116 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {
-  AuthenticationService,
-  TypeMapperUtils,
-  TypeModel,
-  UserAccount,
-  UserAccountService,
-  UserAccountTypesService,
-  UserTypeFieldModel
-} from 'oc-ng-common-service';
-import {Subject} from 'rxjs';
-import {mergeMap, takeUntil, tap} from 'rxjs/operators';
-import {Router} from '@angular/router';
-import {ToastrService} from 'ngx-toastr';
-import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
-import {LoadingBarService} from '@ngx-loading-bar/core';
-import {FormGroup} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AuthenticationService, UserAccountService, UserAccountTypesService } from '@openchannel/angular-common-services';
+import { Subject } from 'rxjs';
+import { takeUntil, tap } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { FormGroup } from '@angular/forms';
+import { OCOrganization, OcEditUserFormConfig, OcEditUserResult } from '@openchannel/angular-common-components';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { OcEditUserTypeService } from '@core/services/user-type-service/user-type.service';
 
 @Component({
-  selector: 'app-general-profile',
-  templateUrl: './general-profile.component.html',
-  styleUrls: ['./general-profile.component.scss']
+    selector: 'app-general-profile',
+    templateUrl: './general-profile.component.html',
+    styleUrls: ['./general-profile.component.scss'],
 })
 export class GeneralProfileComponent implements OnInit, OnDestroy {
+    private readonly formConfigsWithoutTypeData: OcEditUserFormConfig[] = [
+        {
+            name: 'Default',
+            account: {
+                type: 'default',
+                typeData: null,
+                includeFields: ['name', 'email'],
+            },
+            organization: null,
+        },
+        {
+            name: 'Custom',
+            account: {
+                type: 'custom-account-type',
+                typeData: null,
+                includeFields: ['name', 'username', 'email', 'customData.about-me'],
+            },
+            organization: null,
+        },
+    ];
 
+    formConfigsLoaded = false;
+    formConfigs: OcEditUserFormConfig[];
+    formAccountData: OCOrganization;
 
-  public inProcess = false;
-  public formConfig: TypeModel<UserTypeFieldModel>;
-  defaultFormConfig: TypeModel<UserTypeFieldModel> = {
-    fields: [{
-      id: 'name',
-      label: 'Name',
-      type: 'text',
-      attributes: {required: true},
-    }, {
-      id: 'email',
-      label: 'Email',
-      type: 'emailAddress',
-      attributes: {required: true},
-    }],
-  };
+    inSaveProcess = false;
 
-  private account: UserAccount;
-  private accountForm: FormGroup;
-  private accountResult: any;
-  private isValidAccountType = false;
+    formGroup: FormGroup;
+    resultData: OcEditUserResult;
 
-  private loader: LoadingBarState;
-  private $destroy = new Subject<void>();
+    private loader: LoadingBarState;
+    private $destroy = new Subject<void>();
 
-  constructor(private userService: UserAccountService,
-              private loadingBar: LoadingBarService,
-              private userAccountTypeService: UserAccountTypesService,
-              private authService: AuthenticationService,
-              private router: Router,
-              private toasterService: ToastrService) {
-  }
+    constructor(
+        private loadingBar: LoadingBarService,
+        private accountService: UserAccountService,
+        private accountTypeService: UserAccountTypesService,
+        private authService: AuthenticationService,
+        private toasterService: ToastrService,
+        private ocTypeService: OcEditUserTypeService,
+    ) {}
 
-  ngOnInit(): void {
-    this.loader = this.loadingBar.useRef();
-    this.initProfileDetails();
-  }
-
-  ngOnDestroy(): void {
-    this.$destroy.next();
-    this.$destroy.unsubscribe();
-    if (this.loader) {
-      this.loader.complete();
+    ngOnInit(): void {
+        this.loader = this.loadingBar.useRef();
+        this.initDefaultFormConfig();
     }
-  }
 
-  public setCreatedForm(accountForm: FormGroup): void {
-    this.accountForm = accountForm;
-  }
-
-  public setResultData(accountData: any): void {
-    this.accountResult = accountData;
-  }
-
-  public saveAccountData(): void {
-    this.accountForm?.markAllAsTouched();
-    if (this.accountForm?.valid && this.accountResult && !this.inProcess) {
-      this.inProcess = true;
-      this.userService.updateUserAccount(TypeMapperUtils.buildDataForSaving({
-        ...this.accountResult,
-        ...(this.isValidAccountType ? {type: this.account.type} : {})
-      })).pipe(takeUntil(this.$destroy))
-      .subscribe(() => {
-        this.toasterService.success('Your profile has been updated');
-        this.inProcess = false;
-      }, () => {
-        this.inProcess = false;
-      });
+    ngOnDestroy(): void {
+        this.$destroy.next();
+        this.$destroy.unsubscribe();
+        if (this.loader) {
+            this.loader.complete();
+        }
     }
-  }
 
-  private initProfileDetails(): void {
-    this.loader.start();
-    this.userService.getUserAccount()
-    .pipe(
-        takeUntil(this.$destroy),
-        tap(account => this.account = account),
-        mergeMap(account => this.userAccountTypeService.getUserAccountType(account.type)))
-    .subscribe(definition => {
-      this.isValidAccountType = true;
-      this.setFormConfig(definition, this.account);
-    }, () => {
-      this.setFormConfig(this.defaultFormConfig, this.account);
-    });
-  }
+    saveUserData(): void {
+        this.formGroup.markAllAsTouched();
 
-  private setFormConfig(typeModel: TypeModel<UserTypeFieldModel>, userAccount: UserAccount): void {
-    this.formConfig = TypeMapperUtils.createFormConfig(typeModel, userAccount);
-    this.loader.complete();
-  }
+        const accountData = this.resultData?.account;
+        if (!this.inSaveProcess && accountData) {
+            this.loader.start();
+            this.inSaveProcess = true;
+
+            this.accountService
+                .updateUserAccount(accountData)
+                .pipe(
+                    tap(() => this.toasterService.success('Your profile has been updated')),
+                    takeUntil(this.$destroy),
+                )
+                .subscribe(
+                    () => {
+                        this.inSaveProcess = false;
+                        this.loader.complete();
+                    },
+                    () => {
+                        this.inSaveProcess = false;
+                        this.loader.complete();
+                    },
+                );
+        }
+    }
+
+    private initDefaultFormConfig(): void {
+        this.loader.start();
+        forkJoin({
+            accountData: this.accountService.getUserAccount(),
+            formConfigs: this.ocTypeService.injectTypeDataIntoConfigs(this.formConfigsWithoutTypeData, false, true),
+        }).subscribe(
+            result => {
+                this.loader.complete();
+                this.formAccountData = result.accountData;
+                this.formConfigs = result.formConfigs;
+                this.formConfigsLoaded = true;
+            },
+            () => this.loader.complete(),
+        );
+    }
 }

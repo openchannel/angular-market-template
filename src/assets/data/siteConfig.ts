@@ -1,9 +1,9 @@
-import {SiteConfig} from 'oc-ng-common-service';
+import {SiteConfig} from '@openchannel/angular-common-services';
 
 export const siteConfig: SiteConfig = {
-  "title": "App Marketplace",
-  "tagline": "All the apps and integrations that you need",
-  "metaTags": [
+  title: 'App Marketplace',
+  tagline: 'All the apps and integrations that you need',
+  metaTags: [
     {name: 'author', content: 'OpenChannel'},
     {name: 'description', content: 'OpenChannel'},
     {name: 'generator', content: 'OpenChannel'}
@@ -12,4 +12,4 @@ export const siteConfig: SiteConfig = {
     href: 'assets/img/favicon.png',
     type: 'image/x-icon'
   }
-}
+};
