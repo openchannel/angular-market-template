@@ -58,6 +58,13 @@
             .min-content {
                 width: min-content;
             }
+
+            .social-networks {
+                max-width: 30%;
+                @include media-breakpoint-md() {
+                    max-width: 100%;
+                }
+            }
         }
 
         .bottom-info {
