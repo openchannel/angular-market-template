@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SocialLink } from '@openchannel/angular-common-components/src/lib/common-components/interfaces/social-link.model';
+import { SocialLink } from '@openchannel/angular-common-components';
 
 @Component({
     selector: 'app-footer',
