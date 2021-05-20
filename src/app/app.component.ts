@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthenticationService, SiteConfigService, TitleService} from 'oc-ng-common-service';
+import {AuthenticationService, SiteConfigService, TitleService} from '@openchannel/angular-common-services';
 import {first, takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';

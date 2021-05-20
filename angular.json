@@ -28,8 +28,8 @@
               "src/assets",
               "src/robots.txt",
               "src/_redirects",
-              {"glob": "**/*", "input": "node_modules/oc-ng-common-component/assets/img",
-                "output": "/assets/oc-ng-common-component"}
+              {"glob": "**/*", "input": "node_modules/@openchannel/angular-common-components/assets/img",
+                "output": "/assets/angular-common-components"}
             ],
             "styles": [
               "src/styles.scss",
