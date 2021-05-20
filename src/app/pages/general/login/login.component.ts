@@ -1,19 +1,19 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
     AuthenticationService,
     AuthHolderService,
     LoginRequest,
     LoginResponse,
     NativeLoginService,
-    UserLoginModel,
-} from 'oc-ng-common-service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {filter, takeUntil, tap} from 'rxjs/operators';
-import {Subject} from 'rxjs';
-import {OAuthService} from 'angular-oauth2-oidc';
-import {ToastrService} from 'ngx-toastr';
-import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
-import {LoadingBarService} from '@ngx-loading-bar/core';
+} from '@openchannel/angular-common-services';
+import { ActivatedRoute, Router } from '@angular/router';
+import { filter, takeUntil, tap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { ToastrService } from 'ngx-toastr';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { ComponentsUserLoginModel } from '@openchannel/angular-common-components';
 
 @Component({
     selector: 'app-login',
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     companyLogoUrl = './assets/img/company-logo-2x.png';
     signupUrl = '/signup';
     forgotPwdUrl = '/forgot-password';
-    signIn = new UserLoginModel();
+    signIn = new ComponentsUserLoginModel();
     inProcess = false;
     isLoading = false;
 
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
         if (this.authHolderService.isLoggedInUser()) {
-            this.router.navigate(['']);
+            this.router.navigate(['']).then();
         }
 
         this.retrieveRedirectUrl();

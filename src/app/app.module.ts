@@ -3,7 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CustomHttpClientXsrfModule, OcCommonServiceModule } from 'oc-ng-common-service';
+import { CustomHttpClientXsrfModule, OcCommonServiceModule } from '@openchannel/angular-common-services';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OAuthModule } from 'angular-oauth2-oidc';
@@ -15,38 +15,32 @@ import { HomeComponent } from './home/home.component';
 import { HttpErrorInterceptor } from '@core/interceptors/httperror.interceptor';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { OcAppCategoriesModule } from 'oc-ng-common-component';
+import { OcAppCategoriesModule, FileUploaderService } from '@openchannel/angular-common-components';
+import { FileService } from '@core/services/file.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    NotFoundComponent,
-  ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA,
-  ],
-  imports: [
-    HttpClientModule,
-    AppRoutingModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    OcCommonServiceModule.forRoot(environment),
-    DragDropModule,
-    ToastrModule.forRoot(),
-    OAuthModule.forRoot(),
-    CustomHttpClientXsrfModule.withOptions({headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl}),
-    SharedModule,
-    OcAppCategoriesModule,
-    LoadingBarModule
-  ],
-  providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
-  ],
-  bootstrap: [AppComponent],
-  entryComponents: [],
+    declarations: [AppComponent, HomeComponent, NotFoundComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [
+        HttpClientModule,
+        AppRoutingModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        OcCommonServiceModule.forRoot(environment),
+        DragDropModule,
+        ToastrModule.forRoot(),
+        OAuthModule.forRoot(),
+        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl }),
+        SharedModule,
+        OcAppCategoriesModule,
+        LoadingBarModule,
+    ],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+        { provide: FileUploaderService, useClass: FileService },
+    ],
+    bootstrap: [AppComponent],
+    entryComponents: [],
 })
-export class AppModule {
-
-}
+export class AppModule {}
