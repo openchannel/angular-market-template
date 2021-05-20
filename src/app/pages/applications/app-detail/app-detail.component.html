@@ -6,7 +6,7 @@
                     <div class="d-flex flex-row align-items-center">
                         <img src="./assets/img/arrow-left.svg"
                              alt="arrow-icon">
-                    <a routerLink="" class="font-m font-med pl-1">Back</a>
+                    <a routerLink="" class="pl-1 app-detail__back-link-text">Back</a>
                     </div>
                     <h3 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h3>
                 </div>
@@ -21,10 +21,10 @@
                     </div>
                     <div class="col-md-6 d-flex flex-column">
                         <h1 class="mb-2 page-title-size">{{ app.name }}</h1>
-                        <a href="#" class="font-med" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
+                        <a href="#" class="app-detail__price" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
                         <div class="text-secondary mt-1" [innerHTML]="app.summary"></div>
                         <oc-rating class="mb-3" [rating]="app.rating / 100 || 0" [reviewCount]="app.reviewCount || 0"
-                                   label="reviews" labelClass="font-med" type="single-star"></oc-rating>
+                                   label="reviews" labelClass="medium" type="single-star"></oc-rating>
                         <div *ngIf="appListingActions?.length > 0" class="actions-container">
                             <app-button-action *ngFor="let action of appListingActions"
                                                [appData]="app"
@@ -54,28 +54,28 @@
                     <li class="list-group-item" *ngIf="app.customData['terms-of-service-url']">
                         <img src="./assets/img/icon-help.svg"
                              class="pr-2" alt="icon">
-                        <a class="font-m font-med support-link" [href]="app.customData['terms-of-service-url']">F.A.Q.</a>
+                        <a class="support-link" [href]="app.customData['terms-of-service-url']">F.A.Q.</a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['website-url']">
                         <img src="./assets/img/internet.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med support-link" [href]="app.customData['website-url']">Developer website</a>
+                        <a class="support-link" [href]="app.customData['website-url']">Developer website</a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['terms-of-service-url']">
                         <img src="./assets/img/padlock.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med support-link" [href]="app.customData['terms-of-service-url']">Privacy Policy</a>
+                        <a class="support-link" [href]="app.customData['terms-of-service-url']">Privacy Policy</a>
                     </li>
                     <li class="list-group-item link" *ngIf="app.customData['contact-email']">
                         <img src="./assets/img/icon-email.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med support-link"
+                        <a class="support-link"
                            [href]="'mailto:' + app.customData['contact-email']">{{app.customData['contact-email']}}</a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['support-url']">
                         <img src="./assets/img/speech-bubble.svg"
                             class="pr-2" alt="icon">
-                        <a class="font-m font-med support-link" [href]="app.customData['support-url']">Support website</a>
+                        <a class="support-link" [href]="app.customData['support-url']">Support website</a>
                     </li>
                 </ul>
             </div>

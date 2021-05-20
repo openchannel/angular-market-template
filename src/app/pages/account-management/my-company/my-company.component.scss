@@ -1,55 +1,58 @@
 @import '../../../../assets/styles/mixins';
+@import '~@openchannel/angular-common-components/assets/styles/mixins';
 
 .bg-container {
-  min-height: auto;
+    min-height: auto;
 }
 
 .active-link {
-  color: #537cfd !important;
-  font-family: 'Rubik-Medium', sans-serif;
+    color: #537cfd !important;
+    @include font-medium();
 }
 
 ul.list-unstyled {
-  @include media-breakpoint-md {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-
-  li {
     @include media-breakpoint-md {
-      white-space: nowrap;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
     }
 
-    & + li {
-      @include media-breakpoint-md {
-        margin-left: 2rem;
-      }
-    }
-
-    a {
-      color: inherit;
-      cursor: pointer;
-      @include media-breakpoint-md {
-        color: #999;
-        font-family: Rubik-Medium, sans-serif;
-      }
-
-      &.active-link {
+    li {
         @include media-breakpoint-md {
-          color: #333 !important;
-          border-bottom: 3px solid #537cfd;
-          padding-bottom: 8px;
+            white-space: nowrap;
         }
-      }
+
+        & + li {
+            @include media-breakpoint-md {
+                margin-left: 2rem;
+            }
+        }
+
+        a {
+            @include font-size-md();
+            color: inherit;
+            cursor: pointer;
+            @include media-breakpoint-md {
+                @include font-medium();
+                color: #999;
+            }
+
+            &.active-link {
+                @include font-medium();
+                @include media-breakpoint-md {
+                    color: #333 !important;
+                    border-bottom: 3px solid #537cfd;
+                    padding-bottom: 8px;
+                }
+            }
+        }
     }
-  }
 }
 
 .page-title {
-  line-height: 40px;
+    line-height: 40px;
 }
 
 .button-container {
-  width: 255px;
+    width: 255px;
 }

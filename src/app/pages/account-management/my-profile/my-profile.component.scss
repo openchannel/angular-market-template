@@ -1,71 +1,73 @@
 @import '~assets/styles/mixins';
+@import '~@openchannel/angular-common-components/assets/styles/mixins';
 
 .active-link {
-  color: #537cfd;
-  font-family: 'Rubik-Medium', sans-serif;
-  @include media-breakpoint-md {
-    color: #333 !important;
-    border-bottom: 3px solid #537cfd;
-    padding-bottom: 1rem;
-  }
+    color: #537cfd;
+    @include font-medium();
+    @include media-breakpoint-md {
+        color: #333 !important;
+        border-bottom: 3px solid #537cfd;
+        padding-bottom: 1rem;
+    }
 }
 
 .page-navigation {
-  padding-top: 5rem;
-  @include media-breakpoint-md {
-    padding-top: 3rem;
-  }
+    padding-top: 5rem;
+    @include media-breakpoint-md {
+        padding-top: 3rem;
+    }
 }
 
 ul.list-unstyled {
-  @include media-breakpoint-md {
-    display: flex;
-  }
-
-  li {
-    padding: 1rem 0;
     @include media-breakpoint-md {
-      padding: 0;
+        display: flex;
     }
 
-    & + li {
-      @include media-breakpoint-md {
-        margin-left: 30px;
-      }
-    }
+    li {
+        padding: 1rem 0;
+        @include media-breakpoint-md {
+            padding: 0;
+        }
 
-    a {
-      color: inherit;
-      cursor: pointer;
-      @include media-breakpoint-md {
-        font-family: 'Rubik-Medium', sans-serif;
-        color: #999;
-      }
+        & + li {
+            @include media-breakpoint-md {
+                margin-left: 30px;
+            }
+        }
+
+        a {
+            color: inherit;
+            cursor: pointer;
+            @include font-size-md();
+            @include media-breakpoint-md {
+                @include font-medium();
+                color: #999;
+            }
+        }
     }
-  }
 }
 
 .breadcrumbs-wrapper {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 
-  .breadcrumbs-icon {
-    padding-bottom: 1px;
-  }
+    .breadcrumbs-icon {
+        padding-bottom: 1px;
+    }
 }
 
 .page-title {
-  line-height: 40px;
-  margin-bottom: 0;
-  @include media-breakpoint-md {
-    font-size: 24px;
-    line-height: 36px;
-  }
+    line-height: 40px;
+    margin-bottom: 0;
+    @include media-breakpoint-md {
+        font-size: 24px;
+        line-height: 36px;
+    }
 }
 
 .header-padding {
-  @include media-breakpoint-md {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-  }
+    @include media-breakpoint-md {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
 }

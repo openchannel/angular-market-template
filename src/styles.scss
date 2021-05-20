@@ -1,5 +1,6 @@
-@import "~@openchannel/angular-common-components/assets/styles/styles.scss";
+@import "assets/styles/fonts";
 @import "assets/styles/mixins";
+@import "~@openchannel/angular-common-components/assets/styles/styles";
 
 $link-gray: #333333;
 $category-color-mix1: #ff0606;
@@ -27,12 +28,12 @@ $category-color-mix2: #ffffff;
 
 .header-divider {
     border-top: 1px solid rgba(83, 124, 253, 0.2);
-    // box-shadow: 0px -1px 0 2px rgba(83, 124, 253, 0.2);
 }
 
+/** Froala Editor **/
 
-/** Flora Editor **/
 .fr-box {
+
     .second-toolbar {
         border-bottom: 0;
     }
@@ -70,7 +71,6 @@ $category-color-mix2: #ffffff;
 .fr-box.fr-basic .fr-wrapper {
     border: 1px solid $info !important;
     border-bottom-color: $info !important;
-    // border-radius: 0 0 4px 4px;
 }
 
 .fr-box.fr-basic .fr-element {
@@ -83,9 +83,10 @@ $category-color-mix2: #ffffff;
     }
 }
 
-/** End Flora Editor **/
+/** End Froala Editor **/
 
 // Dropdown menu style
+
 .dropdown-menu {
     padding: 0;
     min-width: 136px;
@@ -103,7 +104,6 @@ $category-color-mix2: #ffffff;
     .dropdown-item:focus {
         background-color: rgba(201, 213, 234, 0.1);
         color: #537cfd;
-        // box-shadow: 0px 1px 0 #c9d5ea;
     }
 
     .dropdown-item:active {
@@ -113,6 +113,7 @@ $category-color-mix2: #ffffff;
 }
 
 .oc-dropdown-toggle {
+
     .dropdown-toggle.btn-secondary {
         border-radius: 4px;
         color: #333333 !important;
@@ -172,15 +173,14 @@ button:focus {
     outline: none !important;
 }
 
-
 html, body {
     height: 100%;
 }
 
 body {
-    @include font-family-rubik('Regular');
-    font-size: 16px;
-    font-weight: normal;
+    font-family: 'Rubik', sans-serif;
+    font-style: normal;
+    font-weight: 400;
     margin: 0;
 }
 
@@ -202,6 +202,7 @@ body {
 }
 
 .get-dev {
+
     &__container {
         background-color: $light;
         height: 298px;
@@ -231,6 +232,7 @@ body {
 }
 
 /** Toast styles */
+
 .toast-message {
     font-size: 12px;
 }
@@ -268,12 +270,14 @@ body {
 }
 
 .custom-loader {
+
     .ngx-bar {
         background-color: $primary !important;
     }
 }
 
 // modals - start
+
 @media (min-width: 730px) {
     .modal-dialog {
         max-width: 750px;
