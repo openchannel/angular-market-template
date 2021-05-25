@@ -63,7 +63,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
       this.formConfig = {
         fields: [
           {
-            id: 'uname',
+            id: 'name',
             label: 'Name',
             type: 'text',
             attributes: {required: false},
@@ -114,9 +114,6 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         field.defaultValue = this.userInviteData[field.id];
       } else if (field.id.includes('company')) {
         field.defaultValue = this.userInviteData.customData?.company;
-      }
-      if(field.id === 'name') {
-        field.id = 'uname';
       }
       return field;
     });

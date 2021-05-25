@@ -15,7 +15,8 @@ import { HomeComponent } from './home/home.component';
 import { HttpErrorInterceptor } from '@core/interceptors/httperror.interceptor';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { OcAppCategoriesModule } from '@openchannel/angular-common-components';
+import { OcAppCategoriesModule, FileUploaderService } from '@openchannel/angular-common-components';
+import { FileService } from '@core/services/file.service';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, NotFoundComponent],
@@ -37,6 +38,7 @@ import { OcAppCategoriesModule } from '@openchannel/angular-common-components';
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+        { provide: FileUploaderService, useClass: FileService },
     ],
     bootstrap: [AppComponent],
     entryComponents: [],

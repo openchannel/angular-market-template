@@ -5,13 +5,20 @@
 * [About the Project](#about-the-project)
   * [Built With](#built-with)
 * [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
   * [Installation](#installation)
+* [Usage](#usage)
 * [Contact](#contact)
 
 ## About The Project
 
 The goal of a marketplace template site is to allow users to browse and install actual applications. This app represents the market site.
+
+Functional for User:
+- Native or SSO login.
+- Search approved applications. 
+- Work with applications (install/uninstall, preview).
+- Updating profile and organization data.
+- Managing users from your organization. Invite new users.
 
 Note: Unauthorized users can browse Applications.
 
@@ -56,8 +63,8 @@ npm install file:<absolute path to common component project dist/angular-common-
 ```
 - Add to file two lines:
 ```
-127.0.0.1 stage1-local-template-market.openchannel.io
-127.0.0.1 dev1-local-template-market.openchannel.io
+127.0.0.1 stage1-template-market.openchannel.io
+127.0.0.1 dev1-template-market.openchannel.io
 ```
 - Run project with the stage1 environment:
 ```
@@ -69,26 +76,36 @@ sudo npm run start-dev1
 ```
 
 ####  Run project with the Moesif plugin for Chrome:
- 
+
 - Install [Moesif](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc/related) CORS plugin for Chrome
 - Submit your work email address there
 - Open advanced settings
-- Fill in the 'Request Headers' field:
-```
-https://stage1-local-template-market.openchannel.io/
-```
-or:
-```
-https://dev1-local-template-market.openchannel.io/
-```
-- Fill in the 'Response headers' field:
-```
-http://localhost:4200/
-```
-- Run project using:
-```
-sudo ng serve
-```
+- Fill in the 'Access-Control-Allow-Credentials'<br>
+  ``
+  true
+  ``
+- Fill in the 'Response headers' field: <br>
+  ``
+  http://localhost:4200
+  ``
+- Fill in the 'Request Headers' field:<br>
+  Example for dev1 environment: <br>
+  ``
+  https://dev1-template-market.openchannel.io
+  ``<br>
+  Example for stage1 environment: <br>
+  ``
+  https://stage1-template-market.openchannel.io
+  ``<br>
+- Then start project with command:<br>
+  Example for dev1 environment: <br>
+  ``
+  ng serve -c dev1
+  ``<br>
+  Example for stage1 environment: <br>
+  ``
+  ng serve -c stage1
+  ``
 
 ####  Run project with the remote site configs (us1):
 Note: replace <font color="red">YOUR_SITE_DOMAIN</font> with your market domain.
@@ -104,19 +121,6 @@ Note: replace <font color="red">YOUR_SITE_DOMAIN</font> with your market domain.
 - Run project with the us1 environment:
 ```
 sudo npm run start-us1 YOUR_SITE_DOMAIN
-```
-
-#### Run project with the local site configs:
-
-##### Run <font color="red">ONE</font> of this:
-
-- Project with the Okta SSO
-```
-npm run start-okta
-```
-- Project with Google SSO
-```
-npm run start-google
 ```
 
 ## Documentation Compodoc
@@ -143,7 +147,7 @@ SonarCloud Quality Gate Status [![Quality Gate Status](https://sonarcloud.io/api
 
 ## Contact
 
-Project Link: [https://bitbucket.org/openchannel/template3-portal-frontend/src/develop/](https://bitbucket.org/openchannel/template3-portal-frontend/src/develop/)
+Project Link: [https://bitbucket.org/openchannel/template3-marketsite/src/master/](https://bitbucket.org/openchannel/template3-marketsite/src/master/)
 
 ## Designs
 
