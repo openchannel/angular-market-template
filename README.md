@@ -151,4 +151,4 @@ Project Link: [https://bitbucket.org/openchannel/template3-marketsite/src/master
 
 ## Designs
 
-Project Designs: [https://app.zeplin.io/project/5fad60184ae36d25530c9843/screen/6059dd1ed61d2e07c233929e](https://app.zeplin.io/project/5fad60184ae36d25530c9843/screen/6059dd1ed61d2e07c233929e)
+App Store Designs: [https://support.openchannel.io/guides/app-store-designs/](https://support.openchannel.io/guides/app-store-designs/)
