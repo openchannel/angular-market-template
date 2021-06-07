@@ -1,6 +1,6 @@
-@import "~assets/styles/mixins";
 @import "~@openchannel/angular-common-components/assets/styles/theme";
 @import "~@openchannel/angular-common-components/assets/styles/mixins";
+@import "~assets/styles/mixins";
 
 .footer {
     border-top: 1px solid rgba(201, 213, 234, 0.5);
@@ -31,12 +31,11 @@
                 width: 16%;
 
                 h5 {
+                    @include font-bold();
                     color: $body-color;
                     font-size: 12px;
-                    font-weight: 500;
                     letter-spacing: 0.3px;
                     margin-bottom: 12px;
-                    @include font-family-rubik('Bold');
                 }
 
                 li {
@@ -47,8 +46,8 @@
                     }
 
                     a {
+                        @include font-light();
                         color: $secondary;
-                        @include font-family-rubik('Light');
                         font-size: 12px;
                         text-align: center;
                     }
@@ -76,7 +75,7 @@
             font-style: normal;
             letter-spacing: normal;
             text-align: center;
-            @include font-family-rubik('Light');
+            @include font-light();
         }
     }
 }
