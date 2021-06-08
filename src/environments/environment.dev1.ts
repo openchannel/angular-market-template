@@ -5,7 +5,6 @@
 export const environment = {
   production: true,
   apiUrl: 'https://dev1-client-api-proxy.openchannel.io/',
-  fullyHosted: true,
   marketplaceName: 'OpenChannel'
 };
 

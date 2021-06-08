@@ -3,11 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {
-    CustomHttpClientXsrfModule,
-    HttpRequestService,
-    OcCommonServiceModule
-} from '@openchannel/angular-common-services';
+import { CustomHttpClientXsrfModule, OcCommonServiceModule } from '@openchannel/angular-common-services';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OAuthModule } from 'angular-oauth2-oidc';
@@ -22,15 +18,6 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { OcAppCategoriesModule, FileUploaderService } from '@openchannel/angular-common-components';
 import { FileService } from '@core/services/file.service';
 
-function getApiUrl(): string {
-    if (environment.fullyHosted) {
-        return `${window.origin}/client-api/`;
-    }
-    return environment.apiUrl;
-}
-
-export const OC_API_URL = getApiUrl();
-
 @NgModule({
     declarations: [AppComponent, HomeComponent, NotFoundComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -39,11 +26,11 @@ export const OC_API_URL = getApiUrl();
         AppRoutingModule,
         BrowserModule,
         BrowserAnimationsModule,
-        OcCommonServiceModule.forRoot(environment, OC_API_URL),
+        OcCommonServiceModule.forRoot(environment),
         DragDropModule,
         ToastrModule.forRoot(),
         OAuthModule.forRoot(),
-        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: OC_API_URL }),
+        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl }),
         SharedModule,
         OcAppCategoriesModule,
         LoadingBarModule,
