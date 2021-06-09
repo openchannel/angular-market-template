@@ -80,7 +80,7 @@
             </div>
             <div class="d-flex my-2 my-lg-0 ml-0 ml-md-6 auth-button" *ngIf="!authHolderService.isLoggedInUser()">
                 <a class="btn header-login-btn header-btn" routerLink="/login"
-                   [queryParams]="{ returnUrl: router.routerState.snapshot.url }">Log in</a>
+                   [queryParams]="{ returnUrl: getUrlWithoutFragment() }">Log in</a>
                 <a class="btn btn-primary header-btn ml-md-2" routerLink="/signup" *ngIf="!isSsoConfigExist">Sign up</a>
             </div>
         </div>
