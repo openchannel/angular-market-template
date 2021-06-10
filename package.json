@@ -1,6 +1,6 @@
 {
   "name": "template3-marketsite",
-  "version": "1.8.0",
+  "version": "1.10.0",
   "scripts": {
     "ng": "ng",
     "start-okta": "ng serve --port=4201",
