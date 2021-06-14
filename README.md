@@ -1,5 +1,6 @@
 # Template3-marketsite
-
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=openchannel_template3-marketsite&metric=alert_status&token=09ecb76af06050dd9ee59a4ada98a9e937517fbf)](https://sonarcloud.io/dashboard?id=openchannel_template3-marketsite)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=openchannel_template3-marketsite&metric=coverage&token=09ecb76af06050dd9ee59a4ada98a9e937517fbf)](https://sonarcloud.io/dashboard?id=openchannel_template3-marketsite)
 ## Table of Contents
 
 * [About the Project](#about-the-project)
@@ -140,10 +141,6 @@ npm run start-compodoc
 ```
 
 - Documentation [http://localhost:8804](http://localhost:8804)
-
-### Sonarcloud code quality badge
-
-SonarCloud Quality Gate Status [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=openchannel_template3-marketsite&metric=alert_status&token=09ecb76af06050dd9ee59a4ada98a9e937517fbf)](https://sonarcloud.io/dashboard?id=openchannel_template3-marketsite)
 
 ## Contact
 
