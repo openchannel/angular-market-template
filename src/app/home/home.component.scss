@@ -1,56 +1,57 @@
 @import '~@openchannel/angular-common-components/assets/styles/mixins';
 
 .page-info {
-  margin: 4rem 0;
+    margin: 4rem 0;
 }
 
 .section-wrapper {
 
-  & + .section-wrapper {
-    @include media-breakpoint-md {
-      display: block;
-      margin-top: 4rem;
+    & + .section-wrapper {
+        @include media-breakpoint-md {
+            display: block;
+            margin-top: 4rem;
+        }
     }
-  }
 }
 
 .filter__container {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .featured-apps-container {
-  @include media-breakpoint-md {
-    max-width: 100%;
-    padding: 0;
-    margin: 0;
-  }
+    @include media-breakpoint-md {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
 }
 
-  // Media Query - max-width: 767px Start
-  @media (max-width: 767px) {
+// Media Query - max-width: 767px Start
+
+@media (max-width: 767px) {
     .page-title {
-      font-size: 24px;
+        font-size: 24px;
     }
 
     .page-description {
-      font-size: 14px;
+        font-size: 14px;
     }
 
     .page-info {
-      margin: 3rem 0;
+        margin: 3rem 0;
     }
 
     .featured .sec-space {
-      padding: 25px 0 0 0 !important;
+        padding: 25px 0 0 0 !important;
     }
 
-    .featured .item-title,.item-description {
-      margin-left: auto !important;
-      margin-right: auto !important;
+    .featured .item-title, .item-description {
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
-  }
+}
 
 h1 {
-  font-size: 38px;
+    font-size: 38px;
 }

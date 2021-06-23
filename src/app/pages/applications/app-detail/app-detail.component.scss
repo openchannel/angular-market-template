@@ -2,79 +2,94 @@
 @import '~@openchannel/angular-common-components/assets/styles/mixins';
 
 .app-detail {
-  &__back-link {
-    @include media-breakpoint-md {
-      padding-top: 2rem;
-      padding-bottom: 2rem;
+
+    &__back-link {
+        display: flex;
+        justify-content: space-between;
+        padding: 5rem 0;
+        @include media-breakpoint-md {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        &-text {
+            @include font-medium();
+            @include font-size-md();
+        }
     }
-    display: flex;
-    justify-content: space-between;
-    padding: 5rem 0;
-  }
+
+    &__price {
+        @include font-medium();
+    }
 }
 
-
 .list-group.list-group-flush {
-  .list-group-item {
-    @include font-family-rubik('Medium');
-    padding: 0 0 10px;
-    border-width: 0;
-    font-size: 14px;
-  }
+
+    .list-group-item {
+        @include font-medium();
+        padding: 0 0 10px;
+        border-width: 0;
+        font-size: 14px;
+    }
 }
 
 .support-link {
-  cursor: pointer;
-  color: $primary;
-  &:hover {
+    cursor: pointer;
     color: $primary;
-  }
-  &:focus {
-    border: 2px solid $focus-border;
-    border-radius: 4px;
-    text-decoration: underline;
-    color:$primary;
-  }
-  &:active {
-    color: mix($black, $primary, 10%);
-    text-decoration: underline;
-  }
+    @include font-size-md();
+    @include font-medium();
+
+    &:hover {
+        color: $primary;
+    }
+
+    &:focus {
+        border: 2px solid $focus-border;
+        border-radius: 4px;
+        text-decoration: underline;
+        color: $primary;
+    }
+
+    &:active {
+        color: mix($black, $primary, 10%);
+        text-decoration: underline;
+    }
 }
 
 .review-column {
-  @include media-breakpoint-sm {
-    margin-top: 4rem;
-  }
-  flex-grow: 1;
+    flex-grow: 1;
+    @include media-breakpoint-sm {
+        margin-top: 4rem;
+    }
 }
 
 .close-icon {
-  width: 16px;
-  height: 16px;
-  background-color: $secondary;
-  -webkit-mask: url("~assets/img/close-icon.svg") no-repeat center;
-  mask: url("~assets/img/close-icon.svg") no-repeat center;
+    width: 16px;
+    height: 16px;
+    background-color: $secondary;
+    -webkit-mask: url("~assets/img/close-icon.svg") no-repeat center;
+    mask: url("~assets/img/close-icon.svg") no-repeat center;
 }
 
 .actions-container {
-  display: flex;
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .action-button {
-  @include media-breakpoint-md {
-    max-width: 100%;
-    width: 100%;
-  }
-  display: block;
-  margin-right: 2rem;
-  margin-bottom: 2rem;
-  max-width: 160px;
+    display: block;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+    max-width: 160px;
+    @include media-breakpoint-md {
+        max-width: 100%;
+        width: 100%;
+    }
 }
 
 .container_custom {
-  @include media-breakpoint-md {
-    padding-left: 3rem;
-    padding-right: 3rem;
-  }
+    @include media-breakpoint-md {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
 }
