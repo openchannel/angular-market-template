@@ -1,0 +1,44 @@
+{
+  "site": {
+    "title": "App Directory",
+    "favicon": "assets/img/favicon.png"
+  },
+  "default-header": {
+    "logo": "assets/img/logo-company.png",
+    "menu": {
+      "items": [{
+        "label": "",
+        "location": ""
+      }]
+    }
+  },
+  "big-hero": {
+    "title": "Your App Directory",
+    "subtext": "A default design template for implementing your app directory with OpenChannel"
+  },
+  "content-callout": {
+    "title": "List your app in our app directory",
+    "body": "Register as an app developer and submit your app easily with our Developer Portal",
+    "button": {
+      "text": "Get started as an app developer",
+      "location": ""
+    },
+    "image": "assets/img/get-started.svg"
+  },
+  "default-footer": {
+    "menu": {
+      "items": [{
+        "label": "",
+        "location": "",
+        "items": [{
+          "label": "",
+          "location": ""
+        }]
+      }]
+    },
+    "logo": "assets/img/logo-company.png"
+  },
+  "login": {
+    "logo": "assets/img/logo-company.png"
+  }
+}
