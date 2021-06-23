@@ -1,0 +1,167 @@
+{
+  "contentTypeId": "site",
+  "label": "Site",
+  "fields": [{
+    "id": "customData.site.title",
+    "label": "Site Title",
+    "type": "text",
+    "attributes": {
+      "required": false
+    }
+  },
+    {
+      "id": "customData.site.favicon",
+      "label": "Site Favicon",
+      "type": "singleImage",
+      "attributes": {
+        "required": false,
+        "width":"16",
+        "height":"16"
+      }
+    },
+    {
+      "id": "customData.default-header.logo",
+      "label": "Header Logo",
+      "type": "singleImage",
+      "attributes": {
+        "required": false,
+        "width":"278",
+        "height":"28"
+      }
+    },
+    {
+      "id": "customData.default-header.menu.items",
+      "label": "Header Menu",
+      "type": "dynamicFieldArray",
+      "attributes": {
+        "required": false
+      },
+      "fields": [{
+        "id": "label",
+        "label": "Label",
+        "type": "text"
+      },
+        {
+          "id": "location",
+          "label": "Location",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": "customData.big-hero.title",
+      "label": "Hero Title",
+      "type": "text",
+      "attributes": {
+        "required": false
+      }
+    },
+    {
+      "id": "customData.big-hero.subtext",
+      "label": "Hero Subtext",
+      "type": "longText",
+      "attributes": {
+        "required": false
+      }
+    },
+    {
+      "id": "customData.content-callout.title",
+      "label": "Bottom Callout Title",
+      "type": "text",
+      "attributes": {
+        "required": false
+      }
+    },
+    {
+      "id": "customData.content-callout.body",
+      "label": "Bottom Callout Body",
+      "type": "longText",
+      "attributes": {
+        "required": false
+      }
+    },
+    {
+      "id": "customData.content-callout.button.text",
+      "label": "Bottom Callout Button Text",
+      "type": "text",
+      "attributes": {
+        "required": false
+      }
+    },
+    {
+      "id": "customData.content-callout.button.location",
+      "label": "Bottom Callout Button Location",
+      "type": "text",
+      "attributes": {
+        "required": false
+      }
+    },
+    {
+      "id": "customData.content-callout.image",
+      "label": "Bottom Callout Image",
+      "type": "singleImage",
+      "attributes": {
+        "required": false,
+        "width":"174",
+        "height":"174"
+      }
+    },
+    {
+      "id": "customData.default-footer.menu.items",
+      "label": "Footer Menu",
+      "type": "dynamicFieldArray",
+      "attributes": {
+        "required": false
+      },
+      "fields": [{
+        "id": "label",
+        "label": "Label",
+        "type": "text"
+      },
+        {
+          "id": "location",
+          "label": "Location",
+          "type": "text"
+        }, {
+          "id": "items",
+          "label": "Items",
+          "type": "dynamicFieldArray",
+          "attributes": {
+            "required": false
+          },
+          "fields": [{
+            "id": "label",
+            "label": "Label",
+            "type": "text"
+          },
+            {
+              "id": "location",
+              "label": "Location",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "customData.default-footer.logo",
+      "label": "Footer Logo",
+      "type": "singleImage",
+      "attributes": {
+        "required": false,
+        "width":"278",
+        "height":"28"
+      }
+    },
+    {
+      "id": "customData.login.logo",
+      "label": "Login Logo",
+      "type": "singleImage",
+      "attributes": {
+        "required": false,
+        "width":"278",
+        "height":"28"
+      }
+    }
+  ]
+}
