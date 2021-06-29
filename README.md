@@ -65,7 +65,7 @@ Step 1. Setup OAuth
 - Google [guide](https://developers.google.com/identity/protocols/oauth2/openid-connect)
 - Okta guide : [guide](https://developer.okta.com/docs/guides/implement-oauth-for-okta/overview)
 
-Step 2. (#type).
+Step 2. (Optional) (#type) Note: Dashboard already have default type.  
 - Follow the link to the dashboard and sign in.
 - On the left sidebar menu, find 'Settings' and open.
 - Then open 'Field Settings'.
@@ -75,7 +75,7 @@ Step 2. (#type).
   *'DEVELOPER'  
   *'DEVELOPER ACCOUNT'
 
-Step 3. (#roles)
+Step 3. (Optional) (#roles) Note: Dashboard already have default roles.
 - Follow the link to the dashboard and sign in.
 - On the left sidebar menu, find 'Users' and open.
 - Then open 'Roles' and click by 'ADD ROLE.
@@ -91,9 +91,9 @@ Step 4. Creating site template, it is portal or market.
 - In the opened modal fill fields :  
     1. Name* - just site name.  
     2. Type* - now has two parameters ('Self Hosted' and 'Fully Hosted')  
-       Self Hosted - the site will be created from scratch. 
-       Fully Hosted - you already have your site and want to link it by site domain.  
-    3) Template* ('Self Hosted') - select your template type: portal(for developers) or market(for users)
+       Fully Hosted - the site will be created from scratch.  
+       Self Hosted - you already have your site and want to link it by site domain.  
+    3) Template* ('Fully Hosted') - select your template type: portal(for developers) or market(for users)
 
 Step 5. Configure site authorization type SSO or Native login.
 - Follow the link to the dashboard and sign in.
