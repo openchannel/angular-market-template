@@ -7,7 +7,8 @@ import {
     AppFormService,
     TitleService,
     FrontendService,
-    StatisticService, UserAccountService,
+    StatisticService,
+    UserAccountService,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable } from 'rxjs';
@@ -19,7 +20,7 @@ import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ButtonAction, DownloadButtonAction } from './button-action/models/button-action.model';
 import { DropdownModel, FullAppData, OCReviewDetails, OverallRatingSummary, Review } from '@openchannel/angular-common-components';
-import * as _ from 'lodash';
+import { get, find } from 'lodash';
 
 @Component({
     selector: 'app-app-detail',
@@ -36,10 +37,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     overallRating: OverallRatingSummary = new OverallRatingSummary();
 
     reviewsPage: Page<OCReviewDetails>;
+    userReview: Review;
 
     reviewsSorts: DropdownModel<string>[];
     selectedSort: DropdownModel<string>;
-
     reviewsFilter: DropdownModel<string>[] = [
         new DropdownModel('All Stars', null),
         new DropdownModel('5 Stars', `{'rating': 500}`),
@@ -52,6 +53,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     isDeveloperPreviewPage: boolean = false;
     // switch between the review form and the review list
     isWritingReview: boolean = false;
+    // flag for disabling a submit button and set a spinner while the request in process
+    reviewSubmitInProgress: boolean = false;
     appListingActions: ButtonAction[];
     // id of the current user. Necessary for a new review
     currentUserId: string;
@@ -116,6 +119,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             )
             .subscribe(
                 () => {
+                    this.userReview = find(this.reviewsPage.list, ['userId', this.currentUserId]);
                     this.loader.complete();
                     if (this.overallRating.rating === 0) {
                         this.countRating();
@@ -188,7 +192,27 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     }
 
     catchReviewData(review: Review): void {
-        console.log(review);
+        this.reviewSubmitInProgress = true;
+        const reviewData = {
+            ...review,
+            userId: this.currentUserId,
+            appId: this.app.appId,
+        };
+
+        this.reviewsService
+            .createReview(reviewData)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                () => {
+                    this.loadReviews();
+                    this.reviewSubmitInProgress = false;
+                    this.isWritingReview = false;
+                },
+                () => (this.reviewSubmitInProgress = false),
+            );
+    }
+
+    onCancelReview(): void {
         this.isWritingReview = false;
     }
 
@@ -202,6 +226,15 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             map(app => new FullAppData(app, pageConfig.fieldMappings)),
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
+
+                if (app.ownership) {
+                    this.accountService
+                        .getUserAccount()
+                        .pipe(takeUntil(this.destroy$))
+                        .subscribe(userData => {
+                            this.currentUserId = userData.userId;
+                        });
+                }
                 return (this.app = app);
             }),
         );
@@ -218,7 +251,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             return buttonActions.filter(action => {
                 const isTypeSupported = action?.appTypes?.includes(this.app.type);
                 const isNoDownloadType = action?.type !== 'download';
-                const isFileFieldPresent = !!_.get(this.app, (action as DownloadButtonAction).fileField);
+                const isFileFieldPresent = !!get(this.app, (action as DownloadButtonAction).fileField);
 
                 return isTypeSupported && (isNoDownloadType || isFileFieldPresent);
             });

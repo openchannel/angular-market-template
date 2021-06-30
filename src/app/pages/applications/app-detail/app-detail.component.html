@@ -89,7 +89,7 @@
                 <oc-review-list *ngIf="!isWritingReview"
                                 [reviewsList]="reviewsPage?.list"
                                 [totalReview]="reviewsPage?.count"
-                                [allowWriteReview]="app.ownership"
+                                [allowWriteReview]="app.ownership && !userReview"
                                 (writeAReview)="onNewReview()"
                                 reviewListTitle="Most recent reviews">
                     <div>
@@ -105,7 +105,9 @@
                 </oc-review-list>
                 <oc-review *ngIf="isWritingReview"
                            heading="Write a review"
+                           [reviewSubmitInProgress]="reviewSubmitInProgress"
                            (reviewFormData)="catchReviewData($event)"
+                           (cancelReview)="onCancelReview()"
                            [enableButtons]="true"></oc-review>
             </div>
         </div>
