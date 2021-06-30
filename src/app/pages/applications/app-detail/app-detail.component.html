@@ -86,8 +86,11 @@
                 <oc-overall-rating [allReviewSummary]="overallRating"></oc-overall-rating>
             </div>
             <div class="review-column">
-                <oc-review-list [reviewsList]="reviewsPage?.list"
+                <oc-review-list *ngIf="!isWritingReview"
+                                [reviewsList]="reviewsPage?.list"
                                 [totalReview]="reviewsPage?.count"
+                                [allowWriteReview]="app.ownership"
+                                (writeAReview)="onNewReview()"
                                 reviewListTitle="Most recent reviews">
                     <div>
                         <oc-dropdown [options]="reviewsSorts"
@@ -100,6 +103,10 @@
                                      [selected]="selectedFilter"></oc-dropdown>
                     </div>
                 </oc-review-list>
+                <oc-review *ngIf="isWritingReview"
+                           heading="Write a review"
+                           (reviewFormData)="catchReviewData($event)"
+                           [enableButtons]="true"></oc-review>
             </div>
         </div>
     </div>
