@@ -8,7 +8,6 @@ import {
     TitleService,
     FrontendService,
     StatisticService,
-    UserAccountService,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable } from 'rxjs';
@@ -21,6 +20,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ButtonAction, DownloadButtonAction } from './button-action/models/button-action.model';
 import { DropdownModel, FullAppData, OCReviewDetails, OverallRatingSummary, Review } from '@openchannel/angular-common-components';
 import { get, find } from 'lodash';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 
 @Component({
     selector: 'app-app-detail',
@@ -37,6 +37,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     overallRating: OverallRatingSummary = new OverallRatingSummary();
 
     reviewsPage: Page<OCReviewDetails>;
+    // review of the current user from the review list
     userReview: Review;
 
     reviewsSorts: DropdownModel<string>[];
@@ -56,7 +57,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     // flag for disabling a submit button and set a spinner while the request in process
     reviewSubmitInProgress: boolean = false;
     appListingActions: ButtonAction[];
-    // id of the current user. Necessary for a new review
+    // id of the current user. Necessary for a review
     currentUserId: string;
 
     private destroy$: Subject<void> = new Subject();
@@ -76,7 +77,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private toaster: ToastrService,
         private titleService: TitleService,
         private statisticService: StatisticService,
-        private accountService: UserAccountService,
     ) {}
 
     ngOnInit(): void {
@@ -107,18 +107,29 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     loadReviews(): void {
         this.loader.start();
-        this.reviewsService
-            .getReviewsByAppId(
-                this.app.appId,
-                this.selectedSort ? this.selectedSort.value : null,
-                this.selectedFilter ? this.selectedFilter.value : null,
-            )
-            .pipe(
-                takeUntil(this.destroy$),
-                tap((page: Page<OCReviewDetails>) => (this.reviewsPage = page)),
-            )
+
+        const filterArray: string[] = [];
+        const obsArr: Observable<Page<OCReviewDetails>>[] = [];
+
+        if (this.selectedFilter && this.selectedFilter.value) {
+            filterArray.push(this.selectedFilter.value);
+        }
+
+        if (this.currentUserId) {
+            filterArray.push(`{'userId': {'$ne': ['${this.currentUserId}']}}`);
+            obsArr.push(
+                this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, [
+                    `{'userId': '${this.currentUserId}'}`,
+                ]),
+            );
+        }
+        obsArr.push(this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, filterArray));
+
+        forkJoin(obsArr)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(
-                () => {
+                resPage => {
+                    this.reviewsPage = { ...resPage[0], ...resPage[1] };
                     this.userReview = find(this.reviewsPage.list, ['userId', this.currentUserId]);
                     this.loader.complete();
                     if (this.overallRating.rating === 0) {
@@ -154,10 +165,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                     this.loader.complete();
                 },
             );
-    }
-
-    navigateTo(parts: any[]): void {
-        this.router.navigate(parts).then();
     }
 
     closeWindow(): void {
@@ -228,14 +235,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 this.titleService.setSpecialTitle(app.name);
 
                 if (app.ownership) {
-                    this.accountService
-                        .getUserAccount()
-                        .pipe(takeUntil(this.destroy$))
-                        .subscribe(userData => {
-                            this.currentUserId = userData.userId;
-                        });
+                    this.currentUserId = app.ownership.userId;
                 }
-                return (this.app = app);
+                this.app = app;
+                return this.app;
             }),
         );
     }
