@@ -38,7 +38,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     reviewsPage: Page<OCReviewDetails>;
     // review of the current user from the review list
-    userReview: Review;
+    userReview: OCReviewDetails;
 
     reviewsSorts: DropdownModel<string>[];
     selectedSort: DropdownModel<string>;
