@@ -1,0 +1,13 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; connect-src *; img-src * 'self' data: https:; style-src 'unsafe-inline' 'self'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "origin"
+    Permissions-Policy = "payment 'self'"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
