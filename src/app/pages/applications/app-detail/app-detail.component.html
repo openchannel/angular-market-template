@@ -87,11 +87,12 @@
             </div>
             <div class="review-column">
                 <oc-review-list *ngIf="!isWritingReview"
-                                [appOwnerReviewId]="userReview.reviewId"
+                                [appOwnerReviewId]="userReview?.reviewId"
                                 [reviewsList]="reviewsPage?.list"
                                 [totalReview]="reviewsPage?.count"
                                 [allowWriteReview]="app.ownership && !userReview"
                                 (writeAReview)="onNewReview()"
+                                (chosenAction)="catchChosenReviewActon($event)"
                                 reviewListTitle="Most recent reviews">
                     <div>
                         <oc-dropdown [options]="reviewsSorts"
@@ -109,6 +110,7 @@
                            [reviewSubmitInProgress]="reviewSubmitInProgress"
                            (reviewFormData)="catchReviewData($event)"
                            (cancelReview)="onCancelReview()"
+                           [reviewData]="userReview"
                            [enableButtons]="true"></oc-review>
             </div>
         </div>
