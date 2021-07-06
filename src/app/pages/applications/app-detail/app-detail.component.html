@@ -106,7 +106,7 @@
                 </oc-review-list>
                 <oc-review *ngIf="isWritingReview"
                            heading="Write a review"
-                           [reviewSubmitInProgress]="reviewSubmitInProgress"
+                           [submitInProgress]="reviewSubmitInProgress"
                            (reviewFormData)="catchReviewData($event)"
                            (cancelReview)="onCancelReview()"
                            [enableButtons]="true"></oc-review>
