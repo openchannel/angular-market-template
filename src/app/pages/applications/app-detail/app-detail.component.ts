@@ -206,7 +206,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.reviewSubmitInProgress = true;
         let reviewData = {
             ...review,
-            userId: this.currentUserId,
             appId: this.app.appId,
         };
         if (this.userReview) {
