@@ -202,7 +202,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.isWritingReview = true;
     }
 
-    catchReviewData(review: Review): void {
+   onReviewSubmit(review: Review): void {
         this.reviewSubmitInProgress = true;
         let reviewData = {
             ...review,
@@ -235,7 +235,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.isWritingReview = false;
     }
 
-    catchChosenReviewActon(option: ReviewListOptionType): void {
+    onChosenReviewActon(option: ReviewListOptionType): void {
         switch (option) {
             case 'EDIT':
                 this.editReview();
