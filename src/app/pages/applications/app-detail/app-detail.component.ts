@@ -28,9 +28,6 @@ import { forkJoin } from 'rxjs/internal/observable/forkJoin';
     styleUrls: ['./app-detail.component.scss'],
 })
 export class AppDetailComponent implements OnInit, OnDestroy {
-    get isDownloadRendered(): boolean {
-        return true;
-    }
     app: FullAppData;
     recommendedApps: FullAppData[] = [];
     appData$: Observable<FullAppData>;
