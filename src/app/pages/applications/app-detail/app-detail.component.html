@@ -87,7 +87,7 @@
             </div>
             <div class="review-column">
                 <oc-review-list *ngIf="!isWritingReview"
-                                [appOwnerReviewId]="userReview.reviewId"
+                                [currentUserId]="currentUserId"
                                 [reviewsList]="reviewsPage?.list"
                                 [totalReview]="reviewsPage?.count"
                                 [allowWriteReview]="app.ownership && !userReview"
