@@ -9,7 +9,6 @@
       frame-src https://*.youtube.com https://youtube.com https://*.vimeo.com https://vimeo.com https://*.wistia.com https://wistia.com https://*.vidyard.com https://vidyard.com https://*.brightcove.com https://brightcove.com;
       frame-ancestors https://*.youtube.com https://youtube.com https://*.vimeo.com https://vimeo.com https://*.wistia.com https://wistia.com https://*.vidyard.com https://vidyard.com https://*.brightcove.com https://brightcove.com
     '''
-    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "origin"
     Permissions-Policy = "payment=(self)"
