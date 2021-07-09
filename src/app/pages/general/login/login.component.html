@@ -4,7 +4,7 @@
               [hidden]="isSsoLogin"
               [forgotPwdUrl]="forgotPwdUrl"
               [signupUrl]="signupUrl"
-              [companyLogoUrl]="companyLogoUrl"
+              [companyLogoUrl]="cmsData.loginImageURL"
               (submit)="login($event)"
               (sendActivationLink)="sendActivationEmail($event)"
               [process]="inProcess"></oc-login>
