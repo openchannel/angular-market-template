@@ -7,7 +7,7 @@ export const environment = {
   apiUrl: 'https://dev1-client-api-proxy.openchannel.io/',
   marketplaceName: 'OpenChannel',
   enableProxy: false,
-  enableCMS: false,
+  enableCMS: true,
 };
 
 /*

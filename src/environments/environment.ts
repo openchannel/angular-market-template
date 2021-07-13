@@ -7,7 +7,7 @@ export const environment = {
   apiUrl: 'http://localhost:8091/',
   marketplaceName: 'OpenChannel',
   enableProxy: false,
-  enableCMS: false,
+  enableCMS: true,
 };
 
 /*
