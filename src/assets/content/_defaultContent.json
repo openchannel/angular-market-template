@@ -7,8 +7,11 @@
     "logo": "assets/img/logo-company.png",
     "menu": {
       "items": [{
-        "label": "",
+        "label": "Browse",
         "location": ""
+      }, {
+        "label": "My apps",
+        "location": "/management/apps"
       }]
     }
   },

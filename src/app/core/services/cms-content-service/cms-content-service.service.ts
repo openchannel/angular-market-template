@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { CMSSiteContentService, SiteContentService } from '@openchannel/angular-common-services';
 import { Observable } from 'rxjs/internal/Observable';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
+import {of} from 'rxjs';
+import defaultCMSData from '../../../../assets/content/_defaultContent.json';
 
 @Injectable({
     providedIn: 'root',
@@ -17,10 +20,16 @@ export class CmsContentService extends CMSSiteContentService {
      * Getting content from openchannel API.
      */
     getContentFromAPI(): Observable<any> {
-        return this.siteContentService.getAllContent(1, 1, null, `{'type':'${this.defaultCMSType}'}`).pipe(map(r => r.list[0]?.customData));
+        if (environment.enableCMS) {
+            return this.siteContentService
+                .getAllContent(1, 1, null, `{'type':'${this.defaultCMSType}'}`)
+                .pipe(map(r => r.list[0]?.customData));
+        } else {
+            return of();
+        }
     }
 
     getContentDefault(): any {
-        return {};
+        return defaultCMSData;
     }
 }
