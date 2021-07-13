@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.16.3 (7/13/2021)<br>
+### Task<br>
+AT-1430 - [Hotfix] Change license back to MIT<br>
 ## Release notes - template3-marketsite-frontend - Version 1.16.2<br>
 ### Bug<br>
 AT-1394 - [Hotfix] Stored Cross-Site Scripting vulnerabilities in Angular components<br>
