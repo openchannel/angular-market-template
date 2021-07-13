@@ -9,7 +9,7 @@ JIRA_FIX_VERSION=$3
 NPM_REPOSITORY_VERSION=$4
 NPM_LIBS_VERSION=$5
 
-GIT_REPOSITORY_NAME='template3-portal-frontend'
+GIT_REPOSITORY_NAME='template3-marketsite-frontend'
 
 #local variables
 isAmendCommit=false
@@ -93,3 +93,4 @@ fi
 
 echo "Push commit"
 git push
+git push origin --tags
