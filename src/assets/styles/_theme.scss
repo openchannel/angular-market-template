@@ -1,27 +1,6 @@
-// LINKS
-$link-primary: #ee00ff !default;
-$link-secondary: #ee00ff !default;
-
-// BUTTONS
-$button-primary: #ee00ff !default;
-$button-secondary: #ee00ff !default;
-$button-danger: #ee00ff !default;
-$button-border-focus: #ee00ff !default;
-$button-info: #ee00ff !default;
-$button-secondary-color: #ee00ff !default;
-
-// HEADINGS AND SIMPLE TEXT
-$heading-color: #ee00ff !default;
-$text-color: #ee00ff !default;
-
-// DROPDOWNS
-$dropdown-border: #ee00ff !default;
-$dropdown-item-background: #ee00ff !default;
-$dropdown-item-text: #ee00ff !default;
-$dropdown-item-text-hover: #ee00ff !default;
-$dropdown-item-text-alternative: #ee00ff !default;
-$dropdown-light: #ee00ff !default;
+@import "~@openchannel/angular-common-components/assets/styles/theme";
 
 $link-gray: #333333;
 $category-color-mix1: #ff0606;
 $category-color-mix2: #ffffff;
+
