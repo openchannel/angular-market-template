@@ -92,6 +92,7 @@
                                 [totalReview]="reviewsPage?.count"
                                 [allowWriteReview]="app.ownership && !userReview"
                                 (writeAReview)="onNewReview()"
+                                (chosenAction)="onChosenReviewActon($event)"
                                 reviewListTitle="Most recent reviews">
                     <div>
                         <oc-dropdown [options]="reviewsSorts"
@@ -107,8 +108,9 @@
                 <oc-review *ngIf="isWritingReview"
                            heading="Write a review"
                            [submitInProgress]="reviewSubmitInProgress"
-                           (reviewFormData)="catchReviewData($event)"
+                           (reviewFormData)="onReviewSubmit($event)"
                            (cancelReview)="onCancelReview()"
+                           [reviewData]="userReview"
                            [enableButtons]="true"></oc-review>
             </div>
         </div>

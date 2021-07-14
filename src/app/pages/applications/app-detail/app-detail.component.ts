@@ -12,13 +12,20 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable } from 'rxjs';
 import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
-import { pageConfig } from '../../../../assets/data/configData';
+import { pageConfig } from 'assets/data/configData';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ButtonAction, DownloadButtonAction } from './button-action/models/button-action.model';
-import { DropdownModel, FullAppData, OCReviewDetails, OverallRatingSummary, Review } from '@openchannel/angular-common-components';
+import {
+    DropdownModel,
+    FullAppData,
+    OCReviewDetails,
+    OverallRatingSummary,
+    Review,
+    ReviewListOptionType,
+} from '@openchannel/angular-common-components';
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 
@@ -35,7 +42,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     reviewsPage: Page<OCReviewDetails>;
     // review of the current user from the review list
-    userReview: OCReviewDetails;
+    userReview: OCReviewDetails | Review;
 
     reviewsSorts: DropdownModel<string>[];
     selectedSort: DropdownModel<string>;
@@ -195,29 +202,59 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.isWritingReview = true;
     }
 
-    catchReviewData(review: Review): void {
+   onReviewSubmit(review: Review): void {
         this.reviewSubmitInProgress = true;
-        const reviewData = {
+        let reviewData = {
             ...review,
-            userId: this.currentUserId,
             appId: this.app.appId,
         };
-
-        this.reviewsService
-            .createReview(reviewData)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(
-                () => {
-                    this.loadReviews();
-                    this.reviewSubmitInProgress = false;
-                    this.isWritingReview = false;
-                },
-                () => (this.reviewSubmitInProgress = false),
-            );
+        if (this.userReview) {
+            reviewData = {
+                ...reviewData,
+                reviewId: this.userReview.reviewId,
+            };
+            this.reviewsService
+                .updateReview(reviewData)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(
+                    () => this.reloadReview(),
+                    () => (this.reviewSubmitInProgress = false),
+                );
+        } else {
+            this.reviewsService
+                .createReview(reviewData)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(
+                    () => this.reloadReview(),
+                    () => (this.reviewSubmitInProgress = false),
+                );
+        }
     }
 
     onCancelReview(): void {
         this.isWritingReview = false;
+    }
+
+    onChosenReviewActon(option: ReviewListOptionType): void {
+        switch (option) {
+            case 'EDIT':
+                this.editReview();
+                return;
+            case 'DELETE':
+                return;
+            default:
+                return;
+        }
+    }
+
+    private editReview(): void {
+        this.reviewsService
+            .getOneReview(this.userReview.reviewId)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(review => {
+                this.userReview = review as Review;
+                this.isWritingReview = true;
+            });
     }
 
     private getApp(safeName: string, appId: string, appVersion: string): Observable<FullAppData> {
@@ -257,5 +294,11 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             });
         }
         return [];
+    }
+
+    private reloadReview(): void {
+        this.loadReviews();
+        this.reviewSubmitInProgress = false;
+        this.isWritingReview = false;
     }
 }
