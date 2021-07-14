@@ -1,3 +1,5 @@
+image: node:10.15.3
+
 definitions:
   services:
     docker:
@@ -69,6 +71,11 @@ definitions:
           - git remote -v
           - git push origin master:main
           - git push origin --tags
+    - step: &up-libs-version
+        name: "Up repository and libs version"
+        script:
+          - chmod +x ./scripts/* && cd ./scripts/up-version
+          - /bin/bash up-version.sh "${JIRA_EMAIL}" "${JIRA_API_KEY}" "${RELEASE_VERSION}" "${NPM_REPOSITORY_VERSION}" "${NPM_LIBS_VERSION}"
 
 pipelines:
   pull-requests:
@@ -83,6 +90,16 @@ pipelines:
       - step:
           <<: *build-app-and-deploy
           deployment: stage1
+    Up libs version:
+      - variables:
+          - name: NPM_LIBS_VERSION
+      - step: *up-libs-version
+    Up repository version:
+      - variables:
+          - name: RELEASE_VERSION
+          - name: NPM_REPOSITORY_VERSION
+          - name: NPM_LIBS_VERSION
+      - step: *up-libs-version
   branches:
     develop:
       - step: *build-test-sonarcloud

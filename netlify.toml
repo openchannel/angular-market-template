@@ -1,0 +1,19 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = '''
+      default-src 'self';
+      connect-src *;
+      img-src * 'self' data: https:;
+      style-src 'unsafe-inline' 'self';
+      frame-src https://*.youtube.com https://youtube.com https://*.vimeo.com https://vimeo.com https://*.wistia.com https://wistia.com https://*.vidyard.com https://vidyard.com https://*.brightcove.net https://brightcove.net;
+      frame-ancestors https://*.youtube.com https://youtube.com https://*.vimeo.com https://vimeo.com https://*.wistia.com https://wistia.com https://*.vidyard.com https://vidyard.com https://*.brightcove.net https://brightcove.net
+    '''
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "origin"
+    Permissions-Policy = "payment=(self)"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
