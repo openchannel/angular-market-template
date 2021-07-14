@@ -241,6 +241,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 this.editReview();
                 return;
             case 'DELETE':
+                this.deleteReview();
                 return;
             default:
                 return;
@@ -300,5 +301,12 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.loadReviews();
         this.reviewSubmitInProgress = false;
         this.isWritingReview = false;
+    }
+
+    private deleteReview(): void {
+        this.reviewsService
+            .deleteReview(this.userReview.reviewId)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => this.loadReviews());
     }
 }
