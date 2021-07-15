@@ -29,6 +29,7 @@
             .info-column {
                 white-space: nowrap;
                 width: 16%;
+                margin: 0 8px;
 
                 h5 {
                     @include font-bold();
@@ -36,11 +37,14 @@
                     font-size: 12px;
                     letter-spacing: 0.3px;
                     margin-bottom: 12px;
+                    cursor: pointer;
+                    outline: none;
                 }
 
                 li {
                     padding-top: 3.5px;
                     padding-bottom: 1px;
+                    cursor: pointer;
                     @include media-breakpoint-md() {
                         margin-bottom: 16px;
                     }

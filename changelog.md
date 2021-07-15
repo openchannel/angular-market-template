@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.17.0 (7/15/2021)<br>
+### Task<br>
+AT-1331 - CMS support on Templates<br>
 ## Release notes - template3-marketsite-frontend - Version 1.16.3 (7/13/2021)<br>
 ### Task<br>
 AT-1430 - [Hotfix] Change license back to MIT<br>

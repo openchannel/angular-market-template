@@ -1,7 +1,7 @@
 import {SiteConfig} from '@openchannel/angular-common-services';
 
 export const siteConfig: SiteConfig = {
-  title: 'App Marketplace',
+  title: '',
   tagline: 'All the apps and integrations that you need',
   metaTags: [
     {name: 'author', content: 'OpenChannel'},
@@ -9,7 +9,7 @@ export const siteConfig: SiteConfig = {
     {name: 'generator', content: 'OpenChannel'}
   ],
   favicon: {
-    href: 'assets/img/favicon.png',
+    href: '',
     type: 'image/x-icon'
   }
 };
