@@ -1,10 +1,8 @@
+@import "./assets/styles/fonts";
+@import "./assets/styles/theme";
+@import "./assets/styles/mixins";
+@import "~@openchannel/angular-common-components/assets/styles/general-styles";
 @import "~@openchannel/angular-common-components/assets/styles/styles";
-@import "assets/styles/fonts";
-@import "assets/styles/mixins";
-
-$link-gray: #333333;
-$category-color-mix1: #ff0606;
-$category-color-mix2: #ffffff;
 
 .bg-container {
     width: 100%;
@@ -211,7 +209,7 @@ body {
 }
 
 .app-logo {
-    @include media-breakpoint-down(xs) {
+    @include media-breakpoint-sm {
         img {
             width: 100%;
             height: auto;
