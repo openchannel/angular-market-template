@@ -1,8 +1,8 @@
 @import "./assets/styles/fonts";
 @import "./assets/styles/theme";
 @import "./assets/styles/mixins";
-@import "~@openchannel/angular-common-components/assets/styles/general-styles";
 @import "~@openchannel/angular-common-components/assets/styles/styles";
+@import "~@openchannel/angular-common-components/assets/styles/general-styles";
 
 .bg-container {
     width: 100%;
@@ -82,33 +82,6 @@
 }
 
 /** End Froala Editor **/
-
-// Dropdown menu style
-
-.dropdown-menu {
-    padding: 0;
-    min-width: 136px;
-    border: 1px solid #c9d5ea;
-    top: 70px;
-    left: -28px;
-
-    .dropdown-item {
-        font-size: 14px;
-        padding: 14px 16px;
-        border-bottom: 1px solid #c9d5ea;
-    }
-
-    .dropdown-item:hover,
-    .dropdown-item:focus {
-        background-color: rgba(201, 213, 234, 0.1);
-        color: #537cfd;
-    }
-
-    .dropdown-item:active {
-        color: #537cfd;
-        box-shadow: 0 1px 0 #c9d5ea;
-    }
-}
 
 .oc-dropdown-toggle {
 
@@ -329,18 +302,18 @@ app-not-found header {
 }
 
 .skip-link {
-  position: absolute;
-  left: -999px;
-  width:1px;
-  height: 1px;
-  top: auto;
+    position: absolute;
+    left: -999px;
+    width: 1px;
+    height: 1px;
+    top: auto;
 
-  &:focus {
-    color: transparent;
-    display: inline-block;
-    height: auto;
-    width: auto;
-    position: static;
-    margin: auto;
-  }
+    &:focus {
+        color: transparent;
+        display: inline-block;
+        height: auto;
+        width: auto;
+        position: static;
+        margin: auto;
+    }
 }
