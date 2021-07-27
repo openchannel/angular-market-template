@@ -9,6 +9,7 @@ import { catchError, map, takeUntil, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { forIn } from 'lodash';
 import { AppCategoryDetail, Filter, FullAppData } from '@openchannel/angular-common-components';
+import {CmsContentService} from '@core/services/cms-content-service/cms-content-service.service';
 
 export interface GalleryItem {
     filterId: string;
@@ -16,6 +17,16 @@ export interface GalleryItem {
     label: string;
     description: string;
     data: FullAppData[];
+}
+
+interface CMSData {
+    pageInfoTitle: string;
+    pageInfoSubtext: string;
+    bottomCalloutHeader: string;
+    bottomCalloutImageURL: string;
+    bottomCalloutDescription: string;
+    bottomCalloutButtonText: string;
+    bottomCalloutButtonLocation: string;
 }
 
 @Component({
@@ -36,6 +47,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     gallery: GalleryItem[];
     loader: LoadingBarState;
 
+    cmsData: CMSData = {
+        pageInfoTitle: '',
+        pageInfoSubtext: '',
+        bottomCalloutHeader: '',
+        bottomCalloutImageURL: '',
+        bottomCalloutDescription: '',
+        bottomCalloutButtonText: '',
+        bottomCalloutButtonLocation: '',
+    };
+
     private destroy$: Subject<void> = new Subject();
 
     private readonly DEFAULT_FILTER_ID = 'collections';
@@ -43,23 +64,32 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     constructor(
         private appService: AppsService,
-        private router: Router,
         private frontendService: FrontendService,
         private loadingBar: LoadingBarService,
         private siteService: SiteConfigService,
         private titleService: TitleService,
+        private cmsService: CmsContentService,
+        public router: Router,
     ) {}
 
     ngOnInit(): void {
-        this.titleService.setSpecialTitle(this.siteService.siteConfig.tagline, true);
         this.loader = this.loadingBar.useRef();
+        this.setTagLineToPageTitleService();
         this.getPageConfig();
+        this.initCMSData();
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
         this.loader?.complete();
+    }
+
+    setTagLineToPageTitleService(): void {
+        this.siteService
+            .getSiteConfigAsObservable()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(config => this.titleService.setSpecialTitle(config.tagline, true));
     }
 
     getPageConfig(): void {
@@ -224,5 +254,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     onCollapseChanged(status: boolean): void {
         this.filterCollapsed = status;
+    }
+
+    initCMSData(): void {
+        this.cmsService
+            .getContentByPaths({
+                pageInfoTitle: 'big-hero.title',
+                pageInfoSubtext: 'big-hero.subtext',
+                bottomCalloutHeader: 'content-callout.title',
+                bottomCalloutImageURL: 'content-callout.image',
+                bottomCalloutDescription: 'content-callout.body',
+                bottomCalloutButtonText: 'content-callout.button.text',
+                bottomCalloutButtonLocation: 'content-callout.button.location',
+            })
+            .subscribe(content => (this.cmsData = content as CMSData));
     }
 }

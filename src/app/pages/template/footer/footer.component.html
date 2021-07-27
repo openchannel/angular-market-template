@@ -2,29 +2,12 @@
     <div class="container">
         <div class="footer-direction">
             <div class="company-logo">
-                <img src="assets/img/company-logo-2x.png" alt=" footer-logo" class="company-logo">
+                <img [src]="cmsData.logoImageURL" alt=" footer-logo" class="company-logo">
             </div>
-            <div class="info-column">
-                <h5>Browse</h5>
+            <div *ngFor="let column of cmsData.columnsDFA" class="info-column">
+                <h5 [routerLink]="column.location || ''">{{column.label}}</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#">Most Popular </a></li>
-                    <li><a href="#">Essential Apps </a></li>
-                </ul>
-            </div>
-            <div class="info-column">
-                <h5>Developers</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#">Documentation </a></li>
-                    <li><a href="#">Getting Started </a></li>
-                    <li><a href="#">API Reference </a></li>
-                    <li><a href="#">Sample Code </a></li>
-                </ul>
-            </div>
-            <div class="info-column min-content">
-                <h5>Company</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">Blog </a></li>
+                    <li *ngFor="let row of column?.items"><a [routerLink]="row.location || ''">{{row.label}}</a></li>
                 </ul>
             </div>
             <div class="social-networks">

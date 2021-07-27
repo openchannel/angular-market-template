@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ComponentsUserLoginModel } from '@openchannel/angular-common-components';
+import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 
 @Component({
     selector: 'app-login',
@@ -22,7 +23,6 @@ import { ComponentsUserLoginModel } from '@openchannel/angular-common-components
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-    companyLogoUrl = './assets/img/company-logo-2x.png';
     signupUrl = '/signup';
     forgotPwdUrl = '/forgot-password';
     signIn = new ComponentsUserLoginModel();
@@ -30,6 +30,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     isLoading = false;
 
     isSsoLogin = true;
+
+    cmsData = {
+        loginImageURL: '',
+    };
 
     private destroy$: Subject<void> = new Subject();
     private loader: LoadingBarState;
@@ -42,7 +46,8 @@ export class LoginComponent implements OnInit, OnDestroy {
                 private oauthService: OAuthService,
                 private openIdAuthService: AuthenticationService,
                 private nativeLoginService: NativeLoginService,
-                private toastService: ToastrService) {
+                private toastService: ToastrService,
+                private cmsService: CmsContentService) {
     }
 
     ngOnInit(): void {
@@ -82,6 +87,8 @@ export class LoginComponent implements OnInit, OnDestroy {
                     });
                 }, () => this.isSsoLogin = false,
                 () => this.loader.complete());
+
+        this.initCMSData();
     }
 
     ngOnDestroy(): void {
@@ -117,5 +124,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     private processLoginResponse(response: LoginResponse, redirectUrl: string) {
         this.authHolderService.persist(response.accessToken, response.refreshToken);
         this.router.navigate([redirectUrl || '']);
+    }
+
+    private initCMSData(): void {
+        this.cmsService
+            .getContentByPaths({
+                loginImageURL: 'login.logo',
+            })
+            .subscribe(content => {
+                this.cmsData.loginImageURL = content.loginImageURL as string;
+            });
     }
 }

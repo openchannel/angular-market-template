@@ -18,6 +18,15 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { OcAppCategoriesModule, FileUploaderService } from '@openchannel/angular-common-components';
 import { FileService } from '@core/services/file.service';
 
+function getApiUrl(): string {
+    if (environment.enableProxy) {
+        return `${window.origin}/client-api/`;
+    }
+    return environment.apiUrl;
+}
+
+export const OC_API_URL = getApiUrl();
+
 @NgModule({
     declarations: [AppComponent, HomeComponent, NotFoundComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -26,11 +35,11 @@ import { FileService } from '@core/services/file.service';
         AppRoutingModule,
         BrowserModule,
         BrowserAnimationsModule,
-        OcCommonServiceModule.forRoot(environment),
+        OcCommonServiceModule.forRoot(OC_API_URL),
         DragDropModule,
         ToastrModule.forRoot(),
         OAuthModule.forRoot(),
-        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl }),
+        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: OC_API_URL }),
         SharedModule,
         OcAppCategoriesModule,
         LoadingBarModule,
