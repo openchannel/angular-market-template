@@ -10,7 +10,6 @@ import { ComponentsUserRegistrationModel } from '@openchannel/angular-common-com
     styleUrls: ['./forgot-password.component.scss'],
 })
 export class ForgotPasswordComponent implements OnDestroy {
-
     signupUrl = '/signup';
     loginUrl = '/login';
     companyLogoUrl = './assets/img/company-logo-2x.png';
@@ -21,27 +20,26 @@ export class ForgotPasswordComponent implements OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
-    constructor(private nativeLoginService: NativeLoginService) {
-    }
+    constructor(private nativeLoginService: NativeLoginService) {}
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
     }
 
-    resetPwd(event) {
-        if (event === true) {
-            this.inProcess = true;
-            this.nativeLoginService.sendResetCode(this.signIn.email)
-                .pipe(takeUntil(this.destroy$))
-                .subscribe(res => {
+    resetPwd(): void {
+        this.inProcess = true;
+        this.nativeLoginService
+            .sendResetCode(this.signIn.email)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                res => {
                     this.showResultPage = true;
                     this.inProcess = false;
-                }, res => {
+                },
+                res => {
                     this.inProcess = false;
-                });
-        }
+                },
+            );
     }
-
-
 }
