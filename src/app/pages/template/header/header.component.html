@@ -2,7 +2,7 @@
     <div class="container">
         <div class="navbar-wrapper">
             <a class="navbar-brand" href="/">
-                <img src="assets/img/company-logo-2x.png" alt="brand-logo" class="company-logo">
+                <img [src]="cmsData.headerLogoURL" alt="brand-logo" class="company-logo">
             </a>
             <button class="navbar-toggler p-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
@@ -15,20 +15,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent"
              [ngbCollapse]="isCollapsed">
             <ul class="navbar-nav justify-content-end w-100 mb-0">
-                <li class="nav-item"
-                    [ngClass]="{active: router.isActive('', true) || router.isActive('/', true)}">
-                    <a routerLink=""
-                       (click)="closedMenu()" class="nav-link cursor-pointer">Browse
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-                <li class="nav-item"
-                    *ngIf="authHolderService.isLoggedInUser()"
-                    [class.active]="checkIncludesUrl('/management/apps')">
-                    <a routerLink="/management/apps"
-                       (click)="closedMenu()" class="nav-link cursor-pointer">My apps</a>
-                </li>
-
+                <ng-container *ngFor="let headerItem of cmsData.headerItemsDFA">
+                    <li class="nav-item"
+                        routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: true }">
+                        <a [routerLink]="headerItem.location || ''"
+                           (click)="closedMenu()"
+                           class="nav-link cursor-pointer">{{headerItem.label}}
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                </ng-container>
                 <li class="nav-item collaps-none justify-content-between align-items-center"
                     *ngIf="authHolderService.isLoggedInUser()"
                     [class.active]="checkIncludesUrl('/management/profile', '/management/company')"

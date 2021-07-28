@@ -1,3 +1,6 @@
+[[plugins]]
+  package = "./netlify/netlify-enable-proxy"
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -12,6 +15,13 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "origin"
     Permissions-Policy = "payment=(self)"
+
+[[redirects]]
+  from = "/client-api/*"
+  to = "https://client-api.openchannel.io/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
 
 [[redirects]]
   from = "/*"

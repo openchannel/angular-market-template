@@ -2,8 +2,8 @@
     <div class="container">
         <div class="row">
             <div class="page-info col-md-9 col-lg-7 text-center mx-auto">
-                <h1 class="page-title">Your App Store Platform</h1>
-                <p class="page-description mb-4 text-secondary">A design template for implementing your app store with OpenChannel</p>
+                <h1 class="page-title">{{cmsData.pageInfoTitle}}</h1>
+                <p class="page-description mb-4 text-secondary">{{cmsData.pageInfoSubtext}}</p>
             </div>
         </div>
     </div>
@@ -58,9 +58,10 @@
 </div>
 <div class="bg-container mt-5 py-8 min-height-auto">
     <div class="container">
-        <oc-app-get-started getStartedImage="./assets/img/get-started.svg"
-                            getStartedHeader="List your app in our app store"
-                            getStartedDescription="Register as an app developer and submit your app easily with our App Store Developer Portal"
-                            getStartedButtonText="Get started as an app Developer"></oc-app-get-started>
+        <oc-app-get-started [getStartedImage]="cmsData.bottomCalloutImageURL"
+                            [getStartedHeader]="cmsData.bottomCalloutHeader"
+                            [getStartedDescription]="cmsData.bottomCalloutDescription"
+                            [getStartedButtonText]="cmsData.bottomCalloutButtonText"
+                            (getStarted)="router.navigate([cmsData.bottomCalloutButtonLocation || ''])"></oc-app-get-started>
     </div>
 </div>
