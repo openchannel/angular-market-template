@@ -1,25 +1,27 @@
+@import '~@openchannel/angular-common-components/assets/styles/mixins';
+
 //Media breakpoint
 
 @mixin media-breakpoint-sm() {
-  @media (max-width: 575.98px) {
-    @content;
-  }
+    @media (max-width: 575.98px) {
+        @content;
+    }
 }
 
 @mixin media-breakpoint-md() {
-  @media (max-width: 767.98px) {
-    @content;
-  }
+    @media (max-width: 767.98px) {
+        @content;
+    }
 }
 
 @mixin media-breakpoint-lg() {
-  @media (max-width: 991.98px) {
-    @content;
-  }
+    @media (max-width: 991.98px) {
+        @content;
+    }
 }
 
 @mixin media-breakpoint-xl() {
-  @media (max-width: 1199.98px) {
-    @content;
-  }
+    @media (max-width: 1199.98px) {
+        @content;
+    }
 }

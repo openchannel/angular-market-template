@@ -1,12 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SocialLink } from '@openchannel/angular-common-components';
+import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
+
+interface FooterColumn {
+    label: string;
+    location: string;
+    items: FooterRow[];
+}
+
+interface FooterRow {
+    label: string;
+    location: string;
+}
 
 @Component({
     selector: 'app-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
 })
-export class FooterComponent {
+export class FooterComponent implements OnInit {
     socialLinks: SocialLink[] = [
         {
             link: 'https://facebook.com',
@@ -20,5 +32,26 @@ export class FooterComponent {
         },
     ];
 
-    constructor() {}
+    cmsData = {
+        logoImageURL: '',
+        columnsDFA: [] as FooterColumn[],
+    };
+
+    constructor(private cmsService: CmsContentService) {}
+
+    ngOnInit(): void {
+        this.initCMSData();
+    }
+
+    initCMSData(): void {
+        this.cmsService
+            .getContentByPaths({
+                logoImageURL: 'default-footer.logo',
+                columnsDFA: 'default-footer.menu.items',
+            })
+            .subscribe(content => {
+                this.cmsData.logoImageURL = content.logoImageURL as string;
+                this.cmsData.columnsDFA = content.columnsDFA as FooterColumn[];
+            });
+    }
 }

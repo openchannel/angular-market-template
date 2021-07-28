@@ -13,6 +13,7 @@
     "target": "es2015",
     "paths": {
       "@angular/*": ["./node_modules/@angular/*"],
+      "@mixins": ["./node_modules/@angular/*"],
       "@env": ["environments/environment"],
       "@shared/*": ["app/shared/*"],
       "@core/*": ["app/core/*"],
@@ -31,6 +32,8 @@
     "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
   }

@@ -17,6 +17,17 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { OcAppCategoriesModule, FileUploaderService } from '@openchannel/angular-common-components';
 import { FileService } from '@core/services/file.service';
+import { OcAppsSearchService } from '@core/services/oc-apps-search.service';
+import { AppsSearchService } from '@openchannel/angular-common-components/src/lib/form-components';
+
+function getApiUrl(): string {
+    if (environment.enableProxy) {
+        return `${window.origin}/client-api/`;
+    }
+    return environment.apiUrl;
+}
+
+export const OC_API_URL = getApiUrl();
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, NotFoundComponent],
@@ -26,11 +37,11 @@ import { FileService } from '@core/services/file.service';
         AppRoutingModule,
         BrowserModule,
         BrowserAnimationsModule,
-        OcCommonServiceModule.forRoot(environment),
+        OcCommonServiceModule.forRoot(OC_API_URL),
         DragDropModule,
         ToastrModule.forRoot(),
         OAuthModule.forRoot(),
-        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: environment.apiUrl }),
+        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: OC_API_URL }),
         SharedModule,
         OcAppCategoriesModule,
         LoadingBarModule,
@@ -39,6 +50,7 @@ import { FileService } from '@core/services/file.service';
         { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
         { provide: FileUploaderService, useClass: FileService },
+        { provide: AppsSearchService, useClass: OcAppsSearchService },
     ],
     bootstrap: [AppComponent],
     entryComponents: [],
