@@ -17,6 +17,8 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { OcAppCategoriesModule, FileUploaderService } from '@openchannel/angular-common-components';
 import { FileService } from '@core/services/file.service';
+import { OcAppsSearchService } from '@core/services/oc-apps-search.service';
+import { AppsSearchService } from '@openchannel/angular-common-components/src/lib/form-components';
 
 function getApiUrl(): string {
     if (environment.enableProxy) {
@@ -48,6 +50,7 @@ export const OC_API_URL = getApiUrl();
         { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
         { provide: FileUploaderService, useClass: FileService },
+        { provide: AppsSearchService, useClass: OcAppsSearchService },
     ],
     bootstrap: [AppComponent],
     entryComponents: [],
