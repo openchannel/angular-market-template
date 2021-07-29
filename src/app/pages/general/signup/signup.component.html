@@ -9,7 +9,7 @@
                     [termsUrl]="termsAndConditionPageUrl"
                     [policyUrl]="dataProcessingPolicyUrl"
                     [process]="inProcess"
-                    [showSignupFeedbackPage]="showSignupFeedbackPage"
+                    [(showSignupFeedbackPage)]="showSignupFeedbackPage"
                     [forgotPasswordDoneUrl]="forgotPasswordDoneIconPath"
                     (resultUserData)="onSignup($event)"></oc-signup-custom>
 </div>
