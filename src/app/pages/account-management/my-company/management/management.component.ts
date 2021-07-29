@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
 import { OcConfirmationModalComponent, OcInviteModalComponent, ModalUpdateUserModel } from '@openchannel/angular-common-components';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { flatMap, map, takeUntil, tap } from 'rxjs/operators';
+import { mergeMap, map, takeUntil, tap } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
 
 @Component({
@@ -69,7 +69,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    catchSortChanges(sortBy) {
+    catchSortChanges(sortBy: string): void {
         switch (sortBy) {
             case 'name':
                 this.sortQuery = '{"name": 1}';
@@ -101,7 +101,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             : of(oldRoles);
     }
 
-    getAllUsers(startNewPagination: boolean) {
+    getAllUsers(startNewPagination: boolean): void {
         if (!this.inProcessGettingUsers) {
             this.loader.start();
             this.inProcessGettingUsers = true;
@@ -114,7 +114,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                 .getUserInvites(this.userProperties.data.pageNumber, this.USERS_LIMIT_PER_REQUEST, this.sortQuery)
                 .pipe(
                     tap(response => (inviteResponse = response)),
-                    flatMap(() =>
+                    mergeMap(() =>
                         this.userAccountService.getUserAccounts(
                             this.userProperties.data.pageNumber,
                             this.USERS_LIMIT_PER_REQUEST,
@@ -122,7 +122,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                         ),
                     ),
                     tap(response => (activeResponse = response)),
-                    flatMap(() => this.getRoles(startNewPagination, this.listRoles)),
+                    mergeMap(() => this.getRoles(startNewPagination, this.listRoles)),
                     tap(mappedRoles => (this.listRoles = mappedRoles)),
                     takeUntil(this.destroy$),
                 )
@@ -161,7 +161,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    userAction(userAction: UserGridActionModel) {
+    userAction(userAction: UserGridActionModel): void {
         const user = this.findUserByAction(userAction);
         if (user) {
             switch (userAction.action) {
@@ -221,7 +221,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         };
     }
 
-    private toRoleName(userRoles: string[]) {
+    private toRoleName(userRoles: string[]): any[] {
         const roleName = [];
         userRoles?.forEach(r => roleName.push(this.listRoles[r]));
         return roleName;
@@ -254,19 +254,16 @@ export class ManagementComponent implements OnInit, OnDestroy {
         return null;
     }
 
-    private openDeleteModal(modalTitle: string, modalText: string, confirmText: string, deleteCallback: () => void) {
+    private openDeleteModal(modalTitle: string, modalText: string, confirmText: string, deleteCallback: () => void): void {
         const modalSuspendRef = this.modal.open(OcConfirmationModalComponent, { size: 'md' });
         modalSuspendRef.componentInstance.modalTitle = modalTitle;
         modalSuspendRef.componentInstance.modalText = modalText;
         modalSuspendRef.componentInstance.confirmButtonText = confirmText;
         modalSuspendRef.componentInstance.confirmButtonType = 'danger';
-        modalSuspendRef.result.then(
-            deleteCallback,
-            () => {},
-        );
+        modalSuspendRef.result.then(deleteCallback, () => {});
     }
 
-    private editUser(userAction: UserGridActionModel, user: UserAccountGridModel) {
+    private editUser(userAction: UserGridActionModel, user: UserAccountGridModel): void {
         const userAccount = { ...user };
         if (user?.inviteStatus === 'INVITED') {
             this.editUserInvite(userAccount);
@@ -277,7 +274,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    private editUserAccount(userAccount: UserAccount) {
+    private editUserAccount(userAccount: UserAccount): void {
         const modalRef = this.modal.open(OcInviteModalComponent, { size: 'sm' });
         modalRef.componentInstance.ngbModalRef = modalRef;
 
@@ -304,7 +301,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         );
     }
 
-    private deleteUserFromResultArray(user: UserAccountGridModel) {
+    private deleteUserFromResultArray(user: UserAccountGridModel): void {
         if (this.userProperties.data.list?.length > 0) {
             const userIndex = this.userProperties.data.list.indexOf(user);
             if (userIndex >= 0) {
@@ -313,7 +310,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    private editUserInvite(userInvite: UserAccount) {
+    private editUserInvite(userInvite: UserAccount): void {
         const modalRef = this.modal.open(OcInviteModalComponent, { size: 'sm' });
         const modalData = new ModalUpdateUserModel();
         modalData.userData = userInvite;
