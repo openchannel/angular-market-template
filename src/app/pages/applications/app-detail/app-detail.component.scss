@@ -18,6 +18,19 @@
         }
     }
 
+    &__data {
+        display: flex;
+        margin-bottom: 1rem;
+        @include media-breakpoint-sm {
+            flex-direction: column;
+        }
+
+        &-description {
+            display: flex;
+            flex-grow: 1;
+        }
+    }
+
     &__price {
         @include font-medium();
     }
