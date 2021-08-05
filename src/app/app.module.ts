@@ -19,6 +19,7 @@ import { OcAppCategoriesModule, FileUploaderService } from '@openchannel/angular
 import { FileService } from '@core/services/file.service';
 import { OcAppsSearchService } from '@core/services/oc-apps-search.service';
 import { AppsSearchService } from '@openchannel/angular-common-components/src/lib/form-components';
+import { HttpRequestsWatcherInterceptor } from '@core/interceptors/http-requests-watcher.interceptor';
 
 function getApiUrl(): string {
     if (environment.enableProxy) {
@@ -49,6 +50,7 @@ export const OC_API_URL = getApiUrl();
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: HttpRequestsWatcherInterceptor, multi: true },
         { provide: FileUploaderService, useClass: FileService },
         { provide: AppsSearchService, useClass: OcAppsSearchService },
     ],
