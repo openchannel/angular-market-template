@@ -28,6 +28,7 @@ import {
 } from '@openchannel/angular-common-components';
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import {HttpHeaders} from '@angular/common/http';
 
 @Component({
     selector: 'app-app-detail',
@@ -190,7 +191,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                     this.appListingActions = this.getButtonActions(pageConfig);
                     this.loadReviews();
                 }),
-                mergeMap(value => this.statisticService.recordVisitToApp(this.app.appId)),
+                mergeMap(() => this.statisticService.recordVisitToApp(this.app.appId, new HttpHeaders({ 'x-handle-error': '400' }))),
             )
             .subscribe(
                 () => {},
