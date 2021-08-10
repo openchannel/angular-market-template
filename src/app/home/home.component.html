@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="container featured-apps-container">
-        <oc-featured-apps *ngIf="isFeatured"
+        <oc-featured-apps *ngIf="featuredApp?.length"
                           [data]="featuredApp"
                           mainRouterLink="details"
                           navigationParam="safeName[0]"
