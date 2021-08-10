@@ -14,12 +14,12 @@
                     <oc-button type="secondary" (click)="closeWindow()" [customTemplate]="closePreviewButton"></oc-button>
                 </div>
             </div>
-            <div class="row mb-1">
-                <div class="col-sm-10 d-flex flex-column flex-md-row p-0">
+            <div class="app-detail__data">
+                <div class="app-detail__data-description">
                     <div class="col-md-auto mb-2 app-logo" *ngIf="app.logo">
                         <img [src]="app.logo" alt="app-icon">
                     </div>
-                    <div class="col-md-6 d-flex flex-column">
+                    <div class="d-flex flex-column">
                         <h1 class="mb-2 page-title-size">{{ app.name }}</h1>
                         <a href="#" class="app-detail__price" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
                         <div class="text-secondary mt-1" [innerHTML]="app.summary"></div>
@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="col-sm-2 mt-2 mt-sm-0"></oc-video>
+                <oc-video *ngIf="app.video" [videoUrl]="app.video"></oc-video>
             </div>
         </div>
     </div>
