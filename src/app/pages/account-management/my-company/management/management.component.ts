@@ -172,9 +172,11 @@ export class ManagementComponent implements OnInit, OnDestroy {
                     this.editUser(userAction, user);
                     break;
                 default:
+                    // tslint:disable-next-line:no-console
                     console.error('Not implement');
             }
         } else {
+            // tslint:disable-next-line:no-console
             console.error("Can't find user from mail array by action");
         }
     }
@@ -185,6 +187,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         } else if (user?.inviteStatus === 'ACTIVE') {
             this.deleteAccount(user);
         } else {
+            // tslint:disable-next-line:no-console
             console.error('Not implement edit type : ', user?.inviteStatus);
         }
     }
@@ -270,6 +273,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         } else if (user?.inviteStatus === 'ACTIVE') {
             this.editUserAccount(userAccount);
         } else {
+            // tslint:disable-next-line:no-console
             console.error('Not implement edit type : ', user?.inviteStatus);
         }
     }
