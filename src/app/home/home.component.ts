@@ -39,7 +39,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     categories: AppCategoryDetail[] = [];
     sidebarFilters: Filter[];
 
-    isFeatured = false;
     homePageConfig;
     categoriesData: any[] = [];
     filterCollapsed = true;
@@ -61,6 +60,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private readonly DEFAULT_FILTER_ID = 'collections';
     private readonly DEFAULT_FILTER_VALUE_ID = 'allApps';
+    private readonly featuredFilter = JSON.stringify({ "attributes.featured": "yes" });
+    private readonly featuredSort = JSON.stringify({ randomize: 1 });
 
     constructor(
         private appService: AppsService,
@@ -100,17 +101,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // Getting featured apps separately
     getFeaturedApps(): void {
-        if (this.homePageConfig?.appListPage?.length > 0) {
-            const featureConfig = this.homePageConfig.appListPage.find(filer => filer.type.includes('featured-apps'));
-            if (featureConfig) {
-                this.getApps(featureConfig.sort, featureConfig.filter).subscribe(apps => {
-                    this.featuredApp = apps;
-                    if (this.featuredApp?.length > 0) {
-                        this.isFeatured = true;
-                    }
-                });
-            }
-        }
+        this.getApps(this.featuredSort, this.featuredFilter).subscribe(apps => {
+            this.featuredApp = apps;
+        });
     }
 
     getAppsForFilters(filters: Filter[]): void {
@@ -146,7 +139,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     getApps(sort: string, filter: string): Observable<FullAppData[]> {
         return this.appService.getApps(1, 4, sort, filter).pipe(
-            takeUntil(this.destroy$),
             tap(() => this.loader.start()),
             map(res => res.list.map(app => new FullAppData(app, this.homePageConfig.fieldMappings))),
             tap(() => this.loader.complete()),
@@ -154,6 +146,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 this.loader.complete();
                 throw err;
             }),
+            takeUntil(this.destroy$),
         );
     }
 
