@@ -11,7 +11,7 @@ export class HttpRequestsWatcherInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const event = next.handle(request);
-        const notForBotUrl = prerenderEndpoints.noBot.find(url => url.includes(request.url));
+        const notForBotUrl = prerenderEndpoints.noBot.find(url => request.url.includes(url));
 
         if (isbot(request.headers.get('User-Agent')) && notForBotUrl) {
             console.log('bot founded', 'endpoint', notForBotUrl);
