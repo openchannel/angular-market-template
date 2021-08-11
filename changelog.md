@@ -1,3 +1,12 @@
+## Release notes - template3-marketsite-frontend - Version 1.23.0 (8/10/2021)<br>
+### Story<br>
+AT-1422 - A user is able to be guided when they are forced to reset their account password.<br>
+### Bug<br>
+AT-1396 - Session is still valid after logout<br>
+## Release notes - template3-marketsite-frontend - Version 1.22.0 (8/10/2021)<br>
+### Bug<br>
+AT-1482 - [Hotfix][Market][App Details] Getting 400 error for /views API call, "BAD_REQUEST", message: "This endpoint can be called once every 24 hours.<br>
+AT-1455 - Improve left sidebar filter clickable area<br>
 ## Release notes - template3-marketsite-frontend - Version 1.21.0 (8/5/2021)<br>
 ### Bug<br>
 AT-1449 - [SelfHosted Sites][Market] Featured section on top of Market Site is not visible.<br>
