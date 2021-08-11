@@ -14,7 +14,6 @@ export class HttpRequestsWatcherInterceptor implements HttpInterceptor {
         const notForBotUrl = prerenderEndpoints.noBot.find(url => request.url.includes(url));
 
         if (isbot(request.headers.get('User-Agent')) && notForBotUrl) {
-            console.log('bot founded', 'endpoint', notForBotUrl);
             return EMPTY;
         }
 
