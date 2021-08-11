@@ -11,16 +11,13 @@ import { ComponentsUserResetPassword } from '@openchannel/angular-common-compone
     styleUrls: ['./reset-password.component.scss'],
 })
 export class ResetPasswordComponent implements OnDestroy {
-
     companyLogoUrl = './assets/img/company-logo-2x.png';
     inProcess = false;
     resetModel = new ComponentsUserResetPassword();
 
     private destroy$: Subject<void> = new Subject();
 
-    constructor(private nativeLoginService: NativeLoginService,
-                private router: Router,
-                private route: ActivatedRoute) {
+    constructor(private nativeLoginService: NativeLoginService, private router: Router, private route: ActivatedRoute) {
         this.resetModel.code = this.route.snapshot.queryParamMap.get('token');
     }
 
@@ -30,19 +27,20 @@ export class ResetPasswordComponent implements OnDestroy {
     }
 
     reset(event) {
-        if (event === true) {
+        if (event === true && !this.inProcess) {
             this.inProcess = true;
-            this.nativeLoginService.resetPassword(this.resetModel)
+            this.nativeLoginService
+                .resetPassword(this.resetModel)
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(res => {
-                    this.inProcess = false;
-                    this.router.navigate(['login']).then();
+                .subscribe(
+                    res => {
+                        this.inProcess = false;
+                        this.router.navigate(['login']).then();
                     },
-                error => {
-                    this.inProcess = false;
-                },
-            );
+                    error => {
+                        this.inProcess = false;
+                    },
+                );
         }
     }
-
 }
