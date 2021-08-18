@@ -12,7 +12,6 @@ import { ComponentsUserActivationModel } from '@openchannel/angular-common-compo
     styleUrls: ['./activation.component.scss'],
 })
 export class ActivationComponent implements OnDestroy {
-
     companyLogoUrl = './assets/img/company-logo-2x.png';
     signupUrl = '/signup';
     activationUrl = '';
@@ -22,19 +21,23 @@ export class ActivationComponent implements OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
-    constructor(private nativeLoginService: NativeLoginService,
-                private router: Router,
-                private route: ActivatedRoute,
-                private toastr: ToastrService) {
+    constructor(
+        private nativeLoginService: NativeLoginService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private toastr: ToastrService,
+    ) {
         this.activationModel.code = this.route.snapshot.queryParamMap.get('token');
     }
 
-    activate(event) {
-        if (event === true) {
+    activate(event: boolean): void {
+        if (event === true && !this.inProcess) {
             this.inProcess = true;
-            this.nativeLoginService.activate(this.activationModel.code)
+            this.nativeLoginService
+                .activate(this.activationModel.code)
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(res => {
+                .subscribe(
+                    res => {
                         this.inProcess = false;
                         this.toastr.success('Account successfully activated!');
                         this.router.navigate(['login']);
@@ -44,12 +47,10 @@ export class ActivationComponent implements OnDestroy {
                     },
                 );
         }
-
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
     }
-
 }
