@@ -6,38 +6,38 @@ import { Subject } from 'rxjs';
 import { ComponentsUserActivationModel } from '@openchannel/angular-common-components';
 
 @Component({
-  selector: 'app-resend-activation',
-  templateUrl: './resend-activation.component.html',
-  styleUrls: ['./resend-activation.component.scss']
+    selector: 'app-resend-activation',
+    templateUrl: './resend-activation.component.html',
+    styleUrls: ['./resend-activation.component.scss'],
 })
 export class ResendActivationComponent implements OnDestroy {
+    inProcess = false;
+    activationModel = new ComponentsUserActivationModel();
 
-  inProcess = false;
-  activationModel = new ComponentsUserActivationModel();
+    private destroy$: Subject<void> = new Subject();
 
-  private destroy$: Subject<void> = new Subject();
+    constructor(private nativeLoginService: NativeLoginService, private router: Router) {}
 
-  constructor(private nativeLoginService: NativeLoginService,
-              private router: Router) { }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  sendActivationMail(event) {
-    if (event === true) {
-      this.inProcess = true;
-      this.nativeLoginService.sendActivationCode(this.activationModel.email)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(res => {
-            this.inProcess = false;
-            this.router.navigate(['login']);
-          },
-          error => {
-            this.inProcess = false;
-          },
-        );
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
-  }
+
+    sendActivationMail(event: boolean): void {
+        if (event === true && !this.inProcess) {
+            this.inProcess = true;
+            this.nativeLoginService
+                .sendActivationCode(this.activationModel.email)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(
+                    res => {
+                        this.inProcess = false;
+                        this.router.navigate(['login']);
+                    },
+                    error => {
+                        this.inProcess = false;
+                    },
+                );
+        }
+    }
 }
