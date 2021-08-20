@@ -162,6 +162,27 @@
         "width":"278",
         "height":"28"
       }
+    },
+    {
+      "id": "customData.meta-tags",
+      "label": "Meta Tags",
+      "type": "dynamicFieldArray",
+      "attributes": {
+        "ordering":	"append",
+        "required": false
+      },
+      "fields": [
+        {
+          "id":	"name",
+          "label": "Name",
+           "type": "text"
+        },
+        {
+          "id":	"content",
+          "label": "Content",
+          "type": "longText"
+        }
+      ]
     }
   ]
 }
