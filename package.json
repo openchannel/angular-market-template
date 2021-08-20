@@ -1,6 +1,6 @@
 {
   "name": "template3-marketsite",
-  "version": "1.25.0-0",
+  "version": "1.25.0-1",
   "scripts": {
     "ng": "ng",
     "start-okta": "ng serve --port=4201",
@@ -32,8 +32,8 @@
     "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "@ng-select/ng-select": "^6.1.0",
     "@ngx-loading-bar/core": "^5.1.1",
-    "@openchannel/angular-common-components": "2.17.0-1",
-    "@openchannel/angular-common-services": "2.17.0-1",
+    "@openchannel/angular-common-components": "2.17.0-2",
+    "@openchannel/angular-common-services": "2.17.0-2",
     "@tinymce/tinymce-angular": "^4.2.1",
     "angular-oauth2-oidc": "^10.0.3",
     "bootstrap": "^4.4.1",
@@ -47,7 +47,8 @@
     "rxjs": "~6.6.3",
     "string": "^3.3.3",
     "tslib": "^2.0.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.10.2",
+    "isbot": "^3.3.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1102.2",
@@ -79,7 +80,6 @@
     "typescript": "~4.0.7",
     "prettier": "^2.2.1",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.3.0",
-    "isbot": "^3.3.1"
+    "tslint-plugin-prettier": "^2.3.0"
   }
 }
