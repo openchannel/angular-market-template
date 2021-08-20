@@ -29,6 +29,9 @@ import {
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import {HttpHeaders} from '@angular/common/http';
+import { Meta, MetaDefinition } from '@angular/platform-browser';
+import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
+import { siteConfig } from '../../../../assets/data/siteConfig';
 
 @Component({
     selector: 'app-app-detail',
@@ -82,6 +85,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private toaster: ToastrService,
         private titleService: TitleService,
         private statisticService: StatisticService,
+        private metaService: Meta,
+        private cmsService: CmsContentService,
     ) {}
 
     ngOnInit(): void {
@@ -106,6 +111,19 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.cmsService
+            .getContentByPaths({
+                siteMetaTags: 'meta-tags',
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(content => {
+                const config = { ...siteConfig };
+                config.metaTags = (content.siteMetaTags as MetaDefinition[]) || config.metaTags;
+                this.metaService.updateTag(
+                    config.metaTags.find(tag => tag.name === 'description'),
+                    'name=description',
+                );
+            });
         this.destroy$.next();
         this.destroy$.complete();
     }
@@ -203,7 +221,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.isWritingReview = true;
     }
 
-   onReviewSubmit(review: Review): void {
+    onReviewSubmit(review: Review): void {
         this.reviewSubmitInProgress = true;
         let reviewData = {
             ...review,
@@ -268,7 +286,12 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
             map(app => new FullAppData(app, pageConfig.fieldMappings)),
             tap(app => {
+                const newDescription: MetaDefinition = {
+                    name: 'description',
+                    content: app.summary,
+                };
                 this.titleService.setSpecialTitle(app.name);
+                this.metaService.updateTag(newDescription, 'name=description');
 
                 if (app.ownership) {
                     this.currentUserId = app.ownership.userId;
