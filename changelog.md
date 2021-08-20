@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.24.1 (8/18/2021)<br>
+### Bug<br>
+AT-1475 - [Market / Portal][Forgot Password] When Reset Password, Getting same 2 API calls and same 2 Reset Password emails. <br>
 ## Release notes - template3-marketsite-frontend - Version 1.24.0 (8/11/2021)<br>
 ### Bug<br>
 AT-1463 - [Portal][DFA > Videos] When user try to delete 1st item (video), it deletes the last item (video) if the items were not saved.<br>
