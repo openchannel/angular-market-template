@@ -28,18 +28,20 @@ export class ForgotPasswordComponent implements OnDestroy {
     }
 
     resetPwd(): void {
-        this.inProcess = true;
-        this.nativeLoginService
-            .sendResetCode(this.signIn.email)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(
-                res => {
-                    this.showResultPage = true;
-                    this.inProcess = false;
-                },
-                res => {
-                    this.inProcess = false;
-                },
-            );
+        if (!this.inProcess) {
+            this.inProcess = true;
+            this.nativeLoginService
+                .sendResetCode(this.signIn.email)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(
+                    res => {
+                        this.showResultPage = true;
+                        this.inProcess = false;
+                    },
+                    res => {
+                        this.inProcess = false;
+                    },
+                );
+        }
     }
 }
