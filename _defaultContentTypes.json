@@ -154,6 +154,36 @@
       }
     },
     {
+      "id": "customData.default-footer.social-items",
+      "label": "Social items",
+      "type": "dynamicFieldArray",
+      "attributes": {
+        "required": false
+      },
+      "fields": [
+      {
+        "id": "location",
+        "label": "Location",
+        "type": "text"
+      },
+      {
+        "id": "icon",
+        "label": "Icon",
+        "type": "image"
+      },
+      {
+        "id": "icon-alt",
+        "label": "Icon Alt",
+        "type": "text"
+      },
+      {
+        "id": "summary",
+        "label": "Summary",
+        "type": "text"
+      }
+      ]
+    },
+    {
       "id": "customData.login.logo",
       "label": "Login Logo",
       "type": "singleImage",

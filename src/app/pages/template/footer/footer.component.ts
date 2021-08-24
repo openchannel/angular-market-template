@@ -13,6 +13,10 @@ interface FooterRow {
     location: string;
 }
 
+interface CMSSocialLink extends SocialLink {
+    summary: string;
+}
+
 @Component({
     selector: 'app-footer',
     templateUrl: './footer.component.html',
@@ -35,6 +39,7 @@ export class FooterComponent implements OnInit {
     cmsData = {
         logoImageURL: '',
         columnsDFA: [] as FooterColumn[],
+        socialMediaDFA: [] as CMSSocialLink[],
     };
 
     constructor(private cmsService: CmsContentService) {}
@@ -48,10 +53,20 @@ export class FooterComponent implements OnInit {
             .getContentByPaths({
                 logoImageURL: 'default-footer.logo',
                 columnsDFA: 'default-footer.menu.items',
+                socialMediaDFA: 'default-footer.social-items',
             })
             .subscribe(content => {
                 this.cmsData.logoImageURL = content.logoImageURL as string;
                 this.cmsData.columnsDFA = content.columnsDFA as FooterColumn[];
+                this.cmsData.socialMediaDFA = (content.socialMediaDFA as any[]).map(socialItem => {
+                    const cmsSocialLink: CMSSocialLink = {
+                        summary: socialItem.summary,
+                        iconSrc: socialItem.icon,
+                        iconAlt: socialItem['icon-alt'],
+                        link: socialItem.location,
+                    };
+                    return cmsSocialLink;
+                });
             });
     }
 }

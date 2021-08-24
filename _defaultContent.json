@@ -39,7 +39,19 @@
         }]
       }]
     },
-    "logo": "assets/img/logo-company.png"
+    "logo": "assets/img/logo-company.png",
+    "social-items": [{
+      "location": "https://facebook.com",
+      "icon": "assets/img/facebook-icon.svg",
+      "iconAlt": "facebook-icon",
+      "summary": "Facebook"
+    },
+      {
+        "location": "https://twitter.com",
+        "icon": "assets/img/twitter-icon.svg",
+        "iconAlt": "twitter-icon",
+        "summary": "Twitter"
+      }]
   },
   "login": {
     "logo": "assets/img/logo-company.png"
