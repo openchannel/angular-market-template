@@ -40,7 +40,7 @@ interface CMSData {
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomeComponent implements OnInit, OnDestroy {
     featuredApp: FullAppData[] = [];
     categories: AppCategoryDetail[] = [];
     sidebarFilters: Filter[];
@@ -77,19 +77,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         private titleService: TitleService,
         private cmsService: CmsContentService,
         public router: Router,
-        private prerenderService: PrerenderRequestsWatcherService,
     ) {}
 
     ngOnInit(): void {
-        this.prerenderService.setPrerenderStatus(false);
         this.loader = this.loadingBar.useRef();
         this.setTagLineToPageTitleService();
         this.getPageConfig();
         this.initCMSData();
-    }
-
-    ngAfterViewInit(): void {
-        this.prerenderService.setPrerenderStatus(true);
     }
 
     ngOnDestroy(): void {
