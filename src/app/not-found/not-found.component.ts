@@ -12,7 +12,7 @@ export class NotFoundComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.prerenderService.create404MetaTag();
-        this.prerenderService.setPrerenderStatus(true);
+        setTimeout(() => this.prerenderService.setPrerenderStatus(true), 1000);
     }
 
     goToHomePage(): void {
