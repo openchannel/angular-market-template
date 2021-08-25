@@ -8,8 +8,9 @@
         <img class="not-found-img w-100 mb-5" src="assets/img/not_found.svg" alt="not-found">
         <h1 class="mt-3 mb-3">Page not found</h1>
         <span class="subtitle mb-4">The page you were looking for isn’t here</span>
-        <oc-button type="primary" text="Go to home page" class="button-255 mb-4"
-                   routerLink="/"
-                   (click)="goToHomePage()"></oc-button>
+        <a class="not-found__home-page-button" routerLink="/">
+            <oc-button type="primary" text="Go to home page" class="button-255 mb-4"
+                       (click)="goToHomePage()"></oc-button>
+        </a>
     </div>
 </div>
