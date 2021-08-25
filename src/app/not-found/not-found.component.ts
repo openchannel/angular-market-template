@@ -16,7 +16,7 @@ export class NotFoundComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.prerenderService.setPrerenderStatus(true);
+        // this.prerenderService.setPrerenderStatus(true);
     }
 
     goToHomePage(): void {
