@@ -1,5 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AppsService, FrontendService, SiteConfigService, TitleService } from '@openchannel/angular-common-services';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+    AppsService,
+    FrontendService,
+    PrerenderRequestsWatcherService,
+    SiteConfigService,
+    TitleService
+} from '@openchannel/angular-common-services';
 import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { pageConfig } from '../../assets/data/configData';
@@ -34,7 +40,7 @@ interface CMSData {
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     featuredApp: FullAppData[] = [];
     categories: AppCategoryDetail[] = [];
     sidebarFilters: Filter[];
@@ -71,13 +77,19 @@ export class HomeComponent implements OnInit, OnDestroy {
         private titleService: TitleService,
         private cmsService: CmsContentService,
         public router: Router,
+        private prerenderService: PrerenderRequestsWatcherService,
     ) {}
 
     ngOnInit(): void {
+        this.prerenderService.setPrerenderStatus(false);
         this.loader = this.loadingBar.useRef();
         this.setTagLineToPageTitleService();
         this.getPageConfig();
         this.initCMSData();
+    }
+
+    ngAfterViewInit(): void {
+        this.prerenderService.setPrerenderStatus(true);
     }
 
     ngOnDestroy(): void {

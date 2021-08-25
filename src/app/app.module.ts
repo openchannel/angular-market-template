@@ -43,7 +43,6 @@ export const OC_API_URL = getApiUrl();
         ToastrModule.forRoot(),
         OAuthModule.forRoot(),
         CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: OC_API_URL }),
-        NetlifyPrerenderModule.withOptions({ endpointsConfigForPrerender: prerenderEndpoints }),
         SharedModule,
         OcAppCategoriesModule,
         LoadingBarModule,
