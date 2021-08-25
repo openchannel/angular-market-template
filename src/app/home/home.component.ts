@@ -1,11 +1,5 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import {
-    AppsService,
-    FrontendService,
-    PrerenderRequestsWatcherService,
-    SiteConfigService,
-    TitleService
-} from '@openchannel/angular-common-services';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AppsService, FrontendService, SiteConfigService, TitleService } from '@openchannel/angular-common-services';
 import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { pageConfig } from '../../assets/data/configData';
@@ -15,7 +9,7 @@ import { catchError, map, takeUntil, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { forIn } from 'lodash';
 import { AppCategoryDetail, Filter, FullAppData } from '@openchannel/angular-common-components';
-import {CmsContentService} from '@core/services/cms-content-service/cms-content-service.service';
+import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 
 export interface GalleryItem {
     filterId: string;
@@ -40,7 +34,7 @@ interface CMSData {
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomeComponent implements OnInit, OnDestroy {
     featuredApp: FullAppData[] = [];
     categories: AppCategoryDetail[] = [];
     sidebarFilters: Filter[];
@@ -77,19 +71,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         private titleService: TitleService,
         private cmsService: CmsContentService,
         public router: Router,
-        private prerenderService: PrerenderRequestsWatcherService,
     ) {}
 
     ngOnInit(): void {
-        this.prerenderService.setPrerenderStatus(false);
         this.loader = this.loadingBar.useRef();
         this.setTagLineToPageTitleService();
         this.getPageConfig();
         this.initCMSData();
-    }
-
-    ngAfterViewInit(): void {
-        setTimeout(() => this.prerenderService.setPrerenderStatus(true), 30000);
     }
 
     ngOnDestroy(): void {
