@@ -47,9 +47,10 @@
                                  [appDescription]="app.description"
                                  [truncateTextLength]="800"
                                  header="About"
+                                 headerTag="h2"
                                  headerClass="mb-2"></oc-app-description>
-            <div class="col-md ml-md-8 mt-3 mt-md-0">
-                <h4 class="mb-2">Support</h4>
+            <div class="app-detail__data-support col-md ml-md-8 mt-3 mt-md-0">
+                <h2 class="app-detail__data-support-title mb-2 ">Support</h2>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" *ngIf="app.customData['terms-of-service-url']">
                         <img src="./assets/img/icon-help.svg"
