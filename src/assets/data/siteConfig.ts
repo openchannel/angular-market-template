@@ -5,7 +5,7 @@ export const siteConfig: SiteConfig = {
     tagline: 'All the apps and integrations that you need',
     metaTags: [
         { name: 'author', content: 'OpenChannel' },
-        { name: 'description', content: 'OpenChannel' },
+        { name: 'description', content: 'Default text for the site description. You can change it as you wish.' },
         { name: 'generator', content: 'OpenChannel' },
     ],
     favicon: {
