@@ -1,3 +1,19 @@
+## Release notes - template3-marketsite-frontend - Version 1.27.0 (8/26/2021)<br>
+### Bug<br>
+AT-1442 - User enumeration<br>
+AT-1440 - Parallel session is valid after password change<br>
+## Release notes - template3-marketsite-frontend - Version 1.26.0 (8/26/2021)<br>
+### Bug<br>
+AT-1452 - [Reviews] Reviews description should be limited to 2000 characters and not 1000 character.<br>
+### Story<br>
+AT-1345 - Support field groups on Templates<br>
+## Release notes - template3-marketsite-frontend - Version 1.24.1 (8/18/2021)<br>
+### Bug<br>
+AT-1475 - [Market / Portal][Forgot Password] When Reset Password, Getting same 2 API calls and same 2 Reset Password emails. <br>
+## Release notes - template3-marketsite-frontend - Version 1.24.0 (8/11/2021)<br>
+### Bug<br>
+AT-1463 - [Portal][DFA > Videos] When user try to delete 1st item (video), it deletes the last item (video) if the items were not saved.<br>
+AT-1459 - Endpoint /auth/external/token returning 500 error using Google as an Auth provider<br>
 ## Release notes - template3-marketsite-frontend - Version 1.23.0 (8/10/2021)<br>
 ### Story<br>
 AT-1422 - A user is able to be guided when they are forced to reset their account password.<br>
