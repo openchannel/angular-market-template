@@ -1,6 +1,6 @@
 {
   "name": "template3-marketsite",
-  "version": "1.25.0-1",
+  "version": "1.25.0-3",
   "scripts": {
     "ng": "ng",
     "start-okta": "ng serve --port=4201",
@@ -32,13 +32,14 @@
     "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "@ng-select/ng-select": "^6.1.0",
     "@ngx-loading-bar/core": "^5.1.1",
-    "@openchannel/angular-common-components": "2.17.0-3",
-    "@openchannel/angular-common-services": "2.17.0-3",
+    "@openchannel/angular-common-components": "2.17.0-12",
+    "@openchannel/angular-common-services": "2.17.0-12",
     "@tinymce/tinymce-angular": "^4.2.1",
     "angular-oauth2-oidc": "^10.0.3",
     "bootstrap": "^4.4.1",
     "broadcast-channel": "^3.5.3",
     "chart.js": "^3.3.2",
+    "isbot": "^3.3.1",
     "lodash": "^4.17.21",
     "ngx-image-cropper": "^3.1.9",
     "ngx-owl-carousel-o": "^3.1.1",
@@ -47,8 +48,7 @@
     "rxjs": "~6.6.3",
     "string": "^3.3.3",
     "tslib": "^2.0.0",
-    "zone.js": "~0.10.2",
-    "isbot": "^3.3.1"
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1102.2",

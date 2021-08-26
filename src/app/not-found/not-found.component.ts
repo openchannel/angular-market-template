@@ -11,11 +11,12 @@ export class NotFoundComponent implements OnInit {
     constructor(private router: Router, private prerenderService: PrerenderRequestsWatcherService) {}
 
     ngOnInit(): void {
+        this.prerenderService.setPrerenderStatus(false);
         this.prerenderService.create404MetaTag();
     }
 
     goToHomePage(): void {
         this.prerenderService.remove404MetaTag();
-        this.router.navigate(['/']).then(() => window.scrollTo(0, 0));
+        window.scrollTo(0, 0);
     }
 }
