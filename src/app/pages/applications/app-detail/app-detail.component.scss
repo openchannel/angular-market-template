@@ -29,6 +29,11 @@
             display: flex;
             flex-grow: 1;
         }
+        &-support {
+            &-title {
+                font-size: 24px;
+            }
+        }
     }
 
     &__price {

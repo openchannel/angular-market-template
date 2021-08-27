@@ -6,7 +6,7 @@
     border-top: 1px solid rgba(201, 213, 234, 0.5);
 
     .container {
-        padding: 48px 0;
+        padding: 48px 0 24px;
         @include media-breakpoint-md() {
             padding: 32px;
         }
@@ -31,12 +31,14 @@
                 width: 16%;
                 margin: 0 8px;
 
-                h5 {
+                h2 {
                     @include font-bold();
                     color: $body-color;
+                    font-weight: 500;
                     font-size: 12px;
                     letter-spacing: 0.3px;
-                    margin-bottom: 12px;
+                    margin: 0 0 12px;
+                    width: 100%;
                     cursor: pointer;
                     outline: none;
                 }
