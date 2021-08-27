@@ -1,85 +1,92 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NativeLoginService} from '@openchannel/angular-common-services';
-import {Subject} from 'rxjs';
-import {ToastrService} from 'ngx-toastr';
-import {FormGroup, Validators} from '@angular/forms';
-import {LoadingBarState} from '@ngx-loading-bar/core/loading-bar.state';
-import {LoadingBarService} from '@ngx-loading-bar/core';
-import {takeUntil} from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AuthHolderService, NativeLoginService} from '@openchannel/angular-common-services';
+import { Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { FormGroup, Validators } from '@angular/forms';
+import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-change-password',
-  templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.scss']
+    selector: 'app-change-password',
+    templateUrl: './change-password.component.html',
+    styleUrls: ['./change-password.component.scss'],
 })
-export class ChangePasswordComponent implements OnInit, OnDestroy {
+export class ChangePasswordComponent implements OnDestroy {
+    isSaveInProcess = false;
 
-  isSaveInProcess = false;
+    formPasswordDefinition = {
+        fields: [
+            {
+                id: 'password',
+                label: 'Current Password',
+                type: 'password',
+                attributes: [],
+            },
+            {
+                id: 'newPassword',
+                label: 'New Password',
+                type: 'password',
+                attributes: [],
+            },
+        ],
+    };
 
-  formPasswordDefinition = {
-    fields: [{
-      id: 'password',
-      label: 'Current Password',
-      type: 'password',
-      attributes: [],
-    }, {
-      id: 'newPassword',
-      label: 'New Password',
-      type: 'password',
-      attributes: [],
-    }],
-  };
+    passwordFormGroup: FormGroup;
 
-  public passwordFormGroup: FormGroup;
+    private destroy$: Subject<void> = new Subject<void>();
 
-  private destroy$: Subject<void> = new Subject<void>();
+    constructor(
+        private toasterService: ToastrService,
+        private nativeLoginService: NativeLoginService,
+        private loadingBar: LoadingBarService,
+        private authHolderService: AuthHolderService,
+    ) {}
 
-  private loader: LoadingBarState;
-
-  constructor(private toasterService: ToastrService,
-              private nativeLoginService: NativeLoginService,
-              private loadingBar: LoadingBarService) {
-  }
-
-  ngOnInit(): void {
-    this.loader = this.loadingBar.useRef();
-    this.loader.start();
-    this.loader.complete();
-  }
-
-  ngOnDestroy() {
-  }
-
-  changePassword() {
-    if (this.passwordFormGroup) {
-      this.passwordFormGroup.markAllAsTouched();
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
-    if (this.isSaveInProcess || this.passwordFormGroup?.invalid) {
-      return;
+
+    changePassword(): void {
+        if (this.passwordFormGroup) {
+            this.passwordFormGroup.markAllAsTouched();
+        }
+        if (this.isSaveInProcess || this.passwordFormGroup?.invalid) {
+            return;
+        }
+        this.isSaveInProcess = true;
+        this.nativeLoginService
+            .changePassword({
+                ...this.passwordFormGroup.value,
+                jwtRefreshToken: this.authHolderService.refreshToken,
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                response => {
+                    // set new access and refresh tokens
+                    this.authHolderService.persist(response.accessToken, response.refreshToken);
+                    for (const controlKey of Object.keys(this.passwordFormGroup.controls)) {
+                        const control = this.passwordFormGroup.controls[controlKey];
+                        control.reset();
+                        control.setErrors(null);
+                    }
+                    this.toasterService.success('Password has been updated');
+                },
+                () => {
+                    this.isSaveInProcess = false;
+                },
+                () => {
+                    this.isSaveInProcess = false;
+                },
+            );
     }
-    this.isSaveInProcess = true;
-    this.nativeLoginService.changePassword(this.passwordFormGroup.value)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(() => {
-      for (const controlKey of Object.keys(this.passwordFormGroup.controls)) {
-        const control = this.passwordFormGroup.controls[controlKey];
-        control.reset();
-        control.setErrors(null);
-      }
-      this.toasterService.success('Password has been updated');
-    }, () => {
-      this.isSaveInProcess = false;
-    }, () => {
-      this.isSaveInProcess = false;
-    });
-  }
 
-
-  setPasswordFormGroup(passwordGroup: FormGroup) {
-    this.passwordFormGroup = passwordGroup;
-    // clear validation for current user password
-    this.passwordFormGroup.controls.password.clearValidators();
-    this.passwordFormGroup.controls.password.setValidators(Validators.required);
-    this.passwordFormGroup.controls.password.updateValueAndValidity();
-  }
+    setPasswordFormGroup(passwordGroup: FormGroup): void {
+        this.passwordFormGroup = passwordGroup;
+        // clear validation for current user password
+        this.passwordFormGroup.controls.password.clearValidators();
+        this.passwordFormGroup.controls.password.setValidators(Validators.required);
+        this.passwordFormGroup.controls.password.updateValueAndValidity();
+    }
 }
