@@ -3,7 +3,10 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CustomHttpClientXsrfModule, OcCommonServiceModule } from '@openchannel/angular-common-services';
+import {
+    CustomHttpClientXsrfModule,
+    OcCommonServiceModule,
+} from '@openchannel/angular-common-services';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OAuthModule } from 'angular-oauth2-oidc';

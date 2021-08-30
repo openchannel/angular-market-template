@@ -28,10 +28,8 @@ import {
 } from '@openchannel/angular-common-components';
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import {HttpHeaders} from '@angular/common/http';
-import { Meta, MetaDefinition } from '@angular/platform-browser';
-import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
-import { siteConfig } from '../../../../assets/data/siteConfig';
+import { HttpHeaders } from '@angular/common/http';
+import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 
 @Component({
     selector: 'app-app-detail',
@@ -85,8 +83,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private toaster: ToastrService,
         private titleService: TitleService,
         private statisticService: StatisticService,
-        private metaService: Meta,
-        private cmsService: CmsContentService,
+        private metaTagService: MarketMetaTagService,
     ) {}
 
     ngOnInit(): void {
@@ -111,19 +108,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.cmsService
-            .getContentByPaths({
-                siteMetaTags: 'meta-tags',
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(content => {
-                const config = { ...siteConfig };
-                config.metaTags = (content.siteMetaTags as MetaDefinition[]) || config.metaTags;
-                this.metaService.updateTag(
-                    config.metaTags.find(tag => tag.name === 'description'),
-                    'name=description',
-                );
-            });
         this.destroy$.next();
         this.destroy$.complete();
     }
@@ -284,14 +268,14 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
         return appData.pipe(
             takeUntil(this.destroy$),
+            tap(appResponse =>
+                this.metaTagService.pushSelectedFieldsToTempPageData({
+                    app: appResponse,
+                }),
+            ),
             map(app => new FullAppData(app, pageConfig.fieldMappings)),
             tap(app => {
-                const newDescription: MetaDefinition = {
-                    name: 'description',
-                    content: app.summary,
-                };
                 this.titleService.setSpecialTitle(app.name);
-                this.metaService.updateTag(newDescription, 'name=description');
 
                 if (app.ownership) {
                     this.currentUserId = app.ownership.userId;

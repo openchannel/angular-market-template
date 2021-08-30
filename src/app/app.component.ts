@@ -1,13 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationService, SiteConfigService, TitleService } from '@openchannel/angular-common-services';
+import {
+    AuthenticationService,
+    OCMetaTagService,
+    SiteConfigService,
+    TitleService
+} from '@openchannel/angular-common-services';
 import { first, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { siteConfig } from '../assets/data/siteConfig';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
-import { MetaDefinition } from '@angular/platform-browser';
+import {MarketMetaTagService} from '@core/services/meta-tag-service/meta-tag-service.service';
 
 @Component({
     selector: 'app-root',
@@ -24,6 +29,7 @@ export class AppComponent implements OnInit {
         private siteService: SiteConfigService,
         public loadingBar: LoadingBarService,
         private titleService: TitleService,
+        private metaTagService: MarketMetaTagService,
         private cmsService: CmsContentService,
     ) {
         this.loader = this.loadingBar.useRef();
@@ -51,13 +57,11 @@ export class AppComponent implements OnInit {
             .getContentByPaths({
                 siteTitle: 'site.title',
                 siteFaviconHref: 'site.favicon',
-                siteMetaTags: 'meta-tags',
             })
             .subscribe(content => {
                 const config = { ...siteConfig };
                 config.title = content.siteTitle as string;
                 config.favicon.href = content.siteFaviconHref as string;
-                config.metaTags = (content.siteMetaTags as MetaDefinition[]) || config.metaTags;
                 this.siteService.initSiteConfiguration(config);
             });
     }
