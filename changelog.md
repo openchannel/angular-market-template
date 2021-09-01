@@ -1,3 +1,18 @@
+## Release notes - template3-marketsite-frontend - Version 1.28.0 (9/1/2021)<br>
+### Bug<br>
+AT-1502 - All rate limiting should be keyed by siteId<br>
+AT-1489 - Signup no rate limits<br>
+AT-1447 - Request submit no rate limits<br>
+AT-1446 - Form submit no rate limits<br>
+AT-1443 - Password brute force<br>
+AT-1441 - Password reset no rate limits<br>
+### Task<br>
+AT-1200 - Follow best practices for prerendering<br>
+### Bug<br>
+AT-1199 - Error messages displayed on market site in prerender view<br>
+## Release notes - template3-marketsite-frontend - Version 1.27.1 (8/31/2021)<br>
+### Bug<br>
+AT-1375 - [HOTFIX][Market] When click on Download/Install/Buy Now/Contact Us button, statistics are not increasing for that App<br>
 ## Release notes - template3-marketsite-frontend - Version 1.27.0 (8/26/2021)<br>
 ### Bug<br>
 AT-1442 - User enumeration<br>

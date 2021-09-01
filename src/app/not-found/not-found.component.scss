@@ -20,3 +20,12 @@
 .subtitle {
   font-size: 20px;
 }
+
+.not-found {
+  &__home-page-button {
+    display: block;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
