@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.27.1 (8/31/2021)<br>
+### Bug<br>
+AT-1375 - [HOTFIX][Market] When click on Download/Install/Buy Now/Contact Us button, statistics are not increasing for that App<br>
 ## Release notes - template3-marketsite-frontend - Version 1.27.0 (8/26/2021)<br>
 ### Bug<br>
 AT-1442 - User enumeration<br>
