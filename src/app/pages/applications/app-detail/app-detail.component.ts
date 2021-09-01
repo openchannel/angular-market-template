@@ -28,7 +28,7 @@ import {
 } from '@openchannel/angular-common-components';
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import {HttpHeaders} from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
     selector: 'app-app-detail',
@@ -203,7 +203,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.isWritingReview = true;
     }
 
-   onReviewSubmit(review: Review): void {
+    onReviewSubmit(review: Review): void {
         this.reviewSubmitInProgress = true;
         let reviewData = {
             ...review,
@@ -266,7 +266,15 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
         return appData.pipe(
             takeUntil(this.destroy$),
-            map(app => new FullAppData(app, pageConfig.fieldMappings)),
+            map(app => {
+                const mappedApp = new FullAppData(app, pageConfig.fieldMappings);
+                mappedApp.images = (mappedApp.images as string[]).map(fileUrl => {
+                    return {
+                        image: fileUrl,
+                    };
+                });
+                return mappedApp;
+            }),
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
 
