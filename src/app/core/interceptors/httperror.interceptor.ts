@@ -8,6 +8,7 @@ import { catchError, mergeMap, retryWhen, switchMap, take } from 'rxjs/operators
 import { AuthenticationService, AuthHolderService, LoginResponse } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
 import { HttpConfigInterceptor } from './httpconfig.interceptor';
+import isbot from 'isbot';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -45,7 +46,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     } else if (this.isCsrfError(response)) {
                         return throwError(response);
                     } else {
-                        if (!notHandledErrors.includes(response.status)) {
+                        if (!notHandledErrors.includes(response.status) && !isbot(navigator.userAgent)) {
                             this.handleError(response);
                         }
                     }
@@ -54,13 +55,13 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             );
     }
 
-    private handleValidationError(validationErrorList: any[]) {
+    private handleValidationError(validationErrorList: any[]): void {
         if (validationErrorList[0].field) {
             this.errorService.setServerErrorList(validationErrorList);
         }
     }
 
-    private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (!this.isRefreshing) {
             this.isRefreshing = true;
             return this.authenticationService.refreshToken({ refreshToken: this.authHolderService.refreshToken }).pipe(
@@ -81,7 +82,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             return this.refreshTokenSubject.pipe(
                 take(1),
                 switchMap((jwt, e) => {
-                    if (jwt != null) {
+                    if (jwt !== null) {
                         return next.handle(HttpConfigInterceptor.addToken(request, jwt));
                     } else {
                         return next.handle(request);
@@ -108,7 +109,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         );
     }
 
-    private handleError(error) {
+    private handleError(error: HttpErrorResponse): void {
         let errorMessage: string;
         if (error.error instanceof ErrorEvent) {
             // client-side error
