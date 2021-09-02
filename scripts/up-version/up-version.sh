@@ -78,7 +78,7 @@ npm i
 
 # ==== Build project. Commit changes. Push changes.
 echo "Build project."
-npm run build
+./node_modules/.bin/ng build --configuration=dev1
 whenError "Error: Build failed."
 
 echo "Commit changes ${commitMessage}"
