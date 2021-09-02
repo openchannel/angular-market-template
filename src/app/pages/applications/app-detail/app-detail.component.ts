@@ -28,7 +28,8 @@ import {
 } from '@openchannel/angular-common-components';
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import {HttpHeaders} from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 
 @Component({
     selector: 'app-app-detail',
@@ -82,6 +83,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private toaster: ToastrService,
         private titleService: TitleService,
         private statisticService: StatisticService,
+        private metaTagService: MarketMetaTagService,
     ) {}
 
     ngOnInit(): void {
@@ -203,7 +205,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.isWritingReview = true;
     }
 
-   onReviewSubmit(review: Review): void {
+    onReviewSubmit(review: Review): void {
         this.reviewSubmitInProgress = true;
         let reviewData = {
             ...review,
@@ -266,6 +268,11 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
         return appData.pipe(
             takeUntil(this.destroy$),
+            tap(appResponse =>
+                this.metaTagService.pushSelectedFieldsToTempPageData({
+                    app: appResponse,
+                }),
+            ),
             map(app => new FullAppData(app, pageConfig.fieldMappings)),
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
