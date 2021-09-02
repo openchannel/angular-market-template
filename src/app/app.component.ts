@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
     AuthenticationService,
-    OCMetaTagService,
     SiteConfigService,
     TitleService
 } from '@openchannel/angular-common-services';
@@ -12,7 +11,7 @@ import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { siteConfig } from '../assets/data/siteConfig';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
-import {MarketMetaTagService} from '@core/services/meta-tag-service/meta-tag-service.service';
+import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 
 @Component({
     selector: 'app-root',
