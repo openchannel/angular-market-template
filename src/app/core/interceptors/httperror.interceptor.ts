@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 
-import { Observable, Subject, throwError } from 'rxjs';
+import { MonoTypeOperatorFunction, Observable, Subject, throwError, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { OcErrorService } from '@openchannel/angular-common-components';
-import { catchError, switchMap, take } from 'rxjs/operators';
+import { catchError, mergeMap, retryWhen, switchMap, take } from 'rxjs/operators';
 import { AuthenticationService, AuthHolderService, LoginResponse } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
 import { HttpConfigInterceptor } from './httpconfig.interceptor';
@@ -12,6 +12,7 @@ import isbot from 'isbot';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
+    private readonly RETRIEVE_504_ERROR_MS = [3_000, 5_000, 10_000, 30_000];
     private isRefreshing = false;
     private refreshTokenSubject: Subject<string> = new Subject<string>();
 
@@ -34,6 +35,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 }),
             )
             .pipe(
+                this.retryFor504Error(),
                 catchError((response: HttpErrorResponse) => {
                     if (response instanceof HttpErrorResponse && response.status === 401 && !response.url.includes('refresh')) {
                         return this.handle401Error(request, next);
@@ -88,6 +90,23 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 }),
             );
         }
+    }
+
+    private retryFor504Error(): MonoTypeOperatorFunction<HttpEvent<any>> {
+        let retryCount = 0;
+        return retryWhen(errors =>
+            errors.pipe(
+                mergeMap(err => {
+                    if (err instanceof HttpErrorResponse && err.status === 504) {
+                        const waitMS = this.RETRIEVE_504_ERROR_MS[retryCount++];
+                        if (waitMS) {
+                            return timer(waitMS);
+                        }
+                    }
+                    return throwError(err);
+                }),
+            ),
+        );
     }
 
     private handleError(error: HttpErrorResponse): void {
