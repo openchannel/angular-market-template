@@ -9,7 +9,7 @@ import { catchError, map, takeUntil, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { forIn } from 'lodash';
 import { AppCategoryDetail, Filter, FullAppData } from '@openchannel/angular-common-components';
-import {CmsContentService} from '@core/services/cms-content-service/cms-content-service.service';
+import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 
 export interface GalleryItem {
     filterId: string;

@@ -10,8 +10,8 @@ import {
     StatisticService,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, Observable } from 'rxjs';
-import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { Subject, Observable, of } from 'rxjs';
+import { catchError, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { pageConfig } from 'assets/data/configData';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -28,7 +28,7 @@ import {
 } from '@openchannel/angular-common-components';
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import {HttpHeaders} from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
     selector: 'app-app-detail',
@@ -108,6 +108,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+        this.loader.complete();
     }
 
     loadReviews(): void {
@@ -203,19 +204,18 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.isWritingReview = true;
     }
 
-   onReviewSubmit(review: Review): void {
+    onReviewSubmit(review: Review): void {
         this.reviewSubmitInProgress = true;
-        let reviewData = {
+        const reviewData = {
             ...review,
             appId: this.app.appId,
         };
         if (this.userReview) {
-            reviewData = {
-                ...reviewData,
-                reviewId: this.userReview.reviewId,
-            };
             this.reviewsService
-                .updateReview(reviewData)
+                .updateReview({
+                    ...reviewData,
+                    reviewId: this.userReview.reviewId,
+                })
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(
                     () => this.reloadReview(),
@@ -266,6 +266,12 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
         return appData.pipe(
             takeUntil(this.destroy$),
+            catchError(error => {
+                if (error.status === 404) {
+                    this.router.navigate(['/not-found']).then(() => this.loader.complete());
+                }
+                return of(error);
+            }),
             map(app => new FullAppData(app, pageConfig.fieldMappings)),
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
