@@ -56,9 +56,7 @@ npm install file:<absolute path to common component project dist/angular-common-
 ```
 
 ### Configure dashboard
-- dev1 on the [https://dev1-dashboard.openchannel.io/](https://dev1-dashboard.openchannel.io/)
-- stage1 on the [https://stage1-dashboard.openchannel.io/](https://stage1-dashboard.openchannel.io/)
-- us1(production) on the [https://us1-dashboard.openchannel.io/](https://us1-dashboard.openchannel.io/)
+- Openchannel dashboard [https://my.openchannel.io/](https://my.openchannel.io/)
 
 
 Step 1. Setup OAuth
@@ -144,27 +142,22 @@ Step 5. Configure site authorization type SSO or Native login.
 
 ### Usage
 
-#### Run project with the remote site configs (dev1, stage1):
+#### Run project with the remote site configs:
 
 - Open file:
 ```
 /etc/hosts
 ```
-- Add to file two lines:
+- Add to file your custom domain. (Note: this domain can be invalid, because used only in 'Origin' headers.)
 ```
-127.0.0.1 stage1-template-market.openchannel.io
-127.0.0.1 dev1-template-market.openchannel.io
+127.0.0.1 my-custom-domain.com
 ```
-- Run project with the stage1 environment:
+- Run project with the production environment:
 ```
-sudo npm run start-stage1
-```
-- Run project with the dev1 environment:
-```
-sudo npm run start-dev1
+sudo npm run start-with-host my-custom-domain.com
 ```
 
-####  Run project with the Moesif plugin for Chrome (dev1, stage1, us1):
+####  Run project with the Moesif plugin for Chrome:
 
 - Install [Moesif](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc/related) CORS plugin for Chrome
 - Submit your work email address there
@@ -178,47 +171,14 @@ sudo npm run start-dev1
   http://localhost:4200
   ``
 - Fill in the 'Request Headers' field:<br>
-  Example for dev1 environment: <br>
+  (Note: this domain can be invalid, because used only in 'Origin' headers.)
   ``
-  https://dev1-template-market.openchannel.io
-  ``<br>
-  Example for stage1 environment: <br>
-  ``
-  https://stage1-template-market.openchannel.io
-  ``  
-  *Or just set url from your site:  
-  ``
-  https://my-site-portal-or-market.io
+  https://my-custom-domain.com
   ``
 - Then start project with command:<br>
-  Example for dev1 environment: <br>
   ``
-  ng serve -c dev1
-  ``  
-  Example for stage1 environment: <br>
-  ``
-  ng serve -c stage1
-  ``    
-  Example for us1 environment: <br>
-  ``
-  ng serve -c production
-  ``
-
-####  Run project with the remote site configs (us1):
-Note: replace <font color="red">YOUR_SITE_DOMAIN</font> with your market domain.
-
-- Open file:
-```
-/etc/hosts
-```
-- Add to file this line:
-```
-127.0.0.1 YOUR_SITE_DOMAIN
-```
-- Run project with the us1 environment:
-```
-sudo npm run start-us1 YOUR_SITE_DOMAIN
-```
+  npm run start
+  ``<br>
 
 ## Documentation Compodoc
 Compodoc shows project structure. (modules, components, routes etc.)
