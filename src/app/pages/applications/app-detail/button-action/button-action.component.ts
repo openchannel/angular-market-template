@@ -209,7 +209,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                             ? errorHandler
                             : error => {
                                   this.inProcess = false;
-                                  if (this.viewData?.message?.fail) {
+                                  if (error.status !== 429 && this.viewData?.message?.fail) {
                                       this.toasterService.error(this.viewData?.message?.fail);
                                   }
                                   return throwError(error);

@@ -54,7 +54,7 @@ definitions:
           - sonar
         script:
           - npm install
-          - npm run build
+          - ./node_modules/.bin/ng build --configuration=dev1
           - pipe: sonarsource/sonarcloud-scan:1.2.1
             variables:
               SONAR_SCANNER_OPTS: -Xmx2048m
@@ -71,6 +71,10 @@ definitions:
           - git remote -v
           - git push origin master:main
           - git push origin --tags
+    - step: &create-git-tag
+        name: Create Git Tag
+        script:
+          - /bin/bash ./scripts/create-and-push-github-tag/create-and-push-github-tag.sh "${CUSTOM_TAG_NAME}" "./package.json" "${PUSH_TAG_FORCE}"
     - step: &up-libs-version
         name: "Up repository and libs version"
         script:
@@ -100,6 +104,11 @@ pipelines:
           - name: NPM_REPOSITORY_VERSION
           - name: NPM_LIBS_VERSION
       - step: *up-libs-version
+    Create git tag:
+      - variables:
+          - name: CUSTOM_TAG_NAME
+          - name: PUSH_TAG_FORCE
+      - step: *create-git-tag
   branches:
     develop:
       - step: *build-test-sonarcloud

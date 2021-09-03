@@ -3,7 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CustomHttpClientXsrfModule, OcCommonServiceModule } from '@openchannel/angular-common-services';
+import { CustomHttpClientXsrfModule, OcCommonServiceModule, NetlifyPrerenderModule } from '@openchannel/angular-common-services';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OAuthModule } from 'angular-oauth2-oidc';
@@ -19,6 +19,7 @@ import { OcAppCategoriesModule, FileUploaderService } from '@openchannel/angular
 import { FileService } from '@core/services/file.service';
 import { OcAppsSearchService } from '@core/services/oc-apps-search.service';
 import { AppsSearchService } from '@openchannel/angular-common-components/src/lib/form-components';
+import { prerenderEndpoints } from '../assets/data/prerenderEndpoints';
 
 function getApiUrl(): string {
     if (environment.enableProxy) {
@@ -42,6 +43,7 @@ export const OC_API_URL = getApiUrl();
         ToastrModule.forRoot(),
         OAuthModule.forRoot(),
         CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: OC_API_URL }),
+        NetlifyPrerenderModule.withOptions({ endpointsConfigForPrerender: prerenderEndpoints }),
         SharedModule,
         OcAppCategoriesModule,
         LoadingBarModule,
