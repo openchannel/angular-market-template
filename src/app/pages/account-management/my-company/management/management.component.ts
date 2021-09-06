@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
+    AuthHolderService,
     InviteUserModel,
     InviteUserService,
     Page,
@@ -54,6 +55,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         private userRolesService: UserRoleService,
         private toaster: ToastrService,
         private modal: NgbModal,
+        private authHolderService: AuthHolderService,
     ) {}
 
     ngOnInit(): void {
@@ -202,12 +204,16 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     deleteAccount(user: UserAccountGridModel): void {
-        this.openDeleteModal('Delete user', 'Delete this user from the marketplace now?', 'Yes, delete user', () =>
-            this.userAccountService.deleteUserAccount(user?.userAccountId).subscribe(() => {
-                this.deleteUserFromResultArray(user);
-                this.toaster.success('User has been deleted from your organization');
-            }),
-        );
+        if (user.userAccountId === this.authHolderService.userDetails.individualId) {
+            this.openDeleteModal('Delete user', "You can't delete yourself!", 'Ok', null, 'Close');
+        } else {
+            this.openDeleteModal('Delete user', 'Delete this user from the marketplace now?', 'Yes, delete user', () =>
+                this.userAccountService.deleteUserAccount(user?.userAccountId).subscribe(() => {
+                    this.deleteUserFromResultArray(user);
+                    this.toaster.success('User has been deleted from your organization');
+                }),
+            );
+        }
     }
 
     private mapToGridUserFromUser(user: UserAccount): UserAccountGridModel {
@@ -257,12 +263,21 @@ export class ManagementComponent implements OnInit, OnDestroy {
         return null;
     }
 
-    private openDeleteModal(modalTitle: string, modalText: string, confirmText: string, deleteCallback: () => void): void {
+    private openDeleteModal(
+        modalTitle: string,
+        modalText: string,
+        confirmText: string,
+        deleteCallback: () => void,
+        cancelText?: string,
+    ): void {
         const modalSuspendRef = this.modal.open(OcConfirmationModalComponent, { size: 'md' });
         modalSuspendRef.componentInstance.modalTitle = modalTitle;
         modalSuspendRef.componentInstance.modalText = modalText;
         modalSuspendRef.componentInstance.confirmButtonText = confirmText;
         modalSuspendRef.componentInstance.confirmButtonType = 'danger';
+        if (cancelText) {
+            modalSuspendRef.componentInstance.rejectButtonText = cancelText;
+        }
         modalSuspendRef.result.then(deleteCallback, () => {});
     }
 
