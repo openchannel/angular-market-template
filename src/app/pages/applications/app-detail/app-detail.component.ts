@@ -274,6 +274,11 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 }
                 return of(error);
             }),
+            tap(appResponse =>
+                this.metaTagService.pushSelectedFieldsToTempPageData({
+                    app: appResponse,
+                }),
+            ),
             map(app => new FullAppData(app, pageConfig.fieldMappings)),
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
