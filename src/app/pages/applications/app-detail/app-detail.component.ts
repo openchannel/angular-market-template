@@ -279,7 +279,15 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                     app: appResponse,
                 }),
             ),
-            map(app => new FullAppData(app, pageConfig.fieldMappings)),
+            map(app => {
+                const mappedApp = new FullAppData(app, pageConfig.fieldMappings);
+                mappedApp.images = (mappedApp.images as string[]).map(fileUrl => {
+                    return {
+                        image: fileUrl,
+                    };
+                });
+                return mappedApp;
+            }),
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
 
