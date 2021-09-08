@@ -7,6 +7,7 @@ import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { siteConfig } from '../assets/data/siteConfig';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
+import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 
 @Component({
     selector: 'app-root',
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit {
         private siteService: SiteConfigService,
         public loadingBar: LoadingBarService,
         private titleService: TitleService,
+        private metaTagService: MarketMetaTagService,
         private cmsService: CmsContentService,
     ) {
         this.loader = this.loadingBar.useRef();

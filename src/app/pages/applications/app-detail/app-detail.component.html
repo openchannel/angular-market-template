@@ -17,7 +17,7 @@
             <div class="app-detail__data">
                 <div class="app-detail__data-description">
                     <div class="col-md-auto mb-2 app-logo" *ngIf="app.logo">
-                        <img [src]="app.logo" alt="app-icon">
+                        <img [src]="app.logo" [alt]="app.name || 'app-icon'">
                     </div>
                     <div class="d-flex flex-column">
                         <h1 class="mb-2 page-title-size">{{ app.name }}</h1>
@@ -38,9 +38,9 @@
         </div>
     </div>
     <div class="container">
-        <oc-image-gallery *ngIf="app.gallery && app.gallery.length > 0"
-                          [gallery]="app.gallery"
-                          class="mt-8"></oc-image-gallery>
+        <oc-image-gallery *ngIf="app.images && app.images.length > 0"
+                          [gallery]="app.images"
+                          class="mt-8 d-block"></oc-image-gallery>
 
         <div class="row mb-0 mb-md-8 mt-3 mt-md-8">
             <oc-app-description  class="col-md-8"

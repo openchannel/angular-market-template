@@ -186,6 +186,9 @@ body {
         img {
             width: 100%;
             height: auto;
+            white-space: pre-wrap;
+            overflow: hidden;
+            display: inline-block;
         }
     }
 }
