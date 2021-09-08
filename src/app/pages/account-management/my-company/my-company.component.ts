@@ -78,8 +78,6 @@ export class MyCompanyComponent implements OnInit {
     }
 
     openInviteModal(): void {
-        const inviteTemplateId = '5fc663f2217876017548dc25';
-
         const modalRef = this.modal.open(OcInviteModalComponent, { size: 'sm' });
         modalRef.componentInstance.ngbModalRef = modalRef;
 
@@ -92,7 +90,7 @@ export class MyCompanyComponent implements OnInit {
         };
 
         modalData.requestSendInvite = (accountData: any) => {
-            return this.inviteService.sendUserInvite(inviteTemplateId, null, accountData);
+            return this.inviteService.sendUserInvite(null, accountData);
         };
 
         modalRef.componentInstance.modalData = modalData;

@@ -60,6 +60,7 @@
     <div class="container">
         <oc-app-get-started [getStartedImage]="cmsData.bottomCalloutImageURL"
                             [getStartedHeader]="cmsData.bottomCalloutHeader"
+                            getStartedHeadingTag="h2"
                             [getStartedDescription]="cmsData.bottomCalloutDescription"
                             [getStartedButtonText]="cmsData.bottomCalloutButtonText"
                             (getStarted)="router.navigate([cmsData.bottomCalloutButtonLocation || ''])"></oc-app-get-started>

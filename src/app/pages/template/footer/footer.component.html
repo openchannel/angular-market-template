@@ -5,7 +5,7 @@
                 <img [src]="cmsData.logoImageURL" alt=" footer-logo" class="company-logo">
             </div>
             <div *ngFor="let column of cmsData.columnsDFA" class="info-column">
-                <h5 [routerLink]="column.location || ''">{{column.label}}</h5>
+                <h2 class="info-column" [routerLink]="column.location || ''">{{column.label}}</h2>
                 <ul class="list-unstyled">
                     <li *ngFor="let row of column?.items"><a [routerLink]="row.location || ''">{{row.label}}</a></li>
                 </ul>
@@ -14,6 +14,6 @@
                 <oc-social-links [socialLinks]="socialLinks"></oc-social-links>
             </div>
         </div>
-        <h6 class="bottom-info">© 2020 Your company. All rights reserved.</h6>
+        <p class="bottom-info">© 2020 Your company. All rights reserved.</p>
     </div>
 </div>
