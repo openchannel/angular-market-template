@@ -75,12 +75,25 @@ definitions:
         name: Create Git Tag
         script:
           - /bin/bash ./scripts/create-and-push-github-tag/create-and-push-github-tag.sh "${CUSTOM_TAG_NAME}" "./package.json" "${PUSH_TAG_FORCE}"
-    - step: &up-libs-version
-        name: "Up repository and libs version"
+    - step: &up-version
+        name: "Up version"
         script:
-          - chmod +x ./scripts/* && cd ./scripts/up-version
-          - /bin/bash up-version.sh "${JIRA_EMAIL}" "${JIRA_API_KEY}" "${RELEASE_VERSION}" "${NPM_REPOSITORY_VERSION}" "${NPM_LIBS_VERSION}"
-
+          - /bin/bash ./scripts/package-json-version/up-package-json-version.sh "$PROJECT_VERSION" "$SERVICES_AND_COMPONENTS_VERSION"
+    - step: &create-changelog-with-git-tag
+        name: "Create changelog and add git tag"
+        script:
+          # Get current package.json version
+          - projectVerion=$(node -e "console.log(require('./package.json').version)")
+          # Validate package.json version
+          - if [[ ! $projectVerion == +([0-9]).+([0-9]).+([0-9]) ]]; then echo "Error. package.json file includes prerelease version $projectVerion. Must be like '1.1.1'. Please change version."; exit 1; fi
+          # Install required libs for changelog script
+          - npm i --prefix ./scripts/changelog-builder
+          # Generate new changelog file or skip
+          - EMAIL=${JIRA_EMAIL} API_KEY=${JIRA_API_KEY} RELEASE_VERSION=${JIRA_RELEASE_VERSION} PROJECT_VERSION=$projectVerion node ./scripts/changelog-builder/script.js
+          # Commit and push
+          - if [[ ! -z $(git status --porcelain) ]]; then git add . ; git commit -m "Created changelog.md for $JIRA_RELEASE_VERSION release." ; git push ; else echo 'Changelog not changed.'; fi
+          # Create git tag and push
+          - /bin/bash ./scripts/create-and-push-github-tag/script.sh "${PUSH_TAG_FORCE}"
 pipelines:
   pull-requests:
     '**':
@@ -94,21 +107,16 @@ pipelines:
       - step:
           <<: *build-app-and-deploy
           deployment: stage1
-    Up libs version:
+    Up version:
       - variables:
-          - name: NPM_LIBS_VERSION
-      - step: *up-libs-version
-    Up repository version:
+          - name: SERVICES_AND_COMPONENTS_VERSION
+          - name: PROJECT_VERSION
+      - step: *up-version
+    Create changelog and Git Tag:
       - variables:
-          - name: RELEASE_VERSION
-          - name: NPM_REPOSITORY_VERSION
-          - name: NPM_LIBS_VERSION
-      - step: *up-libs-version
-    Create git tag:
-      - variables:
-          - name: CUSTOM_TAG_NAME
+          - name: JIRA_RELEASE_VERSION
           - name: PUSH_TAG_FORCE
-      - step: *create-git-tag
+      - step: *create-changelog-with-git-tag
   branches:
     develop:
       - step: *build-test-sonarcloud
