@@ -1,3 +1,7 @@
+## Release notes - template3-marketsite-frontend - Version 1.34.0 (9/13/2021)<br>
+### Bug<br>
+AT-1511 - [Portal / Market] [Alias Email] Email field does not accepts the alias emails.<br>
+AT-1406 - [Dev1][Portal] Getting error when selecting an App Type.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.33.0 (9/8/2021)<br>
 ### Task<br>
 AT-1420 - Make the developerInviteTemplateId and userInviteTemplateId configurable and only allow sending developerInviteTemplateId/userInviteTemplateId, type, roles and email parameters in CAP endpoint<br>
