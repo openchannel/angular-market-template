@@ -134,12 +134,18 @@ a:hover {
         height: 52px;
         margin-bottom: 16px;
         line-height: 52px;
+        @include media-breakpoint-md {
+            width: 100%;
+        }
     }
 
     .auth-button {
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        @include media-breakpoint-md {
+            padding: 0 2rem;
+        }
     }
 
     .navbar-none {
