@@ -27,6 +27,15 @@
     }
 }
 
+.get-started {
+    margin-top: 5rem;
+    padding: 8rem 0;
+    @include media-breakpoint-sm {
+        margin-top: 4rem;
+        padding: 4rem 0;
+    }
+}
+
 // Media Query - max-width: 767px Start
 
 @media (max-width: 767px) {
