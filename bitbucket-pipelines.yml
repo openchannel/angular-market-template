@@ -1,4 +1,4 @@
-image: node:10.15.3
+image: node:14.17.6
 
 definitions:
   services:
@@ -49,7 +49,6 @@ definitions:
           - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths /index.html "/assets*"
     - step: &build-test-sonarcloud
         name: Build, test and analyze on SonarCloud
-        image: node:15.7.0
         caches:
           - sonar
         script:
