@@ -179,6 +179,20 @@ sudo npm run start-with-host my-custom-domain.com
   ``
   npm run start
   ``<br>
+## Search engine discoverability
+
+Project contains the `robots.txt` file. This file tells search engine crawlers which URLs the crawler can
+access on your site. This is used mainly to avoid overloading your site with requests. Access is disallowed to the whole
+site by default. If you want to allow access, change property:
+```
+Disallow: /
+```
+to
+```
+Allow: /
+```
+
+Documentation: [https://developers.google.com/search/docs/advanced/robots/create-robots-txt?hl=en](https://developers.google.com/search/docs/advanced/robots/create-robots-txt?hl=en)
 
 ## Documentation Compodoc
 Compodoc shows project structure. (modules, components, routes etc.)

@@ -1,3 +1,10 @@
+## Release notes - template3-marketsite-frontend - Version 1.36.0 (9/17/2021)<br>
+### Bug<br>
+AT-1174 - Wrong margin on portal homepage<br>
+AT-1163 - Wrong width of Login and Sign up buttons<br>
+AT-1161 - Dropdown field component has wrong height<br>
+AT-1101 - [Portal / Market site] Log in, Sign up, Forgot password pages are not as per mock designs.<br>
+AT-1094 - [UI][Marketsite][Homepage] "Get started as an app Developer" button should be center aligned and Home icon should be smaller.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.35.0 (9/15/2021)<br>
 ### Bug<br>
 AT-1509 - [Reset Password] Getting wrong password validation when entered password does not match expected criteria.<br>
