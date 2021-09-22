@@ -82,7 +82,11 @@ export class LoginComponent implements OnInit, OnDestroy {
                                 .verifyCode(code, this.redirectUri)
                                 .pipe(takeUntil(this.destroy$))
                                 .subscribe(response => {
-                                    this.processLoginResponse(response, this.oauthService.state);
+                                    const redirectUri =
+                                        this.authConfig.grantType === 'authorization_code'
+                                            ? decodeURIComponent(this.oauthService.state)
+                                            : this.oauthService.state;
+                                    this.processLoginResponse(response, redirectUri);
                                     this.loader.complete();
                                 });
                         } else {
