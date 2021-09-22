@@ -17,7 +17,7 @@
 </div>
 <div class="container">
     <div class="row mt-7">
-        <div class="col-md-3 filter__container" id="main-content">
+        <div class="col-md-3 col-xxxl-2 filter__container" id="main-content">
             <oc-text-search class="mb-3" (enterSearch)="catchSearchText($event)"></oc-text-search>
             <app-collapse-with-title titleForClose="Close filter options"
                                      titleForOpen="Open filter options"
@@ -31,7 +31,7 @@
                         [title]="filter.name"
                         [sidebarModel]="filter.values"></oc-sidebar>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 col-xxxl-10">
             <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
                 <div [ngSwitch]="configElement?.type">
                     <div *ngSwitchCase="'filter-values-card-list'" class="mb-7">

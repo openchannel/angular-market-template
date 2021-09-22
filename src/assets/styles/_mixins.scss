@@ -25,3 +25,15 @@
         @content;
     }
 }
+
+@mixin media-breakpoint-xxl {
+    @media (max-width: 1399.98px) {
+        @content;
+    }
+}
+
+@mixin media-breakpoint-xxxl {
+    @media (max-width: 1919.98px) {
+        @content;
+    }
+}

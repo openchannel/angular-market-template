@@ -12,7 +12,7 @@
         </svg-icon>
     </div>
     <div class="filter-container row" *ngIf="loadFilters$ | async">
-        <div class="col-md-3" [class.hide-filters]="isHideFilter">
+        <div class="col-md-3 col-xxl-2" [class.hide-filters]="isHideFilter">
             <div *ngFor="let filter of filters">
                 <div [ngSwitch]="filter?.id">
                     <oc-sidebar *ngSwitchCase="SINGLE_FILTER"
@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 col-xxl-10">
             <oc-text-search [(searchText)]="searchText" (enterSearch)="onTextChange($event)"></oc-text-search>
             <div class="search-tags">
                 <oc-tag-element class="search-tags__element" *ngFor="let filter of selectedFilterValues"
