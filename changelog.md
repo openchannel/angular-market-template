@@ -1,3 +1,9 @@
+## Release notes - template3-marketsite-frontend - Version 1.37.0 (9/23/2021)<br>
+### Bug<br>
+AT-1491 - [Portal] Multi-level DFA with Row label value selected from Dashboard, is showing error while adding field in that DFA.<br>
+AT-1106 - [UI][Portal] Portal Homepage Mobile devices issues.<br>
+AT-1093 - [UI][Marketsite][Homepage] Recently added, Most popular and Apps for analytics sections are not as per Mock design.<br>
+AT-1092 - [UI][Market site][Homepage] Sentence case required for all the heading on Home page<br>
 ## Release notes - template3-marketsite-frontend - Version 1.36.0 (9/17/2021)<br>
 ### Bug<br>
 AT-1174 - Wrong margin on portal homepage<br>
