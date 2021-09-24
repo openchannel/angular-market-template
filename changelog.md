@@ -2,6 +2,31 @@
 ### Story<br>
 AT-1519 - [hotfix] A user is able to authenticate using the "Authorization code" grant type<br>
 AT-1518 - [hotfix] A user is able to authenticate using the "Implicit" grant type<br>
+## Release notes - template3-marketsite-frontend - Version 1.37.0 (9/23/2021)<br>
+### Bug<br>
+AT-1491 - [Portal] Multi-level DFA with Row label value selected from Dashboard, is showing error while adding field in that DFA.<br>
+AT-1106 - [UI][Portal] Portal Homepage Mobile devices issues.<br>
+AT-1093 - [UI][Marketsite][Homepage] Recently added, Most popular and Apps for analytics sections are not as per Mock design.<br>
+AT-1092 - [UI][Market site][Homepage] Sentence case required for all the heading on Home page<br>
+## Release notes - template3-marketsite-frontend - Version 1.36.0 (9/17/2021)<br>
+### Bug<br>
+AT-1174 - Wrong margin on portal homepage<br>
+AT-1163 - Wrong width of Login and Sign up buttons<br>
+AT-1161 - Dropdown field component has wrong height<br>
+AT-1101 - [Portal / Market site] Log in, Sign up, Forgot password pages are not as per mock designs.<br>
+AT-1094 - [UI][Marketsite][Homepage] "Get started as an app Developer" button should be center aligned and Home icon should be smaller.<br>
+## Release notes - template3-marketsite-frontend - Version 1.35.0 (9/15/2021)<br>
+### Bug<br>
+AT-1509 - [Reset Password] Getting wrong password validation when entered password does not match expected criteria.<br>
+AT-1497 - For components, fix as many moderate and high package security vulnerabilities as is convenient<br>
+AT-1496 - For marketplace, fix as many moderate and high package security vulnerabilities as is convenient<br>
+AT-1495 - For partner portal, fix as many moderate and high package security vulnerabilities as is convenient<br>
+### Story<br>
+AT-379 - A search engine can be blocked from crawling the site based on search engine discoverability property<br>
+## Release notes - template3-marketsite-frontend - Version 1.34.0 (9/13/2021)<br>
+### Bug<br>
+AT-1511 - [Portal / Market] [Alias Email] Email field does not accepts the alias emails.<br>
+AT-1406 - [Dev1][Portal] Getting error when selecting an App Type.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.33.0 (9/8/2021)<br>
 ### Task<br>
 AT-1420 - Make the developerInviteTemplateId and userInviteTemplateId configurable and only allow sending developerInviteTemplateId/userInviteTemplateId, type, roles and email parameters in CAP endpoint<br>
