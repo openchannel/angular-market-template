@@ -1,3 +1,7 @@
+## Release notes - template3-marketsite-frontend - Version 1.37.1 (9/24/2021)<br>
+### Story<br>
+AT-1519 - [hotfix] A user is able to authenticate using the "Authorization code" grant type<br>
+AT-1518 - [hotfix] A user is able to authenticate using the "Implicit" grant type<br>
 ## Release notes - template3-marketsite-frontend - Version 1.33.0 (9/8/2021)<br>
 ### Task<br>
 AT-1420 - Make the developerInviteTemplateId and userInviteTemplateId configurable and only allow sending developerInviteTemplateId/userInviteTemplateId, type, roles and email parameters in CAP endpoint<br>
