@@ -1,3 +1,7 @@
+## Release notes - template3-marketsite-frontend - Version 1.37.1 (9/24/2021)<br>
+### Story<br>
+AT-1519 - [hotfix] A user is able to authenticate using the "Authorization code" grant type<br>
+AT-1518 - [hotfix] A user is able to authenticate using the "Implicit" grant type<br>
 ## Release notes - template3-marketsite-frontend - Version 1.37.0 (9/23/2021)<br>
 ### Bug<br>
 AT-1491 - [Portal] Multi-level DFA with Row label value selected from Dashboard, is showing error while adding field in that DFA.<br>
