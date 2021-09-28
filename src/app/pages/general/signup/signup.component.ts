@@ -26,6 +26,7 @@ export class SignupComponent implements OnInit, OnDestroy {
                 typeData: null,
                 includeFields: ['name', 'email'],
             },
+            fieldsOrder: ['name', 'email', 'org--name', 'password'],
         },
         {
             name: 'Custom',
