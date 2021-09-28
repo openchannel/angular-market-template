@@ -82,7 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                                 .verifyCode(code, this.redirectUri)
                                 .pipe(takeUntil(this.destroy$))
                                 .subscribe(response => {
-                                    this.processLoginResponse(response, redirectUri);
+                                    this.processLoginResponse(response, this.redirectUri);
                                     this.loader.complete();
                                 });
                         } else {
