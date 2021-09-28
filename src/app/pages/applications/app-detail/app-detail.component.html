@@ -33,13 +33,14 @@
                         </div>
                     </div>
                 </div>
-                <oc-video *ngIf="app.video" [videoUrl]="app.video"></oc-video>
+                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="app-detail__video"></oc-video>
             </div>
         </div>
     </div>
     <div class="container">
         <oc-image-gallery *ngIf="app.images && app.images.length > 0"
                           [gallery]="app.images"
+                          [expandOnClick]="true"
                           class="mt-8 d-block"></oc-image-gallery>
 
         <div class="row mb-0 mb-md-8 mt-3 mt-md-8">
