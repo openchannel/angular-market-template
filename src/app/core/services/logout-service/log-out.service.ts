@@ -34,12 +34,12 @@ export class LogOutService {
             .subscribe(() => this.router.navigateByUrl(navigateTo).then());
     }
 
-    private isClientAccessTypeConfidential(authConfig: SiteAuthConfig): boolean {
-        return authConfig.clientAccessType === 'confidential';
+    private isAuthorizationCodeFlow(authConfig: SiteAuthConfig): boolean {
+        return authConfig.grantType === 'authorization_code' && authConfig.clientAccessType === 'confidential';
     }
 
     private logOutSSO(ssoConfig: SiteAuthConfig): Observable<boolean> {
-        if (this.isClientAccessTypeConfidential(ssoConfig)) {
+        if (this.isAuthorizationCodeFlow(ssoConfig)) {
             return this.authenticationService.logOut().pipe(map(() => true));
         } else {
             this.oAuthService.configure({

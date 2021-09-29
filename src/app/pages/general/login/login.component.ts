@@ -57,6 +57,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loader = this.loadingBar.useRef();
         if (this.authHolderService.isLoggedInUser()) {
             this.router.navigate(['']).then();
+        } else {
+            this.oauthService.logOut(true);
         }
 
         this.loader.start();
