@@ -82,7 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                                 .verifyCode(code, this.redirectUri)
                                 .pipe(takeUntil(this.destroy$))
                                 .subscribe(response => {
-                                    this.processLoginResponse(response, this.redirectUri);
+                                    this.processLoginResponse(response, this.returnUrl);
                                     this.loader.complete();
                                 });
                         } else {
@@ -160,7 +160,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private checkState(): boolean {
         const stateParam = this.route.snapshot.queryParamMap.get('state');
         const state = stateParam.split(';')[0];
-        this.returnUrl = stateParam.split(';')[1];
+        this.returnUrl = decodeURIComponent(stateParam.split(';')[1]);
 
         return state === sessionStorage.getItem('nonce');
     }
