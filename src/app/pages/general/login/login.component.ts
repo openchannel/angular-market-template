@@ -171,6 +171,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             responseType: this.authConfig.grantType === 'implicit' ? '' : 'code',
             disablePKCE: this.isClientAccessTypeConfidential(),
             redirectUri: this.redirectUri,
+            strictDiscoveryDocumentValidation: false,
         });
     }
 
