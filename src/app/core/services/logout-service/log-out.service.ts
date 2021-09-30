@@ -45,6 +45,7 @@ export class LogOutService {
             this.oAuthService.configure({
                 ...ssoConfig,
                 postLogoutRedirectUri: window.location.origin,
+                strictDiscoveryDocumentValidation: false,
             });
             return from(this.oAuthService.loadDiscoveryDocument()).pipe(
                 mergeMap(() => this.authenticationService.logOut().pipe(first())),
