@@ -3,7 +3,12 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CustomHttpClientXsrfModule, OcCommonServiceModule, NetlifyPrerenderModule } from '@openchannel/angular-common-services';
+import {
+    CustomHttpClientXsrfModule,
+    OcCommonServiceModule,
+    NetlifyPrerenderModule,
+    AuthHolderService,
+} from '@openchannel/angular-common-services';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OAuthModule } from 'angular-oauth2-oidc';
@@ -21,14 +26,7 @@ import { OcAppsSearchService } from '@core/services/oc-apps-search.service';
 import { AppsSearchService } from '@openchannel/angular-common-components/src/lib/form-components';
 import { prerenderEndpoints } from '../assets/data/prerenderEndpoints';
 
-function getApiUrl(): string {
-    if (environment.enableProxy) {
-        return `${window.origin}/client-api/`;
-    }
-    return environment.apiUrl;
-}
-
-export const OC_API_URL = getApiUrl();
+const apiURl = environment.enableProxy ? `${window.origin}/client-api/` : environment.apiUrl;
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, NotFoundComponent],
@@ -38,18 +36,23 @@ export const OC_API_URL = getApiUrl();
         AppRoutingModule,
         BrowserModule,
         BrowserAnimationsModule,
-        OcCommonServiceModule.forRoot(OC_API_URL),
+        OcCommonServiceModule.forRoot(apiURl),
         DragDropModule,
         ToastrModule.forRoot(),
         OAuthModule.forRoot(),
-        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: OC_API_URL }),
+        CustomHttpClientXsrfModule.withOptions({ headerName: 'X-CSRF-TOKEN', apiUrl: apiURl }),
         NetlifyPrerenderModule.withOptions({ endpointsConfigForPrerender: prerenderEndpoints }),
         SharedModule,
         OcAppCategoriesModule,
         LoadingBarModule,
     ],
     providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useFactory: (authHolderService: AuthHolderService): HttpConfigInterceptor => new HttpConfigInterceptor(authHolderService, apiURl),
+            deps: [AuthHolderService],
+            multi: true,
+        },
         { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
         { provide: FileUploaderService, useClass: FileService },
         { provide: AppsSearchService, useClass: OcAppsSearchService },
