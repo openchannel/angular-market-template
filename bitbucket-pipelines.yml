@@ -9,7 +9,7 @@ definitions:
   steps:
     - step: &build-app-and-deploy
         name: "Build and Deploy"
-        image: python:3.7.7-stretch
+        image: python:3.9.7
         script:
           # Initial configuration
           - if [ -n "$PROJECT_FOLDER" ]; then echo $PROJECT_FOLDER; fi
