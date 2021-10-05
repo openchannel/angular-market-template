@@ -1,3 +1,7 @@
+## Release notes - template3-marketsite-frontend - Version 1.39.0 (10/5/2021)<br>
+### Task<br>
+AT-1504 - Improve gallery component<br>
+AT-779 - Improve tag form field component behaviour<br>
 ## Release notes - template3-marketsite-frontend - Version 1.38.2 (10/4/2021)<br>
 ### Bug<br>
 AT-1533 - [hotfix] Upgrade to compodoc 1.1.15<br>

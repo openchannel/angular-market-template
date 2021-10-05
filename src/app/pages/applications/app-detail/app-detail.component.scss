@@ -39,6 +39,17 @@
     &__price {
         @include font-medium();
     }
+
+    &__video {
+        display: block;
+        width: 380px;
+        height: 260px;
+        @include media-breakpoint-md {
+            width: 100%;
+            height: 182px;
+            margin-top: 1rem;
+        }
+    }
 }
 
 .list-group.list-group-flush {
