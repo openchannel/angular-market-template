@@ -1,6 +1,6 @@
 {
   "name": "template3-marketsite",
-  "version": "1.37.1",
+  "version": "1.39.0",
   "scripts": {
     "ng": "ng",
     "start": "./node_modules/.bin/ng serve",
@@ -32,8 +32,8 @@
     "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "@ng-select/ng-select": "^6.1.0",
     "@ngx-loading-bar/core": "^5.1.1",
-    "@openchannel/angular-common-components": "^2.29.0",
-    "@openchannel/angular-common-services": "^2.29.0",
+    "@openchannel/angular-common-components": "^2.31.0",
+    "@openchannel/angular-common-services": "^2.31.0",
     "@tinymce/tinymce-angular": "^4.2.1",
     "angular-oauth2-oidc": "^10.0.3",
     "bootstrap": "^4.4.1",
@@ -54,7 +54,7 @@
     "@angular/cli": "~11.2.14",
     "@angular/compiler-cli": "~11.2.14",
     "@angular/language-service": "~11.2.14",
-    "@compodoc/compodoc": "^1.1.11",
+    "@compodoc/compodoc": "^1.1.15",
     "@types/chart.js": "^2.9.20",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",

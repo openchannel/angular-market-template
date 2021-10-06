@@ -1,3 +1,18 @@
+## Release notes - template3-marketsite-frontend - Version 1.39.0 (10/5/2021)<br>
+### Task<br>
+AT-1504 - Improve gallery component<br>
+AT-779 - Improve tag form field component behaviour<br>
+## Release notes - template3-marketsite-frontend - Version 1.38.2 (10/4/2021)<br>
+### Bug<br>
+AT-1533 - [hotfix] Upgrade to compodoc 1.1.15<br>
+## Release notes - template3-marketsite-frontend - Version 1.38.1 (10/4/2021)<br>
+### Bug<br>
+AT-1527 - [HOTFIX] 500 error occurring when trying to authenticate using Auth0<br>
+## Release notes - template3-marketsite-frontend - Version 1.38.0 (10/1/2021)<br>
+### Task<br>
+AT-1507 - Field group improvements<br>
+### Story<br>
+AT-1494 - A user or developer is able to log in using OAuth 2.0 SSO<br>
 ## Release notes - template3-marketsite-frontend - Version 1.37.1 (9/24/2021)<br>
 ### Story<br>
 AT-1519 - [hotfix] A user is able to authenticate using the "Authorization code" grant type<br>
