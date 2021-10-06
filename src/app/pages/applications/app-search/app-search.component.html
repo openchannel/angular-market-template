@@ -4,15 +4,14 @@
                  alt="arrow-icon">
             <a href="#" class="font-m font-med pl-1">Back</a>
     </div>
-    <div class="filter-open-close">
-        <a class="font-m font-med cursor-pointer" (click)="isHideFilter = !isHideFilter">
-            {{isHideFilter ? 'Open' : 'Close'}} filter options</a>
-        <svg-icon src="./assets/img/select-down.svg" (click)="isHideFilter = !isHideFilter"
-                  class="cursor-pointer" [class.rotate-img]="!isHideFilter">
-        </svg-icon>
-    </div>
+    <app-collapse-with-title titleForClose="Close filter options"
+                             titleForOpen="Open filter options"
+                             class="filter-open-close"
+                             [collapsed]="isHideFilter"
+                             (collapseChanged)="onCollapseChanged($event)">
+    </app-collapse-with-title>
     <div class="filter-container row" *ngIf="loadFilters$ | async">
-        <div class="col-md-3 col-xxl-2" [class.hide-filters]="isHideFilter">
+        <div class="col-md-3 d-md-block col-xxl-2" [ngbCollapse]="isHideFilter">
             <div *ngFor="let filter of filters">
                 <div [ngSwitch]="filter?.id">
                     <oc-sidebar *ngSwitchCase="SINGLE_FILTER"
@@ -34,7 +33,7 @@
                 <oc-tag-element class="search-tags__element" *ngFor="let filter of selectedFilterValues"
                                 [title]="filter?.value.label" [closeMarker]="true"
                                 (clickEmitter)="disableFilterValue(filter.filterId, filter.value)"></oc-tag-element>
-                <oc-tag-element  class="search-tags__element"*ngIf="searchTextTag"
+                <oc-tag-element  class="search-tags__element" *ngIf="searchTextTag"
                                 [title]="searchTextTag" [closeMarker]="true"
                                 (clickEmitter)="clearSearchText()"></oc-tag-element>
             </div>

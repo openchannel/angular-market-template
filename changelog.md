@@ -1,3 +1,21 @@
+## Release notes - template3-marketsite-frontend - Version 1.38.1 (10/4/2021)<br>
+### Bug<br>
+AT-1527 - [HOTFIX] 500 error occurring when trying to authenticate using Auth0<br>
+## Release notes - template3-marketsite-frontend - Version 1.38.0 (10/1/2021)<br>
+### Task<br>
+AT-1507 - Field group improvements<br>
+### Story<br>
+AT-1494 - A user or developer is able to log in using OAuth 2.0 SSO<br>
+## Release notes - template3-marketsite-frontend - Version 1.37.1 (9/24/2021)<br>
+### Story<br>
+AT-1519 - [hotfix] A user is able to authenticate using the "Authorization code" grant type<br>
+AT-1518 - [hotfix] A user is able to authenticate using the "Implicit" grant type<br>
+## Release notes - template3-marketsite-frontend - Version 1.37.0 (9/23/2021)<br>
+### Bug<br>
+AT-1491 - [Portal] Multi-level DFA with Row label value selected from Dashboard, is showing error while adding field in that DFA.<br>
+AT-1106 - [UI][Portal] Portal Homepage Mobile devices issues.<br>
+AT-1093 - [UI][Marketsite][Homepage] Recently added, Most popular and Apps for analytics sections are not as per Mock design.<br>
+AT-1092 - [UI][Market site][Homepage] Sentence case required for all the heading on Home page<br>
 ## Release notes - template3-marketsite-frontend - Version 1.36.0 (9/17/2021)<br>
 ### Bug<br>
 AT-1174 - Wrong margin on portal homepage<br>
