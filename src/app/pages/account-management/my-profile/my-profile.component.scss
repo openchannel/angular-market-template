@@ -4,7 +4,7 @@
 .active-link {
     color: #537cfd;
     @include font-medium();
-    @include media-breakpoint-md {
+    @include media-breakpoint-lg {
         color: #333 !important;
         border-bottom: 3px solid #537cfd;
         padding-bottom: 1rem;
@@ -13,24 +13,24 @@
 
 .page-navigation {
     padding-top: 5rem;
-    @include media-breakpoint-md {
+    @include media-breakpoint-lg {
         padding-top: 3rem;
     }
 }
 
 ul.list-unstyled {
-    @include media-breakpoint-md {
+    @include media-breakpoint-lg {
         display: flex;
     }
 
     li {
         padding: 1rem 0;
-        @include media-breakpoint-md {
+        @include media-breakpoint-lg {
             padding: 0;
         }
 
         & + li {
-            @include media-breakpoint-md {
+            @include media-breakpoint-lg {
                 margin-left: 30px;
             }
         }
@@ -39,7 +39,7 @@ ul.list-unstyled {
             color: inherit;
             cursor: pointer;
             @include font-size-md();
-            @include media-breakpoint-md {
+            @include media-breakpoint-lg {
                 @include font-medium();
                 color: #999;
             }
