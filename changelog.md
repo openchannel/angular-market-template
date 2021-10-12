@@ -8,6 +8,9 @@ AT-1165 - Wrong font size for titles on app details page<br>
 AT-1026 - [Download][App Details] After force logging in user should be redirected to the App Details page.<br>
 AT-632 - Back to the App Store link is not working on app details page<br>
 AT-583 - [Edit App] Validation message is not showing for invalid data in fields,<br>
+## Release notes - template3-marketsite-frontend - Version 1.41.1 (10/12/2021)<br>
+### Bug<br>
+AT-1544 - [HOTFIX] [SSO] Error in verifyCode request for thomsonreuters<br>
 ## Release notes - template3-marketsite-frontend - Version 1.41.0 (10/7/2021)<br>
 ### Task<br>
 AT-1221 - Improve image crop component<br>
