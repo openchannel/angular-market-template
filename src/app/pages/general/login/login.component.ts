@@ -166,7 +166,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private checkState(): boolean {
         const stateParam = this.route.snapshot.queryParamMap.get('state');
         const state = stateParam.split(';')[0];
-        this.returnUrl = decodeURIComponent(stateParam.split(';')[1]);
+        const encodedUriPart = stateParam.split(';')[1];
+        this.returnUrl = encodedUriPart ? decodeURIComponent(encodedUriPart) : null;
 
         return state === sessionStorage.getItem('nonce');
     }
