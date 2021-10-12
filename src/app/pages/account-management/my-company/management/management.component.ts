@@ -20,6 +20,7 @@ import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { mergeMap, map, takeUntil, tap } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
+import { SortField, UserGridSortOrder, UserSortChosen } from '@openchannel/angular-common-components/src/lib/management-components';
 
 @Component({
     selector: 'app-management',
@@ -38,13 +39,27 @@ export class ManagementComponent implements OnInit, OnDestroy {
         options: ['DELETE', 'EDIT'],
     };
 
+    tableSortFieldName: { [name in SortField]: string } = {
+        name: 'name',
+        email: 'email',
+        role: 'roles',
+        date: 'createdDate',
+    };
+
+    tableSortOptions: UserGridSortOrder = {
+        role: -1,
+        name: -1,
+        email: -1,
+        date: -1,
+    };
+
     private listRoles: any = {};
-    private sortQuery = '{"name": 1}';
+    private sortQuery: string = `{'${this.tableSortFieldName.date}':${this.tableSortOptions.date}}`;
 
     private destroy$: Subject<void> = new Subject();
     private loader: LoadingBarState;
 
-    private readonly USERS_LIMIT_PER_REQUEST = 10;
+    private readonly USERS_LIMIT_PER_REQUEST = 30;
     private inProcessGettingUsers = false;
 
     constructor(
@@ -71,22 +86,16 @@ export class ManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    catchSortChanges(sortBy: string): void {
-        switch (sortBy) {
-            case 'name':
-                this.sortQuery = '{"name": 1}';
-                break;
-            case 'email':
-                this.sortQuery = '{"email": 1}';
-                break;
-            case 'date':
-                this.sortQuery = '{"created": 1}';
-                break;
-            case 'role':
-                this.sortQuery = '{"type": 1}';
-                break;
-            default:
-                break;
+    catchSortChanges(sortChosen: UserSortChosen): void {
+        for (const field of Object.keys(sortChosen.sortOptions)) {
+            if (field === sortChosen.changedSortOption) {
+                this.tableSortOptions[field] = sortChosen.sortOptions[sortChosen.changedSortOption];
+                // build sort query for the current table column
+                this.sortQuery = `{\"${this.tableSortFieldName[sortChosen.changedSortOption]}\":
+                ${this.tableSortOptions[sortChosen.changedSortOption]}}`;
+            } else {
+                this.tableSortOptions[field] = -1;
+            }
         }
         this.getAllUsers(true);
     }
