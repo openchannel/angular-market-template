@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.41.1 (10/12/2021)<br>
+### Bug<br>
+AT-1544 - [HOTFIX] [SSO] Error in verifyCode request for thomsonreuters<br>
 ## Release notes - template3-marketsite-frontend - Version 1.41.0 (10/7/2021)<br>
 ### Task<br>
 AT-1221 - Improve image crop component<br>
