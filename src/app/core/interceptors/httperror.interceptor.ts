@@ -67,7 +67,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             return this.authenticationService.refreshToken({ refreshToken: this.authHolderService.refreshToken }).pipe(
                 catchError(response => {
                     this.authHolderService.clearTokensInStorage();
-                    this.router.navigate(['/login']).then(() => (this.isRefreshing = false));
+                    this.router
+                        .navigate(['/login'], { queryParams: { returnUrl: window.location.pathname } })
+                        .then(() => (this.isRefreshing = false));
                     this.refreshTokenSubject.next(null);
                     return throwError(response);
                 }),

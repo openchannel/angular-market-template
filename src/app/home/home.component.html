@@ -25,7 +25,7 @@
                                      (collapseChanged)="onCollapseChanged($event)">
             </app-collapse-with-title>
             <oc-sidebar *ngFor="let filter of sidebarFilters"
-                        class="d-md-block mb-1"
+                        class="d-md-block mb-3"
                         [ngbCollapse]="filterCollapsed"
                         [baseNavigation]="'browse/' + filter.id"
                         [title]="filter.name"
