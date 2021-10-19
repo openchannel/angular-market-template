@@ -1,32 +1,18 @@
-@import "~assets/styles/mixins";
+@import '~assets/styles/mixins';
 
 .container {
-  .navigation-container {
-    margin: 24px 0 32px;
-    @include media-breakpoint-md() {
-      margin: 16px 0 16px;
+    .navigation-container {
+        margin: 24px 0 32px;
+        @include media-breakpoint-md() {
+            margin: 16px 0 16px;
+        }
     }
-  }
-  .filter-open-close {
-    display: none;
-    @include media-breakpoint-md() {
-      margin-bottom: 16px;
-      display: block;
-    }
-  }
 
-  .filter-container {
-    .search-tags {
-      margin: 18px 0;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      flex-wrap: wrap;
-      &__element {
-        margin: 0 8px 8px 0;
-      }
+    .filter-open-close {
+        display: none;
+        @include media-breakpoint-md() {
+            margin-bottom: 16px;
+            display: block;
+        }
     }
-  }
 }
-
-
