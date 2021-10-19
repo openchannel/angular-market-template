@@ -1,6 +1,6 @@
 <div class="bg-container height-unset">
     <app-page-title pageTitle="My company" navigateText="Back" (navigateClick)="goBack()"
-                    [buttonText]="selectedPage?.pageId === pages[1].pageId ? 'Invite a member' : null"
+                    [buttonText]="selectedPage.pageId === pages[1].pageId ? 'Invite a member' : null"
                     (buttonClick)="openInviteModal()"></app-page-title>
 </div>
 
@@ -14,7 +14,7 @@
                 </li>
             </ul>
         </div>
-        <div [ngSwitch]="selectedPage?.pageId" class="col-lg-10 col-xl-9 mt-3 mt-lg-0 col-xxl-10">
+        <div [ngSwitch]="selectedPage.pageId" class="col-lg-10 col-xl-9 mt-3 mt-lg-0 col-xxl-10">
             <app-company-details *ngSwitchCase="pages[0].pageId"></app-company-details>
             <app-management #appManagement *ngSwitchCase="pages[1].pageId"></app-management>
         </div>
