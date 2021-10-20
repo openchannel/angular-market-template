@@ -12,7 +12,11 @@ const routes: Routes = [
     },
     { path: '', loadChildren: () => import('./pages/general/general.module').then(m => m.GeneralModule) },
     { path: '', loadChildren: () => import('./pages/common-layout.module').then(m => m.CommonLayoutModule) },
-    { path: 'not-found', component: NotFoundComponent },
+    {
+        path: 'not-found',
+        component: CommonLayoutComponent,
+        children: [{ path: '', component: NotFoundComponent }],
+    },
     { path: '**', redirectTo: '/not-found' },
 ];
 
