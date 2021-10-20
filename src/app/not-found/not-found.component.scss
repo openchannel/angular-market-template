@@ -1,31 +1,31 @@
+@import '~@openchannel/angular-common-components/assets/styles/mixins';
+
 .main-container {
-  min-height: 100vh;
+    padding: 120px 0;
+    @include media-breakpoint-sm() {
+        padding: 60px 0;
+    }
 
-  & header {
-    height: 80px;
-    display: flex;
-    align-items: center;
-  }
-  .not-found-img {
-    margin-top: 114px;
-    max-width: 854px;
-    max-height: 400px;
-  }
-}
-
-.logo {
-  height: 27px;
+    img {
+        max-width: 100%;
+    }
 }
 
 .subtitle {
-  font-size: 20px;
+    font-size: 20px;
 }
 
 .not-found {
-  &__home-page-button {
-    display: block;
-    &:hover {
-      text-decoration: none;
+
+    &__home-page-button {
+        display: block;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        oc-button {
+            display: block;
+        }
     }
-  }
 }

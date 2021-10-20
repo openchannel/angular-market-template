@@ -4,6 +4,7 @@
           [properties]="userProperties"
           (menuClicked)="userAction($event)"
           (pageScrolled)="getAllUsers(false)"
-          (sortChosen)="catchSortChanges($event)">
+          [sortOptions]="tableSortOptions"
+          (sortOptionsChosen)="catchSortChanges($event)">
   </oc-menu-user-grid>
 </div>
