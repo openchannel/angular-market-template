@@ -10,7 +10,7 @@
   &__page-title {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    justify-content: center;
     &-breadcrumbs {
       @include font-size-md();
       @include font-medium();
@@ -30,7 +30,7 @@
     }
     &__title {
       font-size: 28px;
-      margin: auto 0;
+      margin: 0;
     }
   }
   &__custom-button {
