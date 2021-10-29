@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ComponentsUserActivationModel } from '@openchannel/angular-common-components';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-resend-activation',
@@ -16,7 +17,7 @@ export class ResendActivationComponent implements OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
-    constructor(private nativeLoginService: NativeLoginService, private router: Router) {}
+    constructor(private nativeLoginService: NativeLoginService, private router: Router, private toaster: ToastrService) {}
 
     ngOnDestroy(): void {
         this.destroy$.next();
@@ -24,7 +25,7 @@ export class ResendActivationComponent implements OnDestroy {
     }
 
     sendActivationMail(event: boolean): void {
-        if (event === true && !this.inProcess) {
+        if (event && !this.inProcess) {
             this.inProcess = true;
             this.nativeLoginService
                 .sendActivationCode(this.activationModel.email)
@@ -32,7 +33,8 @@ export class ResendActivationComponent implements OnDestroy {
                 .subscribe(
                     res => {
                         this.inProcess = false;
-                        this.router.navigate(['login']);
+                        this.toaster.success('Activation code was sent to your email');
+                        this.router.navigate(['login']).then();
                     },
                     error => {
                         this.inProcess = false;
