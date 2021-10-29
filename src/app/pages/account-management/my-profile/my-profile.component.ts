@@ -1,23 +1,27 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-my-profile',
-  templateUrl: './my-profile.component.html',
-  styleUrls: ['./my-profile.component.scss']
+    selector: 'app-my-profile',
+    templateUrl: './my-profile.component.html',
+    styleUrls: ['./my-profile.component.scss'],
 })
 export class MyProfileComponent implements OnInit {
+    selectedPage: 'profile-details' | 'password' = 'profile-details';
 
-  selectedPage: 'myProfile' | 'changePassword'  = 'myProfile';
+    constructor(private router: Router, private location: Location) {}
 
-  constructor() { }
+    ngOnInit(): void {
+        this.selectedPage = this.router.url.split('/my-profile/')[1] as 'profile-details' | 'password';
+    }
 
-  ngOnInit(): void {  }
+    gotoPage(pagePath: 'profile-details' | 'password'): void {
+        this.selectedPage = pagePath;
+        this.location.replaceState('/my-profile/' + pagePath);
+    }
 
-  gotoPage(pageName){
-    this.selectedPage = pageName;
-  }
-
-  goBack(){
-    history.back();
-  }
+    goBack(): void {
+        history.back();
+    }
 }
