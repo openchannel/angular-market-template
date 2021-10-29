@@ -7,18 +7,18 @@
         <div class="col-lg-3 col-xxl-2">
             <ul class="list-unstyled">
                 <li>
-                    <a (click)="gotoPage('myProfile')" class="font-m"
-                        [ngClass]="{'active-link' : selectedPage === 'myProfile' }"> Profile Details </a>
+                    <a (click)="gotoPage('profile-details')" class="font-m"
+                       [class.active-link]="selectedPage === 'profile-details'"> Profile Details </a>
                 </li>
                 <li>
-                    <a (click)="gotoPage('changePassword')" class="font-m"
-                        [ngClass]="{'active-link' : selectedPage === 'changePassword'}"> Password </a>
+                    <a (click)="gotoPage('password')" class="font-m"
+                       [class.active-link]="selectedPage === 'password'"> Password </a>
                 </li>
             </ul>
         </div>
         <div class="col-lg-4 mt-3 mt-lg-1 col-xxl-6">
-            <app-general-profile *ngIf='selectedPage === "myProfile"'></app-general-profile>
-            <app-change-password *ngIf='selectedPage === "changePassword"'></app-change-password>
+            <app-general-profile *ngIf="selectedPage === 'profile-details'"></app-general-profile>
+            <app-change-password *ngIf="selectedPage === 'password'"></app-change-password>
         </div>
     </div>
 </div>
