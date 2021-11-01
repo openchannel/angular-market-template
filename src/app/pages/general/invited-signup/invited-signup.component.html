@@ -1,43 +1,43 @@
-<div class='bg-container pt-sm-5'>
-    <div class='card border-card signup-position'>
-        <div class='card-body'>
-            <h5 class='text-primary' *ngIf='isExpired'>Sorry! Your invite token has been expired!</h5>
-            <ng-container *ngIf='!isExpired && formConfig'>
-                <div class='text-center'>
-                    <img alt='logo' class='img-fluid mb-4 company-logo' src='./assets/img/company-logo-2x.png'>
+<div class="bg-container pt-sm-5">
+    <div class="card border-card signup-position">
+        <div class="card-body">
+            <h5 class="text-primary" *ngIf="isExpired">Sorry! Your invite token has been expired!</h5>
+            <ng-container *ngIf="!isExpired && formConfig">
+                <div class="text-center">
+                    <img alt="logo" class="img-fluid mb-4 company-logo" src="./assets/img/company-logo-2x.png">
                 </div>
-                <div class='text-center'>
-                    <h4 class='mb-1'>Sign Up</h4>
-                    <oc-label text='Enter your account details below' class='mb-3'></oc-label>
+                <div class="text-center">
+                    <h4 class="mb-1">Sign Up</h4>
+                    <oc-label text="Enter your account details below" class="mb-3"></oc-label>
                 </div>
-                <oc-form [formJsonData]='formConfig'
-                         (formDataUpdated)='setFormData($event)'
-                         (createdForm)='setCreatedForm($event)'
-                         [showButton]='false'></oc-form>
-                <div class='invited-signup__consent'>
-                    <div class='invited-signup__consent__checkbox'>
-                        <oc-checkbox class='invited-signup__consent-checkbox'
-                                     [formControl]='termsControl'></oc-checkbox>
-                        <div class='invited-signup__consent__label'>
+                <oc-form [formJsonData]="formConfig"
+                         (formDataUpdated)="setFormData($event)"
+                         (createdForm)="setCreatedForm($event)"
+                         [showButton]="false"></oc-form>
+                <div class="invited-signup__consent">
+                    <div class="invited-signup__consent__checkbox">
+                        <oc-checkbox class="invited-signup__consent-checkbox"
+                                     [formControl]="termsControl"></oc-checkbox>
+                        <div class="invited-signup__consent__label">
                             I agree to
-                            <a class='invited-signup__consent__link' href='https://my.openchannel.io/terms-of-service'
-                               target='_blank'>
+                            <a class="invited-signup__consent__link" href="https://my.openchannel.io/terms-of-service"
+                               target="_blank">
                                 Terms of Service
                             </a>
                             and
-                            <a class='invited-signup__consent__link'
-                               href='https://my.openchannel.io/data-processing-policy' target='_blank'>
+                            <a class="invited-signup__consent__link"
+                               href="https://my.openchannel.io/data-processing-policy" target="_blank">
                                 Data Processing Policy
                             </a>
                         </div>
                     </div>
-                    <oc-error [control]='termsControl'
+                    <oc-error [control]="termsControl"
                               [modifyErrors]="[{validator: 'required', message: 'Please confirm this checkbox'}]"></oc-error>
                 </div>
-                <oc-button (click)='submitForm()'
-                           [process]='inProcess'
-                           text='Sign Up' type='primary'
-                           class='btn-block mt-5'>
+                <oc-button (click)="submitForm()"
+                           [process]="inProcess"
+                           text="Sign Up" type="primary"
+                           class="btn-block mt-5">
                 </oc-button>
             </ng-container>
         </div>
