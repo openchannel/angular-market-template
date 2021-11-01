@@ -14,16 +14,16 @@
                  (formDataUpdated)="setFormData($event)"
                  (createdForm)="setCreatedForm($event)"
                  [showButton]="false"></oc-form>
-        <div class="form-group">
-          <div class="d-flex align-items-start">
-            <oc-checkbox class="consent-checkbox" [formControl]="termsControl"></oc-checkbox>
-            <div class="font-s">
+        <div class="invited-signup__consent">
+          <div class="invited-signup__consent__checkbox">
+            <oc-checkbox class="invited-signup__consent-checkbox" [formControl]="termsControl"></oc-checkbox>
+            <div class="invited-signup__consent__label">
               I agree to
-              <a class="font-s font-med" href="https://my.openchannel.io/terms-of-service" target="_blank">
+              <a class="invited-signup__consent__link" href="https://my.openchannel.io/terms-of-service" target="_blank">
                 Terms of Service
               </a>
               and
-              <a class="font-s font-med" href="https://my.openchannel.io/data-processing-policy" target="_blank">
+              <a class="invited-signup__consent__link" href="https://my.openchannel.io/data-processing-policy" target="_blank">
                 Data Processing Policy
               </a>
             </div>
