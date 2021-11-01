@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AppsService, FrontendService, Page, TitleService } from '@openchannel/angular-common-services';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { HttpParams } from '@angular/common/http';
 import { isString, forEach } from 'lodash';
-import { Filter, FullAppData, OcSidebarSelectModel, SidebarValue } from '@openchannel/angular-common-components';
+import { Filter, FullAppData, OcSidebarSelectModel, SelectedFilter, SidebarValue } from '@openchannel/angular-common-components';
 
 @Component({
     selector: 'app-app-search',
@@ -20,13 +20,11 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     isHideFilter = true;
 
     searchText: string;
-    searchTextTag: string;
+    searchTextTag: BehaviorSubject<string> = new BehaviorSubject<string>('');
     appPage: Page<FullAppData>;
     filters: Filter[] = [];
-    selectedFilterValues: {
-        filterId: string;
-        value: SidebarValue;
-    }[];
+    selectedFilterValues: BehaviorSubject<SelectedFilter[]> = new BehaviorSubject<SelectedFilter[]>([]);
+    tagsTitles: string[] = [];
 
     loadFilters$: Observable<Page<Filter>>;
 
@@ -45,9 +43,10 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         private location: Location,
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
-        this.searchTextTag = this.searchText = this.activatedRouter.snapshot.queryParamMap.get('search');
+        this.searchText = this.activatedRouter.snapshot.queryParamMap.get('search');
+        this.searchTextTag.next(this.searchText);
 
         const filterValues: any = {};
 
@@ -62,11 +61,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         delete queryParams.search;
 
         forEach(queryParams, (value, key) => {
-            if (isString(value)) {
-                filterValues[key] = queryParams[key].split(',');
-            } else {
-                filterValues[key] = queryParams[key];
-            }
+            filterValues[key] = isString(value) ? queryParams[key].split(',') : queryParams[key];
         });
 
         this.loader.start();
@@ -88,13 +83,15 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
             this.loader.complete();
 
-            this.selectedFilterValues = this.getSelectedFilterValues();
+            this.selectedFilterValues.next(this.getSelectedFilterValues());
 
             if (filterId && filterValueId) {
                 this.getSortedData(filterId, filterValueId);
             } else {
                 this.onTextChange(this.searchText);
             }
+
+            this.subscribeToSearchTags();
         });
     }
 
@@ -127,7 +124,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         );
     }
 
-    getSortedData(filterId: string, valueId: string) {
+    getSortedData(filterId: string, valueId: string): void {
         let filter: string = null;
         let sort: string = null;
 
@@ -179,13 +176,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         this.filters.forEach(filter => {
             const isCurrentFilter = selectModel?.parent?.id === filter?.id;
 
-            let cleanRequired;
-
-            if (isCurrentFilter) {
-                cleanRequired = cleanValuesFromCurrentFilter;
-            } else {
-                cleanRequired = cleanAnotherFilters;
-            }
+            const cleanRequired = isCurrentFilter ? cleanValuesFromCurrentFilter : cleanAnotherFilters;
 
             if (cleanRequired) {
                 filter?.values?.forEach(value => {
@@ -204,7 +195,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     }
 
     onTextChange(text: string): void {
-        this.searchTextTag = text;
+        this.searchTextTag.next(text);
         this.getData();
     }
 
@@ -212,17 +203,22 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         return filter.values.findIndex(value => value.checked) > -1;
     }
 
-    disableFilterValue(filterId: string, filterValue: SidebarValue): void {
+    disableFilterValue({ parentFilterId, selectedFilterValue }: SelectedFilter): void {
         const filterValueModel = {
-            parent: filterValue,
-            child: filterValue,
+            parent: selectedFilterValue,
+            child: selectedFilterValue,
         };
-        const currentFilter = this.filters.filter(filter => filter.id === filterId)[0];
-        if (filterId === this.SINGLE_FILTER) {
+        const currentFilter = this.filters.find(filter => filter.id === parentFilterId);
+        if (parentFilterId === this.SINGLE_FILTER) {
             this.onSingleFilterChange(currentFilter, filterValueModel, false);
         } else {
             this.onMultiFilterChange(currentFilter, filterValueModel);
         }
+    }
+
+    clearAllSearchConditions(): void {
+        this.selectedFilterValues.getValue().forEach(selectedFilter => this.disableFilterValue(selectedFilter));
+        this.clearSearchText();
     }
 
     clearSearchText(): void {
@@ -234,23 +230,52 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         this.isHideFilter = $event;
     }
 
+    onSearchTagDeleted(tagIndex: number): void {
+        // Search tag is always last tag
+        const isSearchTagDeleted = this.selectedFilterValues.getValue().length === tagIndex;
+
+        if (isSearchTagDeleted) {
+            this.clearSearchText();
+        } else {
+            this.disableFilterValue(this.selectedFilterValues.getValue()[tagIndex]);
+        }
+    }
+
+    subscribeToSearchTags(): void {
+        combineLatest([this.selectedFilterValues, this.searchTextTag])
+            .pipe(
+                map(([selectedFilters, searchTag]): string[] => {
+                    const selectedFiltersTitles = selectedFilters.map(filter => filter.selectedFilterValue.label);
+
+                    return searchTag ? [...selectedFiltersTitles, searchTag] : [...selectedFiltersTitles];
+                }),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(tagsTitles => {
+                this.tagsTitles = tagsTitles;
+            });
+    }
+
     private getFilterQuery(): string {
         const filterValues = this.getSelectedFilterValues();
-        const queries = filterValues.map(filterValue => filterValue.value.query).filter(q => q);
+        const queries = filterValues.map(filterValue => filterValue.selectedFilterValue.query).filter(q => q);
 
-        this.selectedFilterValues = filterValues;
+        this.selectedFilterValues.next(filterValues);
 
         return queries.length > 0 ? `{ "$and":[${queries.join(',')}] }` : null;
     }
 
-    private getSelectedFilterValues(): { filterId: string; value: SidebarValue }[] {
-        const filterValues: { filterId: string; value: SidebarValue }[] = [];
+    private getSelectedFilterValues(): SelectedFilter[] {
+        const filterValues: SelectedFilter[] = [];
         const filterLabels = [];
         this.filters.forEach(filter => {
             filter.values.forEach(value => {
                 if (value.checked) {
-                    const sidebarValue = value as SidebarValue;
-                    filterValues.push({ filterId: filter.id, value: sidebarValue });
+                    const selectedFilter: SelectedFilter = {
+                        parentFilterId: filter.id,
+                        selectedFilterValue: value as SidebarValue,
+                    };
+                    filterValues.push(selectedFilter);
                     filterLabels.push(value.label);
                 }
             });
@@ -264,9 +289,9 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
         const urlFilterData: any = {};
 
-        selectedFilters.forEach(filterValue => {
-            const values = urlFilterData[filterValue.filterId] as string[];
-            urlFilterData[filterValue.filterId] = values ? [...values, filterValue.value.id] : [filterValue.value.id];
+        selectedFilters.forEach(({ parentFilterId, selectedFilterValue }) => {
+            const values = urlFilterData[parentFilterId] as string[];
+            urlFilterData[parentFilterId] = values ? [...values, selectedFilterValue.id] : [selectedFilterValue.id];
         });
 
         const urlFilterDataKeys = Object.keys(urlFilterData);

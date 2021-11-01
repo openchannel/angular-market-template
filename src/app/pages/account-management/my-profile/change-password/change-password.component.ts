@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthHolderService, NativeLoginService} from '@openchannel/angular-common-services';
+import { Component, OnDestroy } from '@angular/core';
+import { AuthHolderService, NativeLoginService } from '@openchannel/angular-common-services';
 import { Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { FormGroup, Validators } from '@angular/forms';
-import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
-import { LoadingBarService } from '@ngx-loading-bar/core';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -21,13 +19,15 @@ export class ChangePasswordComponent implements OnDestroy {
                 id: 'password',
                 label: 'Current Password',
                 type: 'password',
-                attributes: [],
+                attributes: {},
             },
             {
                 id: 'newPassword',
                 label: 'New Password',
                 type: 'password',
-                attributes: [],
+                attributes: {
+                    required: true,
+                },
             },
         ],
     };
@@ -39,7 +39,6 @@ export class ChangePasswordComponent implements OnDestroy {
     constructor(
         private toasterService: ToastrService,
         private nativeLoginService: NativeLoginService,
-        private loadingBar: LoadingBarService,
         private authHolderService: AuthHolderService,
     ) {}
 
@@ -84,7 +83,7 @@ export class ChangePasswordComponent implements OnDestroy {
 
     setPasswordFormGroup(passwordGroup: FormGroup): void {
         this.passwordFormGroup = passwordGroup;
-        // clear validation for current user password
+        // clear password validator for current user password
         this.passwordFormGroup.controls.password.clearValidators();
         this.passwordFormGroup.controls.password.setValidators(Validators.required);
         this.passwordFormGroup.controls.password.updateValueAndValidity();
