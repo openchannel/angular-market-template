@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import {
@@ -12,10 +12,12 @@ import {
 } from '@openchannel/angular-common-services';
 import { ModalInviteUserModel, OcInviteModalComponent } from '@openchannel/angular-common-components';
 import { ManagementComponent } from './management/management.component';
+import { Location } from '@angular/common';
 
 export interface Page {
     pageId: string;
     placeholder: string;
+    routerLink: string;
     permissions: Permission[];
 }
 
@@ -31,6 +33,7 @@ export class MyCompanyComponent implements OnInit {
         {
             pageId: 'company',
             placeholder: 'Company details',
+            routerLink: '/my-company/company-details',
             permissions: [
                 {
                     type: PermissionType.ORGANIZATIONS,
@@ -41,6 +44,7 @@ export class MyCompanyComponent implements OnInit {
         {
             pageId: 'profile',
             placeholder: 'User management',
+            routerLink: '/my-company/user-management',
             permissions: [
                 {
                     type: PermissionType.ACCOUNTS,
@@ -56,12 +60,14 @@ export class MyCompanyComponent implements OnInit {
     isProcessing = false;
 
     constructor(
-        private activatedRoute: ActivatedRoute,
         private modal: NgbModal,
         private toaster: ToastrService,
         private authHolderService: AuthHolderService,
         private userRolesService: UserRoleService,
         private inviteService: InviteUserService,
+        private router: Router,
+        private activeRoute: ActivatedRoute,
+        private location: Location,
     ) {}
 
     ngOnInit(): void {
@@ -71,6 +77,7 @@ export class MyCompanyComponent implements OnInit {
 
     gotoPage(newPage: Page): void {
         this.selectedPage = newPage;
+        this.location.replaceState(newPage.routerLink);
     }
 
     goBack(): void {
@@ -105,15 +112,9 @@ export class MyCompanyComponent implements OnInit {
     }
 
     private initMainPage(): void {
-        const pageType = this.activatedRoute.snapshot.paramMap.get('pageId');
-        if (pageType) {
-            const pageByUrl = this.currentPages.filter(page => page.pageId === pageType)[0];
-            if (pageByUrl) {
-                this.selectedPage = pageByUrl;
-            }
-        } else {
-            this.selectedPage = this.currentPages[0];
-        }
+        const pagePath = this.router.url;
+        const pageByUrl = this.currentPages.find(page => page.routerLink === pagePath);
+        this.selectedPage = pageByUrl || this.currentPages[0];
     }
 
     private filterPagesByUserType(): Page[] {

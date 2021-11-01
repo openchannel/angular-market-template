@@ -11,7 +11,7 @@
         "location": ""
       }, {
         "label": "My apps",
-        "location": "/management/apps"
+        "location": "my-apps"
       }]
     }
   },

@@ -11,29 +11,27 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ManagementComponent } from './my-company/management/management.component';
 import { MyCompanyComponent } from './my-company/my-company.component';
 import { CompanyDetailsComponent } from './my-company/company-details/company-details.component';
-import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsModule} from '@openchannel/angular-common-components';
-
+import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsModule } from '@openchannel/angular-common-components';
 
 @NgModule({
-  declarations: [
-    MyProfileComponent,
-    ChangePasswordComponent,
-    GeneralProfileComponent,
-    MyAppsComponent,
-    ManagementComponent,
-    MyCompanyComponent,
-    CompanyDetailsComponent,
-  ],
-  imports: [
-    CommonModule,
-    AccountManagementRoutingModule,
-    SharedModule,
-    InfiniteScrollModule,
-    OcFormComponentsModule,
-    OcManagementComponentsModule,
-    OcAuthComponentsModule,
-    OcAuthComponentsModule
-  ],
+    declarations: [
+        MyProfileComponent,
+        ChangePasswordComponent,
+        GeneralProfileComponent,
+        MyAppsComponent,
+        ManagementComponent,
+        MyCompanyComponent,
+        CompanyDetailsComponent,
+    ],
+    imports: [
+        CommonModule,
+        AccountManagementRoutingModule,
+        SharedModule,
+        InfiniteScrollModule,
+        OcFormComponentsModule,
+        OcManagementComponentsModule,
+        OcAuthComponentsModule,
+        OcAuthComponentsModule,
+    ],
 })
-export class AccountManagementModule {
-}
+export class AccountManagementModule {}

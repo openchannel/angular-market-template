@@ -1,4 +1,4 @@
-@import "~assets/styles/mixins";
+@import '~assets/styles/mixins';
 
 .container {
 
@@ -30,7 +30,7 @@
                 margin: 0 8px 8px 0;
             }
         }
-        
+
         .search__no-results {
             @include font-size-md();
             text-align: center;
@@ -40,5 +40,3 @@
         }
     }
 }
-
-

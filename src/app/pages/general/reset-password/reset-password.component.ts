@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ComponentsUserResetPassword } from '@openchannel/angular-common-components';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-reset-password',
@@ -17,7 +18,12 @@ export class ResetPasswordComponent implements OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
-    constructor(private nativeLoginService: NativeLoginService, private router: Router, private route: ActivatedRoute) {
+    constructor(
+        private nativeLoginService: NativeLoginService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private toaster: ToastrService,
+    ) {
         this.resetModel.code = this.route.snapshot.queryParamMap.get('token');
     }
 
@@ -26,7 +32,7 @@ export class ResetPasswordComponent implements OnDestroy {
         this.destroy$.complete();
     }
 
-    reset(event) {
+    reset(event: boolean): void {
         if (event === true && !this.inProcess) {
             this.inProcess = true;
             this.nativeLoginService
@@ -34,6 +40,7 @@ export class ResetPasswordComponent implements OnDestroy {
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(
                     res => {
+                        this.toaster.success('Your password has reset successfully.');
                         this.inProcess = false;
                         this.router.navigate(['login']).then();
                     },
