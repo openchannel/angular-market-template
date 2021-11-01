@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import {
@@ -12,6 +12,7 @@ import {
 } from '@openchannel/angular-common-services';
 import { ModalInviteUserModel, OcInviteModalComponent } from '@openchannel/angular-common-components';
 import { ManagementComponent } from './management/management.component';
+import { Location } from '@angular/common';
 
 export interface Page {
     pageId: string;
@@ -65,6 +66,8 @@ export class MyCompanyComponent implements OnInit {
         private userRolesService: UserRoleService,
         private inviteService: InviteUserService,
         private router: Router,
+        private activeRoute: ActivatedRoute,
+        private location: Location,
     ) {}
 
     ngOnInit(): void {
@@ -73,9 +76,8 @@ export class MyCompanyComponent implements OnInit {
     }
 
     gotoPage(newPage: Page): void {
-        this.router.navigate([newPage.routerLink]).then(() => {
-            this.selectedPage = newPage;
-        });
+        this.selectedPage = newPage;
+        this.location.replaceState(newPage.routerLink);
     }
 
     goBack(): void {
