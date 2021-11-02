@@ -1,3 +1,9 @@
+## Release notes - template3-marketsite-frontend - Version 1.48.0 (11/2/2021)<br>
+### Bug<br>
+AT-1048 - Don't show error if developerAccountType or userAccountType doesnt exist<br>
+AT-1013 - [Market] [Filter apply] [Login] Getting error message notification after logged in.<br>
+### Task<br>
+AT-375 - A user should be able to provide a URL without http or https<br>
 ## Release notes - template3-marketsite-frontend - Version 1.47.0 (11/1/2021)<br>
 ### Bug<br>
 AT-1584 - [Dev1][Apps list] Horizontal scrollbar on the App list page<br>
