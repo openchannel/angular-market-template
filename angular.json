@@ -29,13 +29,16 @@
               "src/robots.txt",
               "src/_redirects",
               {"glob": "**/*", "input": "node_modules/@openchannel/angular-common-components/assets/img",
-                "output": "/assets/angular-common-components"}
+                "output": "/assets/angular-common-components"},
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
             ],
             "styles": [
               "src/styles.scss",
               "node_modules/ngx-toastr/toastr.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/tinymce/tinymce.min.js"
+            ]
           },
           "configurations": {
             "production": {
