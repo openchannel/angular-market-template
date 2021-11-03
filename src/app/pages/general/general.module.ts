@@ -13,25 +13,16 @@ import { InvitedSignupComponent } from './invited-signup/invited-signup.componen
 import { ReactiveFormsModule } from '@angular/forms';
 import { OcAuthComponentsModule, OcFormComponentsModule } from '@openchannel/angular-common-components';
 
-
 @NgModule({
-  declarations: [
-    SignupComponent,
-    LoginComponent,
-    ActivationComponent,
-    ResendActivationComponent,
-    ResetPasswordComponent,
-    ForgotPasswordComponent,
-    InvitedSignupComponent,
-  ],
-  imports: [
-    CommonModule,
-    GeneralRoutingModule,
-    SharedModule,
-    ReactiveFormsModule,
-    OcAuthComponentsModule,
-    OcFormComponentsModule,
-  ],
+    declarations: [
+        SignupComponent,
+        LoginComponent,
+        ActivationComponent,
+        ResendActivationComponent,
+        ResetPasswordComponent,
+        ForgotPasswordComponent,
+        InvitedSignupComponent,
+    ],
+    imports: [CommonModule, GeneralRoutingModule, SharedModule, ReactiveFormsModule, OcAuthComponentsModule, OcFormComponentsModule],
 })
-export class GeneralModule {
-}
+export class GeneralModule {}
