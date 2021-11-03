@@ -1,62 +1,63 @@
 @import 'src/assets/styles/mixins';
 
 .page-title {
-  line-height: 46px;
+    line-height: 46px;
 }
 
 div.menu {
-  left: unset;
-  right: 0;
+    left: unset;
+    right: 0;
 }
 
 .dropdown {
-  @include media-breakpoint-sm {
-    margin: 0 !important;
-  }
-
-  &-menu {
     @include media-breakpoint-sm {
-      margin-top: 0;
-    }
-  }
-
-  &-toggle {
-    @include media-breakpoint-sm {
-      border: none;
+        margin: 0 !important;
     }
 
-    &:active, &:focus {
-      @include media-breakpoint-sm {
-        border: none;
-        box-shadow: none !important;
-      }
+    &-menu {
+        @include media-breakpoint-sm {
+            margin-top: 0;
+        }
     }
-  }
+
+    &-toggle {
+        @include media-breakpoint-sm {
+            border: none;
+        }
+
+        &:active,
+        &:focus {
+            @include media-breakpoint-sm {
+                border: none;
+                box-shadow: none !important;
+            }
+        }
+    }
 }
 
 .menu-button {
-  width: 52px;
-  min-width: 52px;
-  height: 42px;
-  padding: 0;
-  @include media-breakpoint-sm {
-    display: block;
-    height: 20px;
-  }
+    width: 52px;
+    min-width: 52px;
+    height: 42px;
+    padding: 0;
+    @include media-breakpoint-sm {
+        display: block;
+        height: 20px;
+    }
 
-  &:not(.disabled):hover {
-    background-color: unset;
-  }
+    &:not(.disabled):hover {
+        background-color: unset;
+    }
 
-  &:not(.disabled):active {
-    background-color: unset;
-  }
+    &:not(.disabled):active {
+        background-color: unset;
+    }
 
-  &.dropdown-toggle {
-    background-color: unset;
-  }
+    &.dropdown-toggle {
+        background-color: unset;
+    }
 
-  &:after {
-    display: none;
-  }
+    &:after {
+        display: none;
+    }
 }
