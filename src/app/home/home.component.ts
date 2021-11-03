@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private readonly DEFAULT_FILTER_ID = 'collections';
     private readonly DEFAULT_FILTER_VALUE_ID = 'allApps';
-    private readonly featuredFilter = JSON.stringify({ "attributes.featured": "yes" });
+    private readonly featuredFilter = JSON.stringify({ 'attributes.featured': 'yes' });
     private readonly featuredSort = JSON.stringify({ randomize: 1 });
 
     constructor(
