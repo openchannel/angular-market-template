@@ -33,7 +33,9 @@
                         </div>
                     </div>
                 </div>
-                <oc-video *ngIf="app.video" [videoUrl]="app.video" class="app-detail__video"></oc-video>
+                <div class="app-detail__video">
+                    <oc-video *ngIf="app.video" [videoUrl]="app.video"></oc-video>
+                </div>
             </div>
         </div>
     </div>
