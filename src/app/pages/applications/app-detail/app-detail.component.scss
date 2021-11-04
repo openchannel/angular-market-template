@@ -22,16 +22,34 @@
         display: flex;
         margin-bottom: 1rem;
         align-items: flex-start;
-        @include media-breakpoint-md {
+        @include media-breakpoint-lg {
             flex-direction: column;
         }
 
         &-description {
             display: flex;
             flex-grow: 1;
-            padding-right: 4rem;
+            padding-right: 2rem;
             @include media-breakpoint-md {
                 padding-right: 0;
+            }
+            @include media-breakpoint-sm {
+                flex-direction: column;
+            }
+            
+            .app-detail__data-image {
+                max-width: 245px;
+                flex-shrink: 0;
+                margin: 0 2rem 2rem 0;
+                @include media-breakpoint-sm {
+                    max-width: 100%;
+                    width: 100%;
+                    margin-right: 0;
+                }
+                
+                img {
+                    width: 100%;
+                }
             }
         }
         
@@ -46,17 +64,18 @@
     &__price {
         @include font-medium();
     }
+    
+    &__summary {
+        word-break: break-word;
+    }
 
     &__video {
         max-width: 380px;
         width: 100%;
         flex-shrink: 0;
         @include media-breakpoint-lg {
-            max-width: 280px;
-        }
-        @include media-breakpoint-md {
             max-width: 100%;
-            margin-top: 1rem;
+            margin-top: 2rem;
         }
     }
 }

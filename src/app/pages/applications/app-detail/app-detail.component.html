@@ -4,9 +4,8 @@
             <div class="app-detail__back-link height-unset">
                 <div>
                     <div class="d-flex flex-row align-items-center">
-                        <img src="./assets/img/arrow-left.svg"
-                             alt="arrow-icon">
-                    <a routerLink="" class="pl-1 app-detail__back-link-text">Back</a>
+                        <img src="./assets/img/arrow-left.svg" alt="arrow-icon">
+                        <a routerLink="" class="pl-1 app-detail__back-link-text">Back</a>
                     </div>
                     <h3 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h3>
                 </div>
@@ -16,13 +15,13 @@
             </div>
             <div class="app-detail__data">
                 <div class="app-detail__data-description">
-                    <div class="col-md-auto mb-2 app-logo" *ngIf="app.logo">
+                    <div class="app-detail__data-image" *ngIf="app.logo">
                         <img [src]="app.logo" [alt]="app.name || 'app-icon'">
                     </div>
                     <div class="d-flex flex-column">
                         <h1 class="mb-2 page-title-size">{{ app.name }}</h1>
                         <a href="#" class="app-detail__price" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
-                        <div class="text-secondary mt-1" [innerHTML]="app.summary"></div>
+                        <div class="app-detail__summary text-secondary mt-1" [innerHTML]="app.summary"></div>
                         <oc-rating class="mb-3" [rating]="app.rating / 100 || 0" [reviewCount]="app.reviewCount || 0"
                                    label="reviews" labelClass="medium" type="single-star"></oc-rating>
                         <div *ngIf="appListingActions?.length > 0" class="actions-container">
