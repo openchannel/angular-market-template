@@ -9,80 +9,86 @@ import { Router } from '@angular/router';
 import { FullAppData, DropdownModel } from '@openchannel/angular-common-components';
 
 @Component({
-  selector: 'app-my-apps',
-  templateUrl: './my-apps.component.html',
-  styleUrls: ['./my-apps.component.scss']
+    selector: 'app-my-apps',
+    templateUrl: './my-apps.component.html',
+    styleUrls: ['./my-apps.component.scss'],
 })
 export class MyAppsComponent implements OnInit, OnDestroy {
+    appList: FullAppData[] = [];
+    appSorts: DropdownModel<string>[];
+    selectedSort: DropdownModel<string>;
 
-  appList: FullAppData[] = [];
-  appSorts: DropdownModel<string>[];
-  selectedSort: DropdownModel<string>;
+    private pageNumber = 1;
+    private destroy$ = new Subject();
 
-  private pageNumber = 1;
-  private destroy$ = new Subject();
+    private loader: LoadingBarState;
 
-  private loader: LoadingBarState;
+    constructor(
+        private appsService: AppsService,
+        private router: Router,
+        private frontendService: FrontendService,
+        private loadingBar: LoadingBarService,
+    ) {}
 
-  constructor(
-      private appsService: AppsService,
-      private router: Router,
-      private frontendService: FrontendService,
-      private loadingBar: LoadingBarService
-  ) {}
+    ngOnInit(): void {
+        this.loader = this.loadingBar.useRef();
+        this.loader.start();
 
-  ngOnInit(): void {
-    this.loader = this.loadingBar.useRef();
-    this.loader.start();
+        this.frontendService
+            .getSorts()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                page => {
+                    this.appSorts = page.list[0]
+                        ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
+                        : null;
+                    if (this.appSorts) {
+                        this.selectedSort = this.appSorts[0];
+                    }
 
-    this.frontendService.getSorts()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(page => {
-        this.appSorts = page.list[0] ?
-          page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort)) : null;
-        if (this.appSorts) {
-          this.selectedSort = this.appSorts[0];
-        }
+                    this.loadApps();
+                },
+                error => this.loader.complete(),
+                () => this.loader.complete(),
+            );
+    }
 
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    onSortChange(selected: DropdownModel<string>): void {
+        this.pageNumber = 1;
+        this.appList = [];
+        this.selectedSort = selected;
         this.loadApps();
-      },
-        error => this.loader.complete(),
-        () => this.loader.complete());
-  }
+    }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+    onScrollDown(): void {
+        this.pageNumber++;
+        this.loadApps();
+    }
 
-  private loadApps() {
-    const sort = this.selectedSort ? this.selectedSort.value : '';
-    this.appsService.getApps(this.pageNumber, 5, sort, '', true)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(res => {
-        this.appList = [...this.appList, ...res.list.map(app => new FullAppData(app, pageConfig.fieldMappings))];
-      },
-        error => this.loader.complete(),
-        () => this.loader.complete());
-  }
+    goBack(): void {
+        history.back();
+    }
 
-  onSortChange(selected: DropdownModel<string>) {
-    this.pageNumber = 1;
-    this.appList = [];
-    this.selectedSort = selected;
-    this.loadApps();
-  }
+    navigateTo(parts: any[]): void {
+        this.router.navigate(parts).then();
+    }
 
-  onScrollDown() {
-    this.pageNumber++;
-    this.loadApps();
-  }
-
-  goBack() {
-    history.back();
-  }
-
-  navigateTo(parts: any []): void {
-    this.router.navigate(parts).then();
-  }
+    private loadApps(): void {
+        const sort = this.selectedSort ? this.selectedSort.value : '';
+        this.appsService
+            .getApps(this.pageNumber, 5, sort, '', true)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                res => {
+                    this.appList = [...this.appList, ...res.list.map(app => new FullAppData(app, pageConfig.fieldMappings))];
+                },
+                error => this.loader.complete(),
+                () => this.loader.complete(),
+            );
+    }
 }

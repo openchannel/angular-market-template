@@ -1,11 +1,12 @@
 <div class="bg-container pt-sm-5" [hidden]="isLoading">
-    <oc-login class="login-position"
-              [loginModel]="signIn"
-              [hidden]="isSsoLogin"
-              [forgotPwdUrl]="forgotPwdUrl"
-              [signupUrl]="signupUrl"
-              [companyLogoUrl]="cmsData.loginImageURL"
-              (submit)="login($event)"
-              (sendActivationLink)="sendActivationEmail($event)"
-              [process]="inProcess"></oc-login>
+    <oc-login
+        class="login-position"
+        [loginModel]="signIn"
+        [hidden]="isSsoLogin"
+        [forgotPwdUrl]="forgotPwdUrl"
+        [signupUrl]="signupUrl"
+        [companyLogoUrl]="cmsData.loginImageURL"
+        (submit)="login($event)"
+        (sendActivationLink)="sendActivationEmail($event)"
+        [process]="inProcess"></oc-login>
 </div>
