@@ -1,55 +1,55 @@
 @import '~@openchannel/angular-common-components/assets/styles/mixins';
 
 .main-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  padding: 16px;
-  justify-content: space-between;
-  min-height: 96px;
-  &__page-title {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    &-breadcrumbs {
-      @include font-size-md();
-      @include font-medium();
+    flex-direction: row;
+    width: 100%;
+    padding: 16px;
+    justify-content: space-between;
+    min-height: 96px;
+    &__page-title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        &-breadcrumbs {
+            @include font-size-md();
+            @include font-medium();
+        }
+        &__router-navigate {
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: center;
+            width: min-content;
+            cursor: pointer;
+            img {
+                margin-right: 8px;
+                margin-bottom: 2px;
+            }
+        }
+        &__title {
+            font-size: 28px;
+            margin: 0;
+        }
     }
-    &__router-navigate {
-      margin-bottom: 8px;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      width: min-content;
-      cursor: pointer;
-      img {
-        margin-right: 8px;
-        margin-bottom: 2px;
-      }
+    &__custom-button {
+        margin: auto 0;
+        width: 240px;
     }
-    &__title {
-      font-size: 28px;
-      margin: 0;
-    }
-  }
-  &__custom-button {
-    margin: auto 0;
-    width: 240px;
-  }
 
-  @include media-breakpoint-md {
-    .main-container__page-title__title {
-      font-size: 24px;
+    @include media-breakpoint-md {
+        .main-container__page-title__title {
+            font-size: 24px;
+        }
     }
-  }
 
-  @include media-breakpoint-sm {
-    flex-direction: column;
-    padding: 16px 24px;
-    .main-container__custom-button {
-      width: 100%;
-      margin-top: 16px;
+    @include media-breakpoint-sm {
+        flex-direction: column;
+        padding: 16px 24px;
+        .main-container__custom-button {
+            width: 100%;
+            margin-top: 16px;
+        }
     }
-  }
 }

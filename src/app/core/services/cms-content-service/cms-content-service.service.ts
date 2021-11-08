@@ -3,7 +3,7 @@ import { CMSSiteContentService, SiteContentService } from '@openchannel/angular-
 import { Observable } from 'rxjs/internal/Observable';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-import {of} from 'rxjs';
+import { of } from 'rxjs';
 import defaultCMSData from '../../../../../_defaultContent.json';
 
 @Injectable({
