@@ -26,6 +26,7 @@ export interface ViewData {
 export interface ToasterMessages {
     success: string;
     fail: string;
+    notFound?: string;
 }
 
 export interface ButtonForm {
