@@ -10,7 +10,8 @@
                     <h4 class="mb-1">Sign Up</h4>
                     <oc-label text="Enter your account details below" class="mb-3"></oc-label>
                 </div>
-                <oc-form [formJsonData]="formConfig"
+                <oc-form
+                    [formJsonData]="formConfig"
                          (formDataUpdated)="setFormData($event)"
                          (createdForm)="setCreatedForm($event)"
                          [showButton]="false"></oc-form>
@@ -31,14 +32,11 @@
                             </a>
                         </div>
                     </div>
-                    <oc-error [control]="termsControl"
+                    <oc-error
+                        [control]="termsControl"
                               [modifyErrors]="[{validator: 'required', message: 'Please confirm this checkbox'}]"></oc-error>
                 </div>
-                <oc-button (click)="submitForm()"
-                           [process]="inProcess"
-                           text="Sign Up" type="primary"
-                           class="btn-block mt-5">
-                </oc-button>
+                <oc-button (click)="submitForm()" [process]="inProcess" text="Sign Up" type="primary" class="btn-block mt-5"></oc-button>
             </ng-container>
         </div>
     </div>

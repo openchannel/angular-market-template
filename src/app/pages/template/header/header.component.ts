@@ -43,7 +43,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     constructor(
         public router: Router,
-        private activatedRouter: ActivatedRoute,
         public authHolderService: AuthHolderService,
         private openIdAuthService: AuthenticationService,
         private logOut: LogOutService,
@@ -84,7 +83,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     getUrlWithoutFragment(): string {
-        let routerPath = this.router.url;
+        let routerPath = window.location.href.substring(window.location.origin.length);
         if (this.activatedRoute.snapshot.fragment) {
             routerPath = routerPath.split('#')[0];
         }

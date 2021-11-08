@@ -1,7 +1,10 @@
 <div class="bg-container height-unset">
-    <app-page-title pageTitle="My company" navigateText="Back" (navigateClick)="goBack()"
-                    [buttonText]="selectedPage.pageId === pages[1].pageId ? 'Invite a member' : null"
-                    (buttonClick)="openInviteModal()"></app-page-title>
+    <app-page-title
+        pageTitle="My company"
+        navigateText="Back"
+        (navigateClick)="goBack()"
+        [buttonText]="selectedPage.pageId === pages[1].pageId ? 'Invite a member' : null"
+        (buttonClick)="openInviteModal()"></app-page-title>
 </div>
 
 <div class="container">
@@ -9,8 +12,9 @@
         <div class="col-lg-2 col-xl-3 col-xxl-2">
             <ul class="list-unstyled">
                 <li *ngFor="let page of currentPages" class="py-1">
-                    <a (click)="gotoPage(page)"
-                       [ngClass]="{'active-link' : page.pageId === selectedPage.pageId}">{{page.placeholder}}</a>
+                    <a (click)="gotoPage(page)" [ngClass]="{ 'active-link': page.pageId === selectedPage.pageId }">
+                        {{ page.placeholder }}
+                    </a>
                 </li>
             </ul>
         </div>

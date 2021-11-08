@@ -1,17 +1,17 @@
 <div>
-  <div class="modal-header p-3" *ngIf="modalTitle">
-    <h4 class="modal-title text-center w-100 mb-0" id="modal-basic-title">{{modalTitle}}</h4>
-    <img src="./assets/img/close-icon.svg" class="cursor-pointer" (click)="closeAction(false)">
-  </div>
-  <div class="modal-body p-5">
-    <p class="text-center">{{modalText}}</p>
-    <div class="d-flex flex-wrap justify-content-center mt-5">
-      <button class="btn btn-secondary confirm-modal-button m-1" (click)="closeAction(false)">
-        {{cancelButtonText}}
-      </button>
-      <button class="btn confirm-modal-button m-1" [ngClass]="_buttonType" (click)="closeAction(true)">
-        {{buttonText}}
-      </button>
+    <div class="modal-header p-3" *ngIf="modalTitle">
+        <h4 class="modal-title text-center w-100 mb-0" id="modal-basic-title">{{ modalTitle }}</h4>
+        <img src="./assets/img/close-icon.svg" class="cursor-pointer" alt="close" (click)="closeAction(false)">
     </div>
-  </div>
+    <div class="modal-body p-5">
+        <p class="text-center">{{ modalText }}</p>
+        <div class="d-flex flex-wrap justify-content-center mt-5">
+            <button class="btn btn-secondary confirm-modal-button m-1" (click)="closeAction(false)">
+                {{ cancelButtonText }}
+            </button>
+            <button class="btn confirm-modal-button m-1" [ngClass]="_buttonType" (click)="closeAction(true)">
+                {{ buttonText }}
+            </button>
+        </div>
+    </div>
 </div>
