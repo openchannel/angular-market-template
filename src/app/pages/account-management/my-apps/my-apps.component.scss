@@ -35,6 +35,15 @@ div.menu {
     }
 }
 
+.no-apps-message {
+    @include font-size-md();
+    text-align: center;
+    flex-basis: 100%;
+    @include media-breakpoint-sm() {
+        margin-top: 2rem;
+    }
+}
+
 .menu-button {
     width: 52px;
     min-width: 52px;
