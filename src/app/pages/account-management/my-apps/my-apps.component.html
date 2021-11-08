@@ -8,22 +8,23 @@
 
 <div class="container d-flex flex-column">
     <div class="d-flex justify-content-end pt-4 pb-3">
-        <oc-dropdown *ngIf="appSorts"
-                     [options]="appSorts"
-                     title="Show"
-                     (selectedChange)="onSortChange($event)"
-                     [selected]="selectedSort"></oc-dropdown>
+        <div class="no-apps-message"
+             *ngIf="appList?.length === 0">No apps in your list</div>
+        <oc-dropdown
+            *ngIf="appSorts && appList?.length > 0"
+            [options]="appSorts"
+            title="Show"
+            (selectedChange)="onSortChange($event)"
+            [selected]="selectedSort"></oc-dropdown>
     </div>
 
-    <div (scrolled)="onScrollDown()"
-         class="d-flex flex-column"
-         infiniteScroll>
-        <oc-app-short-info *ngFor="let app of appList"
-                           [app]="app"
-                           class="mb-2"
-                           [customDropdown]="dropdownTemplate"
-                           (clickByAppCard)="navigateTo(['details', $event.safeName[0]])">
-        </oc-app-short-info>
+    <div (scrolled)="onScrollDown()" class="d-flex flex-column" infiniteScroll>
+        <oc-app-short-info
+            *ngFor="let app of appList"
+            [app]="app"
+            class="mb-2"
+            [customDropdown]="dropdownTemplate"
+            (clickByAppCard)="navigateTo(['details', $event.safeName[0]])"></oc-app-short-info>
     </div>
 </div>
 <div class="mt-8"></div>

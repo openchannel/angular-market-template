@@ -8,19 +8,8 @@ import { FooterComponent } from './template/footer/footer.component';
 import { SharedModule } from '@shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-
 @NgModule({
-  declarations: [
-    CommonLayoutComponent,
-    HeaderComponent,
-    FooterComponent,
-  ],
-  imports: [
-    CommonModule,
-    CommonLayoutRoutingModule,
-    SharedModule,
-    NgbModule,
-  ],
+    declarations: [CommonLayoutComponent, HeaderComponent, FooterComponent],
+    imports: [CommonModule, CommonLayoutRoutingModule, SharedModule, NgbModule],
 })
-export class CommonLayoutModule {
-}
+export class CommonLayoutModule {}
