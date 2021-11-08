@@ -1,6 +1,6 @@
 <div class="container">
     <div class="navigation-container d-flex flex-row">
-        <img src="./assets/img/path_arrow.svg" alt="arrow-icon" />
+        <img src="./assets/img/path_arrow.svg" alt="arrow-icon">
         <a href="#" class="font-m font-med pl-1">Back</a>
     </div>
     <app-collapse-with-title
@@ -8,8 +8,7 @@
         titleForOpen="Open filter options"
         class="filter-open-close"
         [collapsed]="isHideFilter"
-        (collapseChanged)="onCollapseChanged($event)"
-    ></app-collapse-with-title>
+        (collapseChanged)="onCollapseChanged($event)"></app-collapse-with-title>
     <div class="filter-container row" *ngIf="loadFilters$ | async">
         <div class="col-md-3 d-md-block col-xxl-2" [ngbCollapse]="isHideFilter">
             <div *ngFor="let filter of filters" class="mb-3">
@@ -19,15 +18,13 @@
                         class="mb-1"
                         (sidebarChange)="onSingleFilterChange(filter, $event, true)"
                         [title]="filter.name"
-                        [sidebarModel]="filter.values"
-                    ></oc-sidebar>
+                        [sidebarModel]="filter.values"></oc-sidebar>
                     <oc-sidebar
                         *ngSwitchDefault
                         class="mb-1"
                         (sidebarChange)="onMultiFilterChange(filter, $event)"
                         [title]="filter.name"
-                        [sidebarModel]="filter.values"
-                    ></oc-sidebar>
+                        [sidebarModel]="filter.values"></oc-sidebar>
                 </div>
             </div>
         </div>
@@ -38,15 +35,13 @@
                     (enterSearch)="onTextChange($event)"
                     [tagsTitles]="tagsTitles"
                     (tagDeleted)="onSearchTagDeleted($event)"
-                    (allTagsDeleted)="clearAllSearchConditions()"
-                ></oc-text-search>
+                    (allTagsDeleted)="clearAllSearchConditions()"></oc-text-search>
             </div>
             <oc-app-list-grid
                 [appList]="appPage?.list"
                 baseLinkForOneApp="/details"
                 appNavigationParam="safeName[0]"
-                defaultAppIcon="./assets/img/default-app-icon.svg"
-            ></oc-app-list-grid>
+                defaultAppIcon="./assets/img/default-app-icon.svg"></oc-app-list-grid>
             <div *ngIf="!appPage?.list?.length" class="search__no-results">No results found</div>
         </div>
     </div>

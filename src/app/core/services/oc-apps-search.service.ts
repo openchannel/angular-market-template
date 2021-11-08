@@ -14,12 +14,12 @@ export class OcAppsSearchService extends AppsSearchService {
     }
 
     appsSearch(existsApps: FullAppData[], searchText: string): Observable<FullAppData[]> {
-        const searchAppQuery = `{'appId':{'$nin': ['${(existsApps || []).map(app => app.appId).join('\',\'')}']}}`;
+        const searchAppQuery = `{'appId':{'$nin': ['${(existsApps || []).map(app => app.appId).join("','")}']}}`;
         return this.appsService.searchApp(searchText, searchAppQuery, this.searchFields).pipe(map(this.mapToFullAppData));
     }
 
     loadDefaultApps(existsAppIDs: string[]): Observable<FullAppData[]> {
-        const searchAppQuery = `{'appId':{'$in': ['${existsAppIDs.join('\',\'')}']}}`;
+        const searchAppQuery = `{'appId':{'$in': ['${existsAppIDs.join("','")}']}}`;
         return this.appsService.getApps(1, 100, null, searchAppQuery).pipe(map(this.mapToFullAppData));
     }
 
