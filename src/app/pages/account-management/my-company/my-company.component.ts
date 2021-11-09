@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -9,10 +9,13 @@ import {
     Permission,
     PermissionType,
     UserRoleService,
+    UsersService,
 } from '@openchannel/angular-common-services';
 import { ModalInviteUserModel, OcInviteModalComponent } from '@openchannel/angular-common-components';
 import { ManagementComponent } from './management/management.component';
 import { Location } from '@angular/common';
+import { map, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export interface Page {
     pageId: string;
@@ -26,7 +29,7 @@ export interface Page {
     templateUrl: './my-company.component.html',
     styleUrls: ['./my-company.component.scss'],
 })
-export class MyCompanyComponent implements OnInit {
+export class MyCompanyComponent implements OnInit, OnDestroy {
     @ViewChild('appManagement') appManagement: ManagementComponent;
 
     pages: Page[] = [
@@ -59,11 +62,15 @@ export class MyCompanyComponent implements OnInit {
 
     isProcessing = false;
 
+    private companyName$ = new BehaviorSubject<string>(null);
+    private destroy$: Subject<void> = new Subject();
+
     constructor(
         private modal: NgbModal,
         private toaster: ToastrService,
         private authHolderService: AuthHolderService,
         private userRolesService: UserRoleService,
+        private userService: UsersService,
         private inviteService: InviteUserService,
         private router: Router,
         private activeRoute: ActivatedRoute,
@@ -73,6 +80,13 @@ export class MyCompanyComponent implements OnInit {
     ngOnInit(): void {
         this.currentPages = this.filterPagesByUserType();
         this.initMainPage();
+        this.initCompanyName();
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+        this.companyName$.complete();
     }
 
     gotoPage(newPage: Page): void {
@@ -85,30 +99,33 @@ export class MyCompanyComponent implements OnInit {
     }
 
     openInviteModal(): void {
-        const modalRef = this.modal.open(OcInviteModalComponent, { size: 'sm' });
-        modalRef.componentInstance.ngbModalRef = modalRef;
+        this.companyName$
+        .subscribe(companyName => {
+            const modalRef = this.modal.open(OcInviteModalComponent, { size: 'sm' });
+            modalRef.componentInstance.ngbModalRef = modalRef;
 
-        const modalData = new ModalInviteUserModel();
-        modalData.modalTitle = 'Invite a member';
-        modalData.successButtonText = 'Send Invite';
+            const modalData = new ModalInviteUserModel();
+            modalData.modalTitle = 'Invite a member';
+            modalData.successButtonText = 'Send Invite';
 
-        modalData.requestFindUserRoles = () => {
-            return this.userRolesService.getUserRoles(1, 100);
-        };
+            modalData.requestFindUserRoles = () => {
+                return this.userRolesService.getUserRoles(1, 100);
+            };
 
-        modalData.requestSendInvite = (accountData: any) => {
-            return this.inviteService.sendUserInvite(null, accountData);
-        };
+            modalData.requestSendInvite = (accountData: any) => {
+                return this.inviteService.sendUserInvite(companyName, accountData);
+            };
 
-        modalRef.componentInstance.modalData = modalData;
+            modalRef.componentInstance.modalData = modalData;
 
-        modalRef.result.then(
-            () => {
-                this.toaster.success('Invitation sent');
-                this.appManagement.getAllUsers(true);
-            },
-            () => {},
-        );
+            modalRef.result.then(
+                () => {
+                    this.toaster.success('Invitation sent');
+                    this.appManagement.getAllUsers(true);
+                },
+                () => {},
+            );
+        })
     }
 
     private initMainPage(): void {
@@ -119,5 +136,13 @@ export class MyCompanyComponent implements OnInit {
 
     private filterPagesByUserType(): Page[] {
         return this.pages.filter(page => this.authHolderService.hasAnyPermission(page.permissions));
+    }
+
+    private initCompanyName(): void {
+        this.userService.getUserCompany()
+        .pipe(
+            map(company => company.name),
+            takeUntil(this.destroy$)
+        ).subscribe(companyName => this.companyName$.next(companyName));
     }
 }

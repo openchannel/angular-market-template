@@ -37,10 +37,13 @@ export class FooterComponent implements OnInit {
         columnsDFA: [] as FooterColumn[],
     };
 
+    currentYear: number;
+
     constructor(private cmsService: CmsContentService) {}
 
     ngOnInit(): void {
         this.initCMSData();
+        this.currentYear = new Date().getFullYear();
     }
 
     initCMSData(): void {
