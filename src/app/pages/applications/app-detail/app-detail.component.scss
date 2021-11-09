@@ -2,7 +2,6 @@
 @import '~@openchannel/angular-common-components/assets/styles/mixins';
 
 .app-detail {
-
     &__back-link {
         display: flex;
         justify-content: space-between;
@@ -53,7 +52,6 @@
 }
 
 .list-group.list-group-flush {
-
     .list-group-item {
         @include font-medium();
         padding: 0 0 10px;
@@ -96,8 +94,8 @@
     width: 16px;
     height: 16px;
     background-color: $secondary;
-    -webkit-mask: url("~assets/img/close-icon.svg") no-repeat center;
-    mask: url("~assets/img/close-icon.svg") no-repeat center;
+    -webkit-mask: url('~assets/img/close-icon.svg') no-repeat center;
+    mask: url('~assets/img/close-icon.svg') no-repeat center;
 }
 
 .actions-container {

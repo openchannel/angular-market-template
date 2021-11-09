@@ -53,7 +53,8 @@ const apiURl = environment.enableProxy ? `${window.origin}/client-api/` : enviro
     providers: [
         {
             provide: HTTP_INTERCEPTORS,
-            useFactory: (authHolderService: AuthHolderService): HttpConfigInterceptor => new HttpConfigInterceptor(authHolderService, apiURl),
+            useFactory: (authHolderService: AuthHolderService): HttpConfigInterceptor =>
+                new HttpConfigInterceptor(authHolderService, apiURl),
             deps: [AuthHolderService],
             multi: true,
         },
