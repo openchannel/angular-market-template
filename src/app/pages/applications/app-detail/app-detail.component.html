@@ -16,19 +16,26 @@
             <div class="app-detail__data">
                 <div class="app-detail__data-description">
                     <div class="app-detail__data-image" *ngIf="app.logo">
-                        <img [src]="app.logo" [alt]="app.name || 'app-icon'">
+                        <img [src]="app.logo" [alt]="app.name || 'app-icon'" />
                     </div>
                     <div class="d-flex flex-column">
                         <h1 class="mb-2 page-title-size">{{ app.name }}</h1>
-                        <a href="#" class="app-detail__price" (click)="$event.preventDefault()">{{ app.model[0] | price}}</a>
+                        <a href="#" class="app-detail__price" (click)="$event.preventDefault()">{{ app.model[0] | price }}</a>
                         <div class="app-detail__summary text-secondary mt-1" [innerHTML]="app.summary"></div>
-                        <oc-rating class="mb-3" [rating]="app.rating / 100 || 0" [reviewCount]="app.reviewCount || 0"
-                                   label="reviews" labelClass="medium" type="single-star"></oc-rating>
+                        <oc-rating
+                            class="mb-3"
+                            [rating]="app.rating / 100 || 0"
+                            [reviewCount]="app.reviewCount || 0"
+                            label="reviews"
+                            labelClass="medium"
+                            type="single-star"></oc-rating>
                         <div *ngIf="appListingActions?.length > 0" class="actions-container">
-                            <app-button-action *ngFor="let action of appListingActions"
-                                               [appData]="app"
-                                               [buttonAction]="action"
-                                               (updateAppData)="getAppData()" class="action-button"></app-button-action>
+                            <app-button-action
+                                *ngFor="let action of appListingActions"
+                                [appData]="app"
+                                [buttonAction]="action"
+                                (updateAppData)="getAppData()"
+                                class="action-button"></app-button-action>
                         </div>
                     </div>
                 </div>
@@ -39,45 +46,43 @@
         </div>
     </div>
     <div class="container">
-        <oc-image-gallery *ngIf="app.images && app.images.length > 0"
-                          [gallery]="app.images"
-                          [expandOnClick]="true"
-                          class="mt-8 d-block"></oc-image-gallery>
+        <oc-image-gallery
+            *ngIf="app.images && app.images.length > 0"
+            [gallery]="app.images"
+            [expandOnClick]="true"
+            class="mt-8 d-block"></oc-image-gallery>
 
         <div class="row mb-0 mb-md-8 mt-3 mt-md-8">
-            <oc-app-description  class="col-md-8"
-                                 [appDescription]="app.description"
-                                 [truncateTextLength]="800"
-                                 header="About"
-                                 headerTag="h2"
-                                 headerClass="mb-2"></oc-app-description>
+            <oc-app-description
+                class="col-md-8"
+                [appDescription]="app.description"
+                [truncateTextLength]="800"
+                header="About"
+                headerTag="h2"
+                headerClass="mb-2"></oc-app-description>
             <div class="app-detail__data-support col-md ml-md-8 mt-3 mt-md-0">
-                <h2 class="app-detail__data-support-title mb-2 ">Support</h2>
+                <h2 class="app-detail__data-support-title mb-2">Support</h2>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" *ngIf="app.customData['terms-of-service-url']">
-                        <img src="./assets/img/icon-help.svg"
-                             class="pr-2" alt="icon">
+                        <img src="./assets/img/icon-help.svg" class="pr-2" alt="icon" />
                         <a class="support-link" [href]="app.customData['terms-of-service-url']">F.A.Q.</a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['website-url']">
-                        <img src="./assets/img/internet.svg"
-                            class="pr-2" alt="icon">
+                        <img src="./assets/img/internet.svg" class="pr-2" alt="icon" />
                         <a class="support-link" [href]="app.customData['website-url']">Developer website</a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['terms-of-service-url']">
-                        <img src="./assets/img/padlock.svg"
-                            class="pr-2" alt="icon">
+                        <img src="./assets/img/padlock.svg" class="pr-2" alt="icon" />
                         <a class="support-link" [href]="app.customData['terms-of-service-url']">Privacy Policy</a>
                     </li>
                     <li class="list-group-item link" *ngIf="app.customData['contact-email']">
-                        <img src="./assets/img/icon-email.svg"
-                            class="pr-2" alt="icon">
-                        <a class="support-link"
-                           [href]="'mailto:' + app.customData['contact-email']">{{app.customData['contact-email']}}</a>
+                        <img src="./assets/img/icon-email.svg" class="pr-2" alt="icon" />
+                        <a class="support-link" [href]="'mailto:' + app.customData['contact-email']">
+                            {{ app.customData['contact-email'] }}
+                        </a>
                     </li>
                     <li class="list-group-item" *ngIf="app.customData['support-url']">
-                        <img src="./assets/img/speech-bubble.svg"
-                            class="pr-2" alt="icon">
+                        <img src="./assets/img/speech-bubble.svg" class="pr-2" alt="icon" />
                         <a class="support-link" [href]="app.customData['support-url']">Support website</a>
                     </li>
                 </ul>
@@ -89,42 +94,46 @@
                 <oc-overall-rating [allReviewSummary]="overallRating"></oc-overall-rating>
             </div>
             <div class="review-column">
-                <oc-review-list *ngIf="!isWritingReview"
-                                [currentUserId]="currentUserId"
-                                [reviewsList]="reviewsPage?.list"
-                                [totalReview]="reviewsPage?.count"
-                                [allowWriteReview]="app.ownership && !userReview"
-                                (writeAReview)="onNewReview()"
-                                (chosenAction)="onChosenReviewActon($event)"
-                                reviewListTitle="Most recent reviews">
+                <oc-review-list
+                    *ngIf="!isWritingReview"
+                    [currentUserId]="currentUserId"
+                    [reviewsList]="reviewsPage?.list"
+                    [totalReview]="reviewsPage?.count"
+                    [allowWriteReview]="app.ownership && !userReview"
+                    (writeAReview)="onNewReview()"
+                    (chosenAction)="onChosenReviewActon($event)"
+                    reviewListTitle="Most recent reviews">
                     <div>
-                        <oc-dropdown [options]="reviewsSorts"
-                                     [selected]="selectedSort"
-                                     (selectedChange)="onReviewSortChange($event)"
-                                     class="mr-5"></oc-dropdown>
-                        <oc-dropdown [options]="reviewsFilter"
-                                     title="Show"
-                                     (selectedChange)="onReviewFilterChange($event)"
-                                     [selected]="selectedFilter"></oc-dropdown>
+                        <oc-dropdown
+                            [options]="reviewsSorts"
+                            [selected]="selectedSort"
+                            (selectedChange)="onReviewSortChange($event)"
+                            class="mr-5"></oc-dropdown>
+                        <oc-dropdown
+                            [options]="reviewsFilter"
+                            title="Show"
+                            (selectedChange)="onReviewFilterChange($event)"
+                            [selected]="selectedFilter"></oc-dropdown>
                     </div>
                 </oc-review-list>
-                <oc-review *ngIf="isWritingReview"
-                           heading="Write a review"
-                           [submitInProgress]="reviewSubmitInProgress"
-                           (reviewFormData)="onReviewSubmit($event)"
-                           (cancelReview)="onCancelReview()"
-                           [reviewData]="userReview"
-                           [enableButtons]="true"></oc-review>
+                <oc-review
+                    *ngIf="isWritingReview"
+                    heading="Write a review"
+                    [submitInProgress]="reviewSubmitInProgress"
+                    (reviewFormData)="onReviewSubmit($event)"
+                    (cancelReview)="onCancelReview()"
+                    [reviewData]="userReview"
+                    [enableButtons]="true"></oc-review>
             </div>
         </div>
     </div>
     <div class="bg-container mt-5 pt-3 pb-4 px-3 px-md-0 py-md-8 min-height-auto" *ngIf="recommendedApps">
         <div class="container">
-            <oc-recommended-apps recommendedAppTitle="Recommended for you"
-                                 [appList]="recommendedApps"
-                                 routerLinkForOneApp="/details"
-                                 appNavigationParam="safeName[0]">
-            </oc-recommended-apps>
+            <oc-recommended-apps
+                recommendedAppTitle="Recommended for you"
+                [appList]="recommendedApps"
+                routerLinkForOneApp="/details"
+                appNavigationParam="safeName[0]"></oc-recommended-apps>
         </div>
     </div>
 </div>

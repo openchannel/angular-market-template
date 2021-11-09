@@ -13,19 +13,20 @@ div.menu {
     @include media-breakpoint-sm {
         margin: 0 !important;
     }
-    
+
     &-menu {
         @include media-breakpoint-sm {
             margin-top: 0;
         }
     }
-    
+
     &-toggle {
         @include media-breakpoint-sm {
             border: none;
         }
-        
-        &:active, &:focus {
+
+        &:active,
+        &:focus {
             @include media-breakpoint-sm {
                 border: none;
                 box-shadow: none !important;
@@ -52,19 +53,19 @@ div.menu {
         display: block;
         height: 20px;
     }
-    
+
     &:not(.disabled):hover {
         background-color: unset;
     }
-    
+
     &:not(.disabled):active {
         background-color: unset;
     }
-    
+
     &.dropdown-toggle {
         background-color: unset;
     }
-    
+
     &:after {
         display: none;
     }
