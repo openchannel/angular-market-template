@@ -36,7 +36,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             count: 0,
         },
         layout: 'table',
-        options: ['DELETE', 'EDIT'],
+        options: ['EDIT', 'DELETE'],
     };
 
     tableSortFieldName: { [name in SortField]: string } = {
