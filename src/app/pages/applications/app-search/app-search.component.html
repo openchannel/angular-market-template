@@ -31,7 +31,7 @@
         <div class="col-md-9 col-xxl-10">
             <div class="text-search-wrapper">
                 <oc-text-search
-                    [(searchText)]="searchText"
+                    [searchText]="searchText"
                     (enterSearch)="onTextChange($event)"
                     [tagsTitles]="tagsTitles"
                     (tagDeleted)="onSearchTagDeleted($event)"
@@ -43,8 +43,8 @@
                 appNavigationParam="safeName[0]"
                 defaultAppIcon="./assets/img/default-app-icon.svg"></oc-app-list-grid>
             <div *ngIf="!appPage?.list?.length" class="search__no-results">{{
-                searchText?.trim()?.length
-                        ? 'There are no apps found for: ' + searchText.trim()
+                searchText?.length
+                        ? 'There are no apps found for: ' + searchText
                         : 'No results found'}}
             </div>
         </div>
