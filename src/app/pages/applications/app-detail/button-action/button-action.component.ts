@@ -66,6 +66,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         if (this.loader) {
             this.loader.complete();
         }
+        this.modal.dismissAll();
     }
 
     initButtonData(): void {
@@ -232,7 +233,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         if (!this.modal.hasOpenModals()) {
             this.modal.dismissAll('Opening a new button action modal');
 
-            const modalRef = this.modal.open(OcFormModalComponent, { size: 'sm' });
+            const modalRef = this.modal.open(OcFormModalComponent, { size: 'sm', backdrop: 'static' });
             modalRef.componentInstance.modalTitle = modalTitle;
             modalRef.componentInstance.confirmButton = this.confirmButton;
             modalRef.componentInstance.rejectButton = this.rejectButton;
