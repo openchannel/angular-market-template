@@ -27,6 +27,13 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
+    private passwordField = {
+        id: 'password',
+        label: 'Password',
+        type: 'password',
+        attributes: { required: true },
+    };
+
     constructor(
         private activeRouter: ActivatedRoute,
         private router: Router,
@@ -73,12 +80,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
                         attributes: { required: true },
                         defaultValue: this.userInviteData?.email,
                     },
-                    {
-                        id: 'password',
-                        label: 'Password',
-                        type: 'password',
-                        attributes: { required: true },
-                    },
+                    this.passwordField,
                 ],
             };
         }
@@ -118,12 +120,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             }
             return field;
         });
-        mappedFields.push({
-            id: 'password',
-            label: 'Password',
-            type: 'password',
-            attributes: {},
-        });
+        mappedFields.push(this.passwordField);
 
         return mappedFields;
     }
@@ -133,7 +130,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         form.get('email').disable();
         const companyKey = Object.keys(form.value).find(key => key.includes('company'));
         if (companyKey) {
-            form.get(companyKey).disable();
+            form.get([companyKey]).disable();
         }
         this.signUpGroup = form;
 
