@@ -10,18 +10,7 @@ import { OcFormComponentsModule } from '@openchannel/angular-common-components';
 import { ButtonActionComponent } from './app-detail/button-action/button-action.component';
 
 @NgModule({
-  declarations: [
-    AppDetailComponent,
-    AppSearchComponent,
-    FormModalComponent,
-    ButtonActionComponent,
-  ],
-  imports: [
-    CommonModule,
-    ApplicationsRoutingModule,
-    SharedModule,
-    OcFormComponentsModule,
-  ],
+    declarations: [AppDetailComponent, AppSearchComponent, FormModalComponent, ButtonActionComponent],
+    imports: [CommonModule, ApplicationsRoutingModule, SharedModule, OcFormComponentsModule],
 })
-export class ApplicationsModule {
-}
+export class ApplicationsModule {}
