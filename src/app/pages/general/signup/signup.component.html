@@ -1,15 +1,16 @@
 <div class="bg-container pt-sm-5">
-  <oc-signup-custom class="signup-position"
-                    [formConfigsLoading]="formConfigsLoading"
-                    [formConfigs]="formConfigs"
-                    [loginUrl]="loginUrl"
-                    [signupUrl]="signupUrl"
-                    [activationUrl]="activationUrl"
-                    [companyLogoUrl]="companyLogoUrl"
-                    [termsUrl]="termsAndConditionPageUrl"
-                    [policyUrl]="dataProcessingPolicyUrl"
-                    [process]="inProcess"
-                    [(showSignupFeedbackPage)]="showSignupFeedbackPage"
-                    [forgotPasswordDoneUrl]="forgotPasswordDoneIconPath"
-                    (resultUserData)="onSignup($event)"></oc-signup-custom>
+    <oc-signup-custom
+        class="signup-position"
+        [formConfigsLoading]="formConfigsLoading"
+        [formConfigs]="formConfigs"
+        [loginUrl]="loginUrl"
+        [signupUrl]="signupUrl"
+        [activationUrl]="activationUrl"
+        [companyLogoUrl]="companyLogoUrl"
+        [termsUrl]="termsAndConditionPageUrl"
+        [policyUrl]="dataProcessingPolicyUrl"
+        [process]="inProcess"
+        [(showSignupFeedbackPage)]="showSignupFeedbackPage"
+        [forgotPasswordDoneUrl]="forgotPasswordDoneIconPath"
+        (resultUserData)="onSignup($event)"></oc-signup-custom>
 </div>
