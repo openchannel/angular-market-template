@@ -1,3 +1,23 @@
+## Release notes - template3-marketsite-frontend - Version 1.52.0 (11/11/2021)<br>
+### Bug<br>
+AT-1582 - Cap should not be setting expires and pragma headers on cachable responses<br>
+AT-1578 - [Market] Video gets squeeze when the Summary is too long on the App details page.<br>
+AT-1490 - [Portal][Create Apps] Color field has no default value set, yet Portal user gets default value for Color.  <br>
+AT-1460 - UI [Market/Portal] On Invite Sign up screen, Font size of checkbox value should be same as we have for normal sign up.<br>
+AT-1425 - [UI] If Features Apps are only 2 or 3 then there should be decent view on dashboard.<br>
+AT-1298 - Rating with half star not rendering correctly<br>
+AT-1211 - [Market/Portal] Refresh token expired should not appear to the end User.<br>
+AT-1207 - [Market] "Search phrase does not found any results" message missing on the Search result page.<br>
+## Release notes - template3-marketsite-frontend - Version 1.51.0 (11/9/2021)<br>
+### Bug<br>
+AT-1592 - Signup by invite doesn't work<br>
+AT-1273 - [Market/Portal] Copyright year at the footer of each site should get auto update based on the current year.<br>
+AT-1126 - [UI][Portal][Mac -> Safari] My Company and My Profile page issues<br>
+AT-1103 - [UI][Portal / Market site] Resend activation code screen does not show success toastr message on resending the code.<br>
+AT-1095 - [UI][Marketsite][Android] "See all >"  should be in sentence case <br>
+AT-1041 - Clicking the label text for Remember Me should toggle the checkbox<br>
+AT-1024 - [App Details][Forms] If the mapped Forms are not available in OC Dashboard, click event on 'Contact' & 'Buy now' buttons should throw a meaningful message.<br>
+AT-981 - [User Management] [Invite Member] [UI] 'Terms & Data processing' Checkbox is showing not properly aligned.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.50.0 (11/8/2021)<br>
 ### Bug<br>
 AT-1586 - Need to update files of the projects with a prettier<br>

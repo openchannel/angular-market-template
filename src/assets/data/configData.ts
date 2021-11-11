@@ -35,6 +35,7 @@ export const pageConfig = {
                 message: {
                     success: "Thank you for submitting, we'll get back to you shortly",
                     fail: 'Due to an error, we were not able to send your form',
+                    notFound: 'Buy now form is not available',
                 },
                 button: {
                     class: 'oc-button_primary',
@@ -49,6 +50,7 @@ export const pageConfig = {
                 message: {
                     success: "Thank you for submitting, we'll get back to you shortly",
                     fail: 'Due to an error, we were not able to send your form',
+                    notFound: 'Contact us form is not available',
                 },
                 button: {
                     class: 'oc-button_secondary',

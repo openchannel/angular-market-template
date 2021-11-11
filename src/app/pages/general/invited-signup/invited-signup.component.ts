@@ -128,9 +128,9 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
     // getting generated form group for disabling special fields
     setCreatedForm(form: FormGroup): void {
         form.get('email').disable();
-        const companyKey = Object.keys(form.value).find(key => key.includes('company'));
-        if (companyKey) {
-            form.get([companyKey]).disable();
+        const companyControlKey = Object.keys(form.controls).find(key => key.includes('company'));
+        if (companyControlKey) {
+            form.controls[companyControlKey].disable();
         }
         this.signUpGroup = form;
 

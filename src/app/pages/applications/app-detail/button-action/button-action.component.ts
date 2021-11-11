@@ -119,7 +119,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             this.inProcess = true;
             // get form from API
             this.formService
-                .getForm(formAction?.formId)
+                .getForm(formAction?.formId, new HttpHeaders({ 'x-handle-error': '404' }))
                 .pipe(takeUntil(this.$destroy))
                 .subscribe(
                     form => {
@@ -145,6 +145,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                         });
                     },
                     () => {
+                        this.toasterService.error(formAction.message.notFound);
                         this.loader.complete();
                         this.inProcess = false;
                     },
