@@ -34,6 +34,7 @@
     "@ngx-loading-bar/core": "^5.1.1",
     "@openchannel/angular-common-components": "^2.43.0",
     "@openchannel/angular-common-services": "^2.43.0",
+    "@stripe/stripe-js": "^1.21.1",
     "@tinymce/tinymce-angular": "^4.2.1",
     "angular-oauth2-oidc": "^10.0.3",
     "bootstrap": "^4.4.1",
