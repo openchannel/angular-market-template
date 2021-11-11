@@ -28,18 +28,19 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
     private destroy$: Subject<void> = new Subject();
 
     private passwordField = {
-    id: 'password',
-    label: 'Password',
-    type: 'password',
-    attributes: {required: true},
-  };
+        id: 'password',
+        label: 'Password',
+        type: 'password',
+        attributes: { required: true },
+    };
 
-  constructor(private activeRouter: ActivatedRoute,
-              private router: Router,
-              private inviteUserService: InviteUserService,
-              private typeService: UserAccountTypesService,
-              private logOutService: LogOutService,
-              private nativeLoginService: NativeLoginService,
+    constructor(
+        private activeRouter: ActivatedRoute,
+        private router: Router,
+        private inviteUserService: InviteUserService,
+        private typeService: UserAccountTypesService,
+        private logOutService: LogOutService,
+        private nativeLoginService: NativeLoginService,
     ) {}
 
     ngOnInit(): void {
@@ -51,40 +52,39 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-  // making form config according to form type
-  getFormType(type) {
-    if (type) {
-        this.typeService.getUserAccountType(type)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(
-            resp => {
-              this.formConfig = {
-                fields: this.mapDataToField(resp.fields)
-              };
-            }
-        );
-    } else {
-      this.formConfig = {
-        fields: [
-          {
-            id: 'name',
-            label: 'Name',
-            type: 'text',
-            attributes: {required: false},
-            defaultValue: this.userInviteData?.name
-          },
-          {
-            id: 'email',
-            label: 'Email',
-            type: 'emailAddress',
-            attributes: {required: true},
-            defaultValue: this.userInviteData?.email
-          },
-          this.passwordField,
-        ]
-      };
+    // making form config according to form type
+    getFormType(type) {
+        if (type) {
+            this.typeService
+                .getUserAccountType(type)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(resp => {
+                    this.formConfig = {
+                        fields: this.mapDataToField(resp.fields),
+                    };
+                });
+        } else {
+            this.formConfig = {
+                fields: [
+                    {
+                        id: 'name',
+                        label: 'Name',
+                        type: 'text',
+                        attributes: { required: false },
+                        defaultValue: this.userInviteData?.name,
+                    },
+                    {
+                        id: 'email',
+                        label: 'Email',
+                        type: 'emailAddress',
+                        attributes: { required: true },
+                        defaultValue: this.userInviteData?.email,
+                    },
+                    this.passwordField,
+                ],
+            };
+        }
     }
-  }
 
     // getting invitation details
     getInviteDetails(): void {
