@@ -53,7 +53,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
     }
 
     // making form config according to form type
-    getFormType(type) {
+    getFormType(type: string): void {
         if (type) {
             this.typeService
                 .getUserAccountType(type)
