@@ -27,6 +27,13 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
 
     private destroy$: Subject<void> = new Subject();
 
+    private passwordField = {
+        id: 'password',
+        label: 'Password',
+        type: 'password',
+        attributes: { required: true },
+    };
+
     constructor(
         private activeRouter: ActivatedRoute,
         private router: Router,
@@ -73,12 +80,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
                         attributes: { required: true },
                         defaultValue: this.userInviteData?.email,
                     },
-                    {
-                        id: 'password',
-                        label: 'Password',
-                        type: 'password',
-                        attributes: { required: true },
-                    },
+                    this.passwordField,
                 ],
             };
         }
@@ -118,24 +120,19 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             }
             return field;
         });
-        mappedFields.push({
-            id: 'password',
-            label: 'Password',
-            type: 'password',
-            attributes: {},
-        });
+        mappedFields.push(this.passwordField);
 
         return mappedFields;
     }
 
-  // getting generated form group for disabling special fields
-  setCreatedForm(form: FormGroup): void {
-    form.get('email').disable();
-    const companyControlKey = Object.keys(form.controls).find(key => key.includes('company'));
-    if (companyControlKey) {
-      form.controls[companyControlKey].disable();
-    }
-    this.signUpGroup = form;
+    // getting generated form group for disabling special fields
+    setCreatedForm(form: FormGroup): void {
+        form.get('email').disable();
+        const companyControlKey = Object.keys(form.controls).find(key => key.includes('company'));
+        if (companyControlKey) {
+            form.controls[companyControlKey].disable();
+        }
+        this.signUpGroup = form;
 
         // add terms control into signup form
         this.signUpGroup.addControl('terms', this.termsControl);
