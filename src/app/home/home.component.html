@@ -2,67 +2,70 @@
     <div class="container">
         <div class="row">
             <div class="page-info col-md-9 col-lg-7 text-center mx-auto">
-                <h1 class="page-title">{{cmsData.pageInfoTitle}}</h1>
-                <p class="page-description mb-4 text-secondary">{{cmsData.pageInfoSubtext}}</p>
+                <h1 class="page-title">{{ cmsData.pageInfoTitle }}</h1>
+                <p class="page-description mb-4 text-secondary">{{ cmsData.pageInfoSubtext }}</p>
             </div>
         </div>
     </div>
     <div class="container featured-apps-container">
-        <oc-featured-apps *ngIf="featuredApp?.length"
-                          [data]="featuredApp"
-                          mainRouterLink="details"
-                          navigationParam="safeName[0]"
-                          label="Featured"></oc-featured-apps>
+        <oc-featured-apps
+            *ngIf="featuredApp?.length"
+            [data]="featuredApp"
+            mainRouterLink="details"
+            navigationParam="safeName[0]"
+            label="Featured"></oc-featured-apps>
     </div>
 </div>
 <div class="container">
     <div class="row mt-7">
         <div class="col-md-3 col-xxxl-2 filter__container" id="main-content">
             <oc-text-search class="mb-3" (enterSearch)="catchSearchText($event)"></oc-text-search>
-            <app-collapse-with-title titleForClose="Close filter options"
-                                     titleForOpen="Open filter options"
-                                     [collapsed]="filterCollapsed"
-                                     (collapseChanged)="onCollapseChanged($event)">
-            </app-collapse-with-title>
-            <oc-sidebar *ngFor="let filter of sidebarFilters"
-                        class="d-md-block mb-3"
-                        [ngbCollapse]="filterCollapsed"
-                        [baseNavigation]="'browse/' + filter.id"
-                        [title]="filter.name"
-                        [sidebarModel]="filter.values"></oc-sidebar>
+            <app-collapse-with-title
+                titleForClose="Close filter options"
+                titleForOpen="Open filter options"
+                [collapsed]="filterCollapsed"
+                (collapseChanged)="onCollapseChanged($event)"></app-collapse-with-title>
+            <oc-sidebar
+                *ngFor="let filter of sidebarFilters"
+                class="d-md-block mb-3"
+                [ngbCollapse]="filterCollapsed"
+                [baseNavigation]="'browse/' + filter.id"
+                [title]="filter.name"
+                [sidebarModel]="filter.values"></oc-sidebar>
         </div>
         <div class="col-md-9 col-xxxl-10">
             <ng-container *ngFor="let configElement of homePageConfig?.appListPage">
                 <div [ngSwitch]="configElement?.type">
                     <div *ngSwitchCase="'filter-values-card-list'" class="mb-7">
-                        <oc-app-categories *ngIf="categoriesData?.length > 0"
-                                [data]="categories"
-                                [categoryHeaderTitle]="configElement.name"
-                                categoryRouterLink="browse">
-                        </oc-app-categories>
+                        <oc-app-categories
+                            *ngIf="categoriesData?.length > 0"
+                            [data]="categories"
+                            [categoryHeaderTitle]="configElement.name"
+                            categoryRouterLink="browse"></oc-app-categories>
                     </div>
                 </div>
             </ng-container>
-            <oc-app-gallery class="section-wrapper"
-                            *ngFor="let gallery of this.gallery"
-                            moreAppsTitle="See All"
-                            [appsArr]="gallery?.data"
-                            [appGalleryTitle]="gallery.label"
-                            [appGalleryDescription]="gallery.description"
-                            [seeAllUrl]="['browse', gallery.filterId, gallery.valueId]"
-                            routerLinkForOneApp="details"
-                            appNavigationParam="safeName[0]">
-            </oc-app-gallery>
+            <oc-app-gallery
+                class="section-wrapper"
+                *ngFor="let gallery of this.gallery"
+                            moreAppsTitle="See all"
+                [appsArr]="gallery?.data"
+                [appGalleryTitle]="gallery.label"
+                [appGalleryDescription]="gallery.description"
+                [seeAllUrl]="['browse', gallery.filterId, gallery.valueId]"
+                routerLinkForOneApp="details"
+                appNavigationParam="safeName[0]"></oc-app-gallery>
         </div>
     </div>
 </div>
 <div class="get-started bg-container min-height-auto">
     <div class="container">
-        <oc-app-get-started [getStartedImage]="cmsData.bottomCalloutImageURL"
-                            [getStartedHeader]="cmsData.bottomCalloutHeader"
-                            getStartedHeadingTag="h2"
-                            [getStartedDescription]="cmsData.bottomCalloutDescription"
-                            [getStartedButtonText]="cmsData.bottomCalloutButtonText"
-                            (getStarted)="router.navigate([cmsData.bottomCalloutButtonLocation || ''])"></oc-app-get-started>
+        <oc-app-get-started
+            [getStartedImage]="cmsData.bottomCalloutImageURL"
+            [getStartedHeader]="cmsData.bottomCalloutHeader"
+            getStartedHeadingTag="h2"
+            [getStartedDescription]="cmsData.bottomCalloutDescription"
+            [getStartedButtonText]="cmsData.bottomCalloutButtonText"
+            (getStarted)="router.navigate([cmsData.bottomCalloutButtonLocation || ''])"></oc-app-get-started>
     </div>
 </div>

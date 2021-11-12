@@ -1,3 +1,33 @@
+## Release notes - template3-marketsite-frontend - Version 1.52.0 (11/11/2021)<br>
+### Bug<br>
+AT-1582 - Cap should not be setting expires and pragma headers on cachable responses<br>
+AT-1578 - [Market] Video gets squeeze when the Summary is too long on the App details page.<br>
+AT-1490 - [Portal][Create Apps] Color field has no default value set, yet Portal user gets default value for Color.  <br>
+AT-1460 - UI [Market/Portal] On Invite Sign up screen, Font size of checkbox value should be same as we have for normal sign up.<br>
+AT-1425 - [UI] If Features Apps are only 2 or 3 then there should be decent view on dashboard.<br>
+AT-1298 - Rating with half star not rendering correctly<br>
+AT-1211 - [Market/Portal] Refresh token expired should not appear to the end User.<br>
+AT-1207 - [Market] "Search phrase does not found any results" message missing on the Search result page.<br>
+## Release notes - template3-marketsite-frontend - Version 1.51.0 (11/9/2021)<br>
+### Bug<br>
+AT-1592 - Signup by invite doesn't work<br>
+AT-1273 - [Market/Portal] Copyright year at the footer of each site should get auto update based on the current year.<br>
+AT-1126 - [UI][Portal][Mac -> Safari] My Company and My Profile page issues<br>
+AT-1103 - [UI][Portal / Market site] Resend activation code screen does not show success toastr message on resending the code.<br>
+AT-1095 - [UI][Marketsite][Android] "See all >"  should be in sentence case <br>
+AT-1041 - Clicking the label text for Remember Me should toggle the checkbox<br>
+AT-1024 - [App Details][Forms] If the mapped Forms are not available in OC Dashboard, click event on 'Contact' & 'Buy now' buttons should throw a meaningful message.<br>
+AT-981 - [User Management] [Invite Member] [UI] 'Terms & Data processing' Checkbox is showing not properly aligned.<br>
+## Release notes - template3-marketsite-frontend - Version 1.50.0 (11/8/2021)<br>
+### Bug<br>
+AT-1586 - Need to update files of the projects with a prettier<br>
+AT-1577 - [UI] The Datepicker changing position each time when clicking on any component's elenemt<br>
+### Story<br>
+AT-1328 - A developer can edit an app even if the app type is not found<br>
+### Bug<br>
+AT-1116 - [Portal][Homepage] Become a partner  button should redirect user to Portal Sign up page.<br>
+AT-1111 - [Portal / Market][User Management][Invite a member] Need to click two times to close the Model.<br>
+AT-752 - [Edit App Type] When there are no App Type available then proper message is not showing.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.49.0 (11/2/2021)<br>
 ### Story<br>
 AT-1405 - A developer is able to query order for their apps from CAP<br>

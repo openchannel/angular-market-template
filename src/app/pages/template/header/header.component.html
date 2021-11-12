@@ -4,29 +4,31 @@
             <a class="navbar-brand" href="/">
                 <img [src]="cmsData.headerLogoURL" alt="brand-logo" class="company-logo">
             </a>
-            <button class="navbar-toggler p-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
-                    (click)="isCollapsed = !isCollapsed">
-                <div class="cursor-pointer" [ngClass]="{'navbar-icon': isCollapsed,'close-icon': !isCollapsed}">
-                </div>
+            <button
+                class="navbar-toggler p-0"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+                (click)="isCollapsed = !isCollapsed">
+                <div class="cursor-pointer" [ngClass]="{ 'navbar-icon': isCollapsed, 'close-icon': !isCollapsed }"></div>
             </button>
         </div>
         <a href="#main-content" class="skip-link">Skip to main content</a>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent"
-             [ngbCollapse]="isCollapsed">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
             <ul class="navbar-nav justify-content-end w-100 mb-0">
                 <ng-container *ngFor="let headerItem of cmsData.headerItemsDFA">
-                    <li class="nav-item"
-                        routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: true }">
-                        <a [routerLink]="headerItem.location || ''"
-                           (click)="closedMenu()"
-                           class="nav-link cursor-pointer">{{headerItem.label}}
+                    <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                        <a [routerLink]="headerItem.location || ''" (click)="closedMenu()" class="nav-link cursor-pointer">
+                            {{ headerItem.label }}
                             <span class="sr-only">(current)</span>
                         </a>
                     </li>
                 </ng-container>
-                <li class="nav-item collaps-none justify-content-between align-items-center"
+                <li
+                    class="nav-item collaps-none justify-content-between align-items-center"
                     *ngIf="authHolderService.isLoggedInUser()"
                     [class.active]="checkIncludesUrl('my-profile', 'my-company')"
                     (click)="isMenuCollapsed = !isMenuCollapsed"
@@ -34,10 +36,10 @@
                     aria-controls="collapsMoreContent">
                     <a class="nav-link cursor-pointer">More</a>
                     <div class="pr-3">
-                        <svg-icon src="./assets/img/select-down.svg"
-                                  [class.rotate-img]="!isMenuCollapsed"
-                                  [svgClass]="checkIncludesUrl('my-profile', 'my-company')? '':'change-icon-color'">
-                        </svg-icon>
+                        <svg-icon
+                            src="./assets/img/select-down.svg"
+                            [class.rotate-img]="!isMenuCollapsed"
+                            [svgClass]="checkIncludesUrl('my-profile', 'my-company') ? '' : 'change-icon-color'"></svg-icon>
                     </div>
                 </li>
             </ul>
@@ -46,16 +48,22 @@
                 <div [ngbCollapse]="isMenuCollapsed" id="collapsMoreContent" class="collapse">
                     <ul class="navbar-nav ml-5">
                         <li class="nav-item">
-                            <a *ngIf="!isSSO"
-                               class="nav-link cursor-pointer"
-                               routerLink="/my-profile/profile-details"
-                               (click)="closedMenu()">My Profile</a>
+                            <a
+                                *ngIf="!isSSO"
+                                class="nav-link cursor-pointer"
+                                routerLink="/my-profile/profile-details"
+                                (click)="closedMenu()">
+                                My Profile
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link cursor-pointer"
-                               routerLink="/my-company/company-details"
-                               (click)="closedMenu()"
-                               [appPermissions]="companyPermissions">My Company</a>
+                            <a
+                                class="nav-link cursor-pointer"
+                                routerLink="/my-company/company-details"
+                                (click)="closedMenu()"
+                                [appPermissions]="companyPermissions">
+                                My Company
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link cursor-pointer" (click)="logout()">Logout</a>
@@ -67,17 +75,21 @@
             <div class="my-2 my-lg-0 ml-md-6 navbar-none" *ngIf="authHolderService.isLoggedInUser()">
                 <oc-profile-navbar username="More">
                     <ng-container>
-                        <div class="dropdown-item cursor-pointer" *ngIf="!isSSO"
-                             routerLink="/my-profile/profile-details">My Profile</div>
-                        <div [appPermissions]="companyPermissions" class="dropdown-item cursor-pointer"
-                             routerLink="/my-company/company-details">My Company</div>
+                        <div class="dropdown-item cursor-pointer" *ngIf="!isSSO" routerLink="/my-profile/profile-details">My Profile</div>
+                        <div
+                            [appPermissions]="companyPermissions"
+                            class="dropdown-item cursor-pointer"
+                            routerLink="/my-company/company-details">
+                            My Company
+                        </div>
                         <div class="dropdown-item cursor-pointer" (click)="logout()">Logout</div>
                     </ng-container>
                 </oc-profile-navbar>
             </div>
             <div class="d-flex my-2 my-lg-0 ml-0 ml-md-6 auth-button" *ngIf="!authHolderService.isLoggedInUser()">
-                <a class="btn header-login-btn header-btn" routerLink="/login"
-                   [queryParams]="{ returnUrl: getUrlWithoutFragment() }">Log in</a>
+                <a class="btn header-login-btn header-btn" routerLink="/login" [queryParams]="{ returnUrl: getUrlWithoutFragment() }">
+                    Log in
+                </a>
                 <a class="btn btn-primary header-btn ml-md-2" routerLink="/signup" *ngIf="!isSsoConfigExist">Sign up</a>
             </div>
         </div>
