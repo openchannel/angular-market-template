@@ -5,6 +5,7 @@ import { LogOutService } from '@core/services/logout-service/log-out.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
+import { siteConfig } from 'assets/data/siteConfig';
 
 interface HeaderItemDFA {
     label: string;
@@ -22,6 +23,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     isSsoConfigExist = true;
     isCollapsed = true;
     isMenuCollapsed = true;
+    isBilling = true;
 
     cmsData = {
         headerItemsDFA: [] as HeaderItemDFA[],
@@ -52,6 +54,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.isSSO = this.authHolderService?.userDetails?.isSSO;
+        this.isBilling = siteConfig.paymentsEnabled;
 
         this.openIdAuthService
             .getAuthConfig()
