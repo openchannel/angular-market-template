@@ -12,6 +12,7 @@ import { ManagementComponent } from './my-company/management/management.componen
 import { MyCompanyComponent } from './my-company/my-company.component';
 import { CompanyDetailsComponent } from './my-company/company-details/company-details.component';
 import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsModule } from '@openchannel/angular-common-components';
+import { BillingComponent } from './my-profile/billing/billing.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsM
         ManagementComponent,
         MyCompanyComponent,
         CompanyDetailsComponent,
+        BillingComponent,
     ],
     imports: [
         CommonModule,
