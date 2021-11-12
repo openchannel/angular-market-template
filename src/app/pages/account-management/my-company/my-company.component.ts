@@ -99,8 +99,7 @@ export class MyCompanyComponent implements OnInit, OnDestroy {
     }
 
     openInviteModal(): void {
-        this.companyName$
-        .subscribe(companyName => {
+        this.companyName$.subscribe(companyName => {
             const modalRef = this.modal.open(OcInviteModalComponent, { size: 'sm' });
             modalRef.componentInstance.ngbModalRef = modalRef;
 
@@ -125,7 +124,7 @@ export class MyCompanyComponent implements OnInit, OnDestroy {
                 },
                 () => {},
             );
-        })
+        });
     }
 
     private initMainPage(): void {
@@ -139,10 +138,12 @@ export class MyCompanyComponent implements OnInit, OnDestroy {
     }
 
     private initCompanyName(): void {
-        this.userService.getUserCompany()
-        .pipe(
-            map(company => company.name),
-            takeUntil(this.destroy$)
-        ).subscribe(companyName => this.companyName$.next(companyName));
+        this.userService
+            .getUserCompany()
+            .pipe(
+                map(company => company.name),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(companyName => this.companyName$.next(companyName));
     }
 }
