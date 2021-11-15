@@ -1,8 +1,16 @@
 <div class="billing__credit-card">
     <h3 class="billing__header">Credit card information</h3>
     <form class="billing__credit-card-form">
-        <label for="card-element">Card holder name</label>
+        <oc-label text="Card holder name"></oc-label>
+        <oc-input [(ngModel)]="paymentForm.cardHolder" [ngModelOptions]="{ standalone: true }" placeholder="Name"></oc-input>
+        <label for="card-element">Card number</label>
         <div id="card-element"></div>
+        <div>
+            <label for="expiration-element">Expiration</label>
+            <div id="expiration-element"></div>
+            <label for="cvc-element">CVV</label>
+            <div id="cvc-element"></div>
+        </div>
     </form>
 </div>
 <div class="billing__address">

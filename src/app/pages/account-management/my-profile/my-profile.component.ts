@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Page } from 'app/pages/account-management/my-company/my-company.component';
+import { StripeLoaderService } from '@core/services/stripe-loader.service';
 
 @Component({
     selector: 'app-my-profile',
@@ -37,10 +38,11 @@ export class MyProfileComponent implements OnInit {
     ];
     selectedPage: Page = this.pages[0];
 
-    constructor(private router: Router, private location: Location) {}
+    constructor(private router: Router, private location: Location, private stripeLoader: StripeLoaderService) {}
 
     ngOnInit(): void {
         this.selectedPage = this.pages.find(page => this.router.url.includes(page.routerLink));
+        this.stripeLoader.loadStripe();
     }
 
     gotoPage(newPage: Page): void {
