@@ -1,0 +1,8 @@
+@import '~assets/styles/mixins';
+
+.billing {
+  &__header {
+    @include font-size-lg();
+    margin-bottom: 2rem;
+  }
+}
