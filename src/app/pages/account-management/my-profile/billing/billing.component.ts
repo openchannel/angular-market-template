@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { StripeElements } from '@stripe/stripe-js';
+import { StripeLoaderService } from '@core/services/stripe-loader.service';
 
 @Component({
     selector: 'app-billing',
@@ -6,7 +8,12 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./billing.component.scss'],
 })
 export class BillingComponent implements OnInit {
-    constructor() {}
+    elements: StripeElements;
 
-    ngOnInit(): void {}
+    constructor(private stripeLoader: StripeLoaderService) {}
+
+    ngOnInit(): void {
+        this.elements = this.stripeLoader.stripe.elements();
+        console.log(this.elements);
+    }
 }
