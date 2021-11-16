@@ -4,6 +4,7 @@ import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CountryStateService } from '@openchannel/angular-common-services';
 
 export interface StripeCardForm {
     cardHolder: string;
@@ -36,19 +37,20 @@ export class BillingComponent implements OnInit, OnDestroy {
         billingPostCode: new FormControl('', Validators.required),
     });
 
-    isSaveInProcess = false;
-    billingCountries = ['USA', 'UKRAINE', 'CANADA'];
+    process = false;
+    billingCountries: any[] = [];
     billingStates = ['State1', 'State2', 'State3'];
 
     private $destroy: Subject<void> = new Subject<void>();
 
-    constructor(private stripeLoader: StripeLoaderService) {}
+    constructor(private stripeLoader: StripeLoaderService, private countryStateService: CountryStateService) {}
 
     ngOnInit(): void {
         this.stripeLoader.stripe.pipe(takeUntil(this.$destroy)).subscribe(stripe => {
             this.elements = stripe.elements();
             this.createStripeBillingElements();
         });
+        this.getCountries();
     }
 
     ngOnDestroy(): void {
@@ -56,9 +58,24 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.$destroy.complete();
     }
 
+    getCountries(): void {
+        this.process = true;
+        this.countryStateService.getCountries().subscribe(
+            (data: any) => {
+                console.log(data);
+                this.process = false;
+                this.billingCountries = data;
+            },
+            () => {
+                this.process = false;
+                this.billingCountries = [];
+            },
+        );
+    }
+
     saveBillingData(): void {
         this.formBillingAddress.markAllAsTouched();
-        if (this.formBillingAddress.valid && !this.isSaveInProcess) {
+        if (this.formBillingAddress.valid && !this.process) {
             console.log(this.formBillingAddress.getRawValue());
         }
     }
