@@ -27,6 +27,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         cardExpiration: null,
         cardCvc: null,
     };
+    stripeLoaded = false;
+
     private elements: StripeElements;
     private $destroy: Subject<void> = new Subject<void>();
 
@@ -51,5 +53,6 @@ export class BillingComponent implements OnInit, OnDestroy {
             cardExpiration: this.elements.create('cardExpiry').mount('#expiration-element'),
             cardCvc: this.elements.create('cardCvc').mount('#cvc-element'),
         };
+        this.stripeLoaded = true;
     }
 }

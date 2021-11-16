@@ -24,10 +24,16 @@
             justify-content: space-between;
             &-expiration {
                 width: 50%;
+                position: relative;
             }
             &-cvc {
                 width: 45%;
             }
+        }
+        &-expiration-svg {
+            position: absolute;
+            right: 16px;
+            bottom: calc(3rem + 14px);
         }
         .StripeElement {
             @include form-control($info, $primary, $input-placeholder-color);
