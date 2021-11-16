@@ -1,11 +1,45 @@
 @import '~assets/styles/mixins';
+@import '~assets/styles/theme';
 
 .billing {
-  &__header {
-    @include font-size-lg();
-    margin-bottom: 2rem;
-  }
-  &__credit-card-form {
-    margin-bottom: 3rem;
-  }
+    &__header {
+        @include font-size-lg();
+        margin-bottom: 2rem;
+    }
+    &__credit-card-form {
+        margin-bottom: 3rem;
+        &-label {
+            display: block;
+            margin-bottom: 1rem;
+        }
+        &-input {
+            display: block;
+            margin-bottom: 3rem;
+        }
+        #cvc-element {
+            margin-bottom: 0;
+        }
+        &-row {
+            display: flex;
+            justify-content: space-between;
+            &-expiration {
+                width: 50%;
+            }
+            &-cvc {
+                width: 45%;
+            }
+        }
+        .StripeElement {
+            @include form-control($info, $primary, $input-placeholder-color);
+            &--focus {
+                border-color: $primary;
+                box-shadow: none;
+                outline: none;
+            }
+            &--invalid {
+                border-color: $danger;
+                color: $body-color;
+            }
+        }
+    }
 }

@@ -1,9 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { StripeElements } from '@stripe/stripe-js';
+import {
+    StripeCardCvcElement,
+    StripeCardExpiryElement,
+    StripeCardNumberElement,
+    StripeElements
+} from '@stripe/stripe-js';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+export interface StripeCardForm {
+    cardHolder: string;
+    cardNumber: StripeCardNumberElement;
+    cardExpiration: StripeCardExpiryElement;
+    cardCvc: StripeCardCvcElement;
+}
 @Component({
     selector: 'app-billing',
     templateUrl: './billing.component.html',

@@ -1,15 +1,23 @@
 <div class="billing__credit-card">
     <h3 class="billing__header">Credit card information</h3>
     <form class="billing__credit-card-form">
-        <oc-label text="Card holder name"></oc-label>
-        <oc-input [(ngModel)]="paymentForm.cardHolder" [ngModelOptions]="{ standalone: true }" placeholder="Name"></oc-input>
-        <label for="card-element">Card number</label>
-        <div id="card-element"></div>
-        <div>
-            <label for="expiration-element">Expiration</label>
-            <div id="expiration-element"></div>
-            <label for="cvc-element">CVV</label>
-            <div id="cvc-element"></div>
+        <oc-label text="Card holder name" class="billing__credit-card-form-label"></oc-label>
+        <oc-input
+            [(ngModel)]="paymentForm.cardHolder"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Name"
+            class="billing__credit-card-form-input"></oc-input>
+        <label for="card-element" class="oc-form-label billing__credit-card-form-label">Card number</label>
+        <div id="card-element" class="billing__credit-card-form-input"></div>
+        <div class="billing__credit-card-form-row">
+            <div class="billing__credit-card-form-row-expiration">
+                <label for="expiration-element" class="oc-form-label billing__credit-card-form-label">Expiration</label>
+                <div id="expiration-element" class="billing__credit-card-form-input"></div>
+            </div>
+            <div class="billing__credit-card-form-row-cvc">
+                <label for="cvc-element" class="oc-form-label billing__credit-card-form-label">CVV</label>
+                <div id="cvc-element" class="billing__credit-card-form-input"></div>
+            </div>
         </div>
     </form>
 </div>
