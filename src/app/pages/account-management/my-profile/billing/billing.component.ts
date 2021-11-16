@@ -4,7 +4,7 @@ import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { StripeService } from '@openchannel/angular-common-services';
+import { CreditCard, StripeService } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
 
 export interface StripeCardForm {
@@ -19,13 +19,14 @@ export interface StripeCardForm {
     styleUrls: ['./billing.component.scss'],
 })
 export class BillingComponent implements OnInit, OnDestroy {
-    paymentForm = {
+    paymentForm: StripeCardForm = {
         cardHolder: '',
         cardNumber: null,
         cardExpiration: null,
         cardCvc: null,
     };
     stripeLoaded = false;
+    cardData: CreditCard;
 
     private elements: StripeElements;
     private stripe: Stripe;
@@ -54,6 +55,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.elements = stripe.elements();
             this.stripe = stripe;
             this.createStripeBillingElements();
+            this.getCard();
         });
     }
 
@@ -62,14 +64,22 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.$destroy.complete();
     }
 
-    saveBillingData(): void {
+    billingAction(): void {
+        if (this.cardData) {
+            // update card data or delete card
+        } else {
+            this.saveBillingData();
+        }
+    }
+
+    onCountriesChange(country: string): void {}
+
+    private saveBillingData(): void {
         this.formBillingAddress.markAllAsTouched();
         if (this.formBillingAddress.valid && !this.isSaveInProcess) {
             this.createStripeCardWithToken();
         }
     }
-
-    onCountriesChange(country: string): void {}
 
     private createStripeBillingElements(): void {
         this.paymentForm = {
@@ -86,6 +96,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
 
     private createStripeCardWithToken(): void {
+        this.isSaveInProcess = true;
         const dataToStripe = {
             name: this.paymentForm.cardHolder,
             address_country: this.formBillingAddress.get('billingCountry').value,
@@ -99,7 +110,23 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.stripeService
                 .addUserCreditCard(resp.token.id)
                 .pipe(takeUntil(this.$destroy))
-                .subscribe(() => this.toaster.success('Card has been added'));
+                .subscribe(
+                    () => {
+                        this.toaster.success('Card has been added');
+                        this.isSaveInProcess = false;
+                    },
+                    () => (this.isSaveInProcess = false),
+                );
         });
+    }
+
+    private getCard(): void {
+        this.stripeService
+            .getUserCreditCards()
+            .pipe(takeUntil(this.$destroy))
+            .subscribe(cardResponse => {
+                this.cardData = cardResponse.cards.length > 0 ? cardResponse.cards[0] : null;
+                console.log(this.cardData);
+            });
     }
 }
