@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { StripeCardCvcElement, StripeCardExpiryElement, StripeCardNumberElement, StripeElements } from '@stripe/stripe-js';
+import { Stripe, StripeCardCvcElement, StripeCardExpiryElement, StripeCardNumberElement, StripeElements } from '@stripe/stripe-js';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { StripeService } from '@openchannel/angular-common-services';
+import { ToastrService } from 'ngx-toastr';
 
 export interface StripeCardForm {
     cardHolder: string;
@@ -26,6 +28,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     stripeLoaded = false;
 
     private elements: StripeElements;
+    private stripe: Stripe;
 
     formBillingAddress = new FormGroup({
         billingName: new FormControl('', Validators.required),
@@ -44,11 +47,12 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     private $destroy: Subject<void> = new Subject<void>();
 
-    constructor(private stripeLoader: StripeLoaderService) {}
+    constructor(private stripeLoader: StripeLoaderService, private stripeService: StripeService, private toaster: ToastrService) {}
 
     ngOnInit(): void {
         this.stripeLoader.stripe.pipe(takeUntil(this.$destroy)).subscribe(stripe => {
             this.elements = stripe.elements();
+            this.stripe = stripe;
             this.createStripeBillingElements();
         });
     }
@@ -61,7 +65,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     saveBillingData(): void {
         this.formBillingAddress.markAllAsTouched();
         if (this.formBillingAddress.valid && !this.isSaveInProcess) {
-            console.log(this.formBillingAddress.getRawValue());
+            this.createStripeCardWithToken();
         }
     }
 
@@ -70,17 +74,32 @@ export class BillingComponent implements OnInit, OnDestroy {
     private createStripeBillingElements(): void {
         this.paymentForm = {
             ...this.paymentForm,
-            cardNumber: this.elements.create('cardNumber').mount('#card-element'),
-            cardExpiration: this.elements.create('cardExpiry').mount('#expiration-element'),
-            cardCvc: this.elements.create('cardCvc').mount('#cvc-element'),
+            cardNumber: this.elements.create('cardNumber'),
+            cardExpiration: this.elements.create('cardExpiry'),
+            cardCvc: this.elements.create('cardCvc'),
         };
+        this.paymentForm.cardNumber.mount('#card-element');
+        this.paymentForm.cardExpiration.mount('#expiration-element');
+        this.paymentForm.cardCvc.mount('#cvc-element');
+
         this.stripeLoaded = true;
     }
 
-    // setBillingFormGroup(passwordGroup: FormGroup): void {
-    //     this.billingFormGroup = passwordGroup;
-    //     this.billingFormGroup.controls.password.clearValidators();
-    //     this.billingFormGroup.controls.password.setValidators(Validators.required);
-    //     this.billingFormGroup.controls.password.updateValueAndValidity();
-    // }
+    private createStripeCardWithToken(): void {
+        const dataToStripe = {
+            name: this.paymentForm.cardHolder,
+            address_country: this.formBillingAddress.get('billingCountry').value,
+            address_zip: this.formBillingAddress.get('billingPostCode').value,
+            address_state: this.formBillingAddress.get('billingState').value,
+            address_city: this.formBillingAddress.get('billingCity').value,
+            address_line1: this.formBillingAddress.get('billingAddress1').value,
+            billingAddress2: this.formBillingAddress.get('billingAddress2').value,
+        };
+        this.stripe.createToken(this.paymentForm.cardNumber, dataToStripe).then(resp => {
+            this.stripeService
+                .addUserCreditCard(resp.token.id)
+                .pipe(takeUntil(this.$destroy))
+                .subscribe(() => this.toaster.success('Card has been added'));
+        });
+    }
 }
