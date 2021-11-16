@@ -2,43 +2,85 @@
 @import '~assets/styles/theme';
 
 .billing {
+    
     &__header {
         @include font-size-lg();
         margin-bottom: 2rem;
     }
+    
     &__credit-card-form {
         margin-bottom: 3rem;
+        
         &-label {
             display: block;
             margin-bottom: 1rem;
         }
+        
         &-input {
             display: block;
             margin-bottom: 3rem;
         }
+        
         #cvc-element {
             margin-bottom: 0;
         }
+        
         &-row {
             display: flex;
             justify-content: space-between;
+            
             &-expiration {
                 width: 50%;
             }
+            
             &-cvc {
                 width: 45%;
             }
         }
+        
         .StripeElement {
             @include form-control($info, $primary, $input-placeholder-color);
+            
             &--focus {
                 border-color: $primary;
                 box-shadow: none;
                 outline: none;
             }
+            
             &--invalid {
                 border-color: $danger;
                 color: $body-color;
+            }
+        }
+    }
+    
+    &__address {
+        
+        &-form {
+            
+            &-label {
+                display: block;
+                line-height: 18px;
+                margin-bottom: 1rem;
+            }
+            
+            &-field {
+                
+                & + .billing__address-form-field {
+                    margin-top: 2rem;
+                }
+            }
+        }
+    }
+    
+    &__actions {
+        margin-top: 5rem;
+        
+        &-button {
+            display: block;
+            
+            & + .billing__actions-button {
+                margin-top: 2rem;
             }
         }
     }

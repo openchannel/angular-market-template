@@ -23,4 +23,106 @@
 </div>
 <div class="billing__address">
     <h3 class="billing__header">Billing address</h3>
+    <form class="billing__address-form" [formGroup]="formBillingAddress">
+        <div class="billing__address-form-field">
+            <oc-label text="Billing name"
+                      class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingName"
+                      placeholder="Name"
+                      required="true"
+                      class="billing__address-form-input"></oc-input>
+            <oc-error [control]="formBillingAddress.controls.billingName"
+                      field="billingName"
+                      class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="Billing email"
+                      class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingEmail"
+                      placeholder="Email"
+                      required="true"
+                      class="billing__address-form-input"></oc-input>
+            <oc-error [control]="formBillingAddress.controls.billingEmail"
+                      field="billingEmail"
+                      class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="Address line 1"
+                      class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingAddress1"
+                      placeholder="Enter address"
+                      required="true"
+                      class="billing__address-form-input"></oc-input>
+            <oc-error [control]="formBillingAddress.controls.billingAddress1"
+                      field="billingAddress1"
+                      class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="Address line 2"
+                      class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingAddress2"
+                      placeholder="Enter address"
+                      required="false"
+                      class="billing__address-form-input"></oc-input>
+            <oc-error [control]="formBillingAddress.controls.billingAddress2"
+                      field="billingAddress2"
+                      class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="Country"
+                      class="billing__address-form-label"></oc-label>
+            <oc-select [selectValArr]="billingCountries"
+                       formControlName="billingCountry"
+                       (ngModelChange)="onCountriesChange($event)"
+                       class="billing__address-form-input"></oc-select>
+            <oc-error [control]="formBillingAddress.controls.billingCountry"
+                      field="billingCountry"
+                      class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="State"
+                      class="billing__address-form-label"></oc-label>
+            <oc-select [selectValArr]="billingStates"
+                       formControlName="billingState"
+                       (ngModelChange)="onCountriesChange($event)"
+                       class="billing__address-form-input"></oc-select>
+            <oc-error [control]="formBillingAddress.controls.billingState"
+                      field="billingState"
+                      class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="City"
+                      class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingCity"
+                      placeholder="City"
+                      required="true"
+                      class="billing__address-form-input"></oc-input>
+            <oc-error [control]="formBillingAddress.controls.billingCity"
+                      field="billingCity"
+                      class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="Postal code"
+                      class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingPostCode"
+                      placeholder="Postal code"
+                      required="true"
+                      class="billing__address-form-input"></oc-input>
+            <oc-error [control]="formBillingAddress.controls.billingPostCode"
+                      field="billingPostCode"
+                      class="billing__address-form-error"></oc-error>
+        </div>
+    </form>
+</div>
+<div class="billing__actions">
+    <oc-button type="primary"
+               text="Save"
+               class="billing__actions-button"
+               [process]="isSaveInProcess"
+               (click)="saveBillingData()">
+    </oc-button>
+    <oc-button type="secondary"
+               text="Cancel"
+               class="billing__actions-button">
+    </oc-button>
 </div>
