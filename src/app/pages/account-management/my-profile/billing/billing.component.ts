@@ -6,12 +6,24 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CreditCard, StripeService } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
+import { StripeCardNumberElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-number';
+import { StripeCardExpiryElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-expiry';
+import { StripeCardCvcElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-cvc';
 
 export interface StripeCardForm {
     cardHolder: string;
-    cardNumber: StripeCardNumberElement;
-    cardExpiration: StripeCardExpiryElement;
-    cardCvc: StripeCardCvcElement;
+    cardNumber: {
+        element: StripeCardNumberElement;
+        changeStatus: StripeCardNumberElementChangeEvent;
+    };
+    cardExpiration: {
+        element: StripeCardExpiryElement;
+        changeStatus: StripeCardExpiryElementChangeEvent;
+    };
+    cardCvc: {
+        element: StripeCardCvcElement;
+        changeStatus: StripeCardCvcElementChangeEvent;
+    };
 }
 @Component({
     selector: 'app-billing',
@@ -21,12 +33,23 @@ export interface StripeCardForm {
 export class BillingComponent implements OnInit, OnDestroy {
     cardForm: StripeCardForm = {
         cardHolder: '',
-        cardNumber: null,
-        cardExpiration: null,
-        cardCvc: null,
+        cardNumber: {
+            element: null,
+            changeStatus: null,
+        },
+        cardExpiration: {
+            element: null,
+            changeStatus: null,
+        },
+        cardCvc: {
+            element: null,
+            changeStatus: null,
+        },
     };
     stripeLoaded = false;
     cardData: CreditCard;
+
+    hideCardFormElements = false;
 
     private elements: StripeElements;
     private stripe: Stripe;
@@ -85,9 +108,9 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.fillCardForm();
         } else {
             this.formBillingAddress.reset();
-            this.cardForm.cardNumber.clear();
-            this.cardForm.cardCvc.clear();
-            this.cardForm.cardExpiration.clear();
+            this.cardForm.cardNumber.element.clear();
+            this.cardForm.cardCvc.element.clear();
+            this.cardForm.cardExpiration.element.clear();
             this.cardForm.cardHolder = '';
         }
     }
@@ -98,7 +121,7 @@ export class BillingComponent implements OnInit, OnDestroy {
      */
     private saveBillingData(): void {
         this.formBillingAddress.markAllAsTouched();
-        this.cardForm.cardNumber.blur();
+        this.cardForm.cardNumber.element.blur();
         if (this.formBillingAddress.valid && !this.isSaveInProcess) {
             this.createStripeCardWithToken();
         }
@@ -109,15 +132,12 @@ export class BillingComponent implements OnInit, OnDestroy {
      * @private
      */
     private createStripeBillingElements(): void {
-        this.cardForm = {
-            ...this.cardForm,
-            cardNumber: this.elements.create('cardNumber'),
-            cardExpiration: this.elements.create('cardExpiry'),
-            cardCvc: this.elements.create('cardCvc'),
-        };
-        this.cardForm.cardNumber.mount('#card-element');
-        this.cardForm.cardExpiration.mount('#expiration-element');
-        this.cardForm.cardCvc.mount('#cvc-element');
+        this.cardForm.cardNumber.element = this.elements.create('cardNumber');
+        this.cardForm.cardExpiration.element = this.elements.create('cardExpiry');
+        this.cardForm.cardCvc.element = this.elements.create('cardCvc');
+        this.cardForm.cardNumber.element.mount('#card-element');
+        this.cardForm.cardExpiration.element.mount('#expiration-element');
+        this.cardForm.cardCvc.element.mount('#cvc-element');
 
         this.stripeLoaded = true;
     }
@@ -133,7 +153,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             address_line1: this.formBillingAddress.get('billingAddress1').value,
             billingAddress2: this.formBillingAddress.get('billingAddress2').value,
         };
-        this.stripe.createToken(this.cardForm.cardNumber, dataToStripe).then(resp => {
+        this.stripe.createToken(this.cardForm.cardNumber.element, dataToStripe).then(resp => {
             this.stripeService
                 .addUserCreditCard(resp.token.id)
                 .pipe(takeUntil(this.$destroy))
@@ -168,5 +188,6 @@ export class BillingComponent implements OnInit, OnDestroy {
             billingCity: this.cardData.address_city,
             billingPostCode: this.cardData.address_zip,
         });
+        this.hideCardFormElements = this.stripeLoaded && !!this.cardData.cardId;
     }
 }

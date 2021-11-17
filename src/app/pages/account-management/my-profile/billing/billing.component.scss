@@ -17,6 +17,9 @@
         }
 
         &-input {
+            &_hidden {
+                display: none;
+            }
             display: block;
             margin-bottom: 3rem;
         }

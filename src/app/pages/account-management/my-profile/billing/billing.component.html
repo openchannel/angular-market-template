@@ -4,24 +4,49 @@
         <ng-container *ngIf="stripeLoaded">
             <oc-label text="Card holder name" class="billing__credit-card-form-label"></oc-label>
             <oc-input
-                    [(ngModel)]="cardForm.cardHolder"
-                    [ngModelOptions]="{ standalone: true }"
-                    placeholder="Name"
-                    class="billing__credit-card-form-input"></oc-input>
+                [(ngModel)]="cardForm.cardHolder"
+                [ngModelOptions]="{ standalone: true }"
+                placeholder="Name"
+                class="billing__credit-card-form-input"></oc-input>
         </ng-container>
         <label for="card-element" class="oc-form-label billing__credit-card-form-label">Card number</label>
-        <div id="card-element" class="billing__credit-card-form-input"></div>
+        <div
+            id="card-element"
+            class="billing__credit-card-form-input"
+            [class.billing__credit-card-form-input_hidden]="hideCardFormElements"></div>
+        <oc-input
+            [ngModel]="'••• ••• ••• ' + cardData.last4"
+            *ngIf="hideCardFormElements"
+            [ngModelOptions]="{ standalone: true }"
+            class="billing__credit-card-form-input"
+            (click)="hideCardFormElements = false"></oc-input>
         <div class="billing__credit-card-form-row">
             <div class="billing__credit-card-form-row-expiration">
                 <label for="expiration-element" class="oc-form-label billing__credit-card-form-label">Expiration</label>
-                <div id="expiration-element" class="billing__credit-card-form-input"></div>
-                <svg-icon
-                        src="./assets/img/calendar-icon.svg"
-                        svgClass="billing__credit-card-form-expiration-svg"></svg-icon>
+                <div
+                    id="expiration-element"
+                    class="billing__credit-card-form-input"
+                    [class.billing__credit-card-form-input_hidden]="hideCardFormElements"></div>
+                <oc-input
+                    [ngModel]="cardData.exp_month + '/' + cardData.exp_year.toString().slice(-2)"
+                    *ngIf="hideCardFormElements"
+                    [ngModelOptions]="{ standalone: true }"
+                    class="billing__credit-card-form-input"
+                    (click)="hideCardFormElements = false"></oc-input>
+                <svg-icon src="./assets/img/calendar-icon.svg" svgClass="billing__credit-card-form-expiration-svg"></svg-icon>
             </div>
             <div class="billing__credit-card-form-row-cvc">
                 <label for="cvc-element" class="oc-form-label billing__credit-card-form-label">CVV</label>
-                <div id="cvc-element" class="billing__credit-card-form-input"></div>
+                <div
+                    id="cvc-element"
+                    class="billing__credit-card-form-input"
+                    [class.billing__credit-card-form-input_hidden]="hideCardFormElements"></div>
+                <oc-input
+                    ngModel="•••"
+                    *ngIf="hideCardFormElements"
+                    [ngModelOptions]="{ standalone: true }"
+                    class="billing__credit-card-form-input"
+                    (click)="hideCardFormElements = false"></oc-input>
             </div>
         </div>
     </form>
@@ -30,105 +55,101 @@
     <h3 class="billing__header">Billing address</h3>
     <form class="billing__address-form" [formGroup]="formBillingAddress">
         <div class="billing__address-form-field">
-            <oc-label text="Billing name"
-                      class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingName"
-                      placeholder="Name"
-                      required="true"
-                      class="billing__address-form-input"></oc-input>
-            <oc-error [control]="formBillingAddress.controls.billingName"
-                      field="billingName"
-                      class="billing__address-form-error"></oc-error>
+            <oc-label text="Billing name" class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingName" placeholder="Name" required="true" class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.billingName"
+                field="billingName"
+                class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="Billing email"
-                      class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingEmail"
-                      placeholder="Email"
-                      required="true"
-                      class="billing__address-form-input"></oc-input>
-            <oc-error [control]="formBillingAddress.controls.billingEmail"
-                      field="billingEmail"
-                      class="billing__address-form-error"></oc-error>
+            <oc-label text="Billing email" class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingEmail" placeholder="Email" required="true" class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.billingEmail"
+                field="billingEmail"
+                class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="Address line 1"
-                      class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingAddress1"
-                      placeholder="Enter address"
-                      required="true"
-                      class="billing__address-form-input"></oc-input>
-            <oc-error [control]="formBillingAddress.controls.billingAddress1"
-                      field="billingAddress1"
-                      class="billing__address-form-error"></oc-error>
+            <oc-label text="Address line 1" class="billing__address-form-label"></oc-label>
+            <oc-input
+                formControlName="billingAddress1"
+                placeholder="Enter address"
+                required="true"
+                class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.billingAddress1"
+                field="billingAddress1"
+                class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="Address line 2"
-                      class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingAddress2"
-                      placeholder="Enter address"
-                      required="false"
-                      class="billing__address-form-input"></oc-input>
-            <oc-error [control]="formBillingAddress.controls.billingAddress2"
-                      field="billingAddress2"
-                      class="billing__address-form-error"></oc-error>
+            <oc-label text="Address line 2" class="billing__address-form-label"></oc-label>
+            <oc-input
+                formControlName="billingAddress2"
+                placeholder="Enter address"
+                required="false"
+                class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.billingAddress2"
+                field="billingAddress2"
+                class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="Country"
-                      class="billing__address-form-label"></oc-label>
-            <oc-select [selectValArr]="billingCountries"
-                       formControlName="billingCountry"
-                       (ngModelChange)="onCountriesChange($event)"
-                       class="billing__address-form-input"></oc-select>
-            <oc-error [control]="formBillingAddress.controls.billingCountry"
-                      field="billingCountry"
-                      class="billing__address-form-error"></oc-error>
+            <oc-label text="Country" class="billing__address-form-label"></oc-label>
+            <oc-select
+                [selectValArr]="billingCountries"
+                formControlName="billingCountry"
+                (ngModelChange)="onCountriesChange($event)"
+                class="billing__address-form-input"></oc-select>
+            <oc-error
+                [control]="formBillingAddress.controls.billingCountry"
+                field="billingCountry"
+                class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="State"
-                      class="billing__address-form-label"></oc-label>
-            <oc-select [selectValArr]="billingStates"
-                       formControlName="billingState"
-                       (ngModelChange)="onCountriesChange($event)"
-                       class="billing__address-form-input"></oc-select>
-            <oc-error [control]="formBillingAddress.controls.billingState"
-                      field="billingState"
-                      class="billing__address-form-error"></oc-error>
+            <oc-label text="State" class="billing__address-form-label"></oc-label>
+            <oc-select
+                [selectValArr]="billingStates"
+                formControlName="billingState"
+                (ngModelChange)="onCountriesChange($event)"
+                class="billing__address-form-input"></oc-select>
+            <oc-error
+                [control]="formBillingAddress.controls.billingState"
+                field="billingState"
+                class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="City"
-                      class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingCity"
-                      placeholder="City"
-                      required="true"
-                      class="billing__address-form-input"></oc-input>
-            <oc-error [control]="formBillingAddress.controls.billingCity"
-                      field="billingCity"
-                      class="billing__address-form-error"></oc-error>
+            <oc-label text="City" class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingCity" placeholder="City" required="true" class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.billingCity"
+                field="billingCity"
+                class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="Postal code"
-                      class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingPostCode"
-                      placeholder="Postal code"
-                      required="true"
-                      class="billing__address-form-input"></oc-input>
-            <oc-error [control]="formBillingAddress.controls.billingPostCode"
-                      field="billingPostCode"
-                      class="billing__address-form-error"></oc-error>
+            <oc-label text="Postal code" class="billing__address-form-label"></oc-label>
+            <oc-input
+                formControlName="billingPostCode"
+                placeholder="Postal code"
+                required="true"
+                class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.billingPostCode"
+                field="billingPostCode"
+                class="billing__address-form-error"></oc-error>
         </div>
     </form>
 </div>
 <div class="billing__actions">
-    <oc-button type="primary"
-               text="Save"
-               class="billing__actions-button"
-               [process]="isSaveInProcess"
-               (click)="billingAction()">
-    </oc-button>
-    <oc-button type="secondary"
-               text="Cancel"
-               class="billing__actions-button">
-    </oc-button>
+    <oc-button
+        type="primary"
+        text="Save"
+        class="billing__actions-button"
+        [process]="isSaveInProcess"
+        (click)="billingAction()"></oc-button>
+    <oc-button
+        type="secondary"
+        text="Cancel"
+        class="billing__actions-button"
+        (click)="clearChanges()"></oc-button>
 </div>
-
