@@ -4,7 +4,7 @@
         <ng-container *ngIf="stripeLoaded">
             <oc-label text="Card holder name" class="billing__credit-card-form-label"></oc-label>
             <oc-input
-                    [(ngModel)]="paymentForm.cardHolder"
+                    [(ngModel)]="cardForm.cardHolder"
                     [ngModelOptions]="{ standalone: true }"
                     placeholder="Name"
                     class="billing__credit-card-form-input"></oc-input>

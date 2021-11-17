@@ -19,7 +19,7 @@ export interface StripeCardForm {
     styleUrls: ['./billing.component.scss'],
 })
 export class BillingComponent implements OnInit, OnDestroy {
-    paymentForm: StripeCardForm = {
+    cardForm: StripeCardForm = {
         cardHolder: '',
         cardNumber: null,
         cardExpiration: null,
@@ -64,6 +64,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.$destroy.complete();
     }
 
+    /**
+     * Making actions according to the card data. There are adding new card, update data or delete card
+     */
     billingAction(): void {
         if (this.cardData) {
             // update card data or delete card
@@ -74,23 +77,47 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     onCountriesChange(country: string): void {}
 
+    /**
+     * Actions on "Cancel" button click
+     */
+    clearChanges(): void {
+        if (this.cardData) {
+            this.fillCardForm();
+        } else {
+            this.formBillingAddress.reset();
+            this.cardForm.cardNumber.clear();
+            this.cardForm.cardCvc.clear();
+            this.cardForm.cardExpiration.clear();
+            this.cardForm.cardHolder = '';
+        }
+    }
+
+    /**
+     * Saving full card data with address form
+     * @private
+     */
     private saveBillingData(): void {
         this.formBillingAddress.markAllAsTouched();
+        this.cardForm.cardNumber.blur();
         if (this.formBillingAddress.valid && !this.isSaveInProcess) {
             this.createStripeCardWithToken();
         }
     }
 
+    /**
+     * Creation and mounting the stripe elements for card
+     * @private
+     */
     private createStripeBillingElements(): void {
-        this.paymentForm = {
-            ...this.paymentForm,
+        this.cardForm = {
+            ...this.cardForm,
             cardNumber: this.elements.create('cardNumber'),
             cardExpiration: this.elements.create('cardExpiry'),
             cardCvc: this.elements.create('cardCvc'),
         };
-        this.paymentForm.cardNumber.mount('#card-element');
-        this.paymentForm.cardExpiration.mount('#expiration-element');
-        this.paymentForm.cardCvc.mount('#cvc-element');
+        this.cardForm.cardNumber.mount('#card-element');
+        this.cardForm.cardExpiration.mount('#expiration-element');
+        this.cardForm.cardCvc.mount('#cvc-element');
 
         this.stripeLoaded = true;
     }
@@ -98,7 +125,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     private createStripeCardWithToken(): void {
         this.isSaveInProcess = true;
         const dataToStripe = {
-            name: this.paymentForm.cardHolder,
+            name: this.cardForm.cardHolder,
             address_country: this.formBillingAddress.get('billingCountry').value,
             address_zip: this.formBillingAddress.get('billingPostCode').value,
             address_state: this.formBillingAddress.get('billingState').value,
@@ -106,7 +133,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             address_line1: this.formBillingAddress.get('billingAddress1').value,
             billingAddress2: this.formBillingAddress.get('billingAddress2').value,
         };
-        this.stripe.createToken(this.paymentForm.cardNumber, dataToStripe).then(resp => {
+        this.stripe.createToken(this.cardForm.cardNumber, dataToStripe).then(resp => {
             this.stripeService
                 .addUserCreditCard(resp.token.id)
                 .pipe(takeUntil(this.$destroy))
@@ -126,7 +153,20 @@ export class BillingComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.$destroy))
             .subscribe(cardResponse => {
                 this.cardData = cardResponse.cards.length > 0 ? cardResponse.cards[0] : null;
-                console.log(this.cardData);
+                this.fillCardForm();
             });
+    }
+
+    private fillCardForm(): void {
+        this.cardForm.cardHolder = this.cardData.name;
+        this.formBillingAddress.patchValue({
+            billingName: this.cardData.name,
+            billingAddress1: this.cardData.address_line1,
+            billingAddress2: this.cardData.address_line2,
+            billingCountry: this.cardData.address_country,
+            billingState: this.cardData.address_state,
+            billingCity: this.cardData.address_city,
+            billingPostCode: this.cardData.address_zip,
+        });
     }
 }
