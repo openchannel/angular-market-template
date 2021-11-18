@@ -265,6 +265,30 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
 
     private updateBillingData(): void {
+        this.process = true;
+        this.stripeService
+            .updateUserCreditCard(this.cardData.cardId, this.formBillingAddress.getRawValue())
+            .pipe(takeUntil(this.$destroy))
+            .subscribe(
+                () => {
+                    this.toaster.success('Your billing data has been updated');
+                    this.process = false;
+                },
+                () => (this.process = false),
+            );
+    }
 
+    private deleteCurrentCard(): void {
+        this.process = true;
+        this.stripeService
+            .deleteUserCreditCard(this.cardData.cardId)
+            .pipe(takeUntil(this.$destroy))
+            .subscribe(
+                () => {
+                    this.toaster.success('Your card has been removed');
+                    this.process = false;
+                },
+                () => (this.process = false),
+            );
     }
 }
