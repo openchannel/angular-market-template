@@ -4,9 +4,8 @@ import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CreditCard, StripeService } from '@openchannel/angular-common-services';
+import { CreditCard, StripeService, CountryStateService } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
-import { CountryStateService } from '@openchannel/angular-common-services';
 
 export interface StripeCardForm {
     cardHolder: string;
@@ -34,7 +33,6 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     formBillingAddress = new FormGroup({
         billingName: new FormControl('', Validators.required),
-        billingEmail: new FormControl('', [Validators.required, Validators.email]),
         billingAddress1: new FormControl('', Validators.required),
         billingAddress2: new FormControl(''),
         billingCountry: new FormControl('', Validators.required),
@@ -45,7 +43,7 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     process = false;
     billingCountries: any[] = [];
-    billingStates = ['State1', 'State2', 'State3'];
+    billingStates: any[] = [];
 
     private $destroy: Subject<void> = new Subject<void>();
 
@@ -61,16 +59,16 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.elements = stripe.elements();
             this.stripe = stripe;
             this.createStripeBillingElements();
+            this.getCountries();
             this.getCard();
         });
-        this.getCountries();
     }
 
     ngOnDestroy(): void {
         this.$destroy.next();
         this.$destroy.complete();
     }
-    
+
     /**
      * Making actions according to the card data. There are adding new card, update data or delete card
      */
@@ -82,8 +80,66 @@ export class BillingComponent implements OnInit, OnDestroy {
         }
     }
     
-    onCountriesChange(country: string): void {}
+    /**
+     * Gets countries list from opensource api.
+     * Creates an array of objects with countries names and iso2 codes.
+     */
+    getCountries(): void {
+        this.billingCountries = [];
+        this.process = true;
+        this.countryStateService.getCountries().subscribe(
+            (countries: any) => {
+                countries.data.forEach(country => {
+                    this.billingCountries.push({
+                        iso: country.Iso2,
+                        name: country.name,
+                    });
+                });
+                this.process = false;
+            },
+            () => {
+                this.process = false;
+                this.billingCountries = [];
+            },
+        );
+    }
     
+    /**
+     * Gets currentCountry on country change.
+     */
+    onCountriesChange(country: any): void {
+        const currentCountry = {
+            country: country.name,
+        };
+        this.getStates(currentCountry);
+    }
+    
+    /**
+     * Gets states list of current country.
+     */
+    getStates(country: any): void {
+        this.formBillingAddress.patchValue({
+            billingState: '',
+        });
+        this.billingStates = [];
+        this.process = true;
+        this.countryStateService.getStates(country).subscribe(
+            (response: any) => {
+                response.data.states.forEach(state => {
+                    this.billingStates.push({
+                        country: response.data.name,
+                        name: state.name,
+                    });
+                });
+                this.process = false;
+            },
+            () => {
+                this.billingStates = [];
+                this.process = false;
+            },
+        );
+    }
+
     /**
      * Actions on "Cancel" button click
      */
@@ -99,21 +155,6 @@ export class BillingComponent implements OnInit, OnDestroy {
         }
     }
 
-    getCountries(): void {
-        this.process = true;
-        this.countryStateService.getCountries().subscribe(
-            (data: any) => {
-                console.log(data);
-                this.process = false;
-                this.billingCountries = data;
-            },
-            () => {
-                this.process = false;
-                this.billingCountries = [];
-            },
-        );
-    }
-    
     /**
      * Saving full card data with address form
      * @private
@@ -148,9 +189,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.process = true;
         const dataToStripe = {
             name: this.cardForm.cardHolder,
-            address_country: this.formBillingAddress.get('billingCountry').value,
+            address_country: this.formBillingAddress.get('billingCountry').value.iso,
             address_zip: this.formBillingAddress.get('billingPostCode').value,
-            address_state: this.formBillingAddress.get('billingState').value,
+            address_state: this.formBillingAddress.get('billingState').value.name,
             address_city: this.formBillingAddress.get('billingCity').value,
             address_line1: this.formBillingAddress.get('billingAddress1').value,
             billingAddress2: this.formBillingAddress.get('billingAddress2').value,
@@ -174,7 +215,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             .getUserCreditCards()
             .pipe(takeUntil(this.$destroy))
             .subscribe(cardResponse => {
-                this.cardData = cardResponse.cards.length > 0 ? cardResponse.cards[0] : null;
+                this.cardData = cardResponse.cards[0];
                 this.fillCardForm();
             });
     }
