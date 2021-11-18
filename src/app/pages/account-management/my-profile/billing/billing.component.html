@@ -70,34 +70,34 @@
     <form class="billing__address-form" [formGroup]="formBillingAddress">
         <div class="billing__address-form-field">
             <oc-label text="Billing name" class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingName" placeholder="Name" required="true" class="billing__address-form-input"></oc-input>
+            <oc-input formControlName="name" placeholder="Name" required="true" class="billing__address-form-input"></oc-input>
             <oc-error
-                [control]="formBillingAddress.controls.billingName"
-                field="billingName"
+                [control]="formBillingAddress.controls.name"
+                field="name"
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
             <oc-label text="Address line 1"
                       class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingAddress1"
+            <oc-input formControlName="address_line1"
                 placeholder="Enter address"
                 required="true"
                 class="billing__address-form-input"></oc-input>
             <oc-error
-                [control]="formBillingAddress.controls.billingAddress1"
-                field="billingAddress1"
+                [control]="formBillingAddress.controls.address_line1"
+                field="address_line1"
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
             <oc-label text="Address line 2" class="billing__address-form-label"></oc-label>
             <oc-input
-                formControlName="billingAddress2"
+                formControlName="address_line2"
                 placeholder="Enter address"
                 required="false"
                 class="billing__address-form-input"></oc-input>
             <oc-error
-                [control]="formBillingAddress.controls.billingAddress2"
-                field="billingAddress2"
+                [control]="formBillingAddress.controls.address_line2"
+                field="address_line2"
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
@@ -105,12 +105,12 @@
                       class="billing__address-form-label"></oc-label>
             <oc-select [selectValArr]="billingCountries"
                        labelField="name"
-                formControlName="billingCountry"
+                formControlName="address_country"
                 (ngModelChange)="onCountriesChange($event)"
                 class="billing__address-form-input"></oc-select>
             <oc-error
-                [control]="formBillingAddress.controls.billingCountry"
-                field="billingCountry"
+                [control]="formBillingAddress.controls.address_country"
+                field="address_country"
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
@@ -118,31 +118,31 @@
                       class="billing__address-form-label"></oc-label>
             <oc-select [selectValArr]="billingStates"
                        labelField="name"
-                formControlName="billingState"
+                formControlName="address_state"
                 class="billing__address-form-input"></oc-select>
             <oc-error
-                [control]="formBillingAddress.controls.billingState"
-                field="billingState"
+                [control]="formBillingAddress.controls.address_state"
+                field="address_state"
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
             <oc-label text="City" class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingCity" placeholder="City" required="true" class="billing__address-form-input"></oc-input>
+            <oc-input formControlName="address_city" placeholder="City" required="true" class="billing__address-form-input"></oc-input>
             <oc-error
-                [control]="formBillingAddress.controls.billingCity"
-                field="billingCity"
+                [control]="formBillingAddress.controls.address_city"
+                field="address_city"
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
             <oc-label text="Postal code" class="billing__address-form-label"></oc-label>
             <oc-input
-                formControlName="billingPostCode"
+                formControlName="address_zip"
                 placeholder="Postal code"
                 required="true"
                 class="billing__address-form-input"></oc-input>
             <oc-error
-                [control]="formBillingAddress.controls.billingPostCode"
-                field="billingPostCode"
+                [control]="formBillingAddress.controls.address_zip"
+                field="address_zip"
                 class="billing__address-form-error"></oc-error>
         </div>
     </form>

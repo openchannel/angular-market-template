@@ -56,13 +56,13 @@ export class BillingComponent implements OnInit, OnDestroy {
     cardData: CreditCard;
 
     formBillingAddress = new FormGroup({
-        billingName: new FormControl('', Validators.required),
-        billingAddress1: new FormControl('', Validators.required),
-        billingAddress2: new FormControl(''),
-        billingCountry: new FormControl('', Validators.required),
-        billingState: new FormControl('', Validators.required),
-        billingCity: new FormControl('', Validators.required),
-        billingPostCode: new FormControl('', Validators.required),
+        name: new FormControl('', Validators.required),
+        address_line1: new FormControl('', Validators.required),
+        address_line2: new FormControl(''),
+        address_country: new FormControl('', Validators.required),
+        address_state: new FormControl('', Validators.required),
+        address_city: new FormControl('', Validators.required),
+        address_zip: new FormControl('', Validators.required),
     });
 
     process = false;
@@ -204,13 +204,8 @@ export class BillingComponent implements OnInit, OnDestroy {
     private createStripeCardWithToken(): void {
         this.process = true;
         const dataToStripe = {
-            name: this.cardForm.cardHolder,
-            address_country: this.formBillingAddress.get('billingCountry').value.iso,
-            address_zip: this.formBillingAddress.get('billingPostCode').value,
-            address_state: this.formBillingAddress.get('billingState').value.name,
-            address_city: this.formBillingAddress.get('billingCity').value,
-            address_line1: this.formBillingAddress.get('billingAddress1').value,
-            billingAddress2: this.formBillingAddress.get('billingAddress2').value,
+            ...this.formBillingAddress.getRawValue(),
+            name: this.cardForm.cardHolder || this.formBillingAddress.controls.name.value,
         };
         this.stripe.createToken(this.cardForm.cardNumber.element, dataToStripe).then(resp => {
             this.stripeService
@@ -239,13 +234,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     private fillCardForm(): void {
         this.cardForm.cardHolder = this.cardData.name;
         this.formBillingAddress.patchValue({
-            billingName: this.cardData.name,
-            billingAddress1: this.cardData.address_line1,
-            billingAddress2: this.cardData.address_line2,
-            billingCountry: this.cardData.address_country,
-            billingState: this.cardData.address_state,
-            billingCity: this.cardData.address_city,
-            billingPostCode: this.cardData.address_zip,
+            ...this.cardData,
         });
         this.cardForm.cardNumber.changeStatus = null;
         this.cardForm.cardCvc.changeStatus = null;
@@ -273,5 +262,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         const expirationValidity = this.cardForm.cardExpiration.changeStatus.complete && !this.cardForm.cardExpiration.changeStatus.error;
 
         return this.formBillingAddress.valid && !this.process && numberValidity && cvcValidity && expirationValidity;
+    }
+
+    private updateBillingData(): void {
+
     }
 }
