@@ -31,6 +31,7 @@ export interface StripeCardForm {
     styleUrls: ['./billing.component.scss'],
 })
 export class BillingComponent implements OnInit, OnDestroy {
+    // form for card with stripe elements and elements status
     cardForm: StripeCardForm = {
         cardHolder: '',
         cardNumber: {
@@ -46,13 +47,13 @@ export class BillingComponent implements OnInit, OnDestroy {
             changeStatus: null,
         },
     };
+    // status of loading stripe elements
     stripeLoaded = false;
-    cardData: CreditCard;
-
+    // switcher between stripe and demo elements
     hideCardFormElements = false;
-
-    private elements: StripeElements;
-    private stripe: Stripe;
+    isSaveInProcess = false;
+    // saved card data
+    cardData: CreditCard;
 
     formBillingAddress = new FormGroup({
         billingName: new FormControl('', Validators.required),
@@ -65,11 +66,12 @@ export class BillingComponent implements OnInit, OnDestroy {
         billingPostCode: new FormControl('', Validators.required),
     });
 
-    isSaveInProcess = false;
     billingCountries = ['USA', 'UKRAINE', 'CANADA'];
     billingStates = ['State1', 'State2', 'State3'];
 
     private $destroy: Subject<void> = new Subject<void>();
+    private elements: StripeElements;
+    private stripe: Stripe;
 
     constructor(private stripeLoader: StripeLoaderService, private stripeService: StripeService, private toaster: ToastrService) {}
 
@@ -135,6 +137,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.cardForm.cardNumber.element = this.elements.create('cardNumber');
         this.cardForm.cardExpiration.element = this.elements.create('cardExpiry');
         this.cardForm.cardCvc.element = this.elements.create('cardCvc');
+
         this.cardForm.cardNumber.element.mount('#card-element');
         this.cardForm.cardExpiration.element.mount('#expiration-element');
         this.cardForm.cardCvc.element.mount('#cvc-element');
