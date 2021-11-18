@@ -37,7 +37,9 @@
 
             &-expiration {
                 width: 50%;
-                position: relative;
+                &-group {
+                    position: relative;
+                }
             }
 
             &-cvc {
@@ -53,9 +55,10 @@
         }
 
         &-expiration-svg {
+            display: block;
             position: absolute;
             right: 16px;
-            bottom: calc(3rem + 14px);
+            bottom: calc(3rem - 12px);
         }
 
         .StripeElement {

@@ -96,7 +96,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         if (this.cardData) {
             // update card data or delete card
         } else {
-            this.saveBillingData();
+            // creating token and saving card
+            if (this.getFormsValidity()) {
+                this.createStripeCardWithToken();
+            }
         }
     }
 
@@ -118,18 +121,6 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Saving full card data with address form
-     * @private
-     */
-    private saveBillingData(): void {
-        this.formBillingAddress.markAllAsTouched();
-        this.cardForm.cardNumber.element.blur();
-        if (this.formBillingAddress.valid && !this.isSaveInProcess) {
-            this.createStripeCardWithToken();
-        }
-    }
-
-    /**
      * Creation and mounting the stripe elements for card
      * @private
      */
@@ -143,6 +134,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.cardForm.cardCvc.element.mount('#cvc-element');
 
         this.stripeLoaded = true;
+        this.listenToStripeFormChanges();
     }
 
     private createStripeCardWithToken(): void {
@@ -191,6 +183,31 @@ export class BillingComponent implements OnInit, OnDestroy {
             billingCity: this.cardData.address_city,
             billingPostCode: this.cardData.address_zip,
         });
+        this.cardForm.cardNumber.changeStatus = null;
+        this.cardForm.cardCvc.changeStatus = null;
+        this.cardForm.cardExpiration.changeStatus = null;
+
         this.hideCardFormElements = this.stripeLoaded && !!this.cardData.cardId;
+    }
+
+    private listenToStripeFormChanges(): void {
+        this.cardForm.cardNumber.element.on('change', event => {
+            this.cardForm.cardNumber.changeStatus = event;
+        });
+        this.cardForm.cardCvc.element.on('change', event => {
+            this.cardForm.cardCvc.changeStatus = event;
+        });
+        this.cardForm.cardExpiration.element.on('change', event => {
+            this.cardForm.cardExpiration.changeStatus = event;
+        });
+    }
+
+    private getFormsValidity(): boolean {
+        this.formBillingAddress.markAllAsTouched();
+        const numberValidity = this.cardForm.cardNumber.changeStatus.complete && !this.cardForm.cardNumber.changeStatus.error;
+        const cvcValidity = this.cardForm.cardCvc.changeStatus.complete && !this.cardForm.cardCvc.changeStatus.error;
+        const expirationValidity = this.cardForm.cardExpiration.changeStatus.complete && !this.cardForm.cardExpiration.changeStatus.error;
+
+        return this.formBillingAddress.valid && !this.isSaveInProcess && numberValidity && cvcValidity && expirationValidity;
     }
 }

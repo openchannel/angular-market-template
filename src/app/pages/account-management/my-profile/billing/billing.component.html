@@ -21,24 +21,30 @@
                     [ngModelOptions]="{ standalone: true }"
                     class="billing__credit-card-form-input"
                     (click)="hideCardFormElements = false"></oc-input>
-            <span class="billing__credit-card-form-error">Some error</span>
+            <span
+                class="billing__credit-card-form-error"
+                *ngIf="cardForm.cardNumber.changeStatus?.error">{{cardForm.cardNumber.changeStatus.error.message}}</span>
         </div>
         <div class="billing__credit-card-form-group"></div>
         <div class="billing__credit-card-form-row">
             <div class="billing__credit-card-form-row-expiration">
                 <label for="expiration-element" class="oc-form-label billing__credit-card-form-label">Expiration</label>
-                <div
-                        id="expiration-element"
-                        class="billing__credit-card-form-input"
-                        [class.billing__credit-card-form-input_hidden]="hideCardFormElements"></div>
-                <oc-input
-                        [ngModel]="cardData.exp_month + '/' + cardData.exp_year.toString().slice(-2)"
-                        *ngIf="hideCardFormElements"
-                        [ngModelOptions]="{ standalone: true }"
-                        class="billing__credit-card-form-input"
-                        (click)="hideCardFormElements = false"></oc-input>
-                <svg-icon src="./assets/img/calendar-icon.svg" svgClass="billing__credit-card-form-expiration-svg"></svg-icon>
-                <span class="billing__credit-card-form-error">Some error</span>
+                <div class="billing__credit-card-form-row-expiration-group">
+                    <div
+                            id="expiration-element"
+                            class="billing__credit-card-form-input"
+                            [class.billing__credit-card-form-input_hidden]="hideCardFormElements"></div>
+                    <oc-input
+                            [ngModel]="cardData.exp_month + '/' + cardData.exp_year.toString().slice(-2)"
+                            *ngIf="hideCardFormElements"
+                            [ngModelOptions]="{ standalone: true }"
+                            class="billing__credit-card-form-input"
+                            (click)="hideCardFormElements = false"></oc-input>
+                    <svg-icon src="./assets/img/calendar-icon.svg" class="billing__credit-card-form-expiration-svg"></svg-icon>
+                </div>
+                <span
+                    class="billing__credit-card-form-error"
+                    *ngIf="cardForm.cardExpiration.changeStatus?.error">{{cardForm.cardExpiration.changeStatus.error.message}}</span>
             </div>
             <div class="billing__credit-card-form-row-cvc">
                 <label for="cvc-element" class="oc-form-label billing__credit-card-form-label">CVV</label>
@@ -52,7 +58,9 @@
                     [ngModelOptions]="{ standalone: true }"
                     class="billing__credit-card-form-input"
                     (click)="hideCardFormElements = false"></oc-input>
-                <span class="billing__credit-card-form-error">Some error</span>
+                <span
+                    class="billing__credit-card-form-error"
+                    *ngIf="cardForm.cardCvc.changeStatus?.error">{{cardForm.cardCvc.changeStatus.error.message}}</span>
             </div>
         </div>
     </form>
