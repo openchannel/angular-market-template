@@ -77,17 +77,9 @@
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="Billing email" class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="billingEmail" placeholder="Email" required="true" class="billing__address-form-input"></oc-input>
-            <oc-error
-                [control]="formBillingAddress.controls.billingEmail"
-                field="billingEmail"
-                class="billing__address-form-error"></oc-error>
-        </div>
-        <div class="billing__address-form-field">
-            <oc-label text="Address line 1" class="billing__address-form-label"></oc-label>
-            <oc-input
-                formControlName="billingAddress1"
+            <oc-label text="Address line 1"
+                      class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="billingAddress1"
                 placeholder="Enter address"
                 required="true"
                 class="billing__address-form-input"></oc-input>
@@ -109,9 +101,10 @@
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="Country" class="billing__address-form-label"></oc-label>
-            <oc-select
-                [selectValArr]="billingCountries"
+            <oc-label text="Country"
+                      class="billing__address-form-label"></oc-label>
+            <oc-select [selectValArr]="billingCountries"
+                       labelField="name"
                 formControlName="billingCountry"
                 (ngModelChange)="onCountriesChange($event)"
                 class="billing__address-form-input"></oc-select>
@@ -121,11 +114,11 @@
                 class="billing__address-form-error"></oc-error>
         </div>
         <div class="billing__address-form-field">
-            <oc-label text="State" class="billing__address-form-label"></oc-label>
-            <oc-select
-                [selectValArr]="billingStates"
+            <oc-label text="State"
+                      class="billing__address-form-label"></oc-label>
+            <oc-select [selectValArr]="billingStates"
+                       labelField="name"
                 formControlName="billingState"
-                (ngModelChange)="onCountriesChange($event)"
                 class="billing__address-form-input"></oc-select>
             <oc-error
                 [control]="formBillingAddress.controls.billingState"
@@ -159,10 +152,10 @@
         type="primary"
         text="Save"
         class="billing__actions-button"
-        [process]="isSaveInProcess"
-        (click)="billingAction()"></oc-button>
-    <oc-button
-        type="secondary"
+               [process]="process"
+               (click)="billingAction()">
+    </oc-button>
+    <oc-button type="secondary"
         text="Cancel"
         class="billing__actions-button"
         (click)="clearChanges()"></oc-button>

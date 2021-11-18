@@ -4,7 +4,7 @@ import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CreditCard, StripeService } from '@openchannel/angular-common-services';
+import { CreditCard, StripeService, CountryStateService } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
 import { StripeCardNumberElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-number';
 import { StripeCardExpiryElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-expiry';
@@ -57,7 +57,6 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     formBillingAddress = new FormGroup({
         billingName: new FormControl('', Validators.required),
-        billingEmail: new FormControl('', [Validators.required, Validators.email]),
         billingAddress1: new FormControl('', Validators.required),
         billingAddress2: new FormControl(''),
         billingCountry: new FormControl('', Validators.required),
@@ -66,20 +65,27 @@ export class BillingComponent implements OnInit, OnDestroy {
         billingPostCode: new FormControl('', Validators.required),
     });
 
-    billingCountries = ['USA', 'UKRAINE', 'CANADA'];
-    billingStates = ['State1', 'State2', 'State3'];
+    process = false;
+    billingCountries: any[] = [];
+    billingStates: any[] = [];
 
     private $destroy: Subject<void> = new Subject<void>();
     private elements: StripeElements;
     private stripe: Stripe;
 
-    constructor(private stripeLoader: StripeLoaderService, private stripeService: StripeService, private toaster: ToastrService) {}
+    constructor(
+        private stripeLoader: StripeLoaderService,
+        private stripeService: StripeService,
+        private toaster: ToastrService,
+        private countryStateService: CountryStateService,
+    ) {}
 
     ngOnInit(): void {
         this.stripeLoader.stripe.pipe(takeUntil(this.$destroy)).subscribe(stripe => {
             this.elements = stripe.elements();
             this.stripe = stripe;
             this.createStripeBillingElements();
+            this.getCountries();
             this.getCard();
         });
     }
@@ -103,7 +109,65 @@ export class BillingComponent implements OnInit, OnDestroy {
         }
     }
 
-    onCountriesChange(country: string): void {}
+    /**
+     * Gets countries list from opensource api.
+     * Creates an array of objects with countries names and iso2 codes.
+     */
+    getCountries(): void {
+        this.billingCountries = [];
+        this.process = true;
+        this.countryStateService.getCountries().subscribe(
+            (countries: any) => {
+                countries.data.forEach(country => {
+                    this.billingCountries.push({
+                        iso: country.Iso2,
+                        name: country.name,
+                    });
+                });
+                this.process = false;
+            },
+            () => {
+                this.process = false;
+                this.billingCountries = [];
+            },
+        );
+    }
+
+    /**
+     * Gets currentCountry on country change.
+     */
+    onCountriesChange(country: any): void {
+        const currentCountry = {
+            country: country.name,
+        };
+        this.getStates(currentCountry);
+    }
+
+    /**
+     * Gets states list of current country.
+     */
+    getStates(country: any): void {
+        this.formBillingAddress.patchValue({
+            billingState: '',
+        });
+        this.billingStates = [];
+        this.process = true;
+        this.countryStateService.getStates(country).subscribe(
+            (response: any) => {
+                response.data.states.forEach(state => {
+                    this.billingStates.push({
+                        country: response.data.name,
+                        name: state.name,
+                    });
+                });
+                this.process = false;
+            },
+            () => {
+                this.billingStates = [];
+                this.process = false;
+            },
+        );
+    }
 
     /**
      * Actions on "Cancel" button click
@@ -138,12 +202,12 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
 
     private createStripeCardWithToken(): void {
-        this.isSaveInProcess = true;
+        this.process = true;
         const dataToStripe = {
             name: this.cardForm.cardHolder,
-            address_country: this.formBillingAddress.get('billingCountry').value,
+            address_country: this.formBillingAddress.get('billingCountry').value.iso,
             address_zip: this.formBillingAddress.get('billingPostCode').value,
-            address_state: this.formBillingAddress.get('billingState').value,
+            address_state: this.formBillingAddress.get('billingState').value.name,
             address_city: this.formBillingAddress.get('billingCity').value,
             address_line1: this.formBillingAddress.get('billingAddress1').value,
             billingAddress2: this.formBillingAddress.get('billingAddress2').value,
@@ -155,9 +219,9 @@ export class BillingComponent implements OnInit, OnDestroy {
                 .subscribe(
                     () => {
                         this.toaster.success('Card has been added');
-                        this.isSaveInProcess = false;
+                        this.process = false;
                     },
-                    () => (this.isSaveInProcess = false),
+                    () => (this.process = false),
                 );
         });
     }
@@ -167,7 +231,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             .getUserCreditCards()
             .pipe(takeUntil(this.$destroy))
             .subscribe(cardResponse => {
-                this.cardData = cardResponse.cards.length > 0 ? cardResponse.cards[0] : null;
+                this.cardData = cardResponse.cards[0];
                 this.fillCardForm();
             });
     }
@@ -208,6 +272,6 @@ export class BillingComponent implements OnInit, OnDestroy {
         const cvcValidity = this.cardForm.cardCvc.changeStatus.complete && !this.cardForm.cardCvc.changeStatus.error;
         const expirationValidity = this.cardForm.cardExpiration.changeStatus.complete && !this.cardForm.cardExpiration.changeStatus.error;
 
-        return this.formBillingAddress.valid && !this.isSaveInProcess && numberValidity && cvcValidity && expirationValidity;
+        return this.formBillingAddress.valid && !this.process && numberValidity && cvcValidity && expirationValidity;
     }
 }
