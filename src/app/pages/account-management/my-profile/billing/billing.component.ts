@@ -260,9 +260,24 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.formBillingAddress.patchValue({
             ...this.cardData,
         });
-        this.cardForm.cardNumber.changeStatus = null;
-        this.cardForm.cardCvc.changeStatus = null;
-        this.cardForm.cardExpiration.changeStatus = null;
+        this.cardForm.cardNumber.changeStatus = {
+            ...this.cardForm.cardNumber.changeStatus,
+            complete: false,
+            error: undefined,
+            empty: true,
+        };
+        this.cardForm.cardCvc.changeStatus = {
+            ...this.cardForm.cardCvc.changeStatus,
+            complete: false,
+            error: undefined,
+            empty: true,
+        };
+        this.cardForm.cardExpiration.changeStatus = {
+            ...this.cardForm.cardExpiration.changeStatus,
+            complete: false,
+            error: undefined,
+            empty: true,
+        };
 
         this.hideCardFormElements = this.stripeLoaded && !!this.cardData.cardId;
     }
@@ -289,9 +304,14 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
 
     private updateBillingData(): void {
+        const dataToServer = {
+            ...this.formBillingAddress.getRawValue(),
+            address_country: this.formBillingAddress.controls.address_country.value.iso,
+            address_state: this.formBillingAddress.controls.address_state.value.name,
+        };
         this.process = true;
         this.stripeService
-            .updateUserCreditCard(this.cardData.cardId, this.formBillingAddress.getRawValue())
+            .updateUserCreditCard(this.cardData.cardId, dataToServer)
             .pipe(takeUntil(this.$destroy))
             .subscribe(
                 cardResponse => {
