@@ -71,7 +71,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     hideCardFormElements = false;
     isSaveInProcess = false;
     // saved card data
-    cardData: CreditCard;
+    cardData: CreditCard = null;
 
     formBillingAddress = new FormGroup({
         name: new FormControl('', Validators.required),
@@ -229,7 +229,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.process = true;
         const dataToStripe = {
             ...this.formBillingAddress.getRawValue(),
-            name: this.cardForm.cardHolder || this.formBillingAddress.controls.name.value,
+            address_country: this.formBillingAddress.controls.address_country.value.iso,
+            address_state: this.formBillingAddress.controls.address_state.value.name,
         };
         this.stripe.createToken(this.cardForm.cardNumber.element, dataToStripe).then(resp => {
             this.stripeService
@@ -238,7 +239,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                 .subscribe(
                     () => {
                         this.toaster.success('Card has been added');
-                        this.process = false;
+                        this.getCard();
                     },
                     () => (this.process = false),
                 );
@@ -249,10 +250,16 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.stripeService
             .getUserCreditCards()
             .pipe(takeUntil(this.$destroy))
-            .subscribe(cardResponse => {
-                this.cardData = cardResponse.cards[0];
-                this.fillCardForm();
-            });
+            .subscribe(
+                cardResponse => {
+                    this.cardData = cardResponse.cards[0];
+                    if (this.cardData) {
+                        this.fillCardForm();
+                    }
+                    this.process = false;
+                },
+                () => (this.process = false),
+            );
     }
 
     private fillCardForm(): void {
@@ -333,9 +340,10 @@ export class BillingComponent implements OnInit, OnDestroy {
                     this.toaster.success('Your card has been removed');
                     this.cardData = null;
                     this.process = false;
-                    this.clearChanges();
                     if (createNew) {
                         this.createStripeCardWithToken();
+                    } else {
+                        this.clearChanges();
                     }
                 },
                 () => (this.process = false),
@@ -363,7 +371,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                         this.clearChanges();
                     }
                 },
-                () => {},
+                () => this.clearChanges(),
             );
         }
     }
