@@ -1,3 +1,8 @@
+## Release notes - template3-marketsite-frontend - Version 1.53.1 (11/17/2021)<br>
+### Bug<br>
+AT-1608 - [Market][Form submission - Buy Now] Image crop pop-up is not getting closed after clicking on Confirm button.<br>
+AT-1595 - [Hotfix] A developer is not able to edit an app if the app type is not found.<br>
+AT-1594 - [Hotfix][Edit App Type] When there are no App Type available then proper message is not showing.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.53.0 (11/12/2021)<br>
 ### Bug<br>
 AT-1590 - [Component][Custom Signup Form] Remove "Org" prefix from Custom Data<br>
