@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Page } from 'app/pages/account-management/my-company/my-company.component';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { siteConfig } from 'assets/data/siteConfig';
-import { PaymentsGateways } from '../../angular-template-libraries/dist/angular-common-services';
+import { PaymentsGateways } from '@openchannel/angular-common-services';
 
 @Component({
     selector: 'app-my-profile',
