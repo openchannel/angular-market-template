@@ -235,7 +235,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                 .subscribe(
                     () => {
                         this.toaster.success('Card has been added');
-                        this.process = false;
+                        this.getCard();
                     },
                     () => (this.process = false),
                 );
@@ -246,10 +246,16 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.stripeService
             .getUserCreditCards()
             .pipe(takeUntil(this.$destroy))
-            .subscribe(cardResponse => {
-                this.cardData = cardResponse.cards[0];
-                this.fillCardForm();
-            });
+            .subscribe(
+                cardResponse => {
+                    this.cardData = cardResponse.cards[0];
+                    if (this.cardData) {
+                        this.fillCardForm();
+                    }
+                    this.process = false;
+                },
+                () => (this.process = false),
+            );
     }
 
     private fillCardForm(): void {
@@ -330,9 +336,10 @@ export class BillingComponent implements OnInit, OnDestroy {
                     this.toaster.success('Your card has been removed');
                     this.cardData = null;
                     this.process = false;
-                    this.clearChanges();
                     if (createNew) {
                         this.createStripeCardWithToken();
+                    } else {
+                        this.clearChanges();
                     }
                 },
                 () => (this.process = false),
@@ -360,7 +367,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                         this.clearChanges();
                     }
                 },
-                () => {},
+                () => this.clearChanges(),
             );
         }
     }
