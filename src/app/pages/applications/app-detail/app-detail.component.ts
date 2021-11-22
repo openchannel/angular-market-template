@@ -317,8 +317,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     private countRating(): void {
         const approvedReviews = this.reviewsPage.list.filter(review => review.status.value === 'approved');
 
-        this.overallRating = new OverallRatingSummary(this.app.rating / 100, approvedReviews.length);
-        approvedReviews.forEach(review => this.overallRating[review.rating / 100]++);
+        this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.app.reviewCount);
+        approvedReviews.forEach(review => this.overallRating[Math.floor(review.rating / 100)]++);
     }
 
     private getButtonActions(config: any): ButtonAction[] {
