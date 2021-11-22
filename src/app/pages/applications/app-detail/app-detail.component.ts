@@ -124,7 +124,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         }
 
         if (this.currentUserId) {
-            filterArray.push(`{'userId': {'$ne': ['${this.currentUserId}']}}`);
+            filterArray.push(`{'userId': {'$ne': '${this.currentUserId}'}}`);
             obsArr.push(
                 this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, [
                     `{'userId': '${this.currentUserId}'}`,
@@ -137,7 +137,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe(
                 resPage => {
-                    this.reviewsPage = { ...resPage[0], ...resPage[1] };
+                    this.fillReviews(resPage);
                     this.userReview = find(this.reviewsPage.list, ['userId', this.currentUserId]);
                     this.loader.complete();
                     if (this.overallRating.rating === 0) {
@@ -146,6 +146,18 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 },
                 () => this.loader.complete(),
             );
+    }
+
+    fillReviews(allPages: Page<OCReviewDetails>[]): void {
+        const currentUserReview = allPages.length === 2;
+
+        if (currentUserReview) {
+            this.reviewsPage = { ...allPages[1] };
+            this.reviewsPage.count = allPages[0].count + allPages[1].count;
+            this.reviewsPage.list = [...allPages[0].list, ...allPages[1].list];
+        } else {
+            this.reviewsPage = { ...allPages[0] };
+        }
     }
 
     onReviewSortChange(selected: DropdownModel<string>): void {
