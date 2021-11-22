@@ -124,7 +124,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         }
 
         if (this.currentUserId) {
-            filterArray.push(`{'userId': {'$ne': ['${this.currentUserId}']}}`);
+            filterArray.push(`{'userId': {'$ne': '${this.currentUserId}'}}`);
             obsArr.push(
                 this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, [
                     `{'userId': '${this.currentUserId}'}`,
@@ -134,10 +134,22 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         obsArr.push(this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, filterArray));
 
         forkJoin(obsArr)
-            .pipe(takeUntil(this.destroy$))
+            .pipe(
+                map(resPages => {
+                    const reviewsLists = resPages.map(resPage => resPage.list);
+                    const mergedReviewList = [].concat(...reviewsLists);
+
+                    return {
+                        ...resPages[0],
+                        list: mergedReviewList,
+                        count: mergedReviewList.length,
+                    };
+                }),
+                takeUntil(this.destroy$),
+            )
             .subscribe(
                 resPage => {
-                    this.reviewsPage = { ...resPage[0], ...resPage[1] };
+                    this.reviewsPage = { ...resPage };
                     this.userReview = find(this.reviewsPage.list, ['userId', this.currentUserId]);
                     this.loader.complete();
                     if (this.overallRating.rating === 0) {
@@ -303,8 +315,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     }
 
     private countRating(): void {
-        this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.reviewsPage.count);
-        this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
+        const approvedReviews = this.reviewsPage.list.filter(review => review.status.value === 'approved');
+
+        this.overallRating = new OverallRatingSummary(this.app.rating / 100, approvedReviews.length);
+        approvedReviews.forEach(review => this.overallRating[review.rating / 100]++);
     }
 
     private getButtonActions(config: any): ButtonAction[] {
