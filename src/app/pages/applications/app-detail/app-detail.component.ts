@@ -116,45 +116,27 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     loadReviews(): void {
         this.loader.start();
 
-        const filterArray: string[] = [];
-        const obsArr: Observable<Page<OCReviewDetails>>[] = [];
-
-        if (this.selectedFilter && this.selectedFilter.value) {
-            filterArray.push(this.selectedFilter.value);
-        }
-
-        if (this.currentUserId) {
-            filterArray.push(`{'userId': {'$ne': '${this.currentUserId}'}}`);
-            obsArr.push(
-                this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, [
-                    `{'userId': '${this.currentUserId}'}`,
-                ]),
-            );
-        }
-        obsArr.push(this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, filterArray));
-
-        forkJoin(obsArr)
-            .pipe(
-                map(resPages => {
-                    const reviewsLists = resPages.map(resPage => resPage.list);
-                    const mergedReviewList = [].concat(...reviewsLists);
-
-                    return {
-                        ...resPages[0],
-                        list: mergedReviewList,
-                        count: mergedReviewList.length,
-                    };
-                }),
-                takeUntil(this.destroy$),
+        this.reviewsService
+            .getReviewsByAppId(
+                this.app.appId,
+                this.selectedSort ? this.selectedSort.value : null,
+                this.selectedFilter ? [this.selectedFilter.value] : [],
             )
+            .pipe(takeUntil(this.destroy$))
             .subscribe(
                 resPage => {
-                    this.reviewsPage = { ...resPage };
-                    this.userReview = find(this.reviewsPage.list, ['userId', this.currentUserId]);
-                    this.loader.complete();
+                    this.reviewsPage = resPage;
+
+                    const someSortApplied = !!(this.selectedFilter.value || this.selectedSort);
+                    if (this.currentUserId && !someSortApplied) {
+                        this.makeCurrentUserReviewFirst();
+                    }
+
                     if (this.overallRating.rating === 0) {
                         this.countRating();
                     }
+
+                    this.loader.complete();
                 },
                 () => this.loader.complete(),
             );
@@ -260,6 +242,14 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 return;
             default:
                 return;
+        }
+    }
+
+    private makeCurrentUserReviewFirst(): void {
+        const userReviewIndex = this.reviewsPage.list.findIndex(review => review.userId === this.currentUserId);
+        if (userReviewIndex !== -1) {
+            this.userReview = this.reviewsPage.list.splice(userReviewIndex, 1)[0];
+            this.reviewsPage.list.unshift(this.userReview);
         }
     }
 
