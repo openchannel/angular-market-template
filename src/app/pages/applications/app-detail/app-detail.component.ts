@@ -134,10 +134,22 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         obsArr.push(this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, filterArray));
 
         forkJoin(obsArr)
-            .pipe(takeUntil(this.destroy$))
+            .pipe(
+                map(resPages => {
+                    const reviewsLists = resPages.map(resPage => resPage.list);
+                    const mergedReviewList = [].concat(...reviewsLists);
+
+                    return {
+                        ...resPages[0],
+                        list: mergedReviewList,
+                        count: mergedReviewList.length,
+                    };
+                }),
+                takeUntil(this.destroy$),
+            )
             .subscribe(
                 resPage => {
-                    this.fillReviews(resPage);
+                    this.reviewsPage = { ...resPage };
                     this.userReview = find(this.reviewsPage.list, ['userId', this.currentUserId]);
                     this.loader.complete();
                     if (this.overallRating.rating === 0) {
@@ -146,18 +158,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 },
                 () => this.loader.complete(),
             );
-    }
-
-    fillReviews(allPages: Page<OCReviewDetails>[]): void {
-        const currentUserReview = allPages.length === 2;
-
-        if (currentUserReview) {
-            this.reviewsPage = { ...allPages[1] };
-            this.reviewsPage.count = allPages[0].count + allPages[1].count;
-            this.reviewsPage.list = [...allPages[0].list, ...allPages[1].list];
-        } else {
-            this.reviewsPage = { ...allPages[0] };
-        }
     }
 
     onReviewSortChange(selected: DropdownModel<string>): void {
@@ -315,8 +315,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     }
 
     private countRating(): void {
-        this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.reviewsPage.count);
-        this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
+        const approvedReviews = this.reviewsPage.list.filter(review => review.status.value === 'approved');
+
+        this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.app.reviewCount);
+        approvedReviews.forEach(review => this.overallRating[Math.floor(review.rating / 100)]++);
     }
 
     private getButtonActions(config: any): ButtonAction[] {
