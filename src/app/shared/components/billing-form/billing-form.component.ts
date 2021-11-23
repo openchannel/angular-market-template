@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Stripe, StripeCardCvcElement, StripeCardExpiryElement, StripeCardNumberElement, StripeElements } from '@stripe/stripe-js';
 import { StripeCardNumberElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-number';
 import { StripeCardExpiryElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-expiry';
@@ -34,6 +34,13 @@ export interface StripeCardForm {
     styleUrls: ['./billing-form.component.scss'],
 })
 export class BillingFormComponent implements OnInit, OnDestroy {
+    /** Custom text for primary button type */
+    @Input() successButtonText: string = 'Save';
+    /** Redirect to the previous page on Cancel button click */
+    @Input() goBackOnCancel: boolean = false;
+    /** Redirect to the previous page on Cancel button click */
+    @Input() shouldPurchase: boolean = false;
+    @Input() purchaseSum: number = 0;
     // form for card with stripe elements and elements status
     cardForm: StripeCardForm = {
         cardHolder: '',

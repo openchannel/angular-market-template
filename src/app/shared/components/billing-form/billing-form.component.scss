@@ -95,4 +95,16 @@
             }
         }
     }
+
+    &__actions {
+        margin-top: 5rem;
+
+        &-button {
+            display: block;
+
+            & + .billing__actions-button {
+                margin-top: 2rem;
+            }
+        }
+    }
 }
