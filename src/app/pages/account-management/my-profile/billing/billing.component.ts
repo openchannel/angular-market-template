@@ -4,7 +4,7 @@ import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CreditCard, StripeService, CountryStateService } from '@openchannel/angular-common-services';
+import { CreditCard, StripeService, CountryStateService, CountryModel, StateModel } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
 import { StripeCardNumberElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-number';
 import { StripeCardExpiryElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-expiry';
@@ -141,8 +141,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.billingCountries = [];
         this.process = true;
         this.countryStateService.getCountries().subscribe(
-            (countries: any) => {
-                countries.data.forEach(country => {
+            (countries: CountryModel[]) => {
+                countries.forEach(country => {
                     this.billingCountries.push({
                         iso: country.Iso2,
                         name: country.name,
@@ -177,8 +177,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.billingStates = [];
         this.process = true;
         this.countryStateService.getStates(country).subscribe(
-            (response: any) => {
-                response.data.states.forEach(state => {
+            (states: StateModel[]) => {
+                states.forEach(state => {
                     this.billingStates.push(state.name);
                 });
                 this.process = false;
