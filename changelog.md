@@ -1,3 +1,8 @@
+## Release notes - template3-marketsite-frontend - Version 1.54.0 (11/23/2021)<br>
+### Task<br>
+AT-1556 - For CAP, implement OpenChannel Stripe Gateway APIs<br>
+### Bug<br>
+AT-1222 - [Market][My Apps] Back link should navigate user to the My Apps page if app details opened from My Apps page.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.53.1 (11/17/2021)<br>
 ### Bug<br>
 AT-1608 - [Market][Form submission - Buy Now] Image crop pop-up is not getting closed after clicking on Confirm button.<br>

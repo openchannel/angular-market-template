@@ -17,7 +17,8 @@ export class MyAppsComponent implements OnInit, OnDestroy {
     appList: FullAppData[] = [];
     appSorts: DropdownModel<string>[];
     selectedSort: DropdownModel<string>;
-
+    appsLoaded = false;
+    
     private pageNumber = 1;
     private destroy$ = new Subject();
 
@@ -86,6 +87,7 @@ export class MyAppsComponent implements OnInit, OnDestroy {
             .subscribe(
                 res => {
                     this.appList = [...this.appList, ...res.list.map(app => new FullAppData(app, pageConfig.fieldMappings))];
+                    this.appsLoaded = true;
                 },
                 error => this.loader.complete(),
                 () => this.loader.complete(),
