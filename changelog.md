@@ -3,6 +3,19 @@
 AT-1556 - For CAP, implement OpenChannel Stripe Gateway APIs<br>
 ### Bug<br>
 AT-1222 - [Market][My Apps] Back link should navigate user to the My Apps page if app details opened from My Apps page.<br>
+## Release notes - template3-marketsite-frontend - Version 1.53.1 (11/17/2021)<br>
+### Bug<br>
+AT-1608 - [Market][Form submission - Buy Now] Image crop pop-up is not getting closed after clicking on Confirm button.<br>
+AT-1595 - [Hotfix] A developer is not able to edit an app if the app type is not found.<br>
+AT-1594 - [Hotfix][Edit App Type] When there are no App Type available then proper message is not showing.<br>
+## Release notes - template3-marketsite-frontend - Version 1.53.0 (11/12/2021)<br>
+### Bug<br>
+AT-1590 - [Component][Custom Signup Form] Remove "Org" prefix from Custom Data<br>
+AT-1566 - [stage1][market] [Forms - contact us - Buy now] File / Image upload is not working. uploadtoken gets canceled.<br>
+AT-1557 - [logs-prod] ERROR o.s.b.a.w.r.e.AbstractErrorWebExceptionHandler 500 Server Error for HTTP OPTIONS "/auth/csrf"<br>
+AT-1532 - [Prod][client-api-proxy] 500 Server Error for HTTP POST "/auth/external/token"<br>
+AT-1294 - [Portal][Create / Edit App] [Multi Select Dropdown / Tag] Dropdown list is not opening when clicking on 'arrow' icon.<br>
+AT-1060 - [User management][Invite a member] Password field validation displayed twice.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.52.0 (11/11/2021)<br>
 ### Bug<br>
 AT-1582 - Cap should not be setting expires and pragma headers on cachable responses<br>
