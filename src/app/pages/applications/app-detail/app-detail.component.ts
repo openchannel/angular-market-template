@@ -29,6 +29,7 @@ import {
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { HttpHeaders } from '@angular/common/http';
+import { Location } from '@angular/common';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 
 @Component({
@@ -84,6 +85,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private titleService: TitleService,
         private statisticService: StatisticService,
         private metaTagService: MarketMetaTagService,
+        private location: Location,
     ) {}
 
     ngOnInit(): void {
@@ -249,6 +251,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             default:
                 return;
         }
+    }
+
+    goBack(): void {
+        this.location.back();
     }
 
     private editReview(): void {
