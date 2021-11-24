@@ -26,8 +26,7 @@ import {
     Review,
     ReviewListOptionType,
 } from '@openchannel/angular-common-components';
-import { get, find } from 'lodash';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { get } from 'lodash';
 import { HttpHeaders } from '@angular/common/http';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 
