@@ -25,12 +25,12 @@ import {
     OverallRatingSummary,
     Review,
     ReviewListOptionType,
+    Filter
 } from '@openchannel/angular-common-components';
 import { get, find } from 'lodash';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { HttpHeaders } from '@angular/common/http';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
-import { Filter } from '@openchannel/angular-common-components';
 
 @Component({
     selector: 'app-app-detail',
