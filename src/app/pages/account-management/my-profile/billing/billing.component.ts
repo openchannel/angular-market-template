@@ -1,10 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Stripe, StripeCardCvcElement, StripeCardExpiryElement, StripeCardNumberElement, StripeElements } from '@stripe/stripe-js';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CreditCard, StripeService, CountryStateService } from '@openchannel/angular-common-services';
+import { CreditCard, StripeService, CountryStateService, CountryModel, StateModel } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
 import { StripeCardNumberElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-number';
 import { StripeCardExpiryElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-expiry';
@@ -80,7 +80,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         address_country: new FormControl('', Validators.required),
         address_state: new FormControl('', Validators.required),
         address_city: new FormControl('', Validators.required),
-        address_zip: new FormControl('', Validators.required),
+        address_zip: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     });
 
     process = false;
@@ -141,18 +141,12 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.billingCountries = [];
         this.process = true;
         this.countryStateService.getCountries().subscribe(
-            (countries: any) => {
-                countries.data.forEach(country => {
-                    this.billingCountries.push({
-                        iso: country.Iso2,
-                        name: country.name,
-                    });
-                });
+            (countries: CountryModel[]) => {
+                this.billingCountries = countries.map(country => ({ iso: country.Iso2, name: country.name }));
                 this.process = false;
             },
             () => {
                 this.process = false;
-                this.billingCountries = [];
             },
         );
     }
@@ -172,22 +166,16 @@ export class BillingComponent implements OnInit, OnDestroy {
      */
     getStates(country: any): void {
         this.formBillingAddress.patchValue({
-            billingState: '',
+            address_state: '',
         });
         this.billingStates = [];
         this.process = true;
         this.countryStateService.getStates(country).subscribe(
-            (response: any) => {
-                response.data.states.forEach(state => {
-                    this.billingStates.push({
-                        country: response.data.name,
-                        name: state.name,
-                    });
-                });
+            (states: StateModel[]) => {
+                this.billingStates = states.map(state => ({ name: state.name }));
                 this.process = false;
             },
             () => {
-                this.billingStates = [];
                 this.process = false;
             },
         );
@@ -230,7 +218,6 @@ export class BillingComponent implements OnInit, OnDestroy {
         const dataToStripe = {
             ...this.formBillingAddress.getRawValue(),
             address_country: this.formBillingAddress.controls.address_country.value.iso,
-            address_state: this.formBillingAddress.controls.address_state.value.name,
         };
         this.stripe.createToken(this.cardForm.cardNumber.element, dataToStripe).then(resp => {
             this.stripeService
@@ -266,6 +253,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.cardForm.cardHolder = this.cardData.name;
         this.formBillingAddress.patchValue({
             ...this.cardData,
+            address_country: this.billingCountries.find(country => country.iso === this.cardData.address_country),
         });
         this.cardForm.cardNumber.changeStatus = {
             ...this.cardForm.cardNumber.changeStatus,
@@ -314,7 +302,6 @@ export class BillingComponent implements OnInit, OnDestroy {
         const dataToServer = {
             ...this.formBillingAddress.getRawValue(),
             address_country: this.formBillingAddress.controls.address_country.value.iso,
-            address_state: this.formBillingAddress.controls.address_state.value.name,
         };
         this.process = true;
         this.stripeService
