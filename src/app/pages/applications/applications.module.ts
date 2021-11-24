@@ -8,9 +8,10 @@ import { SharedModule } from '@shared/shared.module';
 import { FormModalComponent } from './form-modal/form-modal.component';
 import { OcFormComponentsModule } from '@openchannel/angular-common-components';
 import { ButtonActionComponent } from './app-detail/button-action/button-action.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 @NgModule({
-    declarations: [AppDetailComponent, AppSearchComponent, FormModalComponent, ButtonActionComponent],
+    declarations: [AppDetailComponent, AppSearchComponent, FormModalComponent, ButtonActionComponent, CheckoutComponent],
     imports: [CommonModule, ApplicationsRoutingModule, SharedModule, OcFormComponentsModule],
 })
 export class ApplicationsModule {}
