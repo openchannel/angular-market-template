@@ -85,7 +85,7 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     process = false;
     billingCountries: any[] = [];
-    billingStates: string[] = [];
+    billingStates: any[] = [];
 
     private $destroy: Subject<void> = new Subject<void>();
     private elements: StripeElements;
@@ -142,17 +142,11 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.process = true;
         this.countryStateService.getCountries().subscribe(
             (countries: CountryModel[]) => {
-                countries.forEach(country => {
-                    this.billingCountries.push({
-                        iso: country.Iso2,
-                        name: country.name,
-                    });
-                });
+                this.billingCountries = countries.map(country => ({ iso: country.Iso2, name: country.name }));
                 this.process = false;
             },
             () => {
                 this.process = false;
-                this.billingCountries = [];
             },
         );
     }
@@ -178,13 +172,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.process = true;
         this.countryStateService.getStates(country).subscribe(
             (states: StateModel[]) => {
-                states.forEach(state => {
-                    this.billingStates.push(state.name);
-                });
+                this.billingStates = states.map(state => ({ name: state.name }));
                 this.process = false;
             },
             () => {
-                this.billingStates = [];
                 this.process = false;
             },
         );
