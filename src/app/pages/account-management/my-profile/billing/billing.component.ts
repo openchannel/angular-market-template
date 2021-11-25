@@ -86,7 +86,8 @@ export class BillingComponent implements OnInit, OnDestroy {
     process = false;
     billingCountries: any[] = [];
     billingStates: string[] = [];
-
+    emptyStates: boolean = false;
+    
     private $destroy: Subject<void> = new Subject<void>();
     private elements: StripeElements;
     private stripe: Stripe;
@@ -173,9 +174,19 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.countryStateService.getStates(country).subscribe(
             (states: StateModel[]) => {
                 this.billingStates = states.map(state => state.name);
+                if (this.emptyStates && this.billingStates.length !== 0) {
+                    this.formBillingAddress.get('address_state').setValidators(Validators.required);
+                    this.formBillingAddress.get('address_state').updateValueAndValidity();
+                    this.emptyStates = false;
+                }
                 this.process = false;
             },
             () => {
+                if (!this.emptyStates && this.billingStates.length === 0) {
+                    this.formBillingAddress.get('address_state').clearValidators();
+                    this.formBillingAddress.get('address_state').updateValueAndValidity();
+                    this.emptyStates = true;
+                }
                 this.process = false;
             },
         );
