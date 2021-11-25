@@ -10,7 +10,10 @@ const checkoutPage = siteConfig.paymentsEnabled
     ? [
           {
               path: 'checkout',
-              children: [{ path: ':safeName', component: CheckoutComponent, canActivate: [AuthGuard] }],
+              children: [
+                  { path: ':safeName', component: CheckoutComponent, canActivate: [AuthGuard] },
+                  { path: ':appId/:appVersion', component: AppDetailComponent, canActivate: [AuthGuard] },
+              ],
           },
       ]
     : [];
