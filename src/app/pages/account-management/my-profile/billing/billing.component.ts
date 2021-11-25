@@ -100,13 +100,16 @@ export class BillingComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.stripeLoader.stripe.pipe(takeUntil(this.$destroy)).subscribe(stripe => {
-            this.elements = stripe.elements();
-            this.stripe = stripe;
-            this.createStripeBillingElements();
-            this.getCountries();
-            this.getCard();
-        });
+        this.stripeLoader
+            .loadStripe()
+            .pipe(takeUntil(this.$destroy))
+            .subscribe(stripe => {
+                this.elements = stripe.elements();
+                this.stripe = stripe;
+                this.createStripeBillingElements();
+                this.getCountries();
+                this.getCard();
+            });
     }
 
     ngOnDestroy(): void {
@@ -228,7 +231,10 @@ export class BillingComponent implements OnInit, OnDestroy {
                         this.toaster.success('Card has been added');
                         this.getCard();
                     },
-                    () => (this.process = false),
+                    error => {
+                        this.toaster.error(error.message);
+                        this.process = false;
+                    },
                 );
         });
     }
@@ -313,7 +319,10 @@ export class BillingComponent implements OnInit, OnDestroy {
                     this.cardData = cardResponse.cards[0];
                     this.process = false;
                 },
-                () => (this.process = false),
+                error => {
+                    this.toaster.error(error.message);
+                    this.process = false;
+                },
             );
     }
 
@@ -333,7 +342,10 @@ export class BillingComponent implements OnInit, OnDestroy {
                         this.clearChanges();
                     }
                 },
-                () => (this.process = false),
+                error => {
+                    this.toaster.error(error.message);
+                    this.process = false;
+                },
             );
     }
 
