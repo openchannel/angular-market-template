@@ -3,7 +3,13 @@ import { Stripe, StripeCardCvcElement, StripeCardExpiryElement, StripeCardNumber
 import { StripeCardNumberElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-number';
 import { StripeCardExpiryElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-expiry';
 import { StripeCardCvcElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-cvc';
-import { CountryStateService, CreditCard, StripeService } from '@openchannel/angular-common-services';
+import {
+    CountryModel,
+    CountryStateService,
+    CreditCard,
+    StateModel,
+    StripeService
+} from '@openchannel/angular-common-services';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
@@ -149,18 +155,12 @@ export class BillingFormComponent implements OnInit, OnDestroy {
         this.billingCountries = [];
         this.process = true;
         this.countryStateService.getCountries().subscribe(
-            (countries: any) => {
-                countries.data.forEach(country => {
-                    this.billingCountries.push({
-                        iso: country.Iso2,
-                        name: country.name,
-                    });
-                });
+            (countries: CountryModel[]) => {
+                this.billingCountries = countries.map(country => ({ iso: country.Iso2, name: country.name }));
                 this.process = false;
             },
             () => {
                 this.process = false;
-                this.billingCountries = [];
             },
         );
     }
@@ -185,14 +185,11 @@ export class BillingFormComponent implements OnInit, OnDestroy {
         this.billingStates = [];
         this.process = true;
         this.countryStateService.getStates(country).subscribe(
-            (response: any) => {
-                response.data.states.forEach(state => {
-                    this.billingStates.push(state.name);
-                });
+            (states: StateModel[]) => {
+                this.billingStates = states.map(state => state.name);
                 this.process = false;
             },
             () => {
-                this.billingStates = [];
                 this.process = false;
             },
         );
