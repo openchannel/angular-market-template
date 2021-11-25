@@ -1,1 +1,16 @@
-<p>checkout works!</p>
+<div class="checkout">
+    <div class="bg-container height-unset">
+        <app-page-title pageTitle="Checkout" navigateText="Back" (navigateClick)="goBack()"></app-page-title>
+    </div>
+    <div class="container">
+        <div class="row checkout__container_margin">
+            <div class="col-lg-4 mt-3 mt-lg-1 col-xxl-6">
+                <app-billing-form [goBackOnCancel]="true" successButtonText="Buy now" [shouldPurchase]="true"></app-billing-form>
+            </div>
+            <div class="col-lg-3 col-xxl-2">
+                 <div class="checkout__app-price-info"></div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-8"></div>
+</div>

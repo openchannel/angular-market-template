@@ -1,0 +1,15 @@
+@import '~assets/styles/theme';
+
+.checkout {
+    &__container {
+        &_margin {
+            margin-top: 8rem;
+        }
+    }
+
+    &__app-price-info {
+        width: 100%;
+        background-color: $light;
+        padding: 3rem;
+    }
+}
