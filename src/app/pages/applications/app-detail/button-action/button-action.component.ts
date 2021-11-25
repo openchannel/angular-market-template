@@ -1,5 +1,12 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
-import { ButtonAction, DownloadButtonAction, FormButtonAction, OwnershipButtonAction, ViewData } from './models/button-action.model';
+import {
+    ButtonAction,
+    DownloadButtonAction,
+    FormButtonAction,
+    OwnershipButtonAction,
+    PurchaseButtonAction,
+    ViewData
+} from './models/button-action.model';
 import {
     AppFormService,
     AuthHolderService,
@@ -14,7 +21,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FullAppData, OcButtonComponent, OcFormModalComponent } from '@openchannel/angular-common-components';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { get } from 'lodash';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -53,6 +60,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         private fileService: FileUploadDownloadService,
         private router: Router,
         private statisticService: StatisticService,
+        private activeRoute: ActivatedRoute,
     ) {}
 
     ngOnInit(): void {
@@ -87,6 +95,12 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                     message: null,
                 };
                 break;
+            case 'purchase':
+                this.viewData = {
+                    button: (this.buttonAction as PurchaseButtonAction).button,
+                    message: null,
+                };
+                break;
             default:
                 this.toasterService.error(`Error: invalid button type: ${this.buttonAction.type}`);
         }
@@ -102,6 +116,9 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                 break;
             case 'download':
                 this.downloadFile(this.buttonAction as DownloadButtonAction);
+                break;
+            case 'purchase':
+                this.processPurchase();
                 break;
             default:
                 this.toasterService.error(`Error: invalid button type: ${this.buttonAction.type}`);
@@ -275,5 +292,10 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             this.toasterService.error(this.viewData?.message?.fail);
         }
         return throwError(error);
+    }
+
+    private processPurchase(): void {
+        const safeName = this.activeRoute.snapshot.paramMap.get('safeName');
+        this.router.navigate(['/checkout', safeName]).then();
     }
 }

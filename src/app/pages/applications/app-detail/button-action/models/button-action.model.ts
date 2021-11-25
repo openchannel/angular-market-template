@@ -1,5 +1,5 @@
 export interface ButtonAction {
-    type: 'install' | 'form' | 'download' | string;
+    type: 'install' | 'form' | 'download' | 'purchase' | string;
     appTypes: string[];
     statistic: string;
 }
@@ -15,6 +15,10 @@ export interface OwnershipButtonAction extends ButtonAction {
 
 export interface DownloadButtonAction extends ButtonAction {
     fileField: string;
+    button: ButtonForm;
+}
+
+export interface PurchaseButtonAction extends ButtonAction {
     button: ButtonForm;
 }
 

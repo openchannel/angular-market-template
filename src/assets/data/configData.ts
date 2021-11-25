@@ -29,14 +29,8 @@ export const pageConfig = {
     appDetailsPage: {
         'listing-actions': [
             {
-                type: 'form',
+                type: 'purchase',
                 appTypes: ['web_plugin', 'marketing', 'code_with_fun'],
-                formId: 'buy-now',
-                message: {
-                    success: "Thank you for submitting, we'll get back to you shortly",
-                    fail: 'Due to an error, we were not able to send your form',
-                    notFound: 'Buy now form is not available',
-                },
                 button: {
                     class: 'oc-button_primary',
                     text: 'Buy now',
