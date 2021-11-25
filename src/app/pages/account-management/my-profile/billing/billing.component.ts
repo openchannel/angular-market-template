@@ -231,7 +231,10 @@ export class BillingComponent implements OnInit, OnDestroy {
                         this.toaster.success('Card has been added');
                         this.getCard();
                     },
-                    () => (this.process = false),
+                    error => {
+                        this.toaster.error(error.message);
+                        this.process = false;
+                    },
                 );
         });
     }
@@ -316,7 +319,10 @@ export class BillingComponent implements OnInit, OnDestroy {
                     this.cardData = cardResponse.cards[0];
                     this.process = false;
                 },
-                () => (this.process = false),
+                error => {
+                    this.toaster.error(error.message);
+                    this.process = false;
+                },
             );
     }
 
@@ -336,7 +342,10 @@ export class BillingComponent implements OnInit, OnDestroy {
                         this.clearChanges();
                     }
                 },
-                () => (this.process = false),
+                error => {
+                    this.toaster.error(error.message);
+                    this.process = false;
+                },
             );
     }
 
