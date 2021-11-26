@@ -109,11 +109,10 @@
                 field="address_country"
                 class="billing__address-form-error"></oc-error>
         </div>
-        <div class="billing__address-form-field">
+        <div class="billing__address-form-field" *ngIf="!emptyStates">
             <oc-label text="State"
                       class="billing__address-form-label"></oc-label>
             <oc-select [selectValArr]="billingStates"
-                       [disabled]="emptyStates"
                 formControlName="address_state"
                 class="billing__address-form-input"></oc-select>
             <oc-error

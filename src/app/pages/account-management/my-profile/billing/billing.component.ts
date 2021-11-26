@@ -76,7 +76,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         address_line1: new FormControl('', Validators.required),
         address_line2: new FormControl(''),
         address_country: new FormControl('', Validators.required),
-        address_state: new FormControl('', Validators.required),
+        address_state: new FormControl(''),
         address_city: new FormControl('', Validators.required),
         address_zip: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     });
@@ -85,7 +85,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     billingCountries: any[] = [];
     billingStates: string[] = [];
     emptyStates: boolean = false;
-    
+
     private $destroy: Subject<void> = new Subject<void>();
     private elements: StripeElements;
     private stripe: Stripe;
@@ -175,19 +175,11 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.countryStateService.getStates(country).subscribe(
             (states: StateModel[]) => {
                 this.billingStates = states.map(state => state.name);
-                if (this.emptyStates && this.billingStates.length !== 0) {
-                    this.formBillingAddress.get('address_state').setValidators(Validators.required);
-                    this.formBillingAddress.get('address_state').updateValueAndValidity();
-                    this.emptyStates = false;
-                }
+                this.emptyStates = this.billingStates.length === 0;
                 this.process = false;
             },
             () => {
-                if (!this.emptyStates && this.billingStates.length === 0) {
-                    this.formBillingAddress.get('address_state').clearValidators();
-                    this.formBillingAddress.get('address_state').updateValueAndValidity();
-                    this.emptyStates = true;
-                }
+                this.emptyStates = true;
                 this.process = false;
             },
         );
