@@ -1,13 +1,17 @@
 <div class="billing__credit-card">
     <h3 class="billing__header">Credit card information</h3>
-    <form class="billing__credit-card-form">
+    <form class="billing__credit-card-form" [formGroup]="formBillingAddress">
         <ng-container *ngIf="stripeLoaded">
             <oc-label text="Card holder name" class="billing__credit-card-form-label"></oc-label>
             <oc-input
-                [(ngModel)]="cardForm.cardHolder"
-                [ngModelOptions]="{ standalone: true }"
                 placeholder="Name"
+                formControlName="name"
+                [disabled]="hideCardFormElements"
                 class="billing__credit-card-form-input billing__credit-card-form-group"></oc-input>
+            <oc-error
+                    [control]="formBillingAddress.controls.name"
+                    field="name"
+                    class="billing__address-form-error"></oc-error>
         </ng-container>
         <div class="billing__credit-card-form-group">
             <label for="card-element" class="oc-form-label billing__credit-card-form-label">Card number</label>
@@ -68,14 +72,6 @@
 <div class="billing__address">
     <h3 class="billing__header">Billing address</h3>
     <form class="billing__address-form" [formGroup]="formBillingAddress">
-        <div class="billing__address-form-field">
-            <oc-label text="Billing name" class="billing__address-form-label"></oc-label>
-            <oc-input formControlName="name" placeholder="Name" required="true" class="billing__address-form-input"></oc-input>
-            <oc-error
-                [control]="formBillingAddress.controls.name"
-                field="name"
-                class="billing__address-form-error"></oc-error>
-        </div>
         <div class="billing__address-form-field">
             <oc-label text="Address line 1"
                       class="billing__address-form-label"></oc-label>

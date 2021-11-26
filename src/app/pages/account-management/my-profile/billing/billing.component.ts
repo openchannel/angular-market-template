@@ -13,7 +13,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OcConfirmationModalComponent } from '@openchannel/angular-common-components';
 
 export interface StripeCardForm {
-    cardHolder: string;
     cardNumber: {
         element: StripeCardNumberElement;
         changeStatus: StripeCardNumberElementChangeEvent;
@@ -35,7 +34,6 @@ export interface StripeCardForm {
 export class BillingComponent implements OnInit, OnDestroy {
     // form for card with stripe elements and elements status
     cardForm: StripeCardForm = {
-        cardHolder: '',
         cardNumber: {
             element: null,
             changeStatus: {
@@ -127,7 +125,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             if (this.hideCardFormElements && this.formBillingAddress.valid && !this.process) {
                 this.updateBillingData();
             } else if (!this.hideCardFormElements) {
-                this.removeOrDeleteCard();
+                this.updateOrDeleteCard();
             }
         } else {
             // creating token and saving card
@@ -206,7 +204,6 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.cardForm.cardNumber.element.clear();
             this.cardForm.cardCvc.element.clear();
             this.cardForm.cardExpiration.element.clear();
-            this.cardForm.cardHolder = '';
         }
     }
 
@@ -267,29 +264,10 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
 
     private fillCardForm(): void {
-        this.cardForm.cardHolder = this.cardData.name;
         this.formBillingAddress.patchValue({
             ...this.cardData,
             address_country: this.billingCountries.find(country => country.iso === this.cardData.address_country),
         });
-        this.cardForm.cardNumber.changeStatus = {
-            ...this.cardForm.cardNumber.changeStatus,
-            complete: false,
-            error: undefined,
-            empty: true,
-        };
-        this.cardForm.cardCvc.changeStatus = {
-            ...this.cardForm.cardCvc.changeStatus,
-            complete: false,
-            error: undefined,
-            empty: true,
-        };
-        this.cardForm.cardExpiration.changeStatus = {
-            ...this.cardForm.cardExpiration.changeStatus,
-            complete: false,
-            error: undefined,
-            empty: true,
-        };
 
         this.hideCardFormElements = this.stripeLoaded && !!this.cardData.cardId;
     }
@@ -308,9 +286,18 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     private getFormsValidity(): boolean {
         this.formBillingAddress.markAllAsTouched();
-        const numberValidity = this.cardForm.cardNumber.changeStatus.complete && !this.cardForm.cardNumber.changeStatus.error;
-        const cvcValidity = this.cardForm.cardCvc.changeStatus.complete && !this.cardForm.cardCvc.changeStatus.error;
-        const expirationValidity = this.cardForm.cardExpiration.changeStatus.complete && !this.cardForm.cardExpiration.changeStatus.error;
+        const numberValidity =
+            this.cardForm.cardNumber.changeStatus.complete &&
+            !this.cardForm.cardNumber.changeStatus.error &&
+            !this.cardForm.cardNumber.changeStatus.empty;
+        const cvcValidity =
+            this.cardForm.cardCvc.changeStatus.complete &&
+            !this.cardForm.cardCvc.changeStatus.error &&
+            !this.cardForm.cardCvc.changeStatus.empty;
+        const expirationValidity =
+            this.cardForm.cardExpiration.changeStatus.complete &&
+            !this.cardForm.cardExpiration.changeStatus.error &&
+            !this.cardForm.cardExpiration.changeStatus.empty;
 
         return this.formBillingAddress.valid && !this.process && numberValidity && cvcValidity && expirationValidity;
     }
@@ -344,12 +331,12 @@ export class BillingComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.$destroy))
             .subscribe(
                 () => {
-                    this.toaster.success('Your card has been removed');
                     this.cardData = null;
                     this.process = false;
                     if (createNew) {
                         this.createStripeCardWithToken();
                     } else {
+                        this.toaster.success('Your card has been removed');
                         this.clearChanges();
                     }
                 },
@@ -360,7 +347,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             );
     }
 
-    private removeOrDeleteCard(): void {
+    private updateOrDeleteCard(): void {
         // removing an old card and connecting new
         if (this.getFormsValidity()) {
             this.deleteCurrentCard(true);
