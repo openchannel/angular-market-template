@@ -6,7 +6,6 @@
             <oc-input
                 placeholder="Name"
                 formControlName="name"
-                [disabled]="hideCardFormElements"
                 class="billing__credit-card-form-input billing__credit-card-form-group"></oc-input>
             <oc-error
                     [control]="formBillingAddress.controls.name"
@@ -24,7 +23,7 @@
                     *ngIf="hideCardFormElements"
                     [ngModelOptions]="{ standalone: true }"
                     class="billing__credit-card-form-input"
-                    (click)="hideCardFormElements = false"></oc-input>
+                    (click)="showStripeForm()"></oc-input>
             <span
                 class="billing__credit-card-form-error"
                 *ngIf="cardForm.cardNumber.changeStatus?.error">{{cardForm.cardNumber.changeStatus.error.message}}</span>
@@ -43,7 +42,7 @@
                             *ngIf="hideCardFormElements"
                             [ngModelOptions]="{ standalone: true }"
                             class="billing__credit-card-form-input"
-                            (click)="hideCardFormElements = false"></oc-input>
+                            (click)="showStripeForm()"></oc-input>
                     <svg-icon src="./assets/img/calendar-icon.svg" class="billing__credit-card-form-expiration-svg"></svg-icon>
                 </div>
                 <span
@@ -61,7 +60,7 @@
                     *ngIf="hideCardFormElements"
                     [ngModelOptions]="{ standalone: true }"
                     class="billing__credit-card-form-input"
-                    (click)="hideCardFormElements = false"></oc-input>
+                    (click)="showStripeForm()"></oc-input>
                 <span
                     class="billing__credit-card-form-error"
                     *ngIf="cardForm.cardCvc.changeStatus?.error">{{cardForm.cardCvc.changeStatus.error.message}}</span>
@@ -109,11 +108,10 @@
                 field="address_country"
                 class="billing__address-form-error"></oc-error>
         </div>
-        <div class="billing__address-form-field">
+        <div class="billing__address-form-field" *ngIf="!emptyStates">
             <oc-label text="State"
                       class="billing__address-form-label"></oc-label>
             <oc-select [selectValArr]="billingStates"
-                       [disabled]="emptyStates"
                 formControlName="address_state"
                 class="billing__address-form-input"></oc-select>
             <oc-error
