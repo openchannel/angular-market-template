@@ -199,6 +199,11 @@ export class BillingComponent implements OnInit, OnDestroy {
         }
     }
 
+    showStripeForm(): void {
+        this.hideCardFormElements = false;
+        this.formBillingAddress.controls.name.setValue('');
+    }
+
     /**
      * Creation and mounting the stripe elements for card
      * @private
