@@ -3,8 +3,6 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Page } from 'app/pages/account-management/my-company/my-company.component';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
-import { siteConfig } from 'assets/data/siteConfig';
-import { PaymentsGateways } from '@openchannel/angular-common-services';
 
 @Component({
     selector: 'app-my-profile',
@@ -44,9 +42,6 @@ export class MyProfileComponent implements OnInit {
 
     ngOnInit(): void {
         this.selectedPage = this.pages.find(page => this.router.url.includes(page.routerLink));
-        if (siteConfig.paymentsEnabled && siteConfig.paymentsGateway === PaymentsGateways.STRIPE) {
-            this.stripeLoader.loadStripe();
-        }
     }
 
     gotoPage(newPage: Page): void {
