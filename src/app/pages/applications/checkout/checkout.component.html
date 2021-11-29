@@ -5,7 +5,11 @@
     <div class="container">
         <div class="row checkout__container_margin">
             <div class="col-lg-4 mt-3 mt-lg-1 col-xxl-6">
-                <app-billing-form [goBackOnCancel]="true" successButtonText="Buy now" [shouldPurchase]="true"></app-billing-form>
+                <app-billing-form
+                        class="checkout__billing-form"
+                        [goBackOnCancel]="true"
+                        successButtonText="Buy now"
+                        [shouldPurchase]="true"></app-billing-form>
             </div>
             <div class="col-lg-3 col-xxl-2">
                  <div class="checkout__app-price-info"></div>

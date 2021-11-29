@@ -327,3 +327,17 @@ app-not-found header {
 .text-search-wrapper {
     margin-bottom: 28px;
 }
+
+.checkout__billing-form {
+    .billing__actions {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        .billing__actions-button {
+            width: 20rem;
+           &_margin-top {
+                margin-top: 0;
+            }
+        }
+    }
+}

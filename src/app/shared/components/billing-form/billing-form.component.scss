@@ -102,7 +102,7 @@
         &-button {
             display: block;
 
-            & + .billing__actions-button {
+            &_margin-top {
                 margin-top: 2rem;
             }
         }

@@ -144,13 +144,13 @@
 <div class="billing__actions">
     <oc-button
             type="primary"
-            text="Save"
+            [text]="successButtonText"
             class="billing__actions-button"
             [process]="process"
             (click)="billingAction()">
     </oc-button>
     <oc-button type="secondary"
                text="Cancel"
-               class="billing__actions-button"
+               class="billing__actions-button billing__actions-button_margin-top"
                (click)="clearChanges()"></oc-button>
 </div>
