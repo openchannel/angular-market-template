@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OcCommonLibModule, OcMarketComponentsModule } from '@openchannel/angular-common-components';
-import { ConfirmationModalComponent } from './modals/confirmation-modal/confirmation-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -10,7 +9,7 @@ import { CollapseWithTitleComponent } from './components/collapse-with-title/col
 import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
 
 @NgModule({
-    declarations: [ConfirmationModalComponent, PermissionDirective, CollapseWithTitleComponent, PageTitleComponent],
+    declarations: [PermissionDirective, CollapseWithTitleComponent, PageTitleComponent],
     imports: [CommonModule, OcCommonLibModule, OcMarketComponentsModule, ReactiveFormsModule, FormsModule, NgbModule, NgSelectModule],
     exports: [
         OcCommonLibModule,
