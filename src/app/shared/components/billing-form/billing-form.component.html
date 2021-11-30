@@ -100,6 +100,7 @@
                       class="billing__address-form-label"></oc-label>
             <oc-select [selectValArr]="billingCountries"
                        labelField="name"
+                       placeholder="Select country"
                        formControlName="address_country"
                        (ngModelChange)="onCountriesChange($event)"
                        class="billing__address-form-input"></oc-select>
@@ -108,11 +109,13 @@
                     field="address_country"
                     class="billing__address-form-error"></oc-error>
         </div>
-        <div class="billing__address-form-field" *ngIf="!emptyStates">
+        <div class="billing__address-form-field">
             <oc-label text="State"
-                      class="billing__address-form-label"></oc-label>
+                      class="billing__address-form-label"
+                      [class.billing__address-form-label_disabled]="emptyStates"></oc-label>
             <oc-select [selectValArr]="billingStates"
                        formControlName="address_state"
+                       placeholder="Select state"
                        class="billing__address-form-input"></oc-select>
             <oc-error
                     [control]="formBillingAddress.controls.address_state"

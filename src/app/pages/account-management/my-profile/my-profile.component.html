@@ -13,7 +13,7 @@
                 </li>
             </ul>
         </div>
-        <div class="col-lg-4 mt-3 mt-lg-1 col-xxl-6" [ngSwitch]="selectedPage.pageId">
+        <div class="col-md-12 col-lg-5 col-xxl-6 mt-3 mt-lg-1" [ngSwitch]="selectedPage.pageId">
             <app-general-profile *ngSwitchCase="pages[0].pageId"></app-general-profile>
             <app-change-password *ngSwitchCase="pages[1].pageId"></app-change-password>
             <app-billing *ngSwitchCase="pages[2].pageId"></app-billing>
