@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.54.1 (11/30/2021)<br>
+### Bug<br>
+AT-1619 - [Hotfix][Portal Market] Getting console error custom-account-type  is not a valid user / developer account type<br>
 ## Release notes - template3-marketsite-frontend - Version 1.54.0 (11/23/2021)<br>
 ### Task<br>
 AT-1556 - For CAP, implement OpenChannel Stripe Gateway APIs<br>
