@@ -1,4 +1,5 @@
 @import '~assets/styles/theme';
+@import '~assets/styles/mixins';
 
 .checkout {
     &__container {
@@ -11,5 +12,76 @@
         width: 100%;
         background-color: $light;
         padding: 3rem;
+    }
+    &__app-card {
+        display: flex;
+        padding-bottom: 3rem;
+        border-bottom: 1px solid $dropdown-border;
+        &-image {
+            height: 60px;
+            width: 60px;
+            margin-right: 3rem;
+        }
+
+        &-details {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+            &-title {
+                @include font-medium;
+                font-size: 16px;
+                margin-bottom: 1rem;
+                max-width: 25rem;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+            &-description {
+                @include font-size-md;
+                color: $text-color;
+                max-width: 25rem;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+
+        &-price {
+            margin-left: 5rem;
+            @include font-size-md;
+        }
+    }
+
+    &__sum-details {
+        border-bottom: 1px solid $dropdown-border;
+        margin-top: 2rem;
+        &-row {
+            @include font-size-md;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+    }
+
+    &__total {
+        margin: 2rem 0;
+        &-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            &-text {
+                @include font-medium;
+                @include font-size-md;
+                &_thin {
+                    @include font-regular;
+                }
+                &_bigger {
+                    @include font-medium;
+                    font-size: 16px;
+                }
+            }
+        }
     }
 }
