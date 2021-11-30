@@ -78,7 +78,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         address_line1: new FormControl('', Validators.required),
         address_line2: new FormControl(''),
         address_country: new FormControl('', Validators.required),
-        address_state: new FormControl(''),
+        address_state: new FormControl('', Validators.required),
         address_city: new FormControl('', Validators.required),
         address_zip: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     });
@@ -108,7 +108,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                 this.elements = stripe.elements();
                 this.stripe = stripe;
                 this.createStripeBillingElements();
-                this.getCountriesAndCardsInfo();
+                this.loadCountriesAndCardsInfo();
             });
     }
 
@@ -121,7 +121,7 @@ export class BillingComponent implements OnInit, OnDestroy {
      * Gets countries list from opensource api.
      * Creates an array of objects with countries names and iso2 codes.
      */
-    getCountriesAndCardsInfo(): void {
+    loadCountriesAndCardsInfo(): void {
         this.billingCountries = [];
         this.process = true;
         forkJoin({
@@ -129,7 +129,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             cardsInfo: this.stripeService.getUserCreditCards(),
         }).subscribe(
             response => {
-                this.billingCountries = response.countries.data.map(country => ({ name: country.name, Iso2: country.Iso2 }));
+                this.billingCountries = response.countries.data;
 
                 this.cardData = response.cardsInfo.cards[0];
                 if (this.cardData) {
@@ -151,6 +151,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     billingAction(): void {
         if (this.cardData) {
             // updating the billing address information
+            this.formBillingAddress.markAllAsTouched();
             if (this.hideCardFormElements && this.formBillingAddress.valid && !this.process) {
                 this.updateBillingData();
             } else if (!this.hideCardFormElements) {
@@ -187,18 +188,18 @@ export class BillingComponent implements OnInit, OnDestroy {
             (response: StatesModel) => {
                 this.billingStates = response.data.states.map(state => state.name);
                 if (this.emptyStates && this.billingStates.length !== 0) {
+                    this.formBillingAddress.get('address_state').enable();
                     this.formBillingAddress.get('address_state').setValidators(Validators.required);
                     this.formBillingAddress.get('address_state').updateValueAndValidity();
-                    this.formBillingAddress.get('address_state').enable();
                     this.emptyStates = false;
                 }
                 this.process = false;
             },
             () => {
                 if (!this.emptyStates && this.billingStates.length === 0) {
+                    this.formBillingAddress.get('address_state').disable();
                     this.formBillingAddress.get('address_state').clearValidators();
                     this.formBillingAddress.get('address_state').updateValueAndValidity();
-                    this.formBillingAddress.get('address_state').disable();
                     this.emptyStates = true;
                 }
                 this.process = false;
@@ -253,14 +254,12 @@ export class BillingComponent implements OnInit, OnDestroy {
                 .addUserCreditCard(resp.token.id)
                 .pipe(takeUntil(this.$destroy))
                 .subscribe(
-                    () => {
+                    cardResponse => {
                         this.toaster.success('Card has been added');
-                        this.stripeService.getUserCreditCards().subscribe(data => {
-                            this.cardData = data.cards[0];
-                            if (this.cardData) {
-                                this.fillCardForm();
-                            }
-                        });
+                        this.cardData = cardResponse.cards[0];
+                        if (this.cardData) {
+                            this.fillCardForm();
+                        }
                     },
                     error => {
                         this.toaster.error(error.message);
