@@ -4,13 +4,15 @@ import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CreditCard, StripeService, CountryStateService, CountryModel, StateModel } from '@openchannel/angular-common-services';
+import { CreditCard, StripeService, CountryStateService, CountryModel, StatesModel } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
 import { StripeCardNumberElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-number';
 import { StripeCardExpiryElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-expiry';
 import { StripeCardCvcElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-cvc';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OcConfirmationModalComponent } from '@openchannel/angular-common-components';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { HttpHeaders } from "@angular/common/http";
 
 export interface StripeCardForm {
     cardNumber: {
@@ -76,13 +78,13 @@ export class BillingComponent implements OnInit, OnDestroy {
         address_line1: new FormControl('', Validators.required),
         address_line2: new FormControl(''),
         address_country: new FormControl('', Validators.required),
-        address_state: new FormControl(''),
+        address_state: new FormControl('', Validators.required),
         address_city: new FormControl('', Validators.required),
         address_zip: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     });
 
     process = false;
-    billingCountries: any[] = [];
+    billingCountries: CountryModel[] = [];
     billingStates: string[] = [];
     emptyStates: boolean = false;
 
@@ -106,8 +108,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                 this.elements = stripe.elements();
                 this.stripe = stripe;
                 this.createStripeBillingElements();
-                this.getCountries();
-                this.getCard();
+                this.loadCountriesAndCardsInfo();
             });
     }
 
@@ -117,11 +118,40 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Gets countries list from opensource api.
+     * Creates an array of objects with countries names and iso2 codes.
+     */
+    loadCountriesAndCardsInfo(): void {
+        this.billingCountries = [];
+        this.process = true;
+        forkJoin({
+            countries: this.countryStateService.getCountries(),
+            cardsInfo: this.stripeService.getUserCreditCards(),
+        }).subscribe(
+            response => {
+                this.billingCountries = response.countries.data;
+
+                this.cardData = response.cardsInfo.cards[0];
+                if (this.cardData) {
+                    this.fillCardForm();
+                }
+            },
+            () => {
+                this.process = false;
+            },
+            () => {
+                this.process = false;
+            },
+        );
+    }
+
+    /**
      * Making actions according to the card data. There are adding new card, update data or delete card
      */
     billingAction(): void {
         if (this.cardData) {
             // updating the billing address information
+            this.formBillingAddress.markAllAsTouched();
             if (this.hideCardFormElements && this.formBillingAddress.valid && !this.process) {
                 this.updateBillingData();
             } else if (!this.hideCardFormElements) {
@@ -136,27 +166,9 @@ export class BillingComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Gets countries list from opensource api.
-     * Creates an array of objects with countries names and iso2 codes.
-     */
-    getCountries(): void {
-        this.billingCountries = [];
-        this.process = true;
-        this.countryStateService.getCountries().subscribe(
-            (countries: CountryModel[]) => {
-                this.billingCountries = countries.map(country => ({ iso: country.Iso2, name: country.name }));
-                this.process = false;
-            },
-            () => {
-                this.process = false;
-            },
-        );
-    }
-
-    /**
      * Gets currentCountry on country change.
      */
-    onCountriesChange(country: any): void {
+    onCountriesChange(country: CountryModel): void {
         const currentCountry = {
             country: country.name,
         };
@@ -172,14 +184,24 @@ export class BillingComponent implements OnInit, OnDestroy {
         });
         this.billingStates = [];
         this.process = true;
-        this.countryStateService.getStates(country).subscribe(
-            (states: StateModel[]) => {
-                this.billingStates = states.map(state => state.name);
-                this.emptyStates = this.billingStates.length === 0;
+        this.countryStateService.getStates(country, new HttpHeaders({ 'x-handle-error': '404' })).subscribe(
+            (response: StatesModel) => {
+                this.billingStates = response.data.states.map(state => state.name);
+                if (this.emptyStates && this.billingStates.length !== 0) {
+                    this.formBillingAddress.get('address_state').enable();
+                    this.formBillingAddress.get('address_state').setValidators(Validators.required);
+                    this.formBillingAddress.get('address_state').updateValueAndValidity();
+                    this.emptyStates = false;
+                }
                 this.process = false;
             },
             () => {
-                this.emptyStates = true;
+                if (!this.emptyStates && this.billingStates.length === 0) {
+                    this.formBillingAddress.get('address_state').disable();
+                    this.formBillingAddress.get('address_state').clearValidators();
+                    this.formBillingAddress.get('address_state').updateValueAndValidity();
+                    this.emptyStates = true;
+                }
                 this.process = false;
             },
         );
@@ -225,16 +247,19 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.process = true;
         const dataToStripe = {
             ...this.formBillingAddress.getRawValue(),
-            address_country: this.formBillingAddress.controls.address_country.value.iso,
+            address_country: this.formBillingAddress.controls.address_country.value.Iso2,
         };
         this.stripe.createToken(this.cardForm.cardNumber.element, dataToStripe).then(resp => {
             this.stripeService
                 .addUserCreditCard(resp.token.id)
                 .pipe(takeUntil(this.$destroy))
                 .subscribe(
-                    () => {
+                    cardResponse => {
                         this.toaster.success('Card has been added');
-                        this.getCard();
+                        this.cardData = cardResponse.cards[0];
+                        if (this.cardData) {
+                            this.fillCardForm();
+                        }
                     },
                     error => {
                         this.toaster.error(error.message);
@@ -244,26 +269,10 @@ export class BillingComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getCard(): void {
-        this.stripeService
-            .getUserCreditCards()
-            .pipe(takeUntil(this.$destroy))
-            .subscribe(
-                cardResponse => {
-                    this.cardData = cardResponse.cards[0];
-                    if (this.cardData) {
-                        this.fillCardForm();
-                    }
-                    this.process = false;
-                },
-                () => (this.process = false),
-            );
-    }
-
     private fillCardForm(): void {
         this.formBillingAddress.patchValue({
             ...this.cardData,
-            address_country: this.billingCountries.find(country => country.iso === this.cardData.address_country),
+            address_country: this.billingCountries.find(country => country.Iso2 === this.cardData.address_country),
         });
 
         this.hideCardFormElements = this.stripeLoaded && !!this.cardData.cardId;
@@ -302,7 +311,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     private updateBillingData(): void {
         const dataToServer = {
             ...this.formBillingAddress.getRawValue(),
-            address_country: this.formBillingAddress.controls.address_country.value.iso,
+            address_country: this.formBillingAddress.controls.address_country.value.Iso2,
         };
         this.process = true;
         this.stripeService
