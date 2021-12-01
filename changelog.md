@@ -1,3 +1,14 @@
+## Release notes - template3-marketsite-frontend - Version 1.55.0 (12/1/2021)<br>
+### Task<br>
+AT-1607 - Ensure correct SSO behavior in all possible scenarios<br>
+### Story<br>
+AT-1565 - A user is able to set their billing address<br>
+AT-1559 - A user is able to view, add and remove credit card details<br>
+### Bug<br>
+AT-1546 - [Market][Review count] Review under Overall rating is getting increased even though Review is not yet approved.<br>
+AT-1528 - [UI] Various components fields are having wrong height<br>
+AT-1468 - [Reviews] Logged in user's review is not at the top of the Review list.<br>
+AT-1210 - [UI][Portal][Manage App / Edit App][Chart] UI issues on Chart component. Current Date is not showing and Count is cut off.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.54.1 (11/30/2021)<br>
 ### Bug<br>
 AT-1619 - [Hotfix][Portal Market] Getting console error custom-account-type  is not a valid user / developer account type<br>

@@ -1,0 +1,159 @@
+<div class="billing__credit-card">
+    <h3 class="billing__header">Credit card information</h3>
+    <form class="billing__credit-card-form" [formGroup]="formBillingAddress">
+        <ng-container *ngIf="stripeLoaded">
+            <oc-label text="Card holder name" class="billing__credit-card-form-label"></oc-label>
+            <oc-input
+                placeholder="Name"
+                formControlName="name"
+                class="billing__credit-card-form-input billing__credit-card-form-group"></oc-input>
+            <oc-error
+                    [control]="formBillingAddress.controls.name"
+                    field="name"
+                    class="billing__address-form-error"></oc-error>
+        </ng-container>
+        <div class="billing__credit-card-form-group">
+            <label for="card-element" class="oc-form-label billing__credit-card-form-label">Card number</label>
+            <div
+                    id="card-element"
+                    class="billing__credit-card-form-input"
+                    [class.billing__credit-card-form-input_hidden]="hideCardFormElements"></div>
+            <oc-input
+                    [ngModel]="'••• ••• ••• ' + cardData.last4"
+                    *ngIf="hideCardFormElements"
+                    [ngModelOptions]="{ standalone: true }"
+                    class="billing__credit-card-form-input"
+                    (click)="showStripeForm()"></oc-input>
+            <span
+                class="billing__credit-card-form-error"
+                *ngIf="cardForm.cardNumber.changeStatus?.error">{{cardForm.cardNumber.changeStatus.error.message}}</span>
+        </div>
+        <div class="billing__credit-card-form-group"></div>
+        <div class="billing__credit-card-form-row">
+            <div class="billing__credit-card-form-row-expiration">
+                <label for="expiration-element" class="oc-form-label billing__credit-card-form-label">Expiration</label>
+                <div class="billing__credit-card-form-row-expiration-group">
+                    <div
+                            id="expiration-element"
+                            class="billing__credit-card-form-input"
+                            [class.billing__credit-card-form-input_hidden]="hideCardFormElements"></div>
+                    <oc-input
+                            [ngModel]="cardData.exp_month + '/' + cardData.exp_year.toString().slice(-2)"
+                            *ngIf="hideCardFormElements"
+                            [ngModelOptions]="{ standalone: true }"
+                            class="billing__credit-card-form-input"
+                            (click)="showStripeForm()"></oc-input>
+                    <svg-icon src="./assets/img/calendar-icon.svg" class="billing__credit-card-form-expiration-svg"></svg-icon>
+                </div>
+                <span
+                    class="billing__credit-card-form-error"
+                    *ngIf="cardForm.cardExpiration.changeStatus?.error">{{cardForm.cardExpiration.changeStatus.error.message}}</span>
+            </div>
+            <div class="billing__credit-card-form-row-cvc">
+                <label for="cvc-element" class="oc-form-label billing__credit-card-form-label">CVV</label>
+                <div
+                    id="cvc-element"
+                    class="billing__credit-card-form-input"
+                    [class.billing__credit-card-form-input_hidden]="hideCardFormElements"></div>
+                <oc-input
+                    ngModel="•••"
+                    *ngIf="hideCardFormElements"
+                    [ngModelOptions]="{ standalone: true }"
+                    class="billing__credit-card-form-input"
+                    (click)="showStripeForm()"></oc-input>
+                <span
+                    class="billing__credit-card-form-error"
+                    *ngIf="cardForm.cardCvc.changeStatus?.error">{{cardForm.cardCvc.changeStatus.error.message}}</span>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="billing__address">
+    <h3 class="billing__header">Billing address</h3>
+    <form class="billing__address-form" [formGroup]="formBillingAddress">
+        <div class="billing__address-form-field">
+            <oc-label text="Address line 1"
+                      class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="address_line1"
+                placeholder="Enter address"
+                required="true"
+                class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.address_line1"
+                field="address_line1"
+                class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="Address line 2" class="billing__address-form-label"></oc-label>
+            <oc-input
+                formControlName="address_line2"
+                placeholder="Enter address"
+                required="false"
+                class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.address_line2"
+                field="address_line2"
+                class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="Country"
+                      class="billing__address-form-label"></oc-label>
+            <oc-select [selectValArr]="billingCountries"
+                       labelField="name"
+                       placeholder="Select country"
+                formControlName="address_country"
+                       (ngModelChange)="onCountriesChange($event)"
+                class="billing__address-form-input"></oc-select>
+            <oc-error
+                [control]="formBillingAddress.controls.address_country"
+                field="address_country"
+                class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="State"
+                      class="billing__address-form-label"
+                      [class.billing__address-form-label_disabled]="emptyStates"></oc-label>
+            <oc-select [selectValArr]="billingStates"
+                       formControlName="address_state"
+                       placeholder="Select state"
+                       class="billing__address-form-input"></oc-select>
+            <oc-error
+                [control]="formBillingAddress.controls.address_state"
+                field="address_state"
+                class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="City" class="billing__address-form-label"></oc-label>
+            <oc-input formControlName="address_city" placeholder="City" required="true" class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.address_city"
+                field="address_city"
+                class="billing__address-form-error"></oc-error>
+        </div>
+        <div class="billing__address-form-field">
+            <oc-label text="Postal code" class="billing__address-form-label"></oc-label>
+            <oc-input
+                formControlName="address_zip"
+                placeholder="Postal code"
+                required="true"
+                class="billing__address-form-input"></oc-input>
+            <oc-error
+                [control]="formBillingAddress.controls.address_zip"
+                field="address_zip"
+                class="billing__address-form-error"></oc-error>
+        </div>
+    </form>
+</div>
+<div class="billing__actions">
+    <oc-button
+        type="primary"
+        text="Save"
+        class="billing__actions-button"
+               [process]="process"
+               (click)="billingAction()">
+    </oc-button>
+    <oc-button type="secondary"
+        text="Cancel"
+        class="billing__actions-button"
+        (click)="clearChanges()"></oc-button>
+</div>
