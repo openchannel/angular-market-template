@@ -41,7 +41,7 @@ export class MyProfileComponent implements OnInit {
     constructor(private router: Router, private location: Location, private stripeLoader: StripeLoaderService) {}
 
     ngOnInit(): void {
-        this.selectedPage = this.pages.find(page => this.router.url.includes(page.routerLink));
+        this.selectedPage = this.pages.find(page => this.router.url === page.routerLink);
     }
 
     gotoPage(newPage: Page): void {

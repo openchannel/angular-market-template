@@ -1,0 +1,36 @@
+@import '~assets/styles/mixins';
+@import '~assets/styles/theme';
+
+.table-text {
+    font-size: 14px;
+
+    &_gray {
+        color: $secondary;
+    }
+
+    &_medium {
+        font-weight: 500;
+    }
+
+    &_blue {
+        color: $primary;
+    }
+}
+
+.sort-heading {
+    display: flex;
+    align-items: flex-end;
+}
+
+.app-icon {
+    max-width: 40px;
+    height: auto;
+}
+
+.options-dots-icon {
+    padding: 19px;
+    border: 1px solid $info;
+    border-radius: 4px;
+
+    cursor: pointer;
+}

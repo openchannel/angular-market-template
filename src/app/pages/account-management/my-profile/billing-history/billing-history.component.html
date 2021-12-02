@@ -1,0 +1,78 @@
+<oc-app-table
+    *ngIf="transactionsLoaded"
+    [properties]="transactionsListing"
+    [activeColumns]="activeColumns"
+    noAppMessage="No transactions"
+    [modifyColumns]="{
+        'app-name': { headerCellTemplate: appNameHeaderCell, rowCellTemplate: appNameRowCell },
+        date: { headerCellTemplate: dateHeaderCell, rowCellTemplate: dateRowCell },
+        amount: { headerCellTemplate: amountHeaderCell, rowCellTemplate: amountRowCell },
+        status: { headerCellTemplate: statusHeaderCell, rowCellTemplate: statusRowCell },
+        'app-options': { headerCellTemplate: optionsHeaderCell, rowCellTemplate: optionsRowCell }
+    }"></oc-app-table>
+
+<ng-template #appNameHeaderCell>
+    <div class="sort-heading">
+        <span class="pl-2 table-text">App name</span>
+        <ng-container *ngTemplateOutlet="sortIcon; context: { $implicit: 1 }"></ng-container>
+    </div>
+</ng-template>
+
+<ng-template #appNameRowCell let-ctx>
+    <div class="d-flex align-items-center pl-2">
+        <img class="app-icon" [src]="ctx.app.appIcon" alt="App icon" />
+        <span class="ml-2 table-text table-text_medium">{{ ctx.app.appName }}</span>
+    </div>
+</ng-template>
+
+<ng-template #dateHeaderCell>
+    <div class="sort-heading">
+        <span class="table-text">Date</span>
+        <ng-container *ngTemplateOutlet="sortIcon; context: { $implicit: 1 }"></ng-container>
+    </div>
+</ng-template>
+
+<ng-template #dateRowCell let-ctx>
+    <span class="table-text table-text_gray">{{ ctx.app.date | date: 'M/d/yyyy' }}</span>
+</ng-template>
+
+<ng-template #amountHeaderCell>
+    <span class="table-text">Amount</span>
+</ng-template>
+
+<ng-template #amountRowCell let-ctx>
+    <span class="table-text table-text_medium table-text_blue">
+        {{ ctx.app.amount | transactionAmount }}
+    </span>
+</ng-template>
+
+<ng-template #statusHeaderCell>
+    <span class="table-text">Status</span>
+</ng-template>
+
+<ng-template #statusRowCell let-ctx>
+    <span class="table-text" [class.table-text_medium]="ctx.app.type === 'refund'" [class.table-text_gray]="ctx.app.type === 'payment'">
+        {{ ctx.app.status }}
+    </span>
+</ng-template>
+
+<ng-template #optionsHeaderCell></ng-template>
+
+<ng-template #optionsRowCell let-ctx>
+    <div class="pr-3" *ngIf="ctx.app.options.length">
+        <div ngbDropdown placement="bottom-right">
+            <img class="options-dots-icon" src="assets/img/table-options-dots.svg" alt="Options" ngbDropdownToggle />
+            <div ngbDropdownMenu>
+                <ng-container *ngFor="let menuAction of ctx.app.options">
+                    <button (click)="handleOptionClick(menuAction, ctx.app)" class="pr-4" ngbDropdownItem>
+                        {{ menuAction }}
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #sortIcon let-sortNumber>
+    <svg-icon src="assets/img/sort-dropdown-icon.svg" [class.arrow-up]="sortNumber === 1" class="cursor-pointer pl-1"></svg-icon>
+</ng-template>
