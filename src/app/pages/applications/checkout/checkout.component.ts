@@ -19,6 +19,7 @@ export class CheckoutComponent implements OnInit {
     isTerms = false;
     termsUrl = 'https://my.openchannel.io/terms-of-service';
     policyUrl = 'https://my.openchannel.io/data-processing-policy';
+    validateCheckbox = false;
 
     private loader: LoadingBarState;
     private $destroy: Subject<void> = new Subject<void>();

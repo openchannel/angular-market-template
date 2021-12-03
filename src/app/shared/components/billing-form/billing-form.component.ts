@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
 import { Stripe, StripeCardCvcElement, StripeCardExpiryElement, StripeCardNumberElement, StripeElements } from '@stripe/stripe-js';
 import { StripeCardNumberElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-number';
 import { StripeCardExpiryElementChangeEvent } from '@stripe/stripe-js/types/stripe-js/elements/card-expiry';
@@ -40,9 +40,13 @@ export class BillingFormComponent implements OnInit, OnDestroy {
     /** Redirect to the previous page on Cancel button click */
     @Input() goBackOnCancel: boolean = false;
     /** Redirect to the previous page on Cancel button click */
-    @Input() shouldPurchase: boolean = false;
-    @Input() purchaseSum: number = 0;
     @Input() additionalFieldsTemplate: TemplateRef<any>;
+    /** Additionally prohibits any actions by button click */
+    @Input() additionalButtonLock = false;
+    /** Loaded data of the card, including a billing address */
+    @Output() readonly cardDataLoaded: EventEmitter<CreditCard> = new EventEmitter<CreditCard>();
+    /** Notify the parent that primary button has been clicked */
+    @Output() readonly successButtonPressed: EventEmitter<void> = new EventEmitter<void>();
     // form for card with stripe elements and elements status
     cardForm: StripeCardForm = {
         cardNumber: {
@@ -143,6 +147,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                 this.cardData = response.cardsInfo.cards[0];
                 if (this.cardData) {
                     this.fillCardForm();
+                    this.cardDataLoaded.emit(this.cardData);
                 }
             },
             () => {
@@ -158,18 +163,21 @@ export class BillingFormComponent implements OnInit, OnDestroy {
      * Making actions according to the card data. There are adding new card, update data or delete card
      */
     billingAction(): void {
-        if (this.cardData) {
-            // updating the billing address information
-            this.formBillingAddress.markAllAsTouched();
-            if (this.hideCardFormElements && this.formBillingAddress.valid && !this.process) {
-                this.updateBillingData();
-            } else if (!this.hideCardFormElements) {
-                this.updateOrDeleteCard();
-            }
-        } else {
-            // creating token and saving card
-            if (this.getFormsValidity()) {
-                this.createStripeCardWithToken();
+        this.successButtonPressed.emit();
+        if (!this.additionalButtonLock) {
+            if (this.cardData) {
+                // updating the billing address information
+                this.formBillingAddress.markAllAsTouched();
+                if (this.hideCardFormElements && this.formBillingAddress.valid && !this.process) {
+                    this.updateBillingData();
+                } else if (!this.hideCardFormElements) {
+                    this.updateOrDeleteCard();
+                }
+            } else {
+                // creating token and saving card
+                if (this.getFormsValidity()) {
+                    this.createStripeCardWithToken();
+                }
             }
         }
     }
@@ -331,6 +339,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                     this.toaster.success('Your billing data has been updated');
                     this.cardData = cardResponse.cards[0];
                     this.process = false;
+                    this.cardDataLoaded.emit(this.cardData);
                 },
                 error => {
                     this.toaster.error(error.message);
@@ -351,6 +360,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                     if (createNew) {
                         this.createStripeCardWithToken();
                     } else {
+                        this.cardDataLoaded.emit(this.cardData);
                         this.toaster.success('Your card has been removed');
                         this.clearChanges();
                     }

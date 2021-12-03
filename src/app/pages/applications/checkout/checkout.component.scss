@@ -24,6 +24,12 @@
     &__consent {
         display: block;
         margin-top: 2rem;
+        &-error {
+            font-size: 12px;
+            color: $danger;
+            display: block;
+            margin-top: 6px;
+        }
     }
     &__app-card {
         display: flex;
