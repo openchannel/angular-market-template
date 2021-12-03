@@ -16,6 +16,9 @@ import { pageConfig } from 'assets/data/configData';
 })
 export class CheckoutComponent implements OnInit {
     app: FullAppData;
+    isTerms = false;
+    termsUrl = 'https://my.openchannel.io/terms-of-service';
+    policyUrl = 'https://my.openchannel.io/data-processing-policy';
 
     private loader: LoadingBarState;
     private $destroy: Subject<void> = new Subject<void>();

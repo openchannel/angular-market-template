@@ -13,6 +13,11 @@
         background-color: $light;
         padding: 3rem;
     }
+
+    &__consent {
+        display: block;
+        margin-top: 2rem;
+    }
     &__app-card {
         display: flex;
         padding-bottom: 3rem;

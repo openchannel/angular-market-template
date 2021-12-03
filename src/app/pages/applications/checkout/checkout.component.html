@@ -9,7 +9,8 @@
                         class="checkout__billing-form"
                         [goBackOnCancel]="true"
                         successButtonText="Buy now"
-                        [shouldPurchase]="true"></app-billing-form>
+                        [shouldPurchase]="true"
+                        [additionalFieldsTemplate]="policyCheckbox"></app-billing-form>
             </div>
             <div class="col-lg-5 col-xxl-4">
                  <div class="checkout__app-info">
@@ -46,3 +47,7 @@
     </div>
     <div class="mt-8"></div>
 </div>
+
+<ng-template #policyCheckbox>
+    <oc-consent class="checkout__consent" [policyUrl]="policyUrl" [termsUrl]="termsUrl" [(ngModel)]="isTerms"></oc-consent>
+</ng-template>
