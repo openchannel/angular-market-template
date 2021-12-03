@@ -3,8 +3,12 @@
 
 .checkout {
     &__container {
-        &_margin {
+        &_custom {
+            justify-content: space-between;
             margin-top: 8rem;
+            @include media-breakpoint-lg {
+                flex-direction: column-reverse;
+            }
         }
     }
 
@@ -12,6 +16,9 @@
         width: 100%;
         background-color: $light;
         padding: 3rem;
+        @include media-breakpoint-lg {
+            margin-bottom: 3rem;
+        }
     }
 
     &__consent {
@@ -20,8 +27,12 @@
     }
     &__app-card {
         display: flex;
+        justify-content: space-between;
         padding-bottom: 3rem;
         border-bottom: 1px solid $dropdown-border;
+        &-preview {
+            display: flex;
+        }
         &-image {
             height: 60px;
             width: 60px;
@@ -40,6 +51,9 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                @include media-breakpoint-sm {
+                    max-width: 13rem;
+                }
             }
             &-description {
                 @include font-size-md;
@@ -48,11 +62,15 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                @include media-breakpoint-sm {
+                    max-width: 13rem;
+                }
             }
         }
 
         &-price {
-            margin-left: 5rem;
+            padding-top: 1rem;
+            margin-left: 3rem;
             @include font-size-md;
         }
     }
