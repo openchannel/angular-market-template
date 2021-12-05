@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
-import { AppsService, AppVersionService } from '@openchannel/angular-common-services';
+import { AppsService, AppVersionService, CreditCard } from '@openchannel/angular-common-services';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -16,9 +16,11 @@ import { pageConfig } from 'assets/data/configData';
 })
 export class CheckoutComponent implements OnInit {
     app: FullAppData;
-    isTerms = false;
+    card: CreditCard;
     termsUrl = 'https://my.openchannel.io/terms-of-service';
     policyUrl = 'https://my.openchannel.io/data-processing-policy';
+
+    isTerms = false;
     validateCheckbox = false;
 
     private loader: LoadingBarState;
@@ -40,6 +42,14 @@ export class CheckoutComponent implements OnInit {
     }
     goBack(): void {
         history.back();
+    }
+
+    onSuccessButtonPressed(): void {
+        this.validateCheckbox = !this.isTerms;
+    }
+
+    onCardDataLoaded(cardData: CreditCard): void {
+        this.card = cardData;
     }
 
     private loadAppData(): void {
