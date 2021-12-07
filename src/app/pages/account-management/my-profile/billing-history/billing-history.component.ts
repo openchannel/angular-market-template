@@ -36,7 +36,6 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
     defaultAppIconSrc = 'assets/img/app-icon.svg';
 
     sortState = {
-        appName: -1,
         date: -1,
     };
 

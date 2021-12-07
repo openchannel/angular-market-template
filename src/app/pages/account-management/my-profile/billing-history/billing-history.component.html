@@ -13,9 +13,7 @@
     }"></oc-app-table>
 
 <ng-template #appNameHeaderCell>
-    <div class="ml-2">
-        <ng-container *ngTemplateOutlet="sortHeading; context: { $implicit: { title: 'App name', sortKey: 'appName' } }"></ng-container>
-    </div>
+    <span class="ml-2 table-text">App name</span>
 </ng-template>
 
 <ng-template #appNameRowCell let-ctx>
