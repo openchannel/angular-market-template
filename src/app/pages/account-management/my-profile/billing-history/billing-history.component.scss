@@ -18,8 +18,8 @@
 }
 
 .sort-heading {
-    display: flex;
-    align-items: flex-end;
+    display: inline-block;
+    cursor: pointer;
 }
 
 .app-icon {
@@ -28,9 +28,13 @@
 }
 
 .options-dots-icon {
-    padding: 19px;
+    padding: 16px 19px;
     border: 1px solid $info;
     border-radius: 4px;
 
     cursor: pointer;
+}
+
+.arrow-up {
+    transform: rotate(180deg);
 }

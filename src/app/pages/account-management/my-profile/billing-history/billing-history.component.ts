@@ -9,9 +9,8 @@ import {
     FileUploadDownloadService,
     TransactionStatus,
 } from '@openchannel/angular-common-services';
-import { catchError, concatMap, map, takeUntil } from 'rxjs/operators';
+import { catchError, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { Observable, Subject, throwError } from 'rxjs';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 
@@ -31,9 +30,17 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
         },
         options: [],
     };
-    transactionsLoaded = false;
-    defaultAppIconSrc = 'assets/img/app-icon.svg';
     activeColumns = ['app-name', 'date', 'amount', 'status', 'app-options'];
+    transactionsLoaded = false;
+
+    defaultAppIconSrc = 'assets/img/app-icon.svg';
+
+    sortState = {
+        appName: -1,
+        date: -1,
+    };
+
+    private page = 1;
 
     private loader: LoadingBarState;
     private $destroy: Subject<void> = new Subject<void>();
@@ -56,6 +63,12 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
         this.loader?.complete();
     }
 
+    changeSortByKey(key: string): void {
+        this.sortState[key] = this.sortState[key] * -1;
+        this.page = 1;
+        this.getTransactionsList(true);
+    }
+
     handleOptionClick(option: TransactionOptions, transaction: FullTransaction): void {
         switch (option) {
             case 'Download invoice':
@@ -67,6 +80,11 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
             default:
                 return;
         }
+    }
+
+    handlePageScrolled(): void {
+        this.page++;
+        this.getTransactionsList();
     }
 
     private downloadByLink(link: string, fileName: string): void {
@@ -96,19 +114,18 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
             });
     }
 
-    private getTransactionsList(): void {
+    private getTransactionsList(startNewPagination: boolean = false): void {
         this.loader.start();
 
         this.transactionsService
-            .getTransactionsList()
+            .getTransactionsList(this.page, 20, this.sortState)
             .pipe(
-                concatMap(transactions =>
-                    // Request app information for each transaction
-                    forkJoin(transactions.list.map(transaction => this.getTransactionWithAppInfo(transaction))).pipe(
+                mergeMap(transactions => {
+                    return this.getTransactionsWithAppInfo(transactions.list).pipe(
                         // Left all Page information, but replace list with transactions with full info
                         map(fullTransactions => ({ ...transactions, list: fullTransactions })),
-                    ),
-                ),
+                    );
+                }),
                 // Add fields to transactions
                 map(transactions => ({
                     ...transactions,
@@ -127,15 +144,32 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
                 takeUntil(this.$destroy),
             )
             .subscribe(res => {
-                this.transactionsListing = { ...this.transactionsListing, data: res };
+                this.transactionsListing.data.pages = res.pages;
+                this.transactionsListing.data.pageNumber = res.pageNumber;
+                this.transactionsListing.data.count = res.count;
+                this.transactionsListing.data.list = startNewPagination ? res.list : [...this.transactionsListing.data.list, ...res.list];
+
                 this.transactionsLoaded = true;
                 this.loader.complete();
             });
     }
 
-    private getTransactionWithAppInfo(transaction: Transaction): Observable<FullTransaction> {
-        return this.appsService.getAppById(transaction.appId).pipe(
-            map(app => ({ ...transaction, appIcon: app.icon || this.defaultAppIconSrc, appName: app.name })),
+    private getTransactionsWithAppInfo(transactions: Transaction[]): Observable<FullTransaction[]> {
+        const appsIds = [...new Set(transactions.map(transaction => transaction.appId))];
+        const query = JSON.stringify({ appId: { $in: appsIds } });
+
+        return this.appsService.getApps(1, 100, null, query).pipe(
+            map(apps => {
+                // Create appsMap, so we can easily find app by id later
+                const appsMap = {};
+                apps.list.forEach(app => (appsMap[app.appId] = app));
+
+                return transactions.map(transaction => ({
+                    ...transaction,
+                    appName: appsMap[transaction.appId]?.name || '',
+                    appIcon: appsMap[transaction.appId]?.icon || this.defaultAppIconSrc,
+                }));
+            }),
             takeUntil(this.$destroy),
         );
     }

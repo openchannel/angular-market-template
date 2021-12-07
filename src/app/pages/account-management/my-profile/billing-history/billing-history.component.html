@@ -1,5 +1,6 @@
 <oc-app-table
     *ngIf="transactionsLoaded"
+    (pageScrolled)="handlePageScrolled()"
     [properties]="transactionsListing"
     [activeColumns]="activeColumns"
     noAppMessage="No transactions"
@@ -12,24 +13,20 @@
     }"></oc-app-table>
 
 <ng-template #appNameHeaderCell>
-    <div class="sort-heading">
-        <span class="pl-2 table-text">App name</span>
-        <ng-container *ngTemplateOutlet="sortIcon; context: { $implicit: 1 }"></ng-container>
+    <div class="ml-2">
+        <ng-container *ngTemplateOutlet="sortHeading; context: { $implicit: { title: 'App name', sortKey: 'appName' } }"></ng-container>
     </div>
 </ng-template>
 
 <ng-template #appNameRowCell let-ctx>
-    <div class="d-flex align-items-center pl-2">
+    <div class="d-flex align-items-center ml-2">
         <img class="app-icon" [src]="ctx.app.appIcon" alt="App icon" />
         <span class="ml-2 table-text table-text_medium">{{ ctx.app.appName }}</span>
     </div>
 </ng-template>
 
 <ng-template #dateHeaderCell>
-    <div class="sort-heading">
-        <span class="table-text">Date</span>
-        <ng-container *ngTemplateOutlet="sortIcon; context: { $implicit: 1 }"></ng-container>
-    </div>
+    <ng-container *ngTemplateOutlet="sortHeading; context: { $implicit: { title: 'Date', sortKey: 'date' } }"></ng-container>
 </ng-template>
 
 <ng-template #dateRowCell let-ctx>
@@ -73,6 +70,9 @@
     </div>
 </ng-template>
 
-<ng-template #sortIcon let-sortNumber>
-    <svg-icon src="assets/img/sort-dropdown-icon.svg" [class.arrow-up]="sortNumber === 1" class="cursor-pointer pl-1"></svg-icon>
+<ng-template #sortHeading let-ctx>
+    <div class="sort-heading" (click)="changeSortByKey(ctx.sortKey)">
+        <span class="pr-1 table-text">{{ ctx.title }}</span>
+        <img src="assets/img/sort-dropdown-icon.svg" [class.arrow-up]="sortState[ctx.sortKey] === 1" alt="" />
+    </div>
 </ng-template>
