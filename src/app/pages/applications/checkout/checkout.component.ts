@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { AppsService, AppVersionService, CreditCard } from '@openchannel/angular-common-services';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Subject } from 'rxjs';
@@ -32,6 +32,7 @@ export class CheckoutComponent implements OnInit {
         private activeRoute: ActivatedRoute,
         private loadingBar: LoadingBarService,
         private appVersionService: AppVersionService,
+        private router: Router,
     ) {}
 
     ngOnInit(): void {
@@ -50,6 +51,10 @@ export class CheckoutComponent implements OnInit {
 
     onCardDataLoaded(cardData: CreditCard): void {
         this.card = cardData;
+    }
+
+    navigateToMarketplace(): void {
+        this.router.navigate(['/']).then();
     }
 
     private loadAppData(): void {
