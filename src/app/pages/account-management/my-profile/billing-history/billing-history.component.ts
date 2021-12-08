@@ -143,10 +143,10 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
                 takeUntil(this.$destroy),
             )
             .subscribe(res => {
-                this.transactionsListing.data.pages = res.pages;
-                this.transactionsListing.data.pageNumber = res.pageNumber;
-                this.transactionsListing.data.count = res.count;
-                this.transactionsListing.data.list = startNewPagination ? res.list : [...this.transactionsListing.data.list, ...res.list];
+                this.transactionsListing.data = {
+                    ...res,
+                    list: startNewPagination ? res.list : [...this.transactionsListing.data.list, ...res.list],
+                };
 
                 this.transactionsLoaded = true;
                 this.loader.complete();
