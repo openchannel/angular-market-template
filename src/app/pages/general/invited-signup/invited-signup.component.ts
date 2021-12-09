@@ -7,6 +7,7 @@ import { merge } from 'lodash';
 import { LogOutService } from '@core/services/logout-service/log-out.service';
 import { takeUntil } from 'rxjs/operators';
 import { AppFormField } from '@openchannel/angular-common-components';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-invited-signup',
@@ -41,6 +42,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         private typeService: UserAccountTypesService,
         private logOutService: LogOutService,
         private nativeLoginService: NativeLoginService,
+        private toaster: ToastrService,
     ) {}
 
     ngOnInit(): void {
@@ -103,6 +105,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
                         }
                     },
                     () => {
+                        this.toaster.error('Invite has been deleted');
                         this.router.navigate(['']).then();
                     },
                 );
