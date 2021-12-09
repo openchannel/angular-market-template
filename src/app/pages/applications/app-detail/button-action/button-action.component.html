@@ -1,14 +1,13 @@
 <oc-button
     *ngIf="buttonAction"
-    type="none"
-    [customClass]="viewData?.button?.class"
-    [text]="viewData?.button?.text"
+    [type]="buttonAction.showButton.type"
+    [text]="buttonAction.showButton.text"
     [process]="inProcess"
     [disabled]="inProcess"
     (click)="onClick()"></oc-button>
 
 <ng-template #confirmButton>
-    <oc-button type="primary" [text]="viewData?.button?.text"></oc-button>
+    <oc-button type="primary" [text]="buttonAction.showButton.text"></oc-button>
 </ng-template>
 
 <ng-template #rejectButton>
