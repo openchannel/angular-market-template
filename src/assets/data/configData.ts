@@ -39,7 +39,7 @@ export type ActionButton = BuyNowButtonType | FormButtonType | InstallButtonType
 const buyNowButton: ActionButton = {
     type: 'purchase',
     statistic: 'purchase',
-    showForAppTypes: ['web_plugin', 'marketing', 'code_with_fun'],
+    showForAppTypes: [],
     showButton: {
         type: 'primary',
         text: 'Buy now',
@@ -66,10 +66,12 @@ const contactUsButton: ActionButton = {
     },
 };
 
+const ownershipAppTypes = ['web_plugin', 'web_integration', 'internal_feature'];
+
 const installButton: ActionButton = {
     type: 'install',
     statistic: 'installs',
-    showForAppTypes: ['web_plugin', 'web_integration', 'internal_feature'],
+    showForAppTypes: ownershipAppTypes,
     showButton: {
         type: 'primary',
         text: 'Install',
@@ -83,7 +85,7 @@ const installButton: ActionButton = {
 const uninstallButton: ActionButton = {
     type: 'uninstall',
     statistic: 'installs',
-    showForAppTypes: ['web_plugin', 'web_integration', 'internal_feature'],
+    showForAppTypes: ownershipAppTypes,
     showButton: {
         type: 'primary',
         text: 'Uninstall',
