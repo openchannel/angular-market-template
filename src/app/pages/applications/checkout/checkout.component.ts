@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
-import { AppsService, AppVersionService, CreditCard } from '@openchannel/angular-common-services';
+import { AppsService, AppVersionService, CreditCard, PaymentTaxesResponse, StripeService } from '@openchannel/angular-common-services';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -17,6 +17,7 @@ import { pageConfig } from 'assets/data/configData';
 export class CheckoutComponent implements OnInit {
     app: FullAppData;
     card: CreditCard;
+    paymentAndTaxes: PaymentTaxesResponse;
     termsUrl = 'https://my.openchannel.io/terms-of-service';
     policyUrl = 'https://my.openchannel.io/data-processing-policy';
 
@@ -32,6 +33,7 @@ export class CheckoutComponent implements OnInit {
         private activeRoute: ActivatedRoute,
         private loadingBar: LoadingBarService,
         private appVersionService: AppVersionService,
+        private stripeService: StripeService,
     ) {}
 
     ngOnInit(): void {
@@ -40,6 +42,18 @@ export class CheckoutComponent implements OnInit {
         this.stripeLoader.loadStripe();
         this.loadAppData();
     }
+
+    get currencySymbol(): string {
+        const isoCurrencyCode = {
+            USD: '$',
+            EUR: '€',
+            CNY: '¥',
+            GBP: '£',
+        };
+
+        return isoCurrencyCode[this.app?.model[0].currency] || isoCurrencyCode[0];
+    }
+
     goBack(): void {
         history.back();
     }
@@ -50,6 +64,26 @@ export class CheckoutComponent implements OnInit {
 
     onCardDataLoaded(cardData: CreditCard): void {
         this.card = cardData;
+        this.loader.start();
+
+        this.stripeService
+            .getTaxesAndPayment(this.card.address_country, this.card.address_state, this.app.appId, this.app.model[0].modelId)
+            .pipe(takeUntil(this.$destroy))
+            .subscribe(
+                taxesResponse => {
+                    this.paymentAndTaxes = taxesResponse;
+                    this.loader.complete();
+                },
+                () => this.loader.complete(),
+            );
+    }
+
+    getSubtotal(): string {
+        let subtotal = this.currencySymbol + this.app?.model[0].price;
+        if (this.paymentAndTaxes && this.paymentAndTaxes.subtotal) {
+            subtotal = this.currencySymbol + this.paymentAndTaxes.subtotal;
+        }
+        return subtotal;
     }
 
     private loadAppData(): void {
