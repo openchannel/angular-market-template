@@ -7,14 +7,15 @@
             <div class="col-lg-7 col-xxl-7">
                 <app-billing-form
                         class="checkout__billing-form"
-                        *ngIf="false"
+                        *ngIf="!purchaseSuccessful"
                         [goBackOnCancel]="true"
                         successButtonText="Buy now"
+                        [isSaveInProcess]="purchaseProcess"
                         (cardDataLoaded)="onCardDataLoaded($event)"
                         (successButtonPressed)="onSuccessButtonPressed()"
                         [additionalButtonLock]="!isTerms"
                         [additionalFieldsTemplate]="policyCheckbox"></app-billing-form>
-                <div *ngIf="true"
+                <div *ngIf="purchaseSuccessful"
                      class="checkout__result">
                     <h4 class="checkout__result-title">Your purchase is confirmed</h4>
                     <p class="checkout__result-tip">You’ll receive a confirmation email with your order details shortly</p>
@@ -23,23 +24,23 @@
                         <div class="checkout__result-info-item">
                             <p class="checkout__result-info-category">Contact information:</p>
                             <div class="checkout__result-info-content">
-                                <p class="">Gabriel Borges</p>
-                                <p class="">gabriel@openchannel.io</p>
+                                <p class="">{{ user.name }}</p>
+                                <p class="">{{ user.email }}</p>
                             </div>
                         </div>
                         <div class="checkout__result-info-item">
                             <p class="checkout__result-info-category">Payment method:</p>
                             <div class="checkout__result-info-content">
-                                <p class="">ending with *4444 - $50.00</p>
+                                <p class="">ending with *{{ card.last4 }} - {{ currencySymbol + paymentAndTaxes?.total }}</p>
                             </div>
                         </div>
                         <div class="checkout__result-info-item">
                             <p class="checkout__result-info-category">Billing address:</p>
                             <div class="checkout__result-info-content">
-                                <p class="">Gabriel Borges</p>
-                                <p class="">888 Queen Street</p>
-                                <p class="">Toronto ON M4Y76</p>
-                                <p class="">Canada</p>
+                                <p class="">{{ card.name }}</p>
+                                <p class="">{{ card.address_line1 }}</p>
+                                <p class="">{{ card.address_city }}</p>
+                                <p class="">{{ card.address_country }}</p>
                             </div>
                         </div>
                     </div>
@@ -51,7 +52,7 @@
                 </div>
             </div>
             <div class="col-lg-5 col-xxl-4">
-                 <div class="checkout__app-info">
+                 <div class="checkout__app-info" *ngIf="app">
                      <div class="checkout__app-card">
                          <div class="checkout__app-card-preview">
                              <img class="checkout__app-card-image" [src]="app?.icon" alt="app-icon">
@@ -60,7 +61,7 @@
                                  <p class="checkout__app-card-details-description">{{ app?.summary || app?.description }}</p>
                              </div>
                          </div>
-                            <p class="checkout__app-card-price">{{ app?.model[0] | price}}</p>
+                            <p class="checkout__app-card-price">{{ currencySymbol + app?.model[0].price}}</p>
                      </div>
                      <div class="checkout__sum-details">
                          <div class="checkout__sum-details-row">

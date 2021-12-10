@@ -43,6 +43,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
     @Input() additionalFieldsTemplate: TemplateRef<any>;
     /** Additionally prohibits any actions by button click */
     @Input() additionalButtonLock = false;
+    @Input() isSaveInProcess = false;
     /** Loaded data of the card, including a billing address */
     @Output() readonly cardDataLoaded: EventEmitter<CreditCard> = new EventEmitter<CreditCard>();
     /** Notify the parent that primary button has been clicked */
@@ -82,7 +83,6 @@ export class BillingFormComponent implements OnInit, OnDestroy {
     stripeLoaded = false;
     // switcher between stripe and demo elements. If true - demo elements will be showed
     hideCardFormElements = false;
-    isSaveInProcess = false;
     // saved card data
     cardData: CreditCard = null;
 
@@ -163,19 +163,21 @@ export class BillingFormComponent implements OnInit, OnDestroy {
      * Making actions according to the card data. There are adding new card, update data or delete card
      */
     billingAction(): void {
-        this.successButtonPressed.emit();
         if (!this.additionalButtonLock) {
             if (this.cardData) {
                 // updating the billing address information
                 this.formBillingAddress.markAllAsTouched();
                 if (this.hideCardFormElements && this.formBillingAddress.valid && !this.process) {
                     this.updateBillingData();
+                    this.successButtonPressed.emit();
                 } else if (!this.hideCardFormElements) {
                     this.updateOrDeleteCard();
+                    this.successButtonPressed.emit();
                 }
             } else {
                 // creating token and saving card
                 if (this.getFormsValidity()) {
+                    this.successButtonPressed.emit();
                     this.createStripeCardWithToken();
                 }
             }
