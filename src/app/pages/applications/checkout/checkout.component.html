@@ -7,12 +7,48 @@
             <div class="col-lg-7 col-xxl-7">
                 <app-billing-form
                         class="checkout__billing-form"
+                        *ngIf="false"
                         [goBackOnCancel]="true"
                         successButtonText="Buy now"
                         (cardDataLoaded)="onCardDataLoaded($event)"
                         (successButtonPressed)="onSuccessButtonPressed()"
                         [additionalButtonLock]="!isTerms"
                         [additionalFieldsTemplate]="policyCheckbox"></app-billing-form>
+                <div *ngIf="true"
+                     class="checkout__result">
+                    <h4 class="checkout__result-title">Your purchase is confirmed</h4>
+                    <p class="checkout__result-tip">You’ll receive a confirmation email with your order details shortly</p>
+                    <div class="checkout__result-info">
+                        <h5 class="checkout__result-info-heading">Customer information</h5>
+                        <div class="checkout__result-info-item">
+                            <p class="checkout__result-info-category">Contact information:</p>
+                            <div class="checkout__result-info-content">
+                                <p class="">Gabriel Borges</p>
+                                <p class="">gabriel@openchannel.io</p>
+                            </div>
+                        </div>
+                        <div class="checkout__result-info-item">
+                            <p class="checkout__result-info-category">Payment method:</p>
+                            <div class="checkout__result-info-content">
+                                <p class="">ending with *4444 - $50.00</p>
+                            </div>
+                        </div>
+                        <div class="checkout__result-info-item">
+                            <p class="checkout__result-info-category">Billing address:</p>
+                            <div class="checkout__result-info-content">
+                                <p class="">Gabriel Borges</p>
+                                <p class="">888 Queen Street</p>
+                                <p class="">Toronto ON M4Y76</p>
+                                <p class="">Canada</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkout__result-return">
+                        <oc-button type="primary"
+                                   text="Go back to marketplace"
+                                   (click)="navigateToMarketplace()"></oc-button>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-5 col-xxl-4">
                  <div class="checkout__app-info">
@@ -60,7 +96,6 @@
 
 <ng-template #policyCheckbox>
     <oc-consent class="checkout__consent" [policyUrl]="policyUrl" [termsUrl]="termsUrl" [(ngModel)]="isTerms"></oc-consent>
-    <span
-            class="checkout__consent-error"
-            *ngIf="validateCheckbox && !isTerms">Please confirm this checkbox</span>
+    <span class="checkout__consent-error"
+          *ngIf="validateCheckbox && !isTerms">Please confirm this checkbox</span>
 </ng-template>
