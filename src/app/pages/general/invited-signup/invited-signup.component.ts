@@ -26,7 +26,6 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             account: {
                 type: 'default',
                 typeData: null,
-                // includeFields: ['name', 'email', 'customData.company'],
                 includeFields: [
                     'name',
                     'email',
