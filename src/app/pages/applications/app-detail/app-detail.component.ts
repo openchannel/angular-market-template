@@ -263,6 +263,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         }
     }
 
+    goBack(): void {
+        this.location.back();
+    }
+
     private getSearchFilters(): void {
         this.frontendService
             .getFilters()
@@ -270,10 +274,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             .subscribe(data => {
                 this.searchFilters = data.list;
             });
-    }
-
-    goBack(): void {
-        this.location.back();
     }
 
     private makeCurrentUserReviewFirst(): void {
