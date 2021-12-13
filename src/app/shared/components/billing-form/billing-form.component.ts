@@ -43,11 +43,17 @@ export class BillingFormComponent implements OnInit, OnDestroy {
     @Input() additionalFieldsTemplate: TemplateRef<any>;
     /** Additionally prohibits any actions by button click */
     @Input() additionalButtonLock = false;
-    @Input() isSaveInProcess = false;
+    /** Block button from click if any process is going on and showing a spinner */
+    @Input() process = false;
     /** Loaded data of the card, including a billing address */
     @Output() readonly cardDataLoaded: EventEmitter<CreditCard> = new EventEmitter<CreditCard>();
-    /** Notify the parent that primary button has been clicked */
+    /**
+     * Notify the parent that primary button has been clicked.
+     * This is necessary for additional validation
+     */
     @Output() readonly successButtonPressed: EventEmitter<void> = new EventEmitter<void>();
+    /** Button click event on a validated form */
+    @Output() readonly successAction: EventEmitter<void> = new EventEmitter<void>();
     // form for card with stripe elements and elements status
     cardForm: StripeCardForm = {
         cardNumber: {
@@ -96,7 +102,6 @@ export class BillingFormComponent implements OnInit, OnDestroy {
         address_zip: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     });
 
-    process = false;
     billingCountries: CountryModel[] = [];
     billingStates: string[] = [];
     emptyStates: boolean = false;
@@ -163,21 +168,19 @@ export class BillingFormComponent implements OnInit, OnDestroy {
      * Making actions according to the card data. There are adding new card, update data or delete card
      */
     billingAction(): void {
+        this.successButtonPressed.emit();
         if (!this.additionalButtonLock) {
             if (this.cardData) {
                 // updating the billing address information
                 this.formBillingAddress.markAllAsTouched();
                 if (this.hideCardFormElements && this.formBillingAddress.valid && !this.process) {
                     this.updateBillingData();
-                    this.successButtonPressed.emit();
                 } else if (!this.hideCardFormElements) {
                     this.updateOrDeleteCard();
-                    this.successButtonPressed.emit();
                 }
             } else {
                 // creating token and saving card
                 if (this.getFormsValidity()) {
-                    this.successButtonPressed.emit();
                     this.createStripeCardWithToken();
                 }
             }
@@ -245,6 +248,15 @@ export class BillingFormComponent implements OnInit, OnDestroy {
         this.formBillingAddress.controls.name.setValue('');
     }
 
+    onStatesChange(): void {
+        const billingData = {
+            ...this.cardData,
+            ...this.formBillingAddress.getRawValue(),
+            address_country: this.formBillingAddress.controls.address_country.value.Iso2,
+        };
+        this.cardDataLoaded.emit(billingData);
+    }
+
     /**
      * Creation and mounting the stripe elements for card
      * @private
@@ -276,9 +288,11 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                     cardResponse => {
                         this.toaster.success('Card has been added');
                         this.cardData = cardResponse.cards[0];
+                        this.cardDataLoaded.emit(this.cardData);
                         if (this.cardData) {
                             this.fillCardForm();
                         }
+                        this.successAction.emit();
                     },
                     error => {
                         this.toaster.error(error.message);
@@ -342,6 +356,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                     this.cardData = cardResponse.cards[0];
                     this.process = false;
                     this.cardDataLoaded.emit(this.cardData);
+                    this.successAction.emit();
                 },
                 error => {
                     this.toaster.error(error.message);
