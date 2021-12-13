@@ -66,7 +66,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
 
     userInviteData: InviteUserModel;
     isExpired = false;
-    formConfig: OcEditUserFormConfig[];
+    formConfigs: OcEditUserFormConfig[];
     formConfigsLoading = true;
     showSignupFeedbackPage = false;
 
@@ -93,18 +93,18 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    getFormConfig(userAccountTypeId: string): void {
+    getFormConfigs(userAccountTypeId: string): void {
         if (userAccountTypeId) {
             // Make form config according to type passed from invite data
             this.typeService
                 .getUserAccountType(userAccountTypeId)
                 .pipe(
-                    map(type => this.mapUserAccountTypeToFormConfig(type)),
-                    map(formConfig => this.getFormConfigWithInviteData(formConfig)),
+                    map(type => this.mapUserAccountTypeToFormConfigs(type)),
+                    map(formConfigs => this.getFormConfigsWithInviteData(formConfigs)),
                     takeUntil(this.destroy$),
                 )
-                .subscribe(formConfig => {
-                    this.formConfig = formConfig;
+                .subscribe(formConfigs => {
+                    this.formConfigs = formConfigs;
                     this.formConfigsLoading = false;
                 });
         } else {
@@ -112,11 +112,11 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             this.ocEditTypeService
                 .injectTypeDataIntoConfigs(this.formConfigsWithoutTypeData || this.formConfigsWithoutTypeDataDefault, false, true)
                 .pipe(
-                    map(formConfig => this.getFormConfigWithInviteData(formConfig)),
+                    map(formConfigs => this.getFormConfigsWithInviteData(formConfigs)),
                     takeUntil(this.destroy$),
                 )
-                .subscribe(formConfig => {
-                    this.formConfig = formConfig;
+                .subscribe(formConfigs => {
+                    this.formConfigs = formConfigs;
                     this.formConfigsLoading = false;
                 });
         }
@@ -135,7 +135,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
                         if (new Date(this.userInviteData.expireDate) < new Date()) {
                             this.isExpired = true;
                         } else {
-                            this.getFormConfig(null);
+                            this.getFormConfigs(response.type);
                         }
                     },
                     () => {
@@ -194,8 +194,8 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getFormConfigWithInviteData(formConfig: OcEditUserFormConfig[]): OcEditUserFormConfig[] {
-        return formConfig.map(item => {
+    private getFormConfigsWithInviteData(formConfigs: OcEditUserFormConfig[]): OcEditUserFormConfig[] {
+        return formConfigs.map(item => {
             return {
                 ...item,
                 account: {
@@ -209,7 +209,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         });
     }
 
-    private mapUserAccountTypeToFormConfig(userAccountType: UserAccountTypeModel): OcEditUserFormConfig[] {
+    private mapUserAccountTypeToFormConfigs(userAccountType: UserAccountTypeModel): OcEditUserFormConfig[] {
         return [
             {
                 name: '',
