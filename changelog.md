@@ -1,3 +1,26 @@
+## Release notes - template3-marketsite-frontend - Version 1.55.1 (12/2/2021)<br>
+### Bug<br>
+AT-1624 - [hotfix][Market - Billing] Country dropdown remains blank on Billing page.<br>
+AT-1623 - [hotfix][Market - Billing] Credit card fields remains disabled to enter data on PROD.<br>
+## Release notes - template3-marketsite-frontend - Version 1.55.0 (12/1/2021)<br>
+### Task<br>
+AT-1607 - Ensure correct SSO behavior in all possible scenarios<br>
+### Story<br>
+AT-1565 - A user is able to set their billing address<br>
+AT-1559 - A user is able to view, add and remove credit card details<br>
+### Bug<br>
+AT-1546 - [Market][Review count] Review under Overall rating is getting increased even though Review is not yet approved.<br>
+AT-1528 - [UI] Various components fields are having wrong height<br>
+AT-1468 - [Reviews] Logged in user's review is not at the top of the Review list.<br>
+AT-1210 - [UI][Portal][Manage App / Edit App][Chart] UI issues on Chart component. Current Date is not showing and Count is cut off.<br>
+## Release notes - template3-marketsite-frontend - Version 1.54.1 (11/30/2021)<br>
+### Bug<br>
+AT-1619 - [Hotfix][Portal Market] Getting console error custom-account-type  is not a valid user / developer account type<br>
+## Release notes - template3-marketsite-frontend - Version 1.54.0 (11/23/2021)<br>
+### Task<br>
+AT-1556 - For CAP, implement OpenChannel Stripe Gateway APIs<br>
+### Bug<br>
+AT-1222 - [Market][My Apps] Back link should navigate user to the My Apps page if app details opened from My Apps page.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.53.1 (11/17/2021)<br>
 ### Bug<br>
 AT-1608 - [Market][Form submission - Buy Now] Image crop pop-up is not getting closed after clicking on Confirm button.<br>

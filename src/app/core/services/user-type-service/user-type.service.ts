@@ -35,48 +35,47 @@ export class OcEditUserTypeService {
         injectOrganizationTypes: boolean,
         injectAccountTypes: boolean,
     ): Observable<OcEditUserFormConfig[]> {
-        if (configs) {
-            return forkJoin({
-                organizationTypes: this.getUserTypes(injectOrganizationTypes, configs),
-                accountTypes: this.getUserAccountTypes(injectAccountTypes, configs),
-            }).pipe(
-                map(data => {
-                    const accTypes = keyBy(data.accountTypes.list, 'userAccountTypeId');
-                    const orgTypes = keyBy(data.organizationTypes.list, 'userTypeId');
-                    const newConfigs = cloneDeep(configs) as OcEditUserFormConfig[];
-
-                    return newConfigs
-                        .map(config => {
-                            const accountTypeData = accTypes[config?.account?.type];
-                            const organizationTypeData = orgTypes[config?.organization?.type];
-
-                            let isInvalid = !(injectOrganizationTypes || injectAccountTypes);
-
-                            // put organization type
-                            if (injectOrganizationTypes) {
-                                if (organizationTypeData) {
-                                    config.organization.typeData = organizationTypeData;
-                                } else {
-                                    console.error(config.organization.type, ' is not a valid user type');
-                                    isInvalid = true;
-                                }
-                            }
-                            // put account type
-                            if (injectAccountTypes) {
-                                if (accountTypeData) {
-                                    config.account.typeData = accountTypeData;
-                                } else {
-                                    console.error(config.account.type, ' is not a valid user account type');
-                                    isInvalid = true;
-                                }
-                            }
-                            return isInvalid ? null : config;
-                        })
-                        .filter(config => config);
-                }),
-            );
+        if (!configs) {
+            return null;
         }
-        return null;
+
+        return forkJoin({
+            organizationTypes: this.getUserTypes(injectOrganizationTypes, configs),
+            accountTypes: this.getUserAccountTypes(injectAccountTypes, configs),
+        }).pipe(
+            map(data => {
+                const accTypes = keyBy(data.accountTypes.list, 'userAccountTypeId');
+                const orgTypes = keyBy(data.organizationTypes.list, 'userTypeId');
+                const newConfigs = cloneDeep(configs) as OcEditUserFormConfig[];
+
+                return newConfigs
+                    .map(config => {
+                        const accountTypeData = accTypes[config?.account?.type];
+                        const organizationTypeData = orgTypes[config?.organization?.type];
+
+                        let isInvalid = !(injectOrganizationTypes || injectAccountTypes);
+
+                        // put organization type
+                        if (injectOrganizationTypes) {
+                            if (organizationTypeData) {
+                                config.organization.typeData = organizationTypeData;
+                            } else {
+                                isInvalid = true;
+                            }
+                        }
+                        // put account type
+                        if (injectAccountTypes) {
+                            if (accountTypeData) {
+                                config.account.typeData = accountTypeData;
+                            } else {
+                                isInvalid = true;
+                            }
+                        }
+                        return isInvalid ? null : config;
+                    })
+                    .filter(config => config);
+            }),
+        );
     }
 
     private getUserTypes(injectOrganizationType: boolean, configs: OcEditUserFormConfig[]): Observable<Page<TypeModel<TypeFieldModel>>> {

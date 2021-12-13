@@ -11,7 +11,15 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ManagementComponent } from './my-company/management/management.component';
 import { MyCompanyComponent } from './my-company/my-company.component';
 import { CompanyDetailsComponent } from './my-company/company-details/company-details.component';
-import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsModule } from '@openchannel/angular-common-components';
+import {
+    OcFormComponentsModule,
+    OcManagementComponentsModule,
+    OcAuthComponentsModule,
+    OcPortalComponentsModule,
+} from '@openchannel/angular-common-components';
+import { BillingComponent } from './my-profile/billing/billing.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BillingHistoryComponent } from './my-profile/billing-history/billing-history.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +30,8 @@ import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsM
         ManagementComponent,
         MyCompanyComponent,
         CompanyDetailsComponent,
+        BillingComponent,
+        BillingHistoryComponent,
     ],
     imports: [
         CommonModule,
@@ -31,7 +41,8 @@ import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsM
         OcFormComponentsModule,
         OcManagementComponentsModule,
         OcAuthComponentsModule,
-        OcAuthComponentsModule,
+        ReactiveFormsModule,
+        OcPortalComponentsModule,
     ],
 })
 export class AccountManagementModule {}

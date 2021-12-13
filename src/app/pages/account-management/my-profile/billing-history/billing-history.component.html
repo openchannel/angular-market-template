@@ -1,0 +1,76 @@
+<oc-app-table
+    *ngIf="transactionsLoaded"
+    (pageScrolled)="handlePageScrolled()"
+    [properties]="transactionsListing"
+    [activeColumns]="activeColumns"
+    noAppMessage="No transactions"
+    [modifyColumns]="{
+        'app-name': { headerCellTemplate: appNameHeaderCell, rowCellTemplate: appNameRowCell },
+        date: { headerCellTemplate: dateHeaderCell, rowCellTemplate: dateRowCell },
+        amount: { headerCellTemplate: amountHeaderCell, rowCellTemplate: amountRowCell },
+        status: { headerCellTemplate: statusHeaderCell, rowCellTemplate: statusRowCell },
+        'app-options': { headerCellTemplate: optionsHeaderCell, rowCellTemplate: optionsRowCell }
+    }"></oc-app-table>
+
+<ng-template #appNameHeaderCell>
+    <span class="ml-2 table-text">App name</span>
+</ng-template>
+
+<ng-template #appNameRowCell let-ctx>
+    <div class="d-flex align-items-center ml-2">
+        <img class="app-icon" [src]="ctx.app.appIcon" alt="App icon" />
+        <span class="ml-2 table-text table-text_medium">{{ ctx.app.appName }}</span>
+    </div>
+</ng-template>
+
+<ng-template #dateHeaderCell>
+    <ng-container *ngTemplateOutlet="sortHeading; context: { $implicit: { title: 'Date', sortKey: 'date' } }"></ng-container>
+</ng-template>
+
+<ng-template #dateRowCell let-ctx>
+    <span class="table-text table-text_gray">{{ ctx.app.date | date: 'M/d/yyyy' }}</span>
+</ng-template>
+
+<ng-template #amountHeaderCell>
+    <span class="table-text">Amount</span>
+</ng-template>
+
+<ng-template #amountRowCell let-ctx>
+    <span class="table-text table-text_medium table-text_blue">
+        {{ ctx.app.amount | transactionAmount }}
+    </span>
+</ng-template>
+
+<ng-template #statusHeaderCell>
+    <span class="table-text">Status</span>
+</ng-template>
+
+<ng-template #statusRowCell let-ctx>
+    <span class="table-text" [class.table-text_medium]="ctx.app.type === 'refund'" [class.table-text_gray]="ctx.app.type === 'payment'">
+        {{ ctx.app.status }}
+    </span>
+</ng-template>
+
+<ng-template #optionsHeaderCell></ng-template>
+
+<ng-template #optionsRowCell let-ctx>
+    <div class="pr-3" *ngIf="ctx.app.options.length">
+        <div ngbDropdown placement="bottom-right">
+            <img class="options-dots-icon" src="assets/img/table-options-dots.svg" alt="Options" ngbDropdownToggle />
+            <div ngbDropdownMenu>
+                <ng-container *ngFor="let menuAction of ctx.app.options">
+                    <button (click)="handleOptionClick(menuAction, ctx.app)" class="pr-4" ngbDropdownItem>
+                        {{ menuAction }}
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #sortHeading let-ctx>
+    <div class="sort-heading" (click)="changeSortByKey(ctx.sortKey)">
+        <span class="pr-1 table-text">{{ ctx.title }}</span>
+        <img src="assets/img/sort-dropdown-icon.svg" [class.arrow-up]="sortState[ctx.sortKey] === 1" alt="" />
+    </div>
+</ng-template>

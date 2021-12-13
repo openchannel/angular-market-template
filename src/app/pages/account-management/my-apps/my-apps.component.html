@@ -9,7 +9,7 @@
 <div class="container d-flex flex-column">
     <div class="d-flex justify-content-end pt-4 pb-3">
         <div class="no-apps-message"
-             *ngIf="appList?.length === 0">No apps in your list</div>
+             *ngIf="appsLoaded && appList?.length === 0">No apps in your list</div>
         <oc-dropdown
             *ngIf="appSorts && appList?.length > 0"
             [options]="appSorts"

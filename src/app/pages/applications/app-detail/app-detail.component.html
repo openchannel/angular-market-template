@@ -4,8 +4,8 @@
             <div class="app-detail__back-link height-unset">
                 <div>
                     <div class="d-flex flex-row align-items-center">
-                        <img src="./assets/img/arrow-left.svg" alt="arrow-icon" />
-                        <a routerLink="" class="pl-1 app-detail__back-link-text">Back</a>
+                        <img src="./assets/img/arrow-left.svg" alt="arrow-icon">
+                        <a class="pl-1 app-detail__back-link-text cursor-pointer" (click)='goBack()'>Back</a>
                     </div>
                     <h3 *ngIf="isDeveloperPreviewPage" class="page-title mt-2">App preview</h3>
                 </div>

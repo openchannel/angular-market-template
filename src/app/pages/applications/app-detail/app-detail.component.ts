@@ -27,9 +27,9 @@ import {
     ReviewListOptionType,
     Filter
 } from '@openchannel/angular-common-components';
-import { get, find } from 'lodash';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { get } from 'lodash';
 import { HttpHeaders } from '@angular/common/http';
+import { Location } from '@angular/common';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 
 @Component({
@@ -88,6 +88,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private titleService: TitleService,
         private statisticService: StatisticService,
         private metaTagService: MarketMetaTagService,
+        private location: Location,
     ) {}
 
     ngOnInit(): void {
@@ -122,33 +123,27 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     loadReviews(): void {
         this.loader.start();
 
-        const filterArray: string[] = [];
-        const obsArr: Observable<Page<OCReviewDetails>>[] = [];
-
-        if (this.selectedFilter && this.selectedFilter.value) {
-            filterArray.push(this.selectedFilter.value);
-        }
-
-        if (this.currentUserId) {
-            filterArray.push(`{'userId': {'$ne': ['${this.currentUserId}']}}`);
-            obsArr.push(
-                this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, [
-                    `{'userId': '${this.currentUserId}'}`,
-                ]),
-            );
-        }
-        obsArr.push(this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, filterArray));
-
-        forkJoin(obsArr)
+        this.reviewsService
+            .getReviewsByAppId(
+                this.app.appId,
+                this.selectedSort ? this.selectedSort.value : null,
+                this.selectedFilter ? [this.selectedFilter.value] : [],
+            )
             .pipe(takeUntil(this.destroy$))
             .subscribe(
                 resPage => {
-                    this.reviewsPage = { ...resPage[0], ...resPage[1] };
-                    this.userReview = find(this.reviewsPage.list, ['userId', this.currentUserId]);
-                    this.loader.complete();
+                    this.reviewsPage = resPage;
+
+                    const someSortApplied = !!(this.selectedFilter.value || this.selectedSort);
+                    if (this.currentUserId && !someSortApplied) {
+                        this.makeCurrentUserReviewFirst();
+                    }
+
                     if (this.overallRating.rating === 0) {
                         this.countRating();
                     }
+
+                    this.loader.complete();
                 },
                 () => this.loader.complete(),
             );
@@ -277,6 +272,18 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             });
     }
 
+    goBack(): void {
+        this.location.back();
+    }
+
+    private makeCurrentUserReviewFirst(): void {
+        const userReviewIndex = this.reviewsPage.list.findIndex(review => review.userId === this.currentUserId);
+        if (userReviewIndex !== -1) {
+            this.userReview = this.reviewsPage.list.splice(userReviewIndex, 1)[0];
+            this.reviewsPage.list.unshift(this.userReview);
+        }
+    }
+
     private editReview(): void {
         this.reviewsService
             .getOneReview(this.userReview.reviewId)
@@ -329,8 +336,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     }
 
     private countRating(): void {
-        this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.reviewsPage.count);
-        this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
+        const approvedReviews = this.reviewsPage.list.filter(review => review.status.value === 'approved');
+
+        this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.app.reviewCount);
+        approvedReviews.forEach(review => this.overallRating[Math.floor(review.rating / 100)]++);
     }
 
     private getButtonActions(config: any): ButtonAction[] {
