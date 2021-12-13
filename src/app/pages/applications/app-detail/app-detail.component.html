@@ -20,10 +20,18 @@
                     </div>
                     <div class="d-flex flex-column">
                         <h1 class="mb-2 page-title-size">{{ app.name }}</h1>
-                        <a href="#" class="app-detail__price" (click)="$event.preventDefault()">{{ app.model[0] | price }}</a>
-                        <div class="app-detail__summary text-secondary mt-1" [innerHTML]="app.summary"></div>
+                        <ul class="categories mb-1" *ngIf="app.categories.length">
+                            <li
+                                class="categories__item mb-1"
+                                *ngFor="let category of app.categories"
+                                (click)="goToSearchPageWithSelectedCategory(category)">
+                                {{ category }}
+                            </li>
+                        </ul>
+                        <a href="#" class="app-detail__price mb-2" (click)="$event.preventDefault()">{{ app.model[0] | price }}</a>
+                        <div class="app-detail__summary text-secondary mb-2" *ngIf="app.summary" [innerHTML]="app.summary"></div>
                         <oc-rating
-                            class="mb-3"
+                            class="mb-3 mb-md-2"
                             [rating]="app.rating / 100 || 0"
                             [reviewCount]="app.reviewCount || 0"
                             label="reviews"
