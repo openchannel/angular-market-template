@@ -6,18 +6,20 @@ import {
     TypeFieldModel,
     TypeModel,
     UserAccountService,
+    UserAccountTypeModel,
     UserAccountTypesService,
+    UserTypeModel,
     UsersService,
 } from '@openchannel/angular-common-services';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { cloneDeep, keyBy } from 'lodash';
 
 @Injectable({
     providedIn: 'root',
 })
 export class OcEditUserTypeService {
-    private readonly EMPTY_TYPE_RESPONSE: Observable<Page<TypeModel<TypeFieldModel>>> = of({
+    private readonly EMPTY_TYPE_RESPONSE: Observable<any> = of({
         list: [],
         pages: 1,
         count: 0,
@@ -89,14 +91,35 @@ export class OcEditUserTypeService {
         return this.EMPTY_TYPE_RESPONSE;
     }
 
-    private getUserAccountTypes(injectAccountType: boolean, configs: OcEditUserFormConfig[]): Observable<Page<TypeModel<TypeFieldModel>>> {
+    private getUserAccountTypes(injectAccountType: boolean, configs: OcEditUserFormConfig[]): Observable<Page<UserAccountTypeModel>> {
         if (injectAccountType) {
             const accTypesIDs = configs.map(config => config?.account?.type).filter(type => type);
             const searchQuery = accTypesIDs?.length > 0 ? `{'userAccountTypeId':{'$in': ['${accTypesIDs.join("','")}']}}` : '';
             if (searchQuery) {
-                return this.accountTypeService.getUserAccountTypes(1, 100, searchQuery);
+                return this.accountTypeService
+                    .getUserAccountTypes(1, 100, searchQuery)
+                    .pipe(tap(types => this.logInvalidTypes(types.list, accTypesIDs)));
             }
         }
         return this.EMPTY_TYPE_RESPONSE;
+    }
+
+    private logInvalidTypes(fetchedTypesData: (UserAccountTypeModel | UserTypeModel)[], configTypes: string[]): void {
+        const existingTypes = fetchedTypesData.map(typeData =>
+            this.isInstanceOfUserAccount(typeData) ? typeData.userAccountTypeId : typeData.userTypeId,
+        );
+        const notExistingTypes = configTypes.filter(type => !existingTypes.includes(type));
+
+        notExistingTypes.forEach(type => {
+            if (this.isInstanceOfUserAccount(fetchedTypesData[0])) {
+                console.error(`${type} is not a valid user account type`);
+            } else {
+                console.error(`${type} s not a valid developer account type`);
+            }
+        });
+    }
+
+    private isInstanceOfUserAccount(object: any): object is UserAccountTypeModel {
+        return 'userAccountTypeId' in object;
     }
 }
