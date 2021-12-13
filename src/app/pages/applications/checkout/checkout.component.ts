@@ -77,6 +77,39 @@ export class CheckoutComponent implements OnInit {
 
     onSuccessButtonPressed(): void {
         this.validateCheckbox = !this.isTerms;
+    }
+
+    onCardDataLoaded(cardData: CreditCard): void {
+        if (!this.card || cardData.address_state !== this.card.address_state) {
+            console.log(cardData);
+            this.loader.start();
+            this.stripeService
+                .getTaxesAndPayment(cardData.address_country, cardData.address_state, this.app.appId, this.app.model[0].modelId)
+                .pipe(takeUntil(this.$destroy))
+                .subscribe(
+                    taxesResponse => {
+                        this.paymentAndTaxes = taxesResponse;
+                        this.loader.complete();
+                    },
+                    () => this.loader.complete(),
+                );
+        }
+        this.card = cardData;
+    }
+
+    getSubtotal(): string {
+        let subtotal = this.currencySymbol + this.app?.model[0].price;
+        if (this.paymentAndTaxes && this.paymentAndTaxes.subtotal) {
+            subtotal = this.currencySymbol + this.paymentAndTaxes.subtotal;
+        }
+        return subtotal;
+    }
+
+    navigateToMarketplace(): void {
+        this.router.navigate(['/']).then();
+    }
+
+    onSuccessAction(): void {
         this.purchaseProcess = true;
         const purchase: Purchase = {
             models: [
@@ -99,34 +132,6 @@ export class CheckoutComponent implements OnInit {
                     this.purchaseProcess = false;
                 },
             );
-    }
-
-    onCardDataLoaded(cardData: CreditCard): void {
-        this.card = cardData;
-        this.loader.start();
-
-        this.stripeService
-            .getTaxesAndPayment(this.card.address_country, this.card.address_state, this.app.appId, this.app.model[0].modelId)
-            .pipe(takeUntil(this.$destroy))
-            .subscribe(
-                taxesResponse => {
-                    this.paymentAndTaxes = taxesResponse;
-                    this.loader.complete();
-                },
-                () => this.loader.complete(),
-            );
-    }
-
-    getSubtotal(): string {
-        let subtotal = this.currencySymbol + this.app?.model[0].price;
-        if (this.paymentAndTaxes && this.paymentAndTaxes.subtotal) {
-            subtotal = this.currencySymbol + this.paymentAndTaxes.subtotal;
-        }
-        return subtotal;
-    }
-
-    navigateToMarketplace(): void {
-        this.router.navigate(['/']).then();
     }
 
     private loadAppData(): void {

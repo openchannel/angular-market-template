@@ -10,9 +10,10 @@
                         *ngIf="!purchaseSuccessful"
                         [goBackOnCancel]="true"
                         successButtonText="Buy now"
-                        [isSaveInProcess]="purchaseProcess"
+                        [process]="purchaseProcess"
                         (cardDataLoaded)="onCardDataLoaded($event)"
                         (successButtonPressed)="onSuccessButtonPressed()"
+                        (successAction)="onSuccessAction()"
                         [additionalButtonLock]="!isTerms"
                         [additionalFieldsTemplate]="policyCheckbox"></app-billing-form>
                 <div *ngIf="purchaseSuccessful"
@@ -24,23 +25,27 @@
                         <div class="checkout__result-info-item">
                             <p class="checkout__result-info-category">Contact information:</p>
                             <div class="checkout__result-info-content">
-                                <p class="">{{ user.name }}</p>
-                                <p class="">{{ user.email }}</p>
+                                <p>{{ user.name }}</p>
+                                <p>{{ user.email }}</p>
                             </div>
                         </div>
                         <div class="checkout__result-info-item">
                             <p class="checkout__result-info-category">Payment method:</p>
                             <div class="checkout__result-info-content">
-                                <p class="">ending with *{{ card.last4 }} - {{ currencySymbol + paymentAndTaxes?.total }}</p>
+                                <p>ending with *{{ card.last4 }} - {{ currencySymbol + paymentAndTaxes?.total }}</p>
                             </div>
                         </div>
                         <div class="checkout__result-info-item">
                             <p class="checkout__result-info-category">Billing address:</p>
                             <div class="checkout__result-info-content">
-                                <p class="">{{ card.name }}</p>
-                                <p class="">{{ card.address_line1 }}</p>
-                                <p class="">{{ card.address_city }}</p>
-                                <p class="">{{ card.address_country }}</p>
+                                <p>{{ card.name }}</p>
+                                <p>
+                                    {{ card.address_line1 + (card.address_line2 ? ', ' + card.address_line2 : '') }}
+                                </p>
+                                <p>
+                                    {{ card.address_city + ' ' + (card.address_state || '') + ' ' + card.address_zip }}
+                                </p>
+                                <p>{{ card.address_country }}</p>
                             </div>
                         </div>
                     </div>
