@@ -4,7 +4,14 @@ import { MyProfileComponent } from './my-profile/my-profile.component';
 import { MyAppsComponent } from './my-apps/my-apps.component';
 import { MyCompanyComponent } from './my-company/my-company.component';
 import { AuthGuard } from '@core/guards/auth.guard';
+import { siteConfig } from 'assets/data/siteConfig';
 
+const subPaths = siteConfig.paymentsEnabled
+    ? [
+          { path: 'billing', component: MyProfileComponent, canActivate: [AuthGuard] },
+          { path: 'billing-history', component: MyProfileComponent, canActivate: [AuthGuard] },
+      ]
+    : [];
 const routes: Routes = [
     {
         path: 'my-profile',
@@ -12,6 +19,7 @@ const routes: Routes = [
         children: [
             { path: 'profile-details', component: MyProfileComponent, canActivate: [AuthGuard] },
             { path: 'password', component: MyProfileComponent, canActivate: [AuthGuard] },
+            ...subPaths,
         ],
     },
     { path: 'my-apps', component: MyAppsComponent, canActivate: [AuthGuard], data: { title: 'Manage apps' } },
