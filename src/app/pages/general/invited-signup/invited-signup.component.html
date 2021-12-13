@@ -1,8 +1,6 @@
 <div class="bg-container pt-sm-5">
-    <h5 class="text-primary" *ngIf="isExpired">Sorry! Your invite token has been expired!</h5>
     <oc-signup-custom
         class="signup-position"
-        *ngIf="!isExpired"
         signupUrl="/signup"
         activationUrl="/activate"
         companyLogoUrl="./assets/img/company-logo-2x.png"
@@ -10,6 +8,7 @@
         termsUrl="https://my.openchannel.io/terms-of-service"
         policyUrl="https://my.openchannel.io/data-processing-policy"
         headingInvitationText="Enter your account details below"
+        [customFormTemplate]="isExpired ? expirationMsg: null"
         [showLoginLink]="false"
         [formConfigsLoading]="formConfigsLoading"
         [formConfigs]="formConfig"
@@ -17,3 +16,7 @@
         [(showSignupFeedbackPage)]="showSignupFeedbackPage"
         (resultUserData)="submitForm($event)"></oc-signup-custom>
 </div>
+
+<ng-template #expirationMsg>
+    <h5 class="text-primary p-3" *ngIf="isExpired">Sorry! Your invite token has been expired!</h5>
+</ng-template>
