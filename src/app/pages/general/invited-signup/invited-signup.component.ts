@@ -148,7 +148,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         }
     }
 
-    // Register invited user and deleting invite on success
+    // Register invited user and delete invite on success
     submitForm(userData: OcEditUserResult): void {
         if (userData && !this.inProcess) {
             this.inProcess = true;

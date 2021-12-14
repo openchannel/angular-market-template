@@ -8,7 +8,6 @@ import {
     UserAccountService,
     UserAccountTypeModel,
     UserAccountTypesService,
-    UserTypeModel,
     UsersService,
 } from '@openchannel/angular-common-services';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
@@ -98,28 +97,18 @@ export class OcEditUserTypeService {
             if (searchQuery) {
                 return this.accountTypeService
                     .getUserAccountTypes(1, 100, searchQuery)
-                    .pipe(tap(types => this.logInvalidTypes(types.list, accTypesIDs)));
+                    .pipe(tap(types => this.logInvalidAccountTypes(types.list, accTypesIDs)));
             }
         }
         return this.EMPTY_TYPE_RESPONSE;
     }
 
-    private logInvalidTypes(fetchedTypesData: (UserAccountTypeModel | UserTypeModel)[], configTypes: string[]): void {
-        const existingTypes = fetchedTypesData.map(typeData =>
-            this.isInstanceOfUserAccount(typeData) ? typeData.userAccountTypeId : typeData.userTypeId,
-        );
+    private logInvalidAccountTypes(fetchedTypesData: UserAccountTypeModel[], configTypes: string[]): void {
+        const existingTypes = fetchedTypesData.map(typeData => typeData.userAccountTypeId);
         const notExistingTypes = configTypes.filter(type => !existingTypes.includes(type));
 
         notExistingTypes.forEach(type => {
-            if (this.isInstanceOfUserAccount(fetchedTypesData[0])) {
-                console.error(`${type} is not a valid user account type`);
-            } else {
-                console.error(`${type} s not a valid developer account type`);
-            }
+            console.error(`${type} is not a valid user account type`);
         });
-    }
-
-    private isInstanceOfUserAccount(object: any): object is UserAccountTypeModel {
-        return 'userAccountTypeId' in object;
     }
 }
