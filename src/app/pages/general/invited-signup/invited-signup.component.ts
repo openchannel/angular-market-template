@@ -63,7 +63,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             account: { type: 'default', typeData: null, includeFields: ['name', 'email'] },
         },
     ];
-    private readonly fieldsToDisable = ['email', 'customData.company'];
+    private readonly fieldsIdsToDisable = ['email', 'customData.company'];
 
     userInviteData: InviteUserModel;
     isExpired = false;
@@ -198,7 +198,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
     }
 
     private disableField(field: AppFormField): AppFormField {
-        if (this.fieldsToDisable.includes(field.id)) {
+        if (this.fieldsIdsToDisable.includes(field.id)) {
             field.attributes.disabled = true;
         }
 
