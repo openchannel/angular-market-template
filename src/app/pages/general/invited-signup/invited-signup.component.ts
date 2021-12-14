@@ -63,6 +63,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             account: { type: 'default', typeData: null, includeFields: ['name', 'email'] },
         },
     ];
+    private readonly fieldsToDisable = ['email', 'customData.company'];
 
     userInviteData: InviteUserModel;
     isExpired = false;
@@ -100,7 +101,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
                 .getUserAccountType(userAccountTypeId)
                 .pipe(
                     map(type => this.mapUserAccountTypeToFormConfigs(type)),
-                    map(formConfigs => this.getFormConfigsWithInviteData(formConfigs)),
+                    map(formConfigs => this.getFormConfigsWithConfiguredFields(formConfigs)),
                     takeUntil(this.destroy$),
                 )
                 .subscribe(formConfigs => {
@@ -112,7 +113,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             this.ocEditTypeService
                 .injectTypeDataIntoConfigs(this.formConfigsWithoutTypeData || this.formConfigsWithoutTypeDataDefault, false, true)
                 .pipe(
-                    map(formConfigs => this.getFormConfigsWithInviteData(formConfigs)),
+                    map(formConfigs => this.getFormConfigsWithConfiguredFields(formConfigs)),
                     takeUntil(this.destroy$),
                 )
                 .subscribe(formConfigs => {
@@ -182,19 +183,29 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         }
     }
 
-    private injectInviteDataToFields(fields: AppFormField[]): AppFormField[] {
-        return fields?.map(field => {
-            if (!field.id.includes('customData') && this.userInviteData[field.id]) {
-                field.defaultValue = this.userInviteData[field.id];
-            } else if (field.id.includes('company')) {
-                field.defaultValue = this.userInviteData.customData?.company;
-                field.attributes.disabled = true;
-            }
-            return field;
-        });
+    private getConfiguredFields(fields: AppFormField[]): AppFormField[] {
+        return fields?.map(field => this.disableField(this.injectInviteDataToField(field)));
     }
 
-    private getFormConfigsWithInviteData(formConfigs: OcEditUserFormConfig[]): OcEditUserFormConfig[] {
+    private injectInviteDataToField(field: AppFormField): AppFormField {
+        if (!field.id.includes('customData') && this.userInviteData[field.id]) {
+            field.defaultValue = this.userInviteData[field.id];
+        } else if (field.id.includes('company')) {
+            field.defaultValue = this.userInviteData.customData?.company;
+        }
+
+        return field;
+    }
+
+    private disableField(field: AppFormField): AppFormField {
+        if (this.fieldsToDisable.includes(field.id)) {
+            field.attributes.disabled = true;
+        }
+
+        return field;
+    }
+
+    private getFormConfigsWithConfiguredFields(formConfigs: OcEditUserFormConfig[]): OcEditUserFormConfig[] {
         return formConfigs.map(item => {
             return {
                 ...item,
@@ -202,7 +213,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
                     ...item.account,
                     typeData: {
                         ...item.account.typeData,
-                        fields: this.injectInviteDataToFields(item.account.typeData.fields),
+                        fields: this.getConfiguredFields(item.account.typeData.fields),
                     },
                 },
             };
