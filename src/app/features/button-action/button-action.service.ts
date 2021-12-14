@@ -1,11 +1,7 @@
-import { Injectable } from '@angular/core';
-import {ActionButton, ButtonType, DownloadButtonType} from '../../../../../assets/data/configData';
-import { AppResponse } from '@openchannel/angular-common-services';
+import {ActionButton, ButtonType, DownloadButtonType} from '../../../assets/data/configData';
 import { get } from 'lodash';
+import { AppResponse } from '@openchannel/angular-common-services';
 
-@Injectable({
-    providedIn: 'root',
-})
 export class ButtonActionService {
     readonly hideButtonsWithoutOwnership: ButtonType[] = ['install', 'download'];
 

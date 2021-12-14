@@ -14,6 +14,7 @@ import { CompanyDetailsComponent } from './my-company/company-details/company-de
 import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsModule } from '@openchannel/angular-common-components';
 import { BillingComponent } from './my-profile/billing/billing.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import {ButtonActionModule} from '@features/button-action/button-action.module';
 
 @NgModule({
     declarations: [
@@ -36,6 +37,7 @@ import { ReactiveFormsModule } from '@angular/forms';
         OcAuthComponentsModule,
         OcAuthComponentsModule,
         ReactiveFormsModule,
+        ButtonActionModule,
     ],
 })
 export class AccountManagementModule {}

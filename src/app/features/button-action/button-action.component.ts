@@ -20,7 +20,7 @@ import {
     ActionButton,
     DownloadButtonType,
     FormButtonType
-} from '../../../../../assets/data/configData';
+} from '../../../assets/data/configData';
 
 @Component({
     selector: 'app-button-action',
