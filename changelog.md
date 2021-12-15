@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.55.1 (12/15/2021)<br>
+### Task<br>
+AT-1541 - Allow reviews without Ownership records<br>
 ## Release notes - template3-marketsite-frontend - Version 1.55.0 (12/1/2021)<br>
 ### Task<br>
 AT-1607 - Ensure correct SSO behavior in all possible scenarios<br>
