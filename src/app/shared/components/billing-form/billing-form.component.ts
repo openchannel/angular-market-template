@@ -43,10 +43,17 @@ export class BillingFormComponent implements OnInit, OnDestroy {
     @Input() additionalFieldsTemplate: TemplateRef<any>;
     /** Additionally prohibits any actions by button click */
     @Input() additionalButtonLock = false;
+    /** Block button from click if any process is going on and showing a spinner */
+    @Input() process = false;
     /** Loaded data of the card, including a billing address */
     @Output() readonly cardDataLoaded: EventEmitter<CreditCard> = new EventEmitter<CreditCard>();
-    /** Notify the parent that primary button has been clicked */
+    /**
+     * Notify the parent that primary button has been clicked.
+     * This is necessary for additional validation
+     */
     @Output() readonly successButtonPressed: EventEmitter<void> = new EventEmitter<void>();
+    /** Button click event on a validated form */
+    @Output() readonly successAction: EventEmitter<void> = new EventEmitter<void>();
     // form for card with stripe elements and elements status
     cardForm: StripeCardForm = {
         cardNumber: {
@@ -82,7 +89,6 @@ export class BillingFormComponent implements OnInit, OnDestroy {
     stripeLoaded = false;
     // switcher between stripe and demo elements. If true - demo elements will be showed
     hideCardFormElements = false;
-    isSaveInProcess = false;
     // saved card data
     cardData: CreditCard = null;
 
@@ -96,7 +102,6 @@ export class BillingFormComponent implements OnInit, OnDestroy {
         address_zip: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     });
 
-    process = false;
     billingCountries: CountryModel[] = [];
     billingStates: string[] = [];
     emptyStates: boolean = false;
@@ -243,6 +248,15 @@ export class BillingFormComponent implements OnInit, OnDestroy {
         this.formBillingAddress.controls.name.setValue('');
     }
 
+    onStatesChange(): void {
+        const billingData = {
+            ...this.cardData,
+            ...this.formBillingAddress.getRawValue(),
+            address_country: this.formBillingAddress.controls.address_country.value.Iso2,
+        };
+        this.cardDataLoaded.emit(billingData);
+    }
+
     /**
      * Creation and mounting the stripe elements for card
      * @private
@@ -274,9 +288,11 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                     cardResponse => {
                         this.toaster.success('Card has been added');
                         this.cardData = cardResponse.cards[0];
+                        this.cardDataLoaded.emit(this.cardData);
                         if (this.cardData) {
                             this.fillCardForm();
                         }
+                        this.successAction.emit();
                     },
                     error => {
                         this.toaster.error(error.message);
@@ -340,6 +356,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                     this.cardData = cardResponse.cards[0];
                     this.process = false;
                     this.cardDataLoaded.emit(this.cardData);
+                    this.successAction.emit();
                 },
                 error => {
                     this.toaster.error(error.message);
