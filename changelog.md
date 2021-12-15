@@ -1,7 +1,3 @@
-## Release notes - template3-marketsite-frontend - Version 1.55.1 (12/2/2021)<br>
-### Bug<br>
-AT-1624 - [hotfix][Market - Billing] Country dropdown remains blank on Billing page.<br>
-AT-1623 - [hotfix][Market - Billing] Credit card fields remains disabled to enter data on PROD.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.55.0 (12/1/2021)<br>
 ### Task<br>
 AT-1607 - Ensure correct SSO behavior in all possible scenarios<br>
