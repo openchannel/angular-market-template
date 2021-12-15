@@ -70,22 +70,24 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
     }
 
     initButtonData(): void {
+        const actionType = this.appData?.ownership?.ownershipStatus === 'active' ? 'OWNED' : 'UNOWNED';
+
         switch (this.buttonAction.type) {
             case 'form':
                 this.setViewData(null, this.buttonAction as FormButtonAction);
                 break;
             case 'install':
-                if (this.appData?.ownership?.ownershipStatus === 'active') {
-                    this.setViewData('OWNED', (this.buttonAction as OwnershipButtonAction)?.owned);
-                } else {
-                    this.setViewData('UNOWNED', (this.buttonAction as OwnershipButtonAction)?.unowned);
-                }
+                const viewData = (this.buttonAction as OwnershipButtonAction)?.[
+                    this.appData?.ownership?.ownershipStatus === 'active' ? 'owned' : 'unowned'
+                ];
+
+                this.setViewData(actionType, viewData);
                 break;
             case 'download':
-                this.viewData = {
+                this.setViewData(actionType, {
                     button: (this.buttonAction as DownloadButtonAction).button,
                     message: null,
-                };
+                });
                 break;
             default:
                 this.toasterService.error(`Error: invalid button type: ${this.buttonAction.type}`);
@@ -101,7 +103,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                 this.processOwnership();
                 break;
             case 'download':
-                this.downloadFile(this.buttonAction as DownloadButtonAction);
+                this.processOwnershipAndDownload(this.buttonAction as DownloadButtonAction);
                 break;
             default:
                 this.toasterService.error(`Error: invalid button type: ${this.buttonAction.type}`);
@@ -153,6 +155,23 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         }
     }
 
+    private processOwnershipAndDownload(actionConfig: DownloadButtonAction): void {
+        if (this.authService.isLoggedInUser()) {
+            switch (this.actionType) {
+                case 'OWNED':
+                    this.downloadFile(actionConfig).subscribe();
+                    break;
+                case 'UNOWNED':
+                    this.installOwnership(() => this.downloadFile(actionConfig));
+                    break;
+                default:
+                    this.toasterService.error(`Error: invalid owned button type: ${this.actionType}`);
+            }
+        } else {
+            this.router.navigate(['login'], { queryParams: { returnUrl: window.location.pathname } }).then();
+        }
+    }
+
     private processOwnership(): void {
         if (this.authService.isLoggedInUser()) {
             switch (this.actionType) {
@@ -170,16 +189,18 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         }
     }
 
-    private installOwnership(): void {
+    private installOwnership(actionAfterInstall: () => Observable<any> = of): void {
         if (this.appData?.model?.length > 0) {
             this.processAction(
-                this.ownershipService.installOwnership(
-                    {
-                        appId: this.appData.appId,
-                        modelId: this.appData?.model[0].modelId,
-                    },
-                    new HttpHeaders({ 'x-handle-error': '403, 500' }),
-                ),
+                this.ownershipService
+                    .installOwnership(
+                        {
+                            appId: this.appData.appId,
+                            modelId: this.appData?.model[0].modelId,
+                        },
+                        new HttpHeaders({ 'x-handle-error': '403, 500' }),
+                    )
+                    .pipe(mergeMap(actionAfterInstall)),
                 error => this.handleOwnershipResponseError(error, 'You don’t have permission to install this app'),
             );
         } else {
@@ -245,26 +266,36 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         }
     }
 
-    private downloadFile(actionConfig: DownloadButtonAction): void {
-        const file = get(this.appData, actionConfig.fileField);
-        const regex: RegExp = new RegExp(/^(http(s)?:)?\/\//gm);
-        if (regex.test(file)) {
-            window.open(file);
-        } else {
-            this.fileService
-                .downloadFileDetails(file)
-                .pipe(
-                    mergeMap(fileInfo => this.fileService.getFileUrl(fileInfo.fileId)),
-                    tap(res => window.open(res.url)),
-                    mergeMap(fileUrl =>
-                        this.buttonAction.statistic
-                            ? this.statisticService.record(this.buttonAction.statistic, this.appData.appId)
-                            : of(fileUrl),
-                    ),
-                    takeUntil(this.$destroy),
-                )
-                .subscribe(() => {});
-        }
+    private downloadFile(actionConfig: DownloadButtonAction): Observable<void> {
+        return new Observable(subscriber => {
+            const file = get(this.appData, actionConfig.fileField);
+            const regex: RegExp = new RegExp(/^(http(s)?:)?\/\//gm);
+            if (regex.test(file)) {
+                window.open(file);
+                subscriber.next();
+            } else {
+                this.fileService
+                    .downloadFileDetails(file)
+                    .pipe(
+                        mergeMap(fileInfo => this.fileService.getFileUrl(fileInfo.fileId)),
+                        tap(res => window.open(res.url)),
+                        mergeMap(fileUrl =>
+                            this.buttonAction.statistic
+                                ? this.statisticService.record(this.buttonAction.statistic, this.appData.appId)
+                                : of(fileUrl),
+                        ),
+                        catchError(err => {
+                            subscriber.error(err);
+                            return throwError(err);
+                        }),
+                        tap(() => {
+                            subscriber.next();
+                        }),
+                        takeUntil(this.$destroy),
+                    )
+                    .subscribe(() => {});
+            }
+        });
     }
 
     private handleOwnershipResponseError(error: any, forbiddenMessage: string): Observable<never> {
