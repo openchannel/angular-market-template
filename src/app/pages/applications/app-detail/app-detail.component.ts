@@ -25,7 +25,7 @@ import {
 import { HttpHeaders } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
-import { ButtonActionService } from './button-action/button-action.service';
+import { ButtonActionService } from '@features/button-action/button-action.service';
 
 @Component({
     selector: 'app-app-detail',

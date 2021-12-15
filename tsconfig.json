@@ -16,6 +16,7 @@
       "@mixins": ["./node_modules/@angular/*"],
       "@env": ["environments/environment"],
       "@shared/*": ["app/shared/*"],
+      "@features/*": ["app/features/*"],
       "@core/*": ["app/core/*"],
       "moment": [
         "../node_modules/moment/min/moment.min.js"

@@ -341,3 +341,25 @@ app-not-found header {
         }
     }
 }
+
+.app-options-dropdown {
+    &__title {
+        img {
+            padding: 19px;
+            border: 1px solid #c9d5ea;
+            border-radius: 4px;
+        }
+    }
+    &__item {
+        font-size: 14px;
+        height: min-content;
+        margin: auto 0 auto 0;
+    }
+    .dropdown-button__menu {
+        width: 120px;
+        &-item {
+            height: 50px;
+            display: flex;
+        }
+    }
+}

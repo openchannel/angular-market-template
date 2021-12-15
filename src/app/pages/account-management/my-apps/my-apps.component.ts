@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppsService, FrontendService } from '@openchannel/angular-common-services';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { pageConfig } from '../../../../assets/data/configData';
+import { ActionButton, actionButtons, pageConfig} from '../../../../assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Router } from '@angular/router';
@@ -18,6 +18,7 @@ export class MyAppsComponent implements OnInit, OnDestroy {
     appSorts: DropdownModel<string>[];
     selectedSort: DropdownModel<string>;
     appsLoaded = false;
+    appOptions: ActionButton[] = actionButtons;
     
     private pageNumber = 1;
     private destroy$ = new Subject();
@@ -77,6 +78,9 @@ export class MyAppsComponent implements OnInit, OnDestroy {
 
     navigateTo(parts: any[]): void {
         this.router.navigate(parts).then();
+    }
+
+    onClickByAppOption(option: string): void {
     }
 
     private loadApps(): void {
