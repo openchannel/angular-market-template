@@ -24,6 +24,7 @@
             [app]="app"
             class="mb-2"
             [customDropdown]="dropdownTemplate"
+            [customDropdownContext]="app"
             (clickByAppCard)="navigateTo(['details', $event.safeName[0]])"></oc-app-short-info>
     </div>
 </div>
