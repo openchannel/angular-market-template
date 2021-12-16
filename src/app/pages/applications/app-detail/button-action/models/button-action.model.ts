@@ -27,6 +27,7 @@ export interface ToasterMessages {
     success: string;
     fail: string;
     notFound?: string;
+    tooManyAttempts?: string;
 }
 
 export interface ButtonForm {

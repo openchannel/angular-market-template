@@ -131,15 +131,19 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                             if (result) {
                                 // create submission by this form
                                 this.processAction(
-                                    this.formService.createFormSubmission(form.formId, {
-                                        appId: this.appData.appId,
-                                        name: result.name,
-                                        userId: '',
-                                        email: result.email,
-                                        formData: {
-                                            ...result,
+                                    this.formService.createFormSubmission(
+                                        form.formId,
+                                        {
+                                            appId: this.appData.appId,
+                                            name: result.name,
+                                            userId: '',
+                                            email: result.email,
+                                            formData: {
+                                                ...result,
+                                            },
                                         },
-                                    }),
+                                        new HttpHeaders({ 'x-handle-error': '429' }),
+                                    ),
                                 );
                             }
                         });
@@ -211,9 +215,19 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                             ? errorHandler
                             : error => {
                                   this.inProcess = false;
-                                  if (error.status !== 429 && this.viewData?.message?.fail) {
-                                      this.toasterService.error(this.viewData?.message?.fail);
+
+                                  switch (error.status) {
+                                      case 429:
+                                          if (this.viewData?.message?.tooManyAttempts) {
+                                              this.toasterService.error(this.viewData.message.tooManyAttempts);
+                                          }
+                                          break;
+                                      default:
+                                          if (this.viewData?.message?.fail) {
+                                              this.toasterService.error(this.viewData.message.fail);
+                                          }
                                   }
+
                                   return throwError(error);
                               },
                     ),

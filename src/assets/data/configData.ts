@@ -51,6 +51,7 @@ export const pageConfig = {
                     success: "Thank you for submitting, we'll get back to you shortly",
                     fail: 'Due to an error, we were not able to send your form',
                     notFound: 'Contact us form is not available',
+                    tooManyAttempts: 'You have made too many attempts to submit this form. Please wait 10 minutes and try again.',
                 },
                 button: {
                     class: 'oc-button_secondary',
