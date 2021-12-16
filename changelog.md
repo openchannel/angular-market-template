@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.55.2 (12/16/2021)<br>
+### Bug<br>
+AT-1635 - [Review] If the App not Owned and Review added then remove "Write Review" button and show "Edit" and "Delete" options.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.55.1 (12/15/2021)<br>
 ### Task<br>
 AT-1541 - Allow reviews without Ownership records<br>
