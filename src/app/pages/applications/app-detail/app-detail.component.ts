@@ -8,6 +8,7 @@ import {
     TitleService,
     FrontendService,
     StatisticService,
+    SiteContentService, AuthHolderService,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
@@ -69,6 +70,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     appListingActions: ButtonAction[];
     // id of the current user. Necessary for a review
     currentUserId: string;
+    // when true, the user can create a review without app ownership.
+    allowReviewsWithoutOwnership: boolean = false;
 
     private destroy$: Subject<void> = new Subject();
     private appConfigPipe = pageConfig.fieldMappings;
@@ -89,10 +92,16 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private statisticService: StatisticService,
         private metaTagService: MarketMetaTagService,
         private location: Location,
+        private siteContentService: SiteContentService,
+        private authHolderService: AuthHolderService,
     ) {}
 
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
+
+        this.initAllowReviewsWithoutOwnershipProperty();
+
+        this.initReviewSortQueries();
 
         this.getAppData();
 
@@ -114,6 +123,26 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         };
     }
 
+    initAllowReviewsWithoutOwnershipProperty(): void {
+        this.siteContentService.getSecuritySettings()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(settings => {
+            // The user must be logged
+            this.allowReviewsWithoutOwnership = this.authHolderService.isLoggedInUser() && settings?.allowReviewsWithoutOwnership;
+        })
+    }
+
+    initReviewSortQueries(): void {
+        this.frontendService
+        .getSorts()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(page => {
+            this.reviewsSorts = page.list[0]
+                ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
+                : null;
+        });
+    }
+
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
@@ -122,6 +151,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     loadReviews(): void {
         this.loader.start();
+        this.userReview = null;
 
         this.reviewsService
             .getReviewsByAppId(

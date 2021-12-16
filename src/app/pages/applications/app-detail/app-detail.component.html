@@ -107,7 +107,7 @@
                     [currentUserId]="currentUserId"
                     [reviewsList]="reviewsPage?.list"
                     [totalReview]="reviewsPage?.count"
-                    [allowWriteReview]="app.ownership && !userReview"
+                    [allowWriteReview]="(allowReviewsWithoutOwnership || app.ownership?.ownershipStatus === 'active') && !userReview"
                     (writeAReview)="onNewReview()"
                     (chosenAction)="onChosenReviewActon($event)"
                     reviewListTitle="Most recent reviews">
