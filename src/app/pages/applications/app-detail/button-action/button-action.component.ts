@@ -80,7 +80,6 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                 const viewData = (this.buttonAction as OwnershipButtonAction)?.[
                     this.appData?.ownership?.ownershipStatus === 'active' ? 'owned' : 'unowned'
                 ];
-
                 this.setViewData(actionType, viewData);
                 break;
             case 'download':
@@ -159,10 +158,10 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         if (this.authService.isLoggedInUser()) {
             switch (this.actionType) {
                 case 'OWNED':
-                    this.downloadFile(actionConfig).subscribe();
+                    this.downloadFile(actionConfig).pipe(takeUntil(this.$destroy)).subscribe();
                     break;
                 case 'UNOWNED':
-                    this.installOwnership(() => this.downloadFile(actionConfig));
+                    this.installOwnership(() => this.downloadFile(actionConfig).pipe(takeUntil(this.$destroy)));
                     break;
                 default:
                     this.toasterService.error(`Error: invalid owned button type: ${this.actionType}`);
@@ -273,6 +272,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             if (regex.test(file)) {
                 window.open(file);
                 subscriber.next();
+                subscriber.complete();
             } else {
                 this.fileService
                     .downloadFileDetails(file)
@@ -290,6 +290,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                         }),
                         tap(() => {
                             subscriber.next();
+                            subscriber.complete();
                         }),
                         takeUntil(this.$destroy),
                     )
