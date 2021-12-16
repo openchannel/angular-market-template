@@ -5,12 +5,9 @@ import { ButtonActionService } from './button-action.service';
 import { OcCommonLibModule } from '@openchannel/angular-common-components';
 
 @NgModule({
-  declarations: [ButtonActionComponent],
-  exports: [ButtonActionComponent],
-  providers: [ButtonActionService],
-  imports: [
-    CommonModule,
-    OcCommonLibModule,
-  ]
+    declarations: [ButtonActionComponent],
+    exports: [ButtonActionComponent],
+    providers: [ButtonActionService],
+    imports: [CommonModule, OcCommonLibModule],
 })
-export class ButtonActionModule { }
+export class ButtonActionModule {}

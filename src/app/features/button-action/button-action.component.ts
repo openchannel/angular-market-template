@@ -16,11 +16,7 @@ import { FullAppData, OcButtonComponent, OcFormModalComponent } from '@openchann
 import { ActivatedRoute, Router } from '@angular/router';
 import { get } from 'lodash';
 import { HttpHeaders } from '@angular/common/http';
-import {
-    ActionButton,
-    DownloadButtonType,
-    FormButtonType
-} from '../../../assets/data/configData';
+import { ActionButton, DownloadButtonType, FormButtonType } from 'assets/data/configData';
 
 @Component({
     selector: 'app-button-action',
@@ -67,7 +63,6 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         this.modal.dismissAll();
     }
 
-
     onClick(): void {
         switch (this.buttonAction.type) {
             case 'form':
@@ -84,6 +79,8 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                 break;
             case 'purchase':
                 this.processPurchase();
+                break;
+            default:
                 break;
         }
     }
@@ -152,7 +149,10 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             this.navigateToLoginPage();
         } else {
             this.processAction(
-                this.ownershipService.uninstallOwnership(this.appData.ownership.ownershipId, new HttpHeaders({'x-handle-error': '403, 500'})),
+                this.ownershipService.uninstallOwnership(
+                    this.appData.ownership.ownershipId,
+                    new HttpHeaders({ 'x-handle-error': '403, 500' }),
+                ),
                 error => this.handleOwnershipResponseError(error, 'You don’t have permission to uninstall this app'),
                 false,
             );

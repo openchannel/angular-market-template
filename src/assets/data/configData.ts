@@ -36,7 +36,7 @@ export interface FormButtonType extends ButtonTypeModel<'form'> {
 
 export type ActionButton = BuyNowButtonType | FormButtonType | InstallButtonType | UninstallButtonType | DownloadButtonType;
 
-const buyNowButton: ActionButton = {
+export const buyNowButton: ActionButton = {
     type: 'purchase',
     statistic: 'purchase',
     showForAppTypes: [],
@@ -50,7 +50,7 @@ const buyNowButton: ActionButton = {
     },
 };
 
-const contactUsButton: ActionButton = {
+export const contactUsButton: ActionButton = {
     type: 'form',
     formId: 'contact-us',
     statistic: 'leads',
@@ -68,7 +68,7 @@ const contactUsButton: ActionButton = {
 
 const ownershipAppTypes = ['web_plugin', 'web_integration', 'internal_feature'];
 
-const installButton: ActionButton = {
+export const installButton: ActionButton = {
     type: 'install',
     statistic: 'installs',
     showForAppTypes: ownershipAppTypes,
@@ -82,13 +82,13 @@ const installButton: ActionButton = {
     },
 };
 
-const uninstallButton: ActionButton = {
+export const uninstallButton: ActionButton = {
     type: 'uninstall',
     statistic: 'installs',
     showForAppTypes: ownershipAppTypes,
     showButton: {
         type: 'primary',
-        text: 'Uninstall',
+        text: 'Delete',
     },
     showToaster: {
         successMessage: 'Your app has been uninstalled',
@@ -97,7 +97,7 @@ const uninstallButton: ActionButton = {
 };
 
 // todo add toaster handler for 404 error.
-const downloadButton: ActionButton = {
+export const downloadButton: ActionButton = {
     type: 'download',
     statistic: 'downloads',
     pathToFile: 'customData.releases[0].file',

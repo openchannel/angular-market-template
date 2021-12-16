@@ -1,4 +1,4 @@
-import {ActionButton, ButtonType, DownloadButtonType} from '../../../assets/data/configData';
+import { ActionButton, ButtonType, buyNowButton, DownloadButtonType } from 'assets/data/configData';
 import { get } from 'lodash';
 import { AppResponse } from '@openchannel/angular-common-services';
 
@@ -6,19 +6,17 @@ export class ButtonActionService {
     readonly hideButtonsWithoutOwnership: ButtonType[] = ['install', 'download'];
 
     canBeShow(app: AppResponse, buttons: ActionButton[]): ActionButton[] {
-
         const availableButtons = buttons.filter(button => this.defaultButtonFilter(app, button));
 
-        if(!app?.model?.length || (app.model[0].type === 'free') || this.isActiveOwnership(app)) {
+        if (!app?.model?.length || (app.model[0].type === 'free') || this.isActiveOwnership(app)) {
             // 1. when price models is empty.
             // 2. when first price model with 'free' type.
             // 3. when user have ownership (bought).
             return availableButtons;
         } else {
-            const buyButton = buttons.find(button => button.type === 'purchase');
             // 1. always show 'Buy' button.
             // 2. show other buttons without required ownership.
-            return [buyButton, ...availableButtons.filter(button => !this.hideButtonsWithoutOwnership.includes(button.type))];
+            return [buyNowButton, ...availableButtons.filter(button => !this.hideButtonsWithoutOwnership.includes(button.type))];
         }
     }
 
