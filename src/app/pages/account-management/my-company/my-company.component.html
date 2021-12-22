@@ -3,7 +3,7 @@
         pageTitle="My company"
         navigateText="Back"
         (navigateClick)="goBack()"
-        [buttonText]="selectedPage.pageId === pages[1].pageId ? 'Invite a member' : null"
+        [buttonText]="selectedPage.pageId === pages[1].pageId && !isSSO ? 'Invite a member' : null"
         (buttonClick)="openInviteModal()"></app-page-title>
 </div>
 

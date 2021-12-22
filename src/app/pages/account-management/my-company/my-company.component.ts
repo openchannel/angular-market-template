@@ -62,6 +62,8 @@ export class MyCompanyComponent implements OnInit, OnDestroy {
 
     isProcessing = false;
 
+    isSSO: boolean;
+
     private companyName$ = new BehaviorSubject<string>(null);
     private destroy$: Subject<void> = new Subject();
 
@@ -78,6 +80,8 @@ export class MyCompanyComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        this.isSSO = this.authHolderService?.userDetails?.isSSO;
+
         this.currentPages = this.filterPagesByUserType();
         this.initMainPage();
         this.initCompanyName();
