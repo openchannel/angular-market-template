@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { PrerenderRequestsWatcherService } from '@openchannel/angular-common-services';
 
 @Component({
@@ -8,7 +7,7 @@ import { PrerenderRequestsWatcherService } from '@openchannel/angular-common-ser
     styleUrls: ['./not-found.component.scss'],
 })
 export class NotFoundComponent implements OnInit {
-    constructor(private router: Router, private prerenderService: PrerenderRequestsWatcherService) {}
+    constructor(private prerenderService: PrerenderRequestsWatcherService) {}
 
     ngOnInit(): void {
         this.prerenderService.setPrerenderStatus(false);
