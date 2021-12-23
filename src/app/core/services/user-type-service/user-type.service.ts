@@ -108,7 +108,7 @@ export class OcEditUserTypeService {
         const notExistingTypes = configTypes.filter(type => !existingTypes.includes(type));
 
         notExistingTypes.forEach(type => {
-            console.error(`${type} is not a valid user account type`);
+            console.warn(`${type} is not a valid user account type`);
         });
     }
 }
