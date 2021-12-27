@@ -1,4 +1,5 @@
 @import 'src/assets/styles/mixins';
+@import 'src/assets/styles/theme';
 
 .page-title {
     line-height: 46px;
@@ -33,6 +34,11 @@ div.menu {
             }
         }
     }
+    &-item {
+        @include font-size-md();
+        padding: 14px 42px;
+        border-radius: 4px;
+    }
 }
 
 .no-apps-message {
@@ -49,6 +55,7 @@ div.menu {
     min-width: 52px;
     height: 42px;
     padding: 0;
+    border: 1px solid $info;
     @include media-breakpoint-sm {
         display: block;
         height: 20px;

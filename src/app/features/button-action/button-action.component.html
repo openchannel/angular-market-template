@@ -6,7 +6,7 @@
             [process]="inProcess"
             [disabled]="inProcess"
             (click)="onClick()"></oc-button>
-    <span *ngIf="buttonAction && viewType === 'simple'">{{buttonAction.showButton.text}}</span>
+    <span *ngIf="buttonAction && viewType === 'simple'" (click)="onClick()">{{buttonAction.showButton.text}}</span>
 </div>
 
 
