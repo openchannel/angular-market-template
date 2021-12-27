@@ -67,8 +67,10 @@ export class MyAppsComponent implements OnInit, OnDestroy {
     }
 
     onScrollDown(): void {
-        this.pageNumber++;
-        this.loadApps();
+        if (this.appList.length > 0) {
+            this.pageNumber++;
+            this.loadApps();
+        }
     }
 
     goBack(): void {
