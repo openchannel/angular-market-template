@@ -26,6 +26,7 @@ import { ActionButton, DownloadButtonType, FormButtonType } from 'assets/data/co
 export class ButtonActionComponent implements OnInit, OnDestroy {
     @Input() buttonAction: ActionButton;
     @Input() appData: FullAppData;
+    @Input() viewType: 'simple' | 'button' = 'button';
     @Output() readonly updateAppData: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChild('rejectButton') rejectButton: TemplateRef<OcButtonComponent>;

@@ -1,10 +1,14 @@
-<oc-button
-    *ngIf="buttonAction"
-    [type]="buttonAction.showButton.type"
-    [text]="buttonAction.showButton.text"
-    [process]="inProcess"
-    [disabled]="inProcess"
-    (click)="onClick()"></oc-button>
+<div>
+    <oc-button
+            *ngIf="buttonAction && viewType === 'button'"
+            [type]="buttonAction.showButton.type"
+            [text]="buttonAction.showButton.text"
+            [process]="inProcess"
+            [disabled]="inProcess"
+            (click)="onClick()"></oc-button>
+    <span *ngIf="buttonAction && viewType === 'simple'">{{buttonAction.showButton.text}}</span>
+</div>
+
 
 <ng-template #confirmButton>
     <oc-button type="primary" [text]="buttonAction.showButton.text"></oc-button>

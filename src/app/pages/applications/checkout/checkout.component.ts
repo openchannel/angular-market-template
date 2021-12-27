@@ -81,7 +81,6 @@ export class CheckoutComponent implements OnInit {
 
     onCardDataLoaded(cardData: CreditCard): void {
         if (!this.card || cardData.address_state !== this.card.address_state) {
-            console.log(cardData);
             this.loader.start();
             this.stripeService
                 .getTaxesAndPayment(cardData.address_country, cardData.address_state, this.app.appId, this.app.model[0].modelId)
