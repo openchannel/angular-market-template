@@ -28,10 +28,11 @@
                     <button class="menu-button" ngbDropdownToggle>
                         <img src="assets/img/dots-hr-icon.svg" alt="more-icon" class="icon-dots">
                     </button>
-                    <div ngbDropdownMenu>
+                    <div ngbDropdownMenu class="app-options-dropdown-menu">
                         <app-button-action class="dropdown-item" *ngFor="let action of app.listingActions"
                                 [appData]="app"
                                 [buttonAction]="action"
+                                (updateAppData)="onUpdateAppData()"
                                 viewType="simple">
                         </app-button-action>
                     </div>

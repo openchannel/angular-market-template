@@ -91,7 +91,10 @@ export class MyAppsComponent implements OnInit, OnDestroy {
         this.router.navigate(parts).then();
     }
 
-    onClickByAppOption(option: string): void {}
+    onUpdateAppData(): void {
+        this.appList = [];
+        this.loadApps();
+    }
 
     private loadApps(): void {
         const sort = this.selectedSort ? this.selectedSort.value : '';

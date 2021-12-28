@@ -34,11 +34,6 @@ div.menu {
             }
         }
     }
-    &-item {
-        @include font-size-md();
-        padding: 14px 42px;
-        border-radius: 4px;
-    }
 }
 
 .no-apps-message {
@@ -55,6 +50,7 @@ div.menu {
     min-width: 52px;
     height: 42px;
     padding: 0;
+    border-radius: 4px;
     border: 1px solid $info;
     @include media-breakpoint-sm {
         display: block;

@@ -350,10 +350,18 @@ app-not-found header {
             border-radius: 4px;
         }
     }
-    &__item {
-        font-size: 14px;
-        height: min-content;
-        margin: auto 0 auto 0;
+    .app-options-dropdown-menu {
+        .dropdown-item {
+            height: min-content;
+            margin: auto 0 auto 0;
+            padding: 0;
+            .button-action {
+                .button-action__simple {
+                    font-size: 14px;
+                    padding: 14px 35px;
+                }
+            }
+        }
     }
     .dropdown-button__menu {
         width: 120px;
