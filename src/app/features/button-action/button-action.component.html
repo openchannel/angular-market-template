@@ -1,12 +1,16 @@
-<div>
-    <oc-button
+<div class="button-action">
+    <oc-button class="button-action__button"
             *ngIf="buttonAction && viewType === 'button'"
             [type]="buttonAction.showButton.type"
             [text]="buttonAction.showButton.text"
             [process]="inProcess"
             [disabled]="inProcess"
             (click)="onClick()"></oc-button>
-    <span *ngIf="buttonAction && viewType === 'simple'" (click)="onClick()">{{buttonAction.showButton.text}}</span>
+    <span *ngIf="buttonAction && viewType === 'simple'"
+          (click)="onClick()"
+          class="button-action__simple">
+        {{buttonAction.showButton.text}}
+    </span>
 </div>
 
 

@@ -12,7 +12,7 @@ import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FullAppData, OcButtonComponent, OcFormModalComponent } from '@openchannel/angular-common-components';
+import { FullAppData, OcButtonComponent, OcFormModalComponent, OcConfirmationModalComponent } from '@openchannel/angular-common-components';
 import { ActivatedRoute, Router } from '@angular/router';
 import { get } from 'lodash';
 import { HttpHeaders } from '@angular/common/http';
@@ -149,14 +149,24 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         if (!this.authService.isLoggedInUser()) {
             this.navigateToLoginPage();
         } else {
-            this.processAction(
-                this.ownershipService.uninstallOwnership(
-                    this.appData.ownership.ownershipId,
-                    new HttpHeaders({ 'x-handle-error': '403, 500' }),
-                ),
-                error => this.handleOwnershipResponseError(error, 'You don’t have permission to uninstall this app'),
-                false,
-            );
+            const modalRef = this.modal.open(OcConfirmationModalComponent, { size: 'md', backdrop: 'static' });
+
+            modalRef.componentInstance.modalTitle = 'Delete App';
+            modalRef.componentInstance.modalText = 'Are you sure you want to delete this app?';
+            modalRef.componentInstance.confirmButtonText = 'Delete';
+            modalRef.componentInstance.confirmButtonType = 'danger';
+            modalRef.result.then(result => {
+                if (result) {
+                    this.processAction(
+                        this.ownershipService.uninstallOwnership(
+                            this.appData.ownership.ownershipId,
+                            new HttpHeaders({ 'x-handle-error': '403, 500' }),
+                        ),
+                        error => this.handleOwnershipResponseError(error, 'You don’t have permission to uninstall this app'),
+                        false,
+                    );
+                }
+            });
         }
     }
 
