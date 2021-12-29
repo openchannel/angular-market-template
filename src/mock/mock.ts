@@ -1,14 +1,29 @@
 import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Page } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
+import { throwObservableError } from './mock.utils';
 
 @Component({
     selector: 'mock-routing',
     template: '',
 })
 export class MockRoutingComponent {}
+
+@Component({
+    selector: 'ngx-loading-bar',
+    template: '',
+})
+export class MockNgxLoadingBarComponent {
+    @Input() includeSpinner: boolean = false;
+}
+
+@Component({
+    selector: 'app-notification',
+    template: '',
+})
+export class MockNotificationComponent {}
 
 export class MockPrerenderRequestsWatcherService {
     setPrerenderStatus(ready: boolean): void {}
@@ -143,6 +158,7 @@ export class MockAppGetStartedComponent {
 export class MockLoadingBarState {
     complete(): void {}
     start(): void {}
+    stop(): void {}
 }
 
 export class MockLoadingBarService {
@@ -203,11 +219,7 @@ export class MockAppsService {
         list: [MockAppsService.MOCK_APP, MockAppsService.MOCK_APP, MockAppsService.MOCK_APP],
     };
 
-    getApps(): Observable<any> {
-        if (MockAppsService.THROW_ERRORS) {
-            return throwError('Error');
-        }
-
+    @throwObservableError(() => MockAppsService.THROW_ERRORS) getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
 }
@@ -326,11 +338,7 @@ export class MockFrontendService {
         ],
     };
 
-    getFilters(): Observable<any> {
-        if (MockFrontendService.THROW_ERRORS) {
-            return throwError('Error');
-        }
-
+    @throwObservableError(() => MockFrontendService.THROW_ERRORS) getFilters(): Observable<any> {
         return of(MockFrontendService.MOCK_FILTERS_PAGE);
     }
 }
@@ -349,8 +357,22 @@ export class MockSiteConfigService {
     getSiteConfigAsObservable(): Observable<any> {
         return of(MockSiteConfigService.PAGE_CONFIG);
     }
+
+    initSiteConfiguration(config: any): void {}
 }
 
 export class MockTitleService {
     setSpecialTitle(): void {}
+}
+
+export class MockAuthenticationService {
+    static THROW_ERRORS = false;
+
+    @throwObservableError(() => MockAuthenticationService.THROW_ERRORS) tryLoginByRefreshToken(): Observable<any> {
+        return of('1');
+    }
+
+    @throwObservableError(() => MockAuthenticationService.THROW_ERRORS) initCsrf(): Observable<any> {
+        return of('1');
+    }
 }
