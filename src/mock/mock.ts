@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, Directive, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Page } from '@openchannel/angular-common-services';
+import { Page, SortResponse } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
 import { throwObservableError } from './mock.utils';
@@ -338,8 +338,43 @@ export class MockFrontendService {
         ],
     };
 
+    static MOCK_SORTS_PAGE: Page<SortResponse> = {
+        count: 1,
+        list: [
+            {
+                id: 'en-us-1',
+                name: 'en-us 1',
+                description: 'en-us 1 Description',
+                values: [
+                    {
+                        id: '1-start',
+                        label: 'Popular',
+                        sort: '{"created":-1}',
+                        customData: null,
+                        description: 'fghfg',
+                        checked: false,
+                    },
+                    {
+                        id: 'newest',
+                        label: 'Newest',
+                        sort: '{"created":-1}',
+                        customData: null,
+                        description: 'fgdg dfg',
+                        checked: false,
+                    },
+                ],
+            },
+        ],
+        pageNumber: 1,
+        pages: 1,
+    };
+
     @throwObservableError(() => MockFrontendService.THROW_ERRORS) getFilters(): Observable<any> {
         return of(MockFrontendService.MOCK_FILTERS_PAGE);
+    }
+
+    getSorts(): Observable<any> {
+        return of(MockFrontendService.MOCK_SORTS_PAGE);
     }
 }
 
@@ -376,3 +411,50 @@ export class MockAuthenticationService {
         return of('1');
     }
 }
+
+@Component({
+    selector: 'oc-dropdown',
+    template: '',
+})
+export class MockDropdownComponent {
+    @Input() selected: any;
+    @Input() title: string = 'Sort by';
+    @Input() options: any[];
+    @Output() readonly selectedChange: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Component({
+    selector: 'oc-app-short-info',
+    template: '',
+})
+export class MockAppShortInfoComponent {
+    @Input() app: any;
+    @Input() priceModelIndex: number = 0;
+    @Input() customDropdown: TemplateRef<any>;
+    @Input() defaultAppIcon: string = 'assets/angular-common-components/standard-app-icon.svg';
+    @Output() readonly clickByAppCard: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Directive({
+    selector: 'infiniteScroll',
+})
+export class MockInfiniteScrollDirective {
+    @Output() readonly scrolled: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Directive({
+    selector: 'ngbDropdown',
+})
+export class MockNgbDropdownDirective {
+    @Input() placement: string = '';
+}
+
+@Directive({
+    selector: 'ngbDropdownToggle',
+})
+export class MockNgbDropdownToggleDirective {}
+
+@Directive({
+    selector: 'ngbDropdownMenu',
+})
+export class MockNgbDropdownMenuDirective {}
