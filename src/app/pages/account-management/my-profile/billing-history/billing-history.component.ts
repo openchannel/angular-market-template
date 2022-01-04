@@ -71,10 +71,10 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
     handleOptionClick(option: TransactionOptions, transaction: FullTransaction): void {
         switch (option) {
             case 'Download invoice':
-                this.downloadByLink(transaction.invoiceUrl, 'Invoice');
+                window.open(transaction.invoiceUrl);
                 break;
-            case 'Download receipt':
-                this.downloadByLink(transaction.receiptUrl, 'Receipt');
+            case 'View receipt':
+                window.open(transaction.recieptUrl);
                 break;
             default:
                 return;
@@ -84,33 +84,6 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
     handlePageScrolled(): void {
         this.page++;
         this.getTransactionsList();
-    }
-
-    private downloadByLink(link: string, fileName: string): void {
-        this.loader.start();
-
-        this.fileDownloadService
-            .downloadFileFromUrl(link)
-            .pipe(
-                catchError(err => {
-                    this.loader.complete();
-                    return throwError(err);
-                }),
-                takeUntil(this.$destroy),
-            )
-            .subscribe(blob => {
-                const blobUrl = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                document.body.appendChild(a);
-                a.style.display = 'none';
-                a.href = blobUrl;
-                a.download = fileName;
-                a.click();
-                window.URL.revokeObjectURL(blobUrl);
-                a.remove();
-
-                this.loader.complete();
-            });
     }
 
     private getTransactionsList(startNewPagination: boolean = false): void {
@@ -180,8 +153,8 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
     private getTransactionOptions(transaction: Transaction): TransactionOptions[] {
         const options: TransactionOptions[] = [];
 
-        if (transaction.receiptUrl) {
-            options.push('Download receipt');
+        if (transaction.recieptUrl) {
+            options.push('View receipt');
         }
         if (transaction.invoiceUrl) {
             options.push('Download invoice');
