@@ -20,8 +20,10 @@
             [ngSwitch]="selectedPage.pageId">
             <app-general-profile *ngSwitchCase="pages[0].pageId"></app-general-profile>
             <app-change-password *ngSwitchCase="pages[1].pageId"></app-change-password>
-            <app-billing *ngSwitchCase="pages[2].pageId"></app-billing>
-            <app-billing-history *ngSwitchCase="pages[3].pageId"></app-billing-history>
+            <ng-container *ngIf="pages.length === 4">
+                <app-billing *ngSwitchCase="pages[2].pageId"></app-billing>
+                <app-billing-history *ngSwitchCase="pages[3].pageId"></app-billing-history>
+            </ng-container>
         </div>
     </div>
 </div>
