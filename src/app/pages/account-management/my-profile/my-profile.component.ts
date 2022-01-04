@@ -3,6 +3,8 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Page } from 'app/pages/account-management/my-company/my-company.component';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
+import { siteConfig } from 'assets/data/siteConfig';
+import { PaymentsGateways } from '@openchannel/angular-common-services';
 
 @Component({
     selector: 'app-my-profile',
@@ -23,24 +25,31 @@ export class MyProfileComponent implements OnInit {
             routerLink: '/my-profile/password',
             permissions: [],
         },
-        {
-            pageId: 'billing',
-            placeholder: 'Billing',
-            routerLink: '/my-profile/billing',
-            permissions: [],
-        },
-        {
-            pageId: 'billing-history',
-            placeholder: 'Billing history',
-            routerLink: '/my-profile/billing-history',
-            permissions: [],
-        },
     ];
     selectedPage: Page = this.pages[0];
 
     constructor(private router: Router, private location: Location, private stripeLoader: StripeLoaderService) {}
 
     ngOnInit(): void {
+        const billingPages =
+            siteConfig.paymentsEnabled && siteConfig.paymentsGateway === PaymentsGateways.STRIPE
+                ? [
+                      {
+                          pageId: 'billing',
+                          placeholder: 'Billing',
+                          routerLink: '/my-profile/billing',
+                          permissions: [],
+                      },
+                      {
+                          pageId: 'billing-history',
+                          placeholder: 'Billing history',
+                          routerLink: '/my-profile/billing-history',
+                          permissions: [],
+                      },
+                  ]
+                : [];
+        this.pages = [...this.pages, ...billingPages];
+
         this.selectedPage = this.pages.find(page => this.router.url === page.routerLink);
     }
 
