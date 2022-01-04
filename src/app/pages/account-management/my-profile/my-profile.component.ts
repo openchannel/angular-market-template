@@ -49,7 +49,6 @@ export class MyProfileComponent implements OnInit {
                   ]
                 : [];
         this.pages = [...this.pages, ...billingPages];
-        console.log(this.pages);
 
         this.selectedPage = this.pages.find(page => this.router.url === page.routerLink);
     }
