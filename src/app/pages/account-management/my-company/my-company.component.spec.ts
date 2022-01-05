@@ -211,7 +211,7 @@ describe('MyCompanyComponent', () => {
         expect((component as any).inviteService.sendUserInvite).toHaveBeenCalled();
     });
 
-    it('invite modal should call toaster.success and appManagement.getAllUsers methods when modal was closed', fakeAsync(() => {
+    it('should call toaster.success and appManagement.getAllUsers methods when modal was closed', fakeAsync(() => {
         component.selectedPage = component.currentPages[1];
         fixture.detectChanges();
 
@@ -259,14 +259,14 @@ describe('MyCompanyComponent', () => {
     });
 
     it('should render li items for each currentPages item', () => {
-        const pagesItems = fixture.debugElement.queryAll(By.css('.page-link'));
+        const pagesItems = fixture.debugElement.queryAll(By.css('.pages-list__item'));
         expect(component.currentPages.length).toBe(pagesItems.length);
     });
 
     it('gotoPage method should be called when page was clicked', () => {
         jest.spyOn(component, 'gotoPage');
 
-        const pageLinkElement = fixture.debugElement.query(By.css('.page-link a')).nativeElement;
+        const pageLinkElement = fixture.debugElement.query(By.css('.pages-list__item a')).nativeElement;
         pageLinkElement.click();
 
         expect(component.gotoPage).toHaveBeenCalledWith(component.currentPages[0]);
@@ -276,12 +276,12 @@ describe('MyCompanyComponent', () => {
         component.selectedPage = component.currentPages[0];
         fixture.detectChanges();
 
-        const pageLinkElement = fixture.debugElement.query(By.css('.page-link a')).nativeElement;
+        const pageLinkElement = fixture.debugElement.query(By.css('.pages-list__item a')).nativeElement;
         expect(pageLinkElement.classList.contains('active-link')).toBeTruthy();
     });
 
     it('should use page.placeholder as page name in template', () => {
-        const pageLinkElement = fixture.debugElement.query(By.css('.page-link a')).nativeElement;
+        const pageLinkElement = fixture.debugElement.query(By.css('.pages-list__item a')).nativeElement;
         expect(pageLinkElement.textContent.trim()).toBe(component.currentPages[0].placeholder.trim());
     });
 
