@@ -1,0 +1,107 @@
+<div class="checkout">
+    <div class="bg-container height-unset">
+        <app-page-title pageTitle="Checkout" navigateText="Back" (navigateClick)="goBack()"></app-page-title>
+    </div>
+    <div class="container">
+        <div class="row checkout__container_custom">
+            <div class="col-lg-7 col-xxl-7">
+                <app-billing-form
+                        class="checkout__billing-form"
+                        *ngIf="!purchaseSuccessful"
+                        [goBackOnCancel]="true"
+                        successButtonText="Buy now"
+                        [process]="purchaseProcess"
+                        (cardDataLoaded)="onCardDataLoaded($event)"
+                        (successButtonPressed)="onSuccessButtonPressed()"
+                        (successAction)="onSuccessAction()"
+                        [additionalButtonLock]="!isTerms"
+                        [additionalFieldsTemplate]="policyCheckbox"></app-billing-form>
+                <div *ngIf="purchaseSuccessful"
+                     class="checkout__result">
+                    <h4 class="checkout__result-title">Your purchase is confirmed</h4>
+                    <p class="checkout__result-tip">You’ll receive a confirmation email with your order details shortly</p>
+                    <div class="checkout__result-info">
+                        <h5 class="checkout__result-info-heading">Customer information</h5>
+                        <div class="checkout__result-info-item">
+                            <p class="checkout__result-info-category">Contact information:</p>
+                            <div class="checkout__result-info-content">
+                                <p>{{ user.name }}</p>
+                                <p>{{ user.email }}</p>
+                            </div>
+                        </div>
+                        <div class="checkout__result-info-item">
+                            <p class="checkout__result-info-category">Payment method:</p>
+                            <div class="checkout__result-info-content">
+                                <p>ending with *{{ card.last4 }} - {{ currencySymbol + paymentAndTaxes?.total }}</p>
+                            </div>
+                        </div>
+                        <div class="checkout__result-info-item">
+                            <p class="checkout__result-info-category">Billing address:</p>
+                            <div class="checkout__result-info-content">
+                                <p>{{ card.name }}</p>
+                                <p>
+                                    {{ card.address_line1 + (card.address_line2 ? ', ' + card.address_line2 : '') }}
+                                </p>
+                                <p>
+                                    {{ card.address_city + ' ' + (card.address_state || '') + ' ' + card.address_zip }}
+                                </p>
+                                <p>{{ card.address_country }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkout__result-return">
+                        <oc-button type="primary"
+                                   text="Go back to marketplace"
+                                   (click)="navigateToMarketplace()"></oc-button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-xxl-4">
+                 <div class="checkout__app-info" *ngIf="app">
+                     <div class="checkout__app-card">
+                         <div class="checkout__app-card-preview">
+                             <img class="checkout__app-card-image" [src]="app?.icon" alt="app-icon">
+                             <div class="checkout__app-card-details">
+                                 <span class="checkout__app-card-details-title">{{ app?.name }}</span>
+                                 <p class="checkout__app-card-details-description">{{ app?.summary || app?.description }}</p>
+                             </div>
+                         </div>
+                            <p class="checkout__app-card-price">{{ currencySymbol + app?.model[0].price}}</p>
+                     </div>
+                     <div class="checkout__sum-details">
+                         <div class="checkout__sum-details-row">
+                             <span class="checkout__sum-details-row-text">Subtotal</span>
+                             <span class="checkout__sum-details-row-text">{{ getSubtotal() }}</span>
+                         </div>
+                         <ng-container *ngIf="paymentAndTaxes">
+                             <div class="checkout__sum-details-row" *ngFor="let tax of paymentAndTaxes.taxes">
+                                 <ng-container *ngIf="tax.amount">
+                                     <span class="checkout__sum-details-row-text">{{ 'Tax ' + tax.displayName }}</span>
+                                     <span class="checkout__sum-details-row-text">{{ currencySymbol + tax.amount }}</span>
+                                 </ng-container>
+                             </div>
+                         </ng-container>
+                     </div>
+                     <div class="checkout__total">
+                         <div class="checkout__total-row">
+                             <span class="checkout__total-row-text">Total</span>
+                             <p class="checkout__total-row-text checkout__total-row-text_thin">
+                                 {{ currencySymbol }}
+                                 <span class="checkout__total-row-text checkout__total-row-text_bigger">
+                                     {{ paymentAndTaxes?.total ||  app?.model[0].price }}
+                                 </span>
+                             </p>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-8"></div>
+</div>
+
+<ng-template #policyCheckbox>
+    <oc-consent class="checkout__consent" [policyUrl]="policyUrl" [termsUrl]="termsUrl" [(ngModel)]="isTerms"></oc-consent>
+    <span class="checkout__consent-error"
+          *ngIf="validateCheckbox && !isTerms">Please confirm this checkbox</span>
+</ng-template>

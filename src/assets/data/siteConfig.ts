@@ -1,4 +1,4 @@
-import { MetaTagsPageConfig, SiteConfig } from '@openchannel/angular-common-services';
+import { MetaTagsPageConfig, PaymentsGateways, SiteConfig } from '@openchannel/angular-common-services';
 
 export const metaTags: MetaTagsPageConfig = {
     defaultMetaTags: [
@@ -27,4 +27,6 @@ export const siteConfig: SiteConfig = {
         href: 'assets/img/favicon.png',
         type: 'image/x-icon',
     },
+    paymentsEnabled: true,
+    paymentsGateway: PaymentsGateways.STRIPE,
 };

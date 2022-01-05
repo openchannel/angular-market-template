@@ -66,6 +66,20 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a *ngIf="isBilling" class="nav-link cursor-pointer" routerLink="/my-profile/billing" (click)="closedMenu()">
+                                Billing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                *ngIf="isBilling"
+                                class="nav-link cursor-pointer"
+                                routerLink="/my-profile/billing-history"
+                                (click)="closedMenu()">
+                                Billing history
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link cursor-pointer" (click)="logout()">Logout</a>
                         </li>
                     </ul>
@@ -81,6 +95,12 @@
                             class="dropdown-item cursor-pointer"
                             routerLink="/my-company/company-details">
                             My Company
+                        </div>
+                        <div class="dropdown-item cursor-pointer" *ngIf="isBilling" routerLink="/my-profile/billing">
+                            Billing
+                        </div>
+                        <div class="dropdown-item cursor-pointer" *ngIf="isBilling" routerLink="/my-profile/billing-history">
+                            Billing history
                         </div>
                         <div class="dropdown-item cursor-pointer" (click)="logout()">Logout</div>
                     </ng-container>
