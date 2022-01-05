@@ -1,0 +1,184 @@
+@import '~assets/styles/theme';
+@import '~assets/styles/mixins';
+
+.checkout {
+    
+    &__result {
+        
+        &-title {
+            @include font-size-lg();
+            @include font-medium();
+            line-height: 3.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        &-tip {
+            @include font-size-md();
+            line-height: 2.25rem;
+            margin-bottom: 4.5rem;
+        }
+        
+        &-info {
+            margin-bottom: 4.5rem;
+        
+            &-heading {
+                @include font-size-md();
+                @include font-medium();
+                line-height: 2.25rem;
+            }
+            
+            &-item {
+                margin-top: 3rem;
+                border-left: 1px solid $info;
+                padding-left: 3rem;
+            }
+            
+            &-category {
+                @include font-size-md();
+                line-height: 2.25rem;
+                margin-bottom: 2rem;
+            }
+            
+            &-content {
+            
+                p {
+                    @include font-size-md();
+                    line-height: 2.25rem;
+                    color: $text-color;
+                    margin: 0;
+                }
+            }
+        }
+        
+        &-return {
+            max-width: 255px;
+            @include media-breakpoint-sm() {
+                max-width: 100%;
+            }
+        }
+    }
+    
+    &__container {
+        
+        &_custom {
+            justify-content: space-between;
+            margin-top: 8rem;
+            @include media-breakpoint-lg {
+                flex-direction: column-reverse;
+            }
+        }
+    }
+
+    &__app-info {
+        width: 100%;
+        background-color: $light;
+        padding: 3rem;
+        @include media-breakpoint-lg {
+            margin-bottom: 3rem;
+        }
+    }
+
+    &__consent {
+        display: block;
+        margin-top: 2rem;
+        
+        &-error {
+            font-size: 12px;
+            color: $danger;
+            display: block;
+            margin-top: 6px;
+        }
+    }
+    
+    &__app-card {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 3rem;
+        border-bottom: 1px solid $dropdown-border;
+        
+        &-preview {
+            display: flex;
+        }
+        
+        &-image {
+            height: 60px;
+            width: 60px;
+            margin-right: 3rem;
+        }
+
+        &-details {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+            
+            &-title {
+                @include font-medium;
+                font-size: 16px;
+                margin-bottom: 1rem;
+                max-width: 25rem;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                @include media-breakpoint-sm {
+                    max-width: 13rem;
+                }
+            }
+            
+            &-description {
+                @include font-size-md;
+                color: $text-color;
+                max-width: 25rem;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                @include media-breakpoint-sm {
+                    max-width: 13rem;
+                }
+            }
+        }
+
+        &-price {
+            padding-top: 1rem;
+            margin-left: 3rem;
+            @include font-size-md;
+        }
+    }
+
+    &__sum-details {
+        border-bottom: 1px solid $dropdown-border;
+        margin-top: 2rem;
+        
+        &-row {
+            @include font-size-md;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+    }
+
+    &__total {
+        margin: 2rem 0;
+        
+        &-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            
+            &-text {
+                @include font-medium;
+                @include font-size-md;
+                
+                &_thin {
+                    @include font-regular;
+                }
+                
+                &_bigger {
+                    @include font-medium;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}

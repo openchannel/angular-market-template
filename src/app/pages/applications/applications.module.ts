@@ -7,10 +7,11 @@ import { AppSearchComponent } from './app-search/app-search.component';
 import { SharedModule } from '@shared/shared.module';
 import { FormModalComponent } from './form-modal/form-modal.component';
 import { OcFormComponentsModule } from '@openchannel/angular-common-components';
-import { ButtonActionComponent } from './app-detail/button-action/button-action.component';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { ButtonActionModule } from '../../features/button-action/button-action.module';
 
 @NgModule({
-    declarations: [AppDetailComponent, AppSearchComponent, FormModalComponent, ButtonActionComponent],
-    imports: [CommonModule, ApplicationsRoutingModule, SharedModule, OcFormComponentsModule],
+    declarations: [AppDetailComponent, AppSearchComponent, FormModalComponent, CheckoutComponent],
+    imports: [CommonModule, ApplicationsRoutingModule, SharedModule, OcFormComponentsModule, ButtonActionModule],
 })
 export class ApplicationsModule {}

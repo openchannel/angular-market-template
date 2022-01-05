@@ -4,7 +4,6 @@ import {
     ReviewsService,
     Page,
     AppVersionService,
-    AppFormService,
     TitleService,
     FrontendService,
     StatisticService,
@@ -12,12 +11,9 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
 import { catchError, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
-import { pageConfig } from 'assets/data/configData';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrService } from 'ngx-toastr';
+import { ActionButton, actionButtons, pageConfig } from 'assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { ButtonAction, DownloadButtonAction } from './button-action/models/button-action.model';
 import {
     DropdownModel,
     FullAppData,
@@ -26,11 +22,10 @@ import {
     Review,
     ReviewListOptionType,
 } from '@openchannel/angular-common-components';
-import { get, find } from 'lodash';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { HttpHeaders } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
+import { ButtonActionService } from '@features/button-action/button-action.service';
 
 @Component({
     selector: 'app-app-detail',
@@ -63,7 +58,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     isWritingReview: boolean = false;
     // flag for disabling a submit button and set a spinner while the request in process
     reviewSubmitInProgress: boolean = false;
-    appListingActions: ButtonAction[];
+    appListingActions: ActionButton[];
     // id of the current user. Necessary for a review
     currentUserId: string;
 
@@ -79,13 +74,11 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private loadingBar: LoadingBarService,
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: NgbModal,
-        private formService: AppFormService,
-        private toaster: ToastrService,
         private titleService: TitleService,
         private statisticService: StatisticService,
         private metaTagService: MarketMetaTagService,
         private location: Location,
+        private buttonActionService: ButtonActionService,
     ) {}
 
     ngOnInit(): void {
@@ -118,33 +111,27 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     loadReviews(): void {
         this.loader.start();
 
-        const filterArray: string[] = [];
-        const obsArr: Observable<Page<OCReviewDetails>>[] = [];
-
-        if (this.selectedFilter && this.selectedFilter.value) {
-            filterArray.push(this.selectedFilter.value);
-        }
-
-        if (this.currentUserId) {
-            filterArray.push(`{'userId': {'$ne': ['${this.currentUserId}']}}`);
-            obsArr.push(
-                this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, [
-                    `{'userId': '${this.currentUserId}'}`,
-                ]),
-            );
-        }
-        obsArr.push(this.reviewsService.getReviewsByAppId(this.app.appId, this.selectedSort ? this.selectedSort.value : null, filterArray));
-
-        forkJoin(obsArr)
+        this.reviewsService
+            .getReviewsByAppId(
+                this.app.appId,
+                this.selectedSort ? this.selectedSort.value : null,
+                this.selectedFilter ? [this.selectedFilter.value] : [],
+            )
             .pipe(takeUntil(this.destroy$))
             .subscribe(
                 resPage => {
-                    this.reviewsPage = { ...resPage[0], ...resPage[1] };
-                    this.userReview = find(this.reviewsPage.list, ['userId', this.currentUserId]);
-                    this.loader.complete();
+                    this.reviewsPage = resPage;
+
+                    const someSortApplied = !!(this.selectedFilter.value || this.selectedSort);
+                    if (this.currentUserId && !someSortApplied) {
+                        this.makeCurrentUserReviewFirst();
+                    }
+
                     if (this.overallRating.rating === 0) {
                         this.countRating();
                     }
+
+                    this.loader.complete();
                 },
                 () => this.loader.complete(),
             );
@@ -193,7 +180,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             .pipe(
                 tap(x => {
                     this.loader.complete();
-                    this.appListingActions = this.getButtonActions(pageConfig);
+                    this.appListingActions = this.buttonActionService.canBeShow(this.app, actionButtons);
                     this.loadReviews();
                 }),
                 mergeMap(() => this.statisticService.recordVisitToApp(this.app.appId, new HttpHeaders({ 'x-handle-error': '400' }))),
@@ -257,6 +244,14 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.location.back();
     }
 
+    private makeCurrentUserReviewFirst(): void {
+        const userReviewIndex = this.reviewsPage.list.findIndex(review => review.userId === this.currentUserId);
+        if (userReviewIndex !== -1) {
+            this.userReview = this.reviewsPage.list.splice(userReviewIndex, 1)[0];
+            this.reviewsPage.list.unshift(this.userReview);
+        }
+    }
+
     private editReview(): void {
         this.reviewsService
             .getOneReview(this.userReview.reviewId)
@@ -309,22 +304,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     }
 
     private countRating(): void {
-        this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.reviewsPage.count);
-        this.reviewsPage.list.forEach(review => this.overallRating[review.rating / 100]++);
-    }
+        const approvedReviews = this.reviewsPage.list.filter(review => review.status.value === 'approved');
 
-    private getButtonActions(config: any): ButtonAction[] {
-        const buttonActions = config?.appDetailsPage['listing-actions'];
-        if (buttonActions && this.app?.type) {
-            return buttonActions.filter(action => {
-                const isTypeSupported = action?.appTypes?.includes(this.app.type);
-                const isNoDownloadType = action?.type !== 'download';
-                const isFileFieldPresent = !!get(this.app, (action as DownloadButtonAction).fileField);
-
-                return isTypeSupported && (isNoDownloadType || isFileFieldPresent);
-            });
-        }
-        return [];
+        this.overallRating = new OverallRatingSummary(this.app.rating / 100, this.app.reviewCount);
+        approvedReviews.forEach(review => this.overallRating[Math.floor(review.rating / 100)]++);
     }
 
     private reloadReview(): void {
