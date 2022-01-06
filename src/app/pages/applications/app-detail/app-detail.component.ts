@@ -99,6 +99,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
 
+        this.initCurrentUserId();
+
         this.initAllowReviewsWithoutOwnershipProperty();
 
         this.initReviewSortQueries();
@@ -141,6 +143,10 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
                 : null;
         });
+    }
+
+    initCurrentUserId(): void {
+        this.currentUserId = this.authHolderService?.userDetails?.organizationId;
     }
 
     ngOnDestroy(): void {
@@ -355,10 +361,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             }),
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
-
-                if (app.ownership) {
-                    this.currentUserId = app.ownership.userId;
-                }
                 this.app = app;
                 return this.app;
             }),
