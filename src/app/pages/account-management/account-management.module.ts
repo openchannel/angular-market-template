@@ -11,10 +11,16 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ManagementComponent } from './my-company/management/management.component';
 import { MyCompanyComponent } from './my-company/my-company.component';
 import { CompanyDetailsComponent } from './my-company/company-details/company-details.component';
-import { OcFormComponentsModule, OcManagementComponentsModule, OcAuthComponentsModule } from '@openchannel/angular-common-components';
+import {
+    OcFormComponentsModule,
+    OcManagementComponentsModule,
+    OcAuthComponentsModule,
+    OcPortalComponentsModule,
+} from '@openchannel/angular-common-components';
 import { BillingComponent } from './my-profile/billing/billing.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import {ButtonActionModule} from '@features/button-action/button-action.module';
+import { BillingHistoryComponent } from './my-profile/billing-history/billing-history.component';
+import { ButtonActionModule } from '@features/button-action/button-action.module';
 
 @NgModule({
     declarations: [
@@ -26,6 +32,7 @@ import {ButtonActionModule} from '@features/button-action/button-action.module';
         MyCompanyComponent,
         CompanyDetailsComponent,
         BillingComponent,
+        BillingHistoryComponent,
     ],
     imports: [
         CommonModule,
@@ -35,8 +42,8 @@ import {ButtonActionModule} from '@features/button-action/button-action.module';
         OcFormComponentsModule,
         OcManagementComponentsModule,
         OcAuthComponentsModule,
-        OcAuthComponentsModule,
         ReactiveFormsModule,
+        OcPortalComponentsModule,
         ButtonActionModule,
     ],
 })

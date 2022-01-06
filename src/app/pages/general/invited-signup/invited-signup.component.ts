@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'lodash';
 import { LogOutService } from '@core/services/logout-service/log-out.service';
-import { takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { AppFormField } from '@openchannel/angular-common-components';
 
 @Component({
@@ -157,17 +157,14 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
                     () => {
                         this.logOutService
                             .logOut()
-                            .pipe(takeUntil(this.destroy$))
-                            .subscribe(
-                                r => {
+                            .pipe(
+                                finalize(() => {
                                     this.inProcess = false;
-                                    this.router.navigate(['login']).then();
-                                },
-                                () => {
-                                    this.inProcess = false;
-                                    this.router.navigate(['login']).then();
-                                },
-                            );
+                                    this.router.navigate(['signup'], { state: { showSignupFeedbackPage: true } }).then();
+                                }),
+                                takeUntil(this.destroy$),
+                            )
+                            .subscribe();
                     },
                     () => {
                         this.inProcess = false;

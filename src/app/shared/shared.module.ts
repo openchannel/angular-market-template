@@ -7,10 +7,11 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { PermissionDirective } from './directive/permission.directive';
 import { CollapseWithTitleComponent } from './components/collapse-with-title/collapse-with-title.component';
 import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
+import { TransactionAmountPipe } from './pipes/transaction-amount.pipe';
 import { BillingFormComponent } from './components/billing-form/billing-form.component';
 
 @NgModule({
-    declarations: [PermissionDirective, CollapseWithTitleComponent, PageTitleComponent, BillingFormComponent],
+    declarations: [PermissionDirective, CollapseWithTitleComponent, PageTitleComponent, TransactionAmountPipe, BillingFormComponent],
     imports: [CommonModule, OcCommonLibModule, OcMarketComponentsModule, ReactiveFormsModule, FormsModule, NgbModule, NgSelectModule],
     exports: [
         OcCommonLibModule,
@@ -20,6 +21,7 @@ import { BillingFormComponent } from './components/billing-form/billing-form.com
         NgbModule,
         CollapseWithTitleComponent,
         PageTitleComponent,
+        TransactionAmountPipe,
         BillingFormComponent,
     ],
 })
