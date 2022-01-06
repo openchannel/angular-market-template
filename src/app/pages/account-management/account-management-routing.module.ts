@@ -5,13 +5,15 @@ import { MyAppsComponent } from './my-apps/my-apps.component';
 import { MyCompanyComponent } from './my-company/my-company.component';
 import { AuthGuard } from '@core/guards/auth.guard';
 import { siteConfig } from 'assets/data/siteConfig';
+import { PaymentsGateways } from '@openchannel/angular-common-services';
 
-const subPaths = siteConfig.paymentsEnabled
-    ? [
-          { path: 'billing', component: MyProfileComponent, canActivate: [AuthGuard] },
-          { path: 'billing-history', component: MyProfileComponent, canActivate: [AuthGuard] },
-      ]
-    : [];
+const subPaths =
+    siteConfig.paymentsEnabled && siteConfig.paymentsGateway === PaymentsGateways.STRIPE
+        ? [
+              { path: 'billing', component: MyProfileComponent, canActivate: [AuthGuard] },
+              { path: 'billing-history', component: MyProfileComponent, canActivate: [AuthGuard] },
+          ]
+        : [];
 const routes: Routes = [
     {
         path: 'my-profile',

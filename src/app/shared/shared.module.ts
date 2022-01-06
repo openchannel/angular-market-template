@@ -8,9 +8,10 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { PermissionDirective } from './directive/permission.directive';
 import { CollapseWithTitleComponent } from './components/collapse-with-title/collapse-with-title.component';
 import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
+import { TransactionAmountPipe } from './pipes/transaction-amount.pipe';
 
 @NgModule({
-    declarations: [ConfirmationModalComponent, PermissionDirective, CollapseWithTitleComponent, PageTitleComponent],
+    declarations: [ConfirmationModalComponent, PermissionDirective, CollapseWithTitleComponent, PageTitleComponent, TransactionAmountPipe],
     imports: [CommonModule, OcCommonLibModule, OcMarketComponentsModule, ReactiveFormsModule, FormsModule, NgbModule, NgSelectModule],
     exports: [
         OcCommonLibModule,
@@ -20,6 +21,7 @@ import { PageTitleComponent } from '@shared/components/page-title/page-title.com
         NgbModule,
         CollapseWithTitleComponent,
         PageTitleComponent,
+        TransactionAmountPipe,
     ],
 })
 export class SharedModule {}
