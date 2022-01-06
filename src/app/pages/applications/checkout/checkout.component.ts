@@ -97,9 +97,9 @@ export class CheckoutComponent implements OnInit {
     }
 
     getSubtotal(): string {
-        let subtotal = this.currencySymbol + this.app?.model[0].price;
+        let subtotal = this.currencySymbol + this.app?.model[0].price / 100;
         if (this.paymentAndTaxes && this.paymentAndTaxes.subtotal) {
-            subtotal = this.currencySymbol + this.paymentAndTaxes.subtotal;
+            subtotal = this.currencySymbol + this.paymentAndTaxes.subtotal / 100;
         }
         return subtotal;
     }
