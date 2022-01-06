@@ -45,6 +45,8 @@ export class BillingFormComponent implements OnInit, OnDestroy {
     @Input() additionalButtonLock = false;
     /** Block button from click if any process is going on and showing a spinner */
     @Input() process = false;
+    /** Custom success toaster message on success button action  */
+    @Input() successToasterMessage: string;
     /** Loaded data of the card, including a billing address */
     @Output() readonly cardDataLoaded: EventEmitter<CreditCard> = new EventEmitter<CreditCard>();
     /**
@@ -286,7 +288,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.$destroy))
                 .subscribe(
                     cardResponse => {
-                        this.toaster.success('Card has been added');
+                        this.toaster.success(this.successToasterMessage || 'Card has been added');
                         this.cardData = cardResponse.cards[0];
                         this.cardDataLoaded.emit(this.cardData);
                         if (this.cardData) {
@@ -352,7 +354,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.$destroy))
             .subscribe(
                 cardResponse => {
-                    this.toaster.success('Your billing data has been updated');
+                    this.toaster.success(this.successToasterMessage || 'Your billing data has been updated');
                     this.cardData = cardResponse.cards[0];
                     this.process = false;
                     this.cardDataLoaded.emit(this.cardData);

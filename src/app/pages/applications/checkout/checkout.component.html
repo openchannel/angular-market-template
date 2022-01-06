@@ -1,6 +1,9 @@
 <div class="checkout">
     <div class="bg-container height-unset">
-        <app-page-title pageTitle="Checkout" navigateText="Back" (navigateClick)="goBack()"></app-page-title>
+        <app-page-title
+                [pageTitle]="purchaseSuccessful ? 'Thank You!' : 'Checkout'"
+                navigateText="Back"
+                (navigateClick)="goBack()"></app-page-title>
     </div>
     <div class="container">
         <div class="row checkout__container_custom">
@@ -9,12 +12,13 @@
                         class="checkout__billing-form"
                         *ngIf="!purchaseSuccessful"
                         [goBackOnCancel]="true"
-                        successButtonText="Buy now"
+                        successButtonText="Pay now"
                         [process]="purchaseProcess"
                         (cardDataLoaded)="onCardDataLoaded($event)"
                         (successButtonPressed)="onSuccessButtonPressed()"
                         (successAction)="onSuccessAction()"
                         [additionalButtonLock]="!isTerms"
+                        successToasterMessage="You successfully bought this app!"
                         [additionalFieldsTemplate]="policyCheckbox"></app-billing-form>
                 <div *ngIf="purchaseSuccessful"
                      class="checkout__result">
