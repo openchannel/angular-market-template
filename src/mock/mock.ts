@@ -3,7 +3,6 @@ import { asyncScheduler, Observable, of } from 'rxjs';
 import { Page, Permission, SortResponse } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
-import { throwObservableError } from './mock.utils';
 import { observeOn } from 'rxjs/operators';
 
 @Component({
@@ -169,8 +168,6 @@ export class MockLoadingBarService {
 }
 
 export class MockAppsService {
-    static THROW_ERRORS = false;
-
     static MOCK_APP = {
         allow: {},
         access: [],
@@ -220,7 +217,7 @@ export class MockAppsService {
         list: [MockAppsService.MOCK_APP, MockAppsService.MOCK_APP, MockAppsService.MOCK_APP],
     };
 
-    @throwObservableError(() => MockAppsService.THROW_ERRORS) getApps(): Observable<any> {
+    getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
 }
@@ -299,8 +296,6 @@ export class MockCmsContentService {
 }
 
 export class MockFrontendService {
-    static THROW_ERRORS = false;
-
     static MOCK_FILTER_VALUE = {
         id: 'allApps',
         label: 'All Apps',
@@ -370,7 +365,7 @@ export class MockFrontendService {
         pages: 1,
     };
 
-    @throwObservableError(() => MockFrontendService.THROW_ERRORS) getFilters(): Observable<any> {
+    getFilters(): Observable<any> {
         return of(MockFrontendService.MOCK_FILTERS_PAGE);
     }
 
@@ -402,13 +397,11 @@ export class MockTitleService {
 }
 
 export class MockAuthenticationService {
-    static THROW_ERRORS = false;
-
-    @throwObservableError(() => MockAuthenticationService.THROW_ERRORS) tryLoginByRefreshToken(): Observable<any> {
+    tryLoginByRefreshToken(): Observable<any> {
         return of('1');
     }
 
-    @throwObservableError(() => MockAuthenticationService.THROW_ERRORS) initCsrf(): Observable<any> {
+    initCsrf(): Observable<any> {
         return of('1');
     }
 }
