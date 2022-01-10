@@ -110,7 +110,7 @@
         &-details {
             display: flex;
             flex-direction: column;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
 
             &-title {
                 @include font-medium;
@@ -132,6 +132,7 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                margin-bottom: 0;
                 @include media-breakpoint-sm {
                     max-width: 13rem;
                 }
@@ -156,6 +157,9 @@
             justify-content: space-between;
             margin-bottom: 2rem;
             width: 100%;
+            &-text {
+                @include font-size-md;
+            }
         }
     }
 
@@ -173,11 +177,13 @@
 
                 &_thin {
                     @include font-regular;
+                    margin-bottom: 0;
                 }
 
                 &_bigger {
                     @include font-medium;
                     font-size: 16px;
+                    margin-left: 1rem;
                 }
             }
         }
