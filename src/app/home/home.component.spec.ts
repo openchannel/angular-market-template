@@ -27,6 +27,7 @@ import { FullAppData } from '@openchannel/angular-common-components/src/lib/comm
 import { pageConfig } from '../../assets/data/configData';
 import { By } from '@angular/platform-browser';
 import { get } from 'lodash';
+import { throwError } from 'rxjs';
 
 const sortById = (a, b) => a.id.localeCompare(b.id);
 
@@ -335,7 +336,7 @@ describe('HomeComponent', () => {
 
     it('should complete loader when appService.getApps throws error', fakeAsync(() => {
         jest.spyOn(component.loader, 'complete');
-        MockAppsService.THROW_ERRORS = true;
+        (component as any).appService.getApps = () => throwError('Error');
 
         // Use try catch because getFeaturedApps throws error and tests are not passed
         try {
@@ -343,18 +344,16 @@ describe('HomeComponent', () => {
             tick();
         } catch {}
 
-        MockAppsService.THROW_ERRORS = false;
         expect(component.loader.complete).toHaveBeenCalled();
     }));
 
     it('should complete loader when frontendService.getFilters throws error', fakeAsync(() => {
         jest.spyOn(component.loader, 'complete');
-        MockFrontendService.THROW_ERRORS = true;
+        (component as any).frontendService.getFilters = () => throwError('Error');
 
         component.getFilters();
         tick();
 
-        MockFrontendService.THROW_ERRORS = false;
         expect(component.loader.complete).toHaveBeenCalled();
     }));
 });
