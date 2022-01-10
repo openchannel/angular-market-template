@@ -57,7 +57,7 @@ export class OcEditUserTypeService {
 
                         // put organization type
                         if (injectOrganizationTypes) {
-                            if (organizationTypeData) {
+                            if (organizationTypeData?.fields) {
                                 config.organization.typeData = organizationTypeData;
                             } else {
                                 isInvalid = true;
@@ -65,7 +65,7 @@ export class OcEditUserTypeService {
                         }
                         // put account type
                         if (injectAccountTypes) {
-                            if (accountTypeData) {
+                            if (accountTypeData?.fields) {
                                 config.account.typeData = accountTypeData;
                             } else {
                                 isInvalid = true;
