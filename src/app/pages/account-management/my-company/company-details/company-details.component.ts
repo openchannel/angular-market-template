@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
     AccessLevel,
-    AuthHolderService,
     DeveloperTypeFieldModel,
     Permission,
     PermissionType,
     TypeMapperUtils,
     TypeModel,
-    UserAccountService,
     UserCompanyModel,
     UsersService,
 } from '@openchannel/angular-common-services';
@@ -52,13 +50,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
         },
     ];
 
-    constructor(
-        private loadingBar: LoadingBarService,
-        private toastService: ToastrService,
-        private authHolderService: AuthHolderService,
-        private userAccountService: UserAccountService,
-        private usersService: UsersService,
-    ) {}
+    constructor(private loadingBar: LoadingBarService, private toastService: ToastrService, private usersService: UsersService) {}
 
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
@@ -68,9 +60,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.$destroy.next();
         this.$destroy.complete();
-        if (this.loader) {
-            this.loader.complete();
-        }
+        this.loader?.complete();
     }
 
     initCompanyForm(): void {
@@ -120,12 +110,13 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.$destroy))
                 .subscribe(
                     () => {
-                        this.inProcess = false;
                         this.toastService.success('Your company details has been updated');
                     },
                     () => {
-                        this.inProcess = false;
                         this.toastService.error("Sorry! Can't update a company data. Please, try again later");
+                    },
+                    () => {
+                        this.inProcess = false;
                     },
                 );
         }
