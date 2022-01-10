@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "resolveJsonModule": true,
     "baseUrl": "src",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -12,8 +13,6 @@
     "importHelpers": true,
     "target": "es2015",
     "paths": {
-      "@angular/*": ["./node_modules/@angular/*"],
-      "@mixins": ["./node_modules/@angular/*"],
       "@env": ["environments/environment"],
       "@shared/*": ["app/shared/*"],
       "@core/*": ["app/core/*"],
