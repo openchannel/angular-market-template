@@ -1,9 +1,9 @@
 import { Component, Directive, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Page, SortResponse } from '@openchannel/angular-common-services';
+import { asyncScheduler, Observable, of } from 'rxjs';
+import { Page, Permission, SortResponse } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
-import { throwObservableError } from './mock.utils';
+import { observeOn } from 'rxjs/operators';
 
 @Component({
     selector: 'mock-routing',
@@ -168,8 +168,6 @@ export class MockLoadingBarService {
 }
 
 export class MockAppsService {
-    static THROW_ERRORS = false;
-
     static MOCK_APP = {
         allow: {},
         access: [],
@@ -219,7 +217,7 @@ export class MockAppsService {
         list: [MockAppsService.MOCK_APP, MockAppsService.MOCK_APP, MockAppsService.MOCK_APP],
     };
 
-    @throwObservableError(() => MockAppsService.THROW_ERRORS) getApps(): Observable<any> {
+    getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
 }
@@ -298,8 +296,6 @@ export class MockCmsContentService {
 }
 
 export class MockFrontendService {
-    static THROW_ERRORS = false;
-
     static MOCK_FILTER_VALUE = {
         id: 'allApps',
         label: 'All Apps',
@@ -369,7 +365,7 @@ export class MockFrontendService {
         pages: 1,
     };
 
-    @throwObservableError(() => MockFrontendService.THROW_ERRORS) getFilters(): Observable<any> {
+    getFilters(): Observable<any> {
         return of(MockFrontendService.MOCK_FILTERS_PAGE);
     }
 
@@ -401,13 +397,11 @@ export class MockTitleService {
 }
 
 export class MockAuthenticationService {
-    static THROW_ERRORS = false;
-
-    @throwObservableError(() => MockAuthenticationService.THROW_ERRORS) tryLoginByRefreshToken(): Observable<any> {
+    tryLoginByRefreshToken(): Observable<any> {
         return of('1');
     }
 
-    @throwObservableError(() => MockAuthenticationService.THROW_ERRORS) initCsrf(): Observable<any> {
+    initCsrf(): Observable<any> {
         return of('1');
     }
 }
@@ -496,6 +490,7 @@ export class MockNgbModal {
 
 export class MockToastrService {
     success(): void {}
+    error(): void {}
 }
 
 export class MockAuthHolderService {
@@ -676,8 +671,35 @@ export class MockUsersService {
         ],
     };
 
+    static MOCK_USER_TYPE_DEFINITION_RESPONSE = {
+        userTypeId: 'default',
+        createdDate: 1614619741673,
+        description: null,
+        label: 'Default',
+        fields: [
+            {
+                attributes: {
+                    maxChars: null,
+                    required: true,
+                    minChars: null,
+                },
+                id: 'name',
+                label: 'Company',
+                type: 'text',
+            },
+        ],
+    };
+
     getUserCompany(): Observable<any> {
         return of(MockUsersService.MOCK_USER_COMPANY_RESPONSE);
+    }
+
+    getUserTypeDefinition(): Observable<any> {
+        return of(MockUsersService.MOCK_USER_TYPE_DEFINITION_RESPONSE);
+    }
+
+    updateUserCompany(): Observable<any> {
+        return of(1).pipe(observeOn(asyncScheduler));
     }
 }
 
@@ -718,4 +740,63 @@ export class MockInviteModalComponent {
     formGroup: any;
     formData: any;
     inProcess = false;
+}
+
+@Directive({
+    selector: '[appPermissions]',
+})
+export class MockPermissionDirective {
+    @Input('appPermissions') permission: Permission[];
+}
+
+@Component({
+    selector: 'oc-form',
+    template: '',
+})
+export class MockFormComponent {
+    @Input() formJsonData: any;
+    @Input() showButton: boolean = true;
+    @Input() buttonPosition: 'center' | 'left' | 'right' | 'justify' = 'left';
+    @Input() successButtonText: string = 'Submit';
+    @Input() labelPosition: 'top' | 'left' | 'right' = 'top';
+    @Input() process: boolean = false;
+    @Input() generatedForm: any;
+    @Output() readonly formSubmitted: EventEmitter<any> = new EventEmitter();
+    @Output() readonly cancelSubmit: EventEmitter<void> = new EventEmitter();
+    @Output() readonly formDataUpdated: EventEmitter<any> = new EventEmitter();
+    @Output() readonly isFormInvalid: EventEmitter<boolean> = new EventEmitter();
+    @Output() readonly createdForm: EventEmitter<any> = new EventEmitter();
+    @Input() displayType: any = 'page';
+    @Input() additionalButton: TemplateRef<any>;
+    @Input() currentStep: number = 1;
+    @Input() maxStepsToShow: number = 0;
+    @Input() formId: any = null;
+    @Output() readonly currentStepChange = new EventEmitter<number>();
+    @Input() showSubmitButton: boolean = true;
+    @Input() showGroupHeading: boolean = true;
+    @Input() showGroupDescription: boolean = true;
+    @Input() showProgressBar: boolean = true;
+    @Input() setFormErrors: boolean = false;
+}
+
+export class MockTypeMapperUtils {
+    static injectDefaultValues(): any {
+        return [];
+    }
+
+    static normalizeOptions(): any {
+        return [];
+    }
+
+    static buildDataForSaving(): any {
+        return {};
+    }
+
+    static createFormConfig(): any {
+        return {};
+    }
+
+    static mergeTwoData(): any {
+        return {};
+    }
 }
