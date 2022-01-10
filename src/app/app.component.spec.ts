@@ -12,6 +12,7 @@ import {
 } from '../mock/mock';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
+import { throwError } from 'rxjs';
 
 describe('AppComponent', () => {
     let component: AppComponent;
@@ -82,18 +83,14 @@ describe('AppComponent', () => {
     });
 
     it('should stop loader if try login by refresh token in ngOnInit hook fails', fakeAsync(() => {
-        MockAuthenticationService.THROW_ERRORS = true;
+        (component as any).authenticationService.tryLoginByRefreshToken = () => throwError('Error');
         jest.spyOn((component as any).loader, 'stop');
 
-        // Use try catch because tryLoginByRefreshToken throws error and tests are not passed
-        try {
-            // tslint:disable-next-line:no-lifecycle-call
-            component.ngOnInit();
-            tick();
-        } catch {}
+        // tslint:disable-next-line:no-lifecycle-call
+        component.ngOnInit();
+        tick();
 
         expect((component as any).loader.stop).toHaveBeenCalled();
-        MockAuthenticationService.THROW_ERRORS = false;
     }));
 
     it('should set title and favicon href in config from cms data', fakeAsync(() => {
