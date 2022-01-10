@@ -9,8 +9,8 @@ import {
     UserCompanyModel,
     UsersService,
 } from '@openchannel/angular-common-services';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
@@ -107,18 +107,19 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
             this.inProcess = true;
             this.usersService
                 .updateUserCompany(TypeMapperUtils.buildDataForSaving(this.organizationResult))
-                .pipe(takeUntil(this.$destroy))
-                .subscribe(
-                    () => {
-                        this.toastService.success('Your company details has been updated');
-                    },
-                    () => {
+                .pipe(
+                    catchError(err => {
                         this.toastService.error("Sorry! Can't update a company data. Please, try again later");
-                    },
-                    () => {
+                        return throwError(err);
+                    }),
+                    finalize(() => {
                         this.inProcess = false;
-                    },
-                );
+                    }),
+                    takeUntil(this.$destroy),
+                )
+                .subscribe(() => {
+                    this.toastService.success('Your company details has been updated');
+                });
         }
     }
 
