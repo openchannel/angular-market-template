@@ -1,14 +1,29 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { Page } from '@openchannel/angular-common-services';
+import { Component, Directive, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { asyncScheduler, Observable, of } from 'rxjs';
+import { Page, Permission, SortResponse } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
+import { observeOn } from 'rxjs/operators';
 
 @Component({
     selector: 'mock-routing',
     template: '',
 })
 export class MockRoutingComponent {}
+
+@Component({
+    selector: 'ngx-loading-bar',
+    template: '',
+})
+export class MockNgxLoadingBarComponent {
+    @Input() includeSpinner: boolean = false;
+}
+
+@Component({
+    selector: 'app-notification',
+    template: '',
+})
+export class MockNotificationComponent {}
 
 export class MockPrerenderRequestsWatcherService {
     setPrerenderStatus(ready: boolean): void {}
@@ -143,6 +158,7 @@ export class MockAppGetStartedComponent {
 export class MockLoadingBarState {
     complete(): void {}
     start(): void {}
+    stop(): void {}
 }
 
 export class MockLoadingBarService {
@@ -152,8 +168,6 @@ export class MockLoadingBarService {
 }
 
 export class MockAppsService {
-    static THROW_ERRORS = false;
-
     static MOCK_APP = {
         allow: {},
         access: [],
@@ -204,10 +218,6 @@ export class MockAppsService {
     };
 
     getApps(): Observable<any> {
-        if (MockAppsService.THROW_ERRORS) {
-            return throwError('Error');
-        }
-
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
 }
@@ -286,8 +296,6 @@ export class MockCmsContentService {
 }
 
 export class MockFrontendService {
-    static THROW_ERRORS = false;
-
     static MOCK_FILTER_VALUE = {
         id: 'allApps',
         label: 'All Apps',
@@ -326,12 +334,43 @@ export class MockFrontendService {
         ],
     };
 
-    getFilters(): Observable<any> {
-        if (MockFrontendService.THROW_ERRORS) {
-            return throwError('Error');
-        }
+    static MOCK_SORTS_PAGE: Page<SortResponse> = {
+        count: 1,
+        list: [
+            {
+                id: 'en-us-1',
+                name: 'en-us 1',
+                description: 'en-us 1 Description',
+                values: [
+                    {
+                        id: '1-start',
+                        label: 'Popular',
+                        sort: '{"created":-1}',
+                        customData: null,
+                        description: 'fghfg',
+                        checked: false,
+                    },
+                    {
+                        id: 'newest',
+                        label: 'Newest',
+                        sort: '{"created":-1}',
+                        customData: null,
+                        description: 'fgdg dfg',
+                        checked: false,
+                    },
+                ],
+            },
+        ],
+        pageNumber: 1,
+        pages: 1,
+    };
 
+    getFilters(): Observable<any> {
         return of(MockFrontendService.MOCK_FILTERS_PAGE);
+    }
+
+    getSorts(): Observable<any> {
+        return of(MockFrontendService.MOCK_SORTS_PAGE);
     }
 }
 
@@ -349,8 +388,415 @@ export class MockSiteConfigService {
     getSiteConfigAsObservable(): Observable<any> {
         return of(MockSiteConfigService.PAGE_CONFIG);
     }
+
+    initSiteConfiguration(config: any): void {}
 }
 
 export class MockTitleService {
     setSpecialTitle(): void {}
+}
+
+export class MockAuthenticationService {
+    tryLoginByRefreshToken(): Observable<any> {
+        return of('1');
+    }
+
+    initCsrf(): Observable<any> {
+        return of('1');
+    }
+}
+
+@Component({
+    selector: 'oc-dropdown',
+    template: '',
+})
+export class MockDropdownComponent {
+    @Input() selected: any;
+    @Input() title: string = 'Sort by';
+    @Input() options: any[];
+    @Output() readonly selectedChange: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Component({
+    selector: 'oc-app-short-info',
+    template: '',
+})
+export class MockAppShortInfoComponent {
+    @Input() app: any;
+    @Input() priceModelIndex: number = 0;
+    @Input() customDropdown: TemplateRef<any>;
+    @Input() defaultAppIcon: string = 'assets/angular-common-components/standard-app-icon.svg';
+    @Output() readonly clickByAppCard: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Directive({
+    selector: 'infiniteScroll',
+})
+export class MockInfiniteScrollDirective {
+    @Output() readonly scrolled: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Directive({
+    selector: 'ngbDropdown',
+})
+export class MockNgbDropdownDirective {
+    @Input() placement: string = '';
+}
+
+@Directive({
+    selector: 'ngbDropdownToggle',
+})
+export class MockNgbDropdownToggleDirective {}
+
+@Directive({
+    selector: 'ngbDropdownMenu',
+})
+export class MockNgbDropdownMenuDirective {}
+
+export class MockNgbModalRef {
+    result = new Promise((resolve, reject) => {
+        this.resolve = resolve;
+        this.reject = reject;
+    });
+    resolve: any;
+    reject: any;
+
+    componentInstance: any = {};
+
+    dismiss(): void {
+        this.removeActiveModal();
+        this.reject();
+    }
+
+    close(): void {
+        this.removeActiveModal();
+        this.resolve();
+    }
+
+    private removeActiveModal(): void {
+        MockNgbModal.ACTIVE_MODALS.pop();
+    }
+}
+
+export class MockNgbModal {
+    static ACTIVE_MODALS: MockNgbModalRef[] = [];
+
+    open(): any {
+        const newModal = new MockNgbModalRef();
+        MockNgbModal.ACTIVE_MODALS.push(newModal);
+        return newModal;
+    }
+}
+
+export class MockToastrService {
+    success(): void {}
+    error(): void {}
+}
+
+export class MockAuthHolderService {
+    static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
+
+    hasAnyPermission(): boolean {
+        return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
+    }
+}
+
+export class MockUserRoleService {
+    static MOCK_USER_ROLES_PAGE = {
+        count: 5,
+        pages: 1,
+        pageNumber: 1,
+        list: [
+            {
+                userRoleId: 'user-admin',
+                name: 'Admin',
+                systemDefined: true,
+                created: 1614286695577,
+                lastUpdated: 1614286695577,
+                permissions: [
+                    'ORGANIZATIONS.READ',
+                    'ORGANIZATIONS.MODIFY',
+                    'OWNERSHIPS.READ',
+                    'OWNERSHIPS.MODIFY',
+                    'REVIEWS.READ',
+                    'REVIEWS.CREATE',
+                    'REVIEWS.MODIFY',
+                    'ACCOUNTS.READ',
+                    'ACCOUNTS.MODIFY',
+                    'ACCOUNTS.DELETE',
+                    'FILES.READ',
+                    'FILES.MODIFY',
+                    'APPS.READ',
+                    'FORMS.READ',
+                    'FORM_SUBMISSIONS.READ',
+                    'FORM_SUBMISSIONS.MODIFY',
+                    'REQUESTS.READ',
+                    'REQUESTS.CREATE',
+                    'REQUESTS.MODIFY',
+                    'REQUESTS.DELETE',
+                    'REQUESTS.MODERATE',
+                    'REVIEWS.DELETE',
+                ],
+            },
+            {
+                userRoleId: 'user-viewer',
+                created: 1614286695577,
+                lastUpdated: 1614286695577,
+                name: 'Viewer',
+                permissions: [
+                    'ORGANIZATIONS.READ',
+                    'OWNERSHIPS.READ',
+                    'REVIEWS.READ',
+                    'ACCOUNTS.READ',
+                    'FILES.READ',
+                    'APPS.READ',
+                    'FORMS.READ',
+                    'FORM_SUBMISSIONS.READ',
+                    'REQUESTS.READ',
+                ],
+                systemDefined: true,
+            },
+            {
+                userRoleId: 'user-custom_user',
+                name: 'custom_user',
+                systemDefined: false,
+                created: 1614685629236,
+                lastUpdated: 1627454502249,
+                permissions: [
+                    'APPS.READ',
+                    'REVIEWS.DELETE',
+                    'REQUESTS.READ',
+                    'REQUESTS.CREATE',
+                    'REQUESTS.MODIFY',
+                    'REQUESTS.MODERATE',
+                    'REQUESTS.DELETE',
+                    'OWNERSHIPS.READ',
+                    'OWNERSHIPS.MODIFY',
+                    'ORGANIZATIONS.READ',
+                    'ACCOUNTS.READ',
+                    'FILES.READ',
+                    'FILES.MODIFY',
+                    'FORMS.READ',
+                    'FORM_SUBMISSIONS.READ',
+                    'FORM_SUBMISSIONS.MODIFY',
+                ],
+            },
+            {
+                userRoleId: 'user-review-permissions',
+                name: 'Review Permissions',
+                systemDefined: false,
+                created: 1625816708480,
+                lastUpdated: 1627017170171,
+                permissions: [
+                    'APPS.CREATE',
+                    'REVIEWS.READ',
+                    'REVIEWS.CREATE',
+                    'REVIEWS.MODIFY',
+                    'REVIEWS.DELETE',
+                    'REQUESTS.CREATE',
+                    'REQUESTS.MODIFY',
+                    'REQUESTS.MODERATE',
+                    'REQUESTS.DELETE',
+                    'OWNERSHIPS.CREATE',
+                    'OWNERSHIPS.MODIFY',
+                    'ORGANIZATIONS.CREATE',
+                    'ORGANIZATIONS.MODIFY',
+                    'ACCOUNTS.CREATE',
+                    'ACCOUNTS.MODIFY',
+                    'ACCOUNTS.DELETE',
+                    'FILES.CREATE',
+                    'FILES.MODIFY',
+                    'FORMS.CREATE',
+                    'FORM_SUBMISSIONS.CREATE',
+                    'FORM_SUBMISSIONS.MODIFY',
+                ],
+            },
+            {
+                userRoleId: 'user-form-submission-modify',
+                name: 'Form Submission Modify',
+                systemDefined: false,
+                created: 1635164714417,
+                lastUpdated: 1637575016675,
+                permissions: ['ACCOUNTS.READ', 'FILES.READ', 'FORMS.READ', 'FORM_SUBMISSIONS.READ'],
+            },
+        ],
+    };
+
+    getUserRoles(): Observable<any> {
+        return of(MockUserRoleService.MOCK_USER_ROLES_PAGE);
+    }
+}
+
+export class MockInviteUserService {
+    sendUserInvite(): Observable<any> {
+        return of(1);
+    }
+}
+
+export class MockUsersService {
+    static MOCK_USER_COMPANY_RESPONSE = {
+        userId: '644d352b-7be2-4b3e-8ee3-967f89d2bef0',
+        accountCount: 1,
+        created: 1640798413377,
+        customData: {},
+        name: 'weyen25008@ehstock.com',
+        type: 'default',
+        ownedApps: [
+            {
+                appId: '600eef7a7ec0f53371d1caab',
+                userId: '644d352b-7be2-4b3e-8ee3-967f89d2bef0',
+                date: 1640798459500,
+                developerId: '49f5edfb-d7c0-46a5-800c-b371e00840e4',
+                expires: 1643476998869,
+                model: {
+                    license: 'single',
+                    feePayer: 'marketplace',
+                    billingPeriod: 'monthly',
+                    modelId: '600eef7a7ec0f53371d1caa9',
+                    price: 400,
+                    commission: 0,
+                    currency: 'USD',
+                    modelType: null,
+                    type: 'recurring',
+                    trial: 0,
+                    billingPeriodUnit: 1,
+                },
+                ownershipId: '61cc98fb2d13e52f69319dc4',
+                ownershipStatus: 'cancelled',
+                ownershipType: 'subscription',
+                productKey: '60UF0-NSKZP-U5C2H-8Z1P6-2D8Q5',
+                trialType: null,
+                type: null,
+            },
+        ],
+    };
+
+    static MOCK_USER_TYPE_DEFINITION_RESPONSE = {
+        userTypeId: 'default',
+        createdDate: 1614619741673,
+        description: null,
+        label: 'Default',
+        fields: [
+            {
+                attributes: {
+                    maxChars: null,
+                    required: true,
+                    minChars: null,
+                },
+                id: 'name',
+                label: 'Company',
+                type: 'text',
+            },
+        ],
+    };
+
+    getUserCompany(): Observable<any> {
+        return of(MockUsersService.MOCK_USER_COMPANY_RESPONSE);
+    }
+
+    getUserTypeDefinition(): Observable<any> {
+        return of(MockUsersService.MOCK_USER_TYPE_DEFINITION_RESPONSE);
+    }
+
+    updateUserCompany(): Observable<any> {
+        return of(1).pipe(observeOn(asyncScheduler));
+    }
+}
+
+@Component({
+    selector: 'app-page-title',
+    template: '',
+})
+export class MockPageTitleComponent {
+    @Input() pageTitle: string;
+    @Input() navigateText: string;
+    @Input() buttonText: string;
+    @Output() readonly navigateClick: EventEmitter<void> = new EventEmitter<void>();
+    @Output() readonly buttonClick: EventEmitter<void> = new EventEmitter<void>();
+}
+
+@Component({
+    selector: 'app-company-details',
+    template: '',
+})
+export class MockCompanyDetailsComponent {}
+
+@Component({
+    selector: 'app-management',
+    template: '',
+})
+export class MockManagementComponent {}
+
+export class MockModalInviteUserModel {}
+
+@Component({
+    selector: 'oc-invite-modal',
+    template: '',
+})
+export class MockInviteModalComponent {
+    @Input() modalData: any;
+    @Input() formId: any = null;
+    formConfig: any = {};
+    formGroup: any;
+    formData: any;
+    inProcess = false;
+}
+
+@Directive({
+    selector: '[appPermissions]',
+})
+export class MockPermissionDirective {
+    @Input('appPermissions') permission: Permission[];
+}
+
+@Component({
+    selector: 'oc-form',
+    template: '',
+})
+export class MockFormComponent {
+    @Input() formJsonData: any;
+    @Input() showButton: boolean = true;
+    @Input() buttonPosition: 'center' | 'left' | 'right' | 'justify' = 'left';
+    @Input() successButtonText: string = 'Submit';
+    @Input() labelPosition: 'top' | 'left' | 'right' = 'top';
+    @Input() process: boolean = false;
+    @Input() generatedForm: any;
+    @Output() readonly formSubmitted: EventEmitter<any> = new EventEmitter();
+    @Output() readonly cancelSubmit: EventEmitter<void> = new EventEmitter();
+    @Output() readonly formDataUpdated: EventEmitter<any> = new EventEmitter();
+    @Output() readonly isFormInvalid: EventEmitter<boolean> = new EventEmitter();
+    @Output() readonly createdForm: EventEmitter<any> = new EventEmitter();
+    @Input() displayType: any = 'page';
+    @Input() additionalButton: TemplateRef<any>;
+    @Input() currentStep: number = 1;
+    @Input() maxStepsToShow: number = 0;
+    @Input() formId: any = null;
+    @Output() readonly currentStepChange = new EventEmitter<number>();
+    @Input() showSubmitButton: boolean = true;
+    @Input() showGroupHeading: boolean = true;
+    @Input() showGroupDescription: boolean = true;
+    @Input() showProgressBar: boolean = true;
+    @Input() setFormErrors: boolean = false;
+}
+
+export class MockTypeMapperUtils {
+    static injectDefaultValues(): any {
+        return [];
+    }
+
+    static normalizeOptions(): any {
+        return [];
+    }
+
+    static buildDataForSaving(): any {
+        return {};
+    }
+
+    static createFormConfig(): any {
+        return {};
+    }
+
+    static mergeTwoData(): any {
+        return {};
+    }
 }
