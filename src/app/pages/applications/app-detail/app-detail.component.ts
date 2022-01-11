@@ -26,6 +26,7 @@ import {
     OverallRatingSummary,
     Review,
     ReviewListOptionType,
+    Filter
 } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
 import { HttpHeaders } from '@angular/common/http';
@@ -42,6 +43,9 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     recommendedApps: FullAppData[] = [];
     appData$: Observable<FullAppData>;
     overallRating: OverallRatingSummary = new OverallRatingSummary();
+
+    // List of filters to create url to the search page if user clicks on the app category
+    searchFilters: Filter[] = [];
 
     reviewsPage: Page<OCReviewDetails>;
     // review of the current user from the review list
@@ -113,6 +117,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             });
 
         this.getRecommendedApps();
+
+        this.getSearchFilters();
 
         this.router.routeReuseStrategy.shouldReuseRoute = () => {
             return false;
@@ -282,8 +288,28 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         }
     }
 
+    goToSearchPageWithSelectedCategory(categoryLabel: string): void {
+        for (const filter of this.searchFilters) {
+            const selectedFilterValue = filter.values.find(filterValue => filterValue.label === categoryLabel);
+
+            if (selectedFilterValue) {
+                this.router.navigate(['browse', filter.id, selectedFilterValue.id]).then();
+                return;
+            }
+        }
+    }
+
     goBack(): void {
         this.location.back();
+    }
+
+    private getSearchFilters(): void {
+        this.frontendService
+            .getFilters()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(data => {
+                this.searchFilters = data.list;
+            });
     }
 
     private makeCurrentUserReviewFirst(): void {
