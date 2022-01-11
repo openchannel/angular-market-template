@@ -8,6 +8,7 @@ import {
     TitleService,
     FrontendService,
     StatisticService,
+    SiteContentService, AuthHolderService,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
@@ -25,6 +26,7 @@ import {
     OverallRatingSummary,
     Review,
     ReviewListOptionType,
+    Filter
 } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
 import { HttpHeaders } from '@angular/common/http';
@@ -41,6 +43,9 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     recommendedApps: FullAppData[] = [];
     appData$: Observable<FullAppData>;
     overallRating: OverallRatingSummary = new OverallRatingSummary();
+
+    // List of filters to create url to the search page if user clicks on the app category
+    searchFilters: Filter[] = [];
 
     reviewsPage: Page<OCReviewDetails>;
     // review of the current user from the review list
@@ -65,6 +70,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     appListingActions: ButtonAction[];
     // id of the current user. Necessary for a review
     currentUserId: string;
+    // when true, the user can create a review without app ownership.
+    allowReviewsWithoutOwnership: boolean = false;
 
     private destroy$: Subject<void> = new Subject();
     private appConfigPipe = pageConfig.fieldMappings;
@@ -85,10 +92,18 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private statisticService: StatisticService,
         private metaTagService: MarketMetaTagService,
         private location: Location,
+        private siteContentService: SiteContentService,
+        private authHolderService: AuthHolderService,
     ) {}
 
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
+
+        this.initCurrentUserId();
+
+        this.initAllowReviewsWithoutOwnershipProperty();
+
+        this.initReviewSortQueries();
 
         this.getAppData();
 
@@ -103,9 +118,35 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
         this.getRecommendedApps();
 
+        this.getSearchFilters();
+
         this.router.routeReuseStrategy.shouldReuseRoute = () => {
             return false;
         };
+    }
+
+    initAllowReviewsWithoutOwnershipProperty(): void {
+        this.siteContentService.getSecuritySettings()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(settings => {
+            // The user must be logged
+            this.allowReviewsWithoutOwnership = this.authHolderService.isLoggedInUser() && settings?.allowReviewsWithoutOwnership;
+        })
+    }
+
+    initReviewSortQueries(): void {
+        this.frontendService
+        .getSorts()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(page => {
+            this.reviewsSorts = page.list[0]
+                ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
+                : null;
+        });
+    }
+
+    initCurrentUserId(): void {
+        this.currentUserId = this.authHolderService?.userDetails?.organizationId;
     }
 
     ngOnDestroy(): void {
@@ -116,6 +157,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     loadReviews(): void {
         this.loader.start();
+        this.userReview = null;
 
         this.reviewsService
             .getReviewsByAppId(
@@ -246,8 +288,28 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         }
     }
 
+    goToSearchPageWithSelectedCategory(categoryLabel: string): void {
+        for (const filter of this.searchFilters) {
+            const selectedFilterValue = filter.values.find(filterValue => filterValue.label === categoryLabel);
+
+            if (selectedFilterValue) {
+                this.router.navigate(['browse', filter.id, selectedFilterValue.id]).then();
+                return;
+            }
+        }
+    }
+
     goBack(): void {
         this.location.back();
+    }
+
+    private getSearchFilters(): void {
+        this.frontendService
+            .getFilters()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(data => {
+                this.searchFilters = data.list;
+            });
     }
 
     private makeCurrentUserReviewFirst(): void {
@@ -299,10 +361,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             }),
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
-
-                if (app.ownership) {
-                    this.currentUserId = app.ownership.userId;
-                }
                 this.app = app;
                 return this.app;
             }),
