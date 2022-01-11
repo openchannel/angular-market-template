@@ -1,7 +1,19 @@
-## Release notes - template3-marketsite-frontend - Version 1.55.1 (12/2/2021)<br>
+## Release notes - template3-marketsite-frontend - Version 1.57.0 (1/6/2022)<br>
 ### Bug<br>
-AT-1624 - [hotfix][Market - Billing] Country dropdown remains blank on Billing page.<br>
-AT-1623 - [hotfix][Market - Billing] Credit card fields remains disabled to enter data on PROD.<br>
+AT-1641 - [Stage1][Billing] Not able to add credit card information and billing address information for newly signed up user.<br>
+### Story<br>
+AT-1587 - Clicking on a tag should take to search results <br>
+AT-1564 - A user is able to view transactions and download invoices<br>
+### Bug<br>
+AT-1404 - [Logs-Prod] ERROR o.s.b.a.w.r.e.AbstractErrorWebExceptionHandler: [cdc297a5-389888]  500 Server Error for HTTP PATCH "/v2/developers/this"<br>
+AT-1362 - [Logs-Prod][CAP] ERROR o.s.b.a.w.r.e.AbstractErrorWebExceptionHandler: 500 Server Error for HTTP GET "/v2/apps/textSearch<br>
+AT-1301 - [Portal/Market][Invite] Sign Up- Success modal with 'Activate Account' button should be displayed for Invitee Sign up process.<br>
+## Release notes - template3-marketsite-frontend - Version 1.55.2 (12/16/2021)<br>
+### Bug<br>
+AT-1635 - [Review] If the App not Owned and Review added then remove "Write Review" button and show "Edit" and "Delete" options.<br>
+## Release notes - template3-marketsite-frontend - Version 1.55.1 (12/15/2021)<br>
+### Task<br>
+AT-1541 - Allow reviews without Ownership records<br>
 ## Release notes - template3-marketsite-frontend - Version 1.55.0 (12/1/2021)<br>
 ### Task<br>
 AT-1607 - Ensure correct SSO behavior in all possible scenarios<br>
