@@ -81,17 +81,19 @@ export class CheckoutComponent implements OnInit {
 
     onCardDataLoaded(cardData: CreditCard): void {
         if (!this.card || cardData.address_state !== this.card.address_state) {
-            this.loader.start();
             this.stripeService
-                .getTaxesAndPayment(cardData.address_country, cardData.address_state, this.app.appId, this.app.model[0].modelId)
+                .getTaxesAndPayment(
+                    cardData.address_country,
+                    cardData.address_state,
+                    this.app.appId,
+                    this.app.model[0].modelId,
+                    cardData.address_zip,
+                    cardData.address_city,
+                )
                 .pipe(takeUntil(this.$destroy))
-                .subscribe(
-                    taxesResponse => {
-                        this.paymentAndTaxes = taxesResponse;
-                        this.loader.complete();
-                    },
-                    () => this.loader.complete(),
-                );
+                .subscribe(taxesResponse => {
+                    this.paymentAndTaxes = taxesResponse;
+                });
         }
         this.card = cardData;
     }
