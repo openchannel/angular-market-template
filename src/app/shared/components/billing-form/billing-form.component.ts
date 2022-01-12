@@ -22,7 +22,6 @@ import { catchError, finalize, mergeMap, switchMap, takeUntil, tap } from 'rxjs/
 import { OcConfirmationModalComponent } from '@openchannel/angular-common-components';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { HttpHeaders } from '@angular/common/http';
-import { error } from 'protractor';
 
 export interface StripeCardForm {
     cardNumber: {
