@@ -18,6 +18,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { FullAppData } from '@openchannel/angular-common-components';
 import { pageConfig } from 'assets/data/configData';
 import { ToastrService } from 'ngx-toastr';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
     selector: 'app-checkout',
@@ -60,17 +61,6 @@ export class CheckoutComponent implements OnInit {
         this.loadCurrentUserDetails();
     }
 
-    get currencySymbol(): string {
-        const isoCurrencyCode = {
-            USD: '$',
-            EUR: '€',
-            CNY: '¥',
-            GBP: '£',
-        };
-
-        return isoCurrencyCode[this.app?.model[0].currency] || isoCurrencyCode[0];
-    }
-
     goBack(): void {
         history.back();
     }
@@ -80,28 +70,23 @@ export class CheckoutComponent implements OnInit {
     }
 
     onCardDataLoaded(cardData: CreditCard): void {
-        if (!this.card || cardData.address_state !== this.card.address_state) {
-            this.loader.start();
+        if (!this.card || cardData.address_state !== this.card.address_state || cardData.address_zip !== this.card.address_zip) {
             this.stripeService
-                .getTaxesAndPayment(cardData.address_country, cardData.address_state, this.app.appId, this.app.model[0].modelId)
+                .getTaxesAndPayment(
+                    cardData.address_country,
+                    cardData.address_state,
+                    this.app.appId,
+                    this.app.model[0].modelId,
+                    cardData.address_zip,
+                    cardData.address_city,
+                    new HttpHeaders({ 'x-handle-error': '500' }),
+                )
                 .pipe(takeUntil(this.$destroy))
-                .subscribe(
-                    taxesResponse => {
-                        this.paymentAndTaxes = taxesResponse;
-                        this.loader.complete();
-                    },
-                    () => this.loader.complete(),
-                );
+                .subscribe(taxesResponse => {
+                    this.paymentAndTaxes = taxesResponse;
+                });
         }
         this.card = cardData;
-    }
-
-    getSubtotal(): string {
-        let subtotal = this.currencySymbol + this.app?.model[0].price / 100;
-        if (this.paymentAndTaxes && this.paymentAndTaxes.subtotal) {
-            subtotal = this.currencySymbol + this.paymentAndTaxes.subtotal / 100;
-        }
-        return subtotal;
     }
 
     navigateToMarketplace(): void {
