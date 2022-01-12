@@ -61,17 +61,6 @@ export class CheckoutComponent implements OnInit {
         this.loadCurrentUserDetails();
     }
 
-    get currencySymbol(): string {
-        const isoCurrencyCode = {
-            USD: '$',
-            EUR: '€',
-            CNY: '¥',
-            GBP: '£',
-        };
-
-        return isoCurrencyCode[this.app?.model[0].currency] || isoCurrencyCode[0];
-    }
-
     goBack(): void {
         history.back();
     }
@@ -98,14 +87,6 @@ export class CheckoutComponent implements OnInit {
                 });
         }
         this.card = cardData;
-    }
-
-    getSubtotal(): string {
-        let subtotal = this.currencySymbol + this.app?.model[0].price / 100;
-        if (this.paymentAndTaxes && this.paymentAndTaxes.subtotal) {
-            subtotal = this.currencySymbol + this.paymentAndTaxes.subtotal / 100;
-        }
-        return subtotal;
     }
 
     navigateToMarketplace(): void {

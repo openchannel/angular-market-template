@@ -111,7 +111,7 @@ export class BillingFormComponent implements OnInit, OnDestroy {
         address_country: new FormControl('', Validators.required),
         address_state: new FormControl('', Validators.required),
         address_city: new FormControl('', Validators.required),
-        address_zip: new FormControl('', [Validators.required, Validators.maxLength(5)]),
+        address_zip: new FormControl('', Validators.required),
     });
 
     billingCountries: CountryModel[] = [];
@@ -319,8 +319,8 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                         }
                         this.successAction.emit();
                     },
-                    error => {
-                        this.toaster.error(error.message);
+                    err => {
+                        this.toaster.error(err.message);
                         this.process = false;
                     },
                 );
@@ -385,8 +385,8 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                     this.cardDataLoaded.emit(this.cardData);
                     this.successAction.emit();
                 },
-                error => {
-                    this.toaster.error(error.message);
+                err => {
+                    this.toaster.error(err.message);
                     this.process = false;
                 },
             );
@@ -409,8 +409,8 @@ export class BillingFormComponent implements OnInit, OnDestroy {
                         this.clearChanges();
                     }
                 },
-                error => {
-                    this.toaster.error(error.message);
+                err => {
+                    this.toaster.error(err.message);
                     this.process = false;
                 },
             );
