@@ -1,9 +1,58 @@
-import { Component, Directive, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, Directive, EventEmitter, Input, Output, Provider, TemplateRef } from '@angular/core';
 import { asyncScheduler, Observable, of } from 'rxjs';
-import { Page, Permission, SortResponse } from '@openchannel/angular-common-services';
-import { Filter } from '@openchannel/angular-common-components';
+import {
+    InviteUserService,
+    Page,
+    Permission,
+    SortResponse,
+    UserAccount,
+    UserAccountService,
+    UserRoleService,
+    UsersService,
+} from '@openchannel/angular-common-services';
+import {
+    ComponentsUserGridActionModel,
+    ComponentsUsersGridParametersModel,
+    ErrorMessageFormId,
+    Filter,
+    ModalInviteUserModel,
+    ModalUpdateUserModel,
+    SortField,
+    UserGridSortOrder,
+    UserSortChosen,
+} from '@openchannel/angular-common-components';
 import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
+import {OcInviteModalComponent} from '@openchannel/angular-common-components/src/lib/management-components/oc-invite-modal/oc-invite-modal.component';
+import { ToastrService } from 'ngx-toastr';
+import {InviteUserModel} from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+
+class MockPagination<T> {
+    private values: T[];
+    constructor(values: T[]) {
+        this.values = values || [];
+    }
+    getByPaginate(page: number, size: number): Page<T> {
+        const normalizedPageNumber = page || 1; // min page number is 1
+        const normalizedSizeNumber = size || 100; // max page size is 100
+
+        let result: T[];
+        if (normalizedPageNumber === 1) {
+            result = this.values.slice(0, normalizedSizeNumber);
+        } else {
+            result = this.values.slice(
+                normalizedPageNumber * normalizedSizeNumber -1,
+                (normalizedPageNumber + 1) * normalizedSizeNumber -1);
+        }
+
+        return {
+            count: this.values.length,
+            list: result,
+            pages: Math.ceil(this.values.length / normalizedSizeNumber),
+            pageNumber: normalizedPageNumber
+        }
+    }
+}
 
 @Component({
     selector: 'mock-routing',
@@ -153,6 +202,46 @@ export class MockAppGetStartedComponent {
     @Input() getStartedButtonText: string = '';
     @Input() getStartedType: 'home' | 'search' = 'home';
     @Output() readonly getStarted: EventEmitter<void> = new EventEmitter<void>();
+}
+
+@Component({
+    selector: 'oc-menu-user-grid',
+    template: ''
+})
+export class MockOcMenuUserGridComponent {
+    @Input() properties: ComponentsUsersGridParametersModel;
+    @Input() menuUrl: string = 'assets/angular-common-components/dots-menu.svg';
+    @Input() sortIcon: string;
+    @Input() sortOptions: UserGridSortOrder;
+    @Output() readonly menuClicked: EventEmitter<ComponentsUserGridActionModel> = new EventEmitter<ComponentsUserGridActionModel>();
+    @Output() readonly pageScrolled: EventEmitter<number> = new EventEmitter<number>();
+    @Output() readonly sortChosen: EventEmitter<SortField> = new EventEmitter<SortField>();
+    @Output() readonly sortOptionsChosen: EventEmitter<UserSortChosen> = new EventEmitter<UserSortChosen>();
+}
+
+@Component({
+    selector: 'oc-invite-modal',
+    template: ''
+})
+export class MockOcInviteModalComponent {
+    @Input() modalData: ModalInviteUserModel | ModalUpdateUserModel;
+    @Input() formId: ErrorMessageFormId = null;
+}
+
+@Component({
+    selector: 'oc-confirmation-modal',
+    template: ''
+})
+export class OcConfirmationModalComponent {
+    @Input() modalTitle: string = '';
+    @Input() modalText: string = '';
+    @Input() confirmButtonText: string = 'Ok';
+    @Input() confirmButtonType: 'primary' | 'secondary' | 'link' | 'danger' = 'primary';
+    @Input() confirmButtonHide: boolean = false;
+    @Input() rejectButtonText = 'No, cancel';
+    @Input() rejectButtonType: 'primary' | 'secondary' | 'link' | 'danger' = 'secondary';
+    @Input() rejectButtonHide: boolean = false;
+    @Input() confirmButtonClass: string = '';
 }
 
 export class MockLoadingBarState {
@@ -502,14 +591,17 @@ export class MockAuthHolderService {
 }
 
 export class MockUserRoleService {
+    static ADMIN_ROLE_ID = 'user-admin';
+    static ADMIN_ROLE_NAME = 'Admin';
+
     static MOCK_USER_ROLES_PAGE = {
         count: 5,
         pages: 1,
         pageNumber: 1,
         list: [
             {
-                userRoleId: 'user-admin',
-                name: 'Admin',
+                userRoleId: MockUserRoleService.ADMIN_ROLE_ID,
+                name: MockUserRoleService.ADMIN_ROLE_NAME,
                 systemDefined: true,
                 created: 1614286695577,
                 lastUpdated: 1614286695577,
@@ -628,8 +720,56 @@ export class MockUserRoleService {
 }
 
 export class MockInviteUserService {
+    userInvites: MockPagination<InviteUserModel>;
+
+    constructor(userInvites?: InviteUserModel[]) {
+        this.userInvites = new MockPagination<InviteUserModel>(userInvites);
+    }
+
     sendUserInvite(): Observable<any> {
         return of(1);
+    }
+
+    deleteUserInvite(inviteId: string): Observable<any> {
+        return of({});
+    }
+
+    getUserInvites(pageNumber?: number, limit?: number, sort?: string, query?: string): Observable<Page<InviteUserModel>> {
+        return of(this.userInvites.getByPaginate(pageNumber, limit));
+    }
+}
+
+export class MockUserAccountService {
+    currentUserAccount: UserAccount;
+    otherUserAccounts: MockPagination<UserAccount>;
+
+    constructor(currentUserAccount: UserAccount, otherUserAccounts: UserAccount[]) {
+        this.currentUserAccount = currentUserAccount;
+        this.otherUserAccounts = new MockPagination([currentUserAccount, ...(otherUserAccounts || [])]);
+    }
+
+    getUserAccount(): Observable<UserAccount> {
+        return of(this.currentUserAccount);
+    }
+
+    getUserAccounts(pageNumber?: number, limit?: number, sort?: string, query?: string): Observable<Page<UserAccount>> {
+        return of(this.otherUserAccounts.getByPaginate(pageNumber, limit));
+    }
+
+    updateUserAccountFieldsForAnotherUser(userAccountId: string, skipTypeValidation: boolean, body: any): Observable<UserAccount> {
+        return of({} as UserAccount);
+    }
+
+    updateUserAccount(accountData: any): Observable<any> {
+        return of({});
+    }
+
+    deleteUserAccount(userAccountId: string): Observable<any> {
+        return of({});
+    }
+
+    deleteCurrentUserAccount(): Observable<any> {
+        return of({});
     }
 }
 
@@ -799,4 +939,25 @@ export class MockTypeMapperUtils {
     static mergeTwoData(): any {
         return {};
     }
+}
+
+// providers
+export function mockUserServiceProvider(): Provider {
+    return { provide: UsersService, useClass: MockUsersService};
+}
+
+export function mockInviteUserServiceProvider(userInvites?: InviteUserModel[]) : Provider {
+    return {provide: InviteUserService, useFactory:() => new MockInviteUserService(userInvites)};
+}
+
+export function mockInviteUserAccountServiceProvider(currentUserAccount: UserAccount, otherUserAccounts: UserAccount[]): Provider {
+    return { provide: UserAccountService, useFactory: () => new MockUserAccountService(currentUserAccount, otherUserAccounts) }
+}
+
+export function mockUserRoleServiceProvider(): Provider {
+    return { provide: UserRoleService, useClass: MockUserRoleService };
+}
+
+export function mockToastrService(): Provider {
+    return { provide: ToastrService, useClass: MockToastrService};
 }
