@@ -18,6 +18,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { FullAppData } from '@openchannel/angular-common-components';
 import { pageConfig } from 'assets/data/configData';
 import { ToastrService } from 'ngx-toastr';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
     selector: 'app-checkout',
@@ -80,7 +81,7 @@ export class CheckoutComponent implements OnInit {
     }
 
     onCardDataLoaded(cardData: CreditCard): void {
-        if (!this.card || cardData.address_state !== this.card.address_state) {
+        if (!this.card || cardData.address_state !== this.card.address_state || cardData.address_zip !== this.card.address_zip) {
             this.stripeService
                 .getTaxesAndPayment(
                     cardData.address_country,
@@ -89,6 +90,7 @@ export class CheckoutComponent implements OnInit {
                     this.app.model[0].modelId,
                     cardData.address_zip,
                     cardData.address_city,
+                    new HttpHeaders({ 'x-handle-error': '500' }),
                 )
                 .pipe(takeUntil(this.$destroy))
                 .subscribe(taxesResponse => {
