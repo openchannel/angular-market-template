@@ -183,7 +183,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 color: '#4691de',
             },
         ];
-        const categoryProps = pageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
+        const categoryProps = this.homePageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
         let categoryIndex = 0;
         if (categoryProps) {
             this.categoriesData = [...filters.find(filter => filter.id === categoryProps.filterId).values];
