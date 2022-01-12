@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Page } from 'app/pages/account-management/my-company/my-company.component';
-import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { siteConfig } from 'assets/data/siteConfig';
 import { PaymentsGateways } from '@openchannel/angular-common-services';
 
@@ -28,7 +27,7 @@ export class MyProfileComponent implements OnInit {
     ];
     selectedPage: Page = this.pages[0];
 
-    constructor(private router: Router, private location: Location, private stripeLoader: StripeLoaderService) {}
+    constructor(private router: Router, private location: Location) {}
 
     ngOnInit(): void {
         const billingPages =
