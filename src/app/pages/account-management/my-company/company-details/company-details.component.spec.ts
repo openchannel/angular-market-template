@@ -14,7 +14,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ToastrService } from 'ngx-toastr';
 import { UserCompanyModel, UsersService } from '@openchannel/angular-common-services';
 import { FormGroup } from '@angular/forms';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
 jest.doMock('@openchannel/angular-common-services', () => ({
@@ -81,15 +81,17 @@ describe('CompanyDetailsComponent', () => {
     });
 
     it('should call createFormFields method with default config if user company does not have type', fakeAsync(() => {
-        const companyType = MockUsersService.MOCK_USER_COMPANY_RESPONSE.type;
-        MockUsersService.MOCK_USER_COMPANY_RESPONSE.type = null;
+        (component as any).usersService.getUserCompany = () =>
+            of({
+                ...MockUsersService.MOCK_USER_COMPANY_RESPONSE,
+                type: null,
+            });
         jest.spyOn(component as any, 'createFormFields');
 
         component.initCompanyForm();
         tick();
 
         expect((component as any).createFormFields).toHaveBeenCalledWith((component as any).defaultFormConfig, expect.anything());
-        MockUsersService.MOCK_USER_COMPANY_RESPONSE.type = companyType;
     }));
 
     it('should call createFormFields method with default config if request for user type definition has thrown error', fakeAsync(() => {
@@ -209,8 +211,10 @@ describe('CompanyDetailsComponent', () => {
         makeOrganizationAbleToBeSaved();
         (component as any).usersService.updateUserCompany = () => throwError('Error');
 
-        component.saveOrganization();
-        tick();
+        try {
+            component.saveOrganization();
+            tick();
+        } catch {}
 
         expect((component as any).toastService.error).toHaveBeenCalled();
     }));
