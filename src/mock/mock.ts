@@ -800,3 +800,27 @@ export class MockTypeMapperUtils {
         return {};
     }
 }
+
+@Component({
+    selector: 'app-general-profile',
+    template: '',
+})
+export class MockGeneralProfileComponent {}
+
+@Component({
+    selector: 'app-change-password',
+    template: '',
+})
+export class MockChangePasswordComponent {}
+
+@Component({
+    selector: 'app-billing',
+    template: '',
+})
+export class MockBillingComponent {}
+
+@Component({
+    selector: 'app-billing-history',
+    template: '',
+})
+export class MockBillingHistoryComponent {}
