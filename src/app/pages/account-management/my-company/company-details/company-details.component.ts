@@ -60,7 +60,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.$destroy.next();
         this.$destroy.complete();
-        this.loader?.complete();
+        this.loader.complete();
     }
 
     initCompanyForm(): void {
