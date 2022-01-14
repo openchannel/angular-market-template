@@ -89,7 +89,7 @@ describe('BillingHistoryComponent', () => {
         );
     });
 
-    it('getTransactionsWithAppInfo method should call this.appsService.getApps method with correct query', () => {
+    it('getTransactionsWithAppInfo method should call appsService.getApps method with correct query', () => {
         const appsIds = ['first-id', 'second-id', 'third-id'];
         const query = JSON.stringify({ appId: { $in: appsIds } });
         const mockTransactions = appsIds.map(appId => ({ appId }));
