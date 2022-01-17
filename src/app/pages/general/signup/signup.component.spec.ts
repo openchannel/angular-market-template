@@ -64,7 +64,7 @@ describe('SignupComponent', () => {
         expect((component as any).loaderBar.complete).toHaveBeenCalled();
     });
 
-    it('should call initFormConfig method in ngOnInit hook', () => {
+    it('should call initFormConfigs method in ngOnInit hook', () => {
         jest.spyOn(component as any, 'initFormConfigs');
 
         // tslint:disable-next-line:no-lifecycle-call
