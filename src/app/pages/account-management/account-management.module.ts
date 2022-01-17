@@ -20,6 +20,7 @@ import {
 import { BillingComponent } from './my-profile/billing/billing.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BillingHistoryComponent } from './my-profile/billing-history/billing-history.component';
+import { ButtonActionModule } from '@features/button-action/button-action.module';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { BillingHistoryComponent } from './my-profile/billing-history/billing-hi
         OcAuthComponentsModule,
         ReactiveFormsModule,
         OcPortalComponentsModule,
+        ButtonActionModule,
     ],
 })
 export class AccountManagementModule {}
