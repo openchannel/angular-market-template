@@ -327,3 +327,47 @@ app-not-found header {
 .text-search-wrapper {
     margin-bottom: 28px;
 }
+
+.checkout__billing-form {
+    .billing__actions {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        .billing__actions-button {
+            width: 20rem;
+           &_margin-top {
+                margin-top: 0;
+            }
+        }
+    }
+}
+
+.app-options-dropdown {
+    &__title {
+        img {
+            padding: 19px;
+            border: 1px solid #c9d5ea;
+            border-radius: 4px;
+        }
+    }
+    .app-options-dropdown-menu {
+        .dropdown-item {
+            height: min-content;
+            margin: auto 0 auto 0;
+            padding: 0;
+            .button-action {
+                .button-action__simple {
+                    font-size: 14px;
+                    padding: 14px 35px;
+                }
+            }
+        }
+    }
+    .dropdown-button__menu {
+        width: 120px;
+        &-item {
+            height: 50px;
+            display: flex;
+        }
+    }
+}

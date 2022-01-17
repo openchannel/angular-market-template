@@ -1,0 +1,10 @@
+
+.button-action {
+    &__button, &__simple {
+        display: block;
+    }
+
+    &__simple {
+        width: 100%;
+    }
+}
