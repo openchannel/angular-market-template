@@ -800,3 +800,104 @@ export class MockTypeMapperUtils {
         return {};
     }
 }
+@Component({
+    selector: 'oc-signup-custom',
+    template: '',
+})
+export class MockSignupCustom {
+    @Input() loginUrl: string;
+    @Input() signupUrl: string;
+    @Input() activationUrl: string;
+    @Input() termsUrl: string;
+    @Input() policyUrl: string;
+    @Input() companyLogoUrl: string;
+    @Input() process: boolean = false;
+    @Input() forgotPasswordDoneUrl: string;
+    @Input() showSignupFeedbackPage: boolean = false;
+    @Input() showLoginLink: boolean = true;
+    @Input() formConfigsLoading: boolean = true;
+    @Input() formConfigs: any[];
+    @Input() defaultTypeLabelText = 'Type';
+    @Input() customTermsDescription: TemplateRef<any>;
+    @Input() headingTag: string = 'h1';
+    @Input() headingInvitationText: string = 'Enter your personal details below';
+    @Input() formId: any = 'signupCustom';
+    @Input() customFormTemplate: TemplateRef<any>;
+    @Output() readonly showSignupFeedbackPageChange = new EventEmitter<boolean>();
+    @Output() readonly resultUserData = new EventEmitter<any>();
+}
+
+export class MockNativeLoginService {
+    signup(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockEditUserTypeService {
+    static MOCK_FORM_CONFIGS_RESPONSE = [
+        {
+            name: 'Default',
+            organization: {
+                type: 'default',
+                typeData: {
+                    userTypeId: 'default',
+                    fields: [
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'name',
+                            label: 'Company Name',
+                            type: 'text',
+                        },
+                    ],
+                    createdDate: 1639656055769,
+                    description: '',
+                    label: 'Default',
+                },
+                includeFields: ['name', 'customData.company'],
+            },
+            account: {
+                type: 'default',
+                typeData: {
+                    fields: [
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'name',
+                            label: 'Name',
+                            type: 'text',
+                        },
+                        {
+                            attributes: {
+                                required: true,
+                            },
+                            id: 'email',
+                            label: 'Email',
+                            type: 'emailAddress',
+                        },
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'username',
+                            label: 'Username',
+                            type: 'text',
+                        },
+                    ],
+                    createdDate: 1639656055763,
+                    description: '',
+                    userAccountTypeId: 'default',
+                    label: 'Default',
+                },
+                includeFields: ['name', 'email'],
+            },
+            fieldsOrder: ['name', 'email', 'org--name', 'password'],
+        },
+    ];
+
+    injectTypeDataIntoConfigs(): Observable<any> {
+        return of(MockEditUserTypeService.MOCK_FORM_CONFIGS_RESPONSE);
+    }
+}
