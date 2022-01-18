@@ -83,8 +83,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                 this.processPurchase();
                 break;
             default:
-                this.toasterService.error(`Error: invalid button type: ${this.buttonAction.type}`);
-        }
+                break;
         }
     }
 
@@ -128,28 +127,27 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         }
     }
 
-private processOwnershipAndDownload(actionType: 'OWNED' | 'UNOWNED', actionConfig: DownloadButtonAction): void {
-    if (this.authService.isLoggedInUser()) {
-    switch (actionType) {
-        case 'OWNED':
-            this.downloadFile(actionConfig).pipe(takeUntil(this.$destroy)).subscribe();
-            break;
-        case 'UNOWNED':
-            this.installOwnership(() => this.downloadFile(actionConfig).pipe(takeUntil(this.$destroy)));
-            break;
-        default:
-            this.toasterService.error(`Error: invalid owned button type: ${actionType}`);
+    private processOwnershipAndDownload(actionType: 'OWNED' | 'UNOWNED', actionConfig: DownloadButtonType): void {
+        if (this.authService.isLoggedInUser()) {
+            switch (actionType) {
+                case 'OWNED':
+                    this.downloadFile(actionConfig).pipe(takeUntil(this.$destroy)).subscribe();
+                    break;
+                case 'UNOWNED':
+                    this.installOwnership(() => this.downloadFile(actionConfig).pipe(takeUntil(this.$destroy)));
+                    break;
+                default:
+                    this.toasterService.error(`Error: invalid owned button type: ${actionType}`);
+            }
+        } else {
+            this.navigateToLoginPage();
+        }
     }
-} else {
-    this.navigateToLoginPage();
-}
-}
-
 
     private installOwnership(actionAfterInstall: () => Observable<any> = of): void {
-    if (!this.authService.isLoggedInUser()) {
-    this.navigateToLoginPage();
-     } else if (this.appData?.model?.length > 0) {
+        if (!this.authService.isLoggedInUser()) {
+            this.navigateToLoginPage();
+        } else if (this.appData?.model?.length > 0) {
             this.processAction(
                 this.ownershipService
                     .installOwnership(
