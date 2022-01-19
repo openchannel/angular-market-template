@@ -56,7 +56,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        debugger;
         this.loader = this.loadingBar.useRef();
 
         // get redirect URL from the params
@@ -86,7 +85,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
                     const code = this.route.snapshot.queryParamMap.get('code');
 
-                    if (authConfig.singleSignOnUrl) {
+                    if (authConfig?.type === 'SAML_20') {
                         // SAML 2.0 login
                         this.processSamlLogin(authConfig);
                     } else if (code && this.isClientAccessTypeConfidential()) {

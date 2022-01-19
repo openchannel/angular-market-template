@@ -18,7 +18,7 @@ export class LogOutService {
 
     logOut(): Observable<boolean> {
         return this.authenticationService.getAuthConfig().pipe(
-            mergeMap(config => (config ? this.logOutSSO(config) : this.logOutNative())),
+            mergeMap(config => this.processNativeOrSSOLogout(config)),
             tap(() => this.authService.clearTokensInStorage()),
         );
     }
@@ -28,10 +28,15 @@ export class LogOutService {
             .getAuthConfig()
             .pipe(
                 first(),
-                mergeMap(config => (config ? this.logOutSSO(config) : this.logOutNative())),
+                mergeMap(config => this.processNativeOrSSOLogout(config)),
                 tap(() => this.authService.clearTokensInStorage()),
             )
             .subscribe(() => this.router.navigateByUrl(navigateTo).then());
+    }
+
+    private processNativeOrSSOLogout(config: SiteAuthConfig) : Observable<boolean> {
+        const isNativeLogout = !config || config.type === 'SAML_20';
+        return isNativeLogout ? this.logOutNative() : this.logOutSSO(config);
     }
 
     private isAuthorizationCodeFlow(authConfig: SiteAuthConfig): boolean {
