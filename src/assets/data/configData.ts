@@ -31,6 +31,7 @@ export interface FormButtonType extends ButtonTypeModel<'form'> {
         successMessage: string;
         errorMessage: string;
         notFoundFormMessage: string;
+        tooManyAttemptsMessage: string;
     };
 }
 
@@ -63,6 +64,7 @@ export const contactUsButton: ActionButton = {
         successMessage: "Thank you for submitting, we'll get back to you shortly",
         errorMessage: 'Due to an error, we were not able to send your form',
         notFoundFormMessage: 'Contact us form is not available',
+        tooManyAttemptsMessage: 'You have made too many attempts to submit this form. Please wait 10 minutes and try again',
     },
 };
 

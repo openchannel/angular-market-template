@@ -117,6 +117,18 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                                         },
                                         new HttpHeaders({ 'x-handle-error': '429' }),
                                     ),
+                                    err => {
+                                        switch (err.status) {
+                                            case 429:
+                                                this.toasterService.error(formAction.showToaster.tooManyAttemptsMessage);
+                                                break;
+                                            default:
+                                                this.toasterService.error(formAction.showToaster.errorMessage);
+                                                break;
+                                        }
+
+                                        return throwError(err);
+                                    },
                                 );
                             }
                         });
@@ -192,17 +204,6 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                                   this.inProcess = false;
                                   if (error.status !== 429 && this.buttonAction?.showToaster?.errorMessage) {
                                       this.toasterService.error(this.buttonAction?.showToaster?.errorMessage);
-
-                                  switch (error.status) {
-                                      case 429:
-                                          if (this.viewData?.message?.tooManyAttempts) {
-                                              this.toasterService.error(this.viewData.message.tooManyAttempts);
-                                          }
-                                          break;
-                                      default:
-                                          if (this.viewData?.message?.fail) {
-                                              this.toasterService.error(this.viewData.message.fail);
-                                          }
                                   }
 
                                   return throwError(error);
