@@ -104,15 +104,31 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                             if (result) {
                                 // create submission by this form
                                 this.processAction(
-                                    this.formService.createFormSubmission(form.formId, {
-                                        appId: this.appData.appId,
-                                        name: result.name,
-                                        userId: '',
-                                        email: result.email,
-                                        formData: {
-                                            ...result,
+                                    this.formService.createFormSubmission(
+                                        form.formId,
+                                        {
+                                            appId: this.appData.appId,
+                                            name: result.name,
+                                            userId: '',
+                                            email: result.email,
+                                            formData: {
+                                                ...result,
+                                            },
                                         },
-                                    }),
+                                        new HttpHeaders({ 'x-handle-error': '429' }),
+                                    ),
+                                    err => {
+                                        switch (err.status) {
+                                            case 429:
+                                                this.toasterService.error(formAction.showToaster.tooManyAttemptsMessage);
+                                                break;
+                                            default:
+                                                this.toasterService.error(formAction.showToaster.errorMessage);
+                                                break;
+                                        }
+
+                                        return throwError(err);
+                                    },
                                 );
                             }
                         });
@@ -189,6 +205,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                                   if (error.status !== 429 && this.buttonAction?.showToaster?.errorMessage) {
                                       this.toasterService.error(this.buttonAction?.showToaster?.errorMessage);
                                   }
+
                                   return throwError(error);
                               },
                     ),
