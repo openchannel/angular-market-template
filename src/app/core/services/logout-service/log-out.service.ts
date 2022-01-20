@@ -1,25 +1,51 @@
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, AuthHolderService, SiteAuthConfig } from '@openchannel/angular-common-services';
-import { from, Observable } from 'rxjs';
-import { first, map, mergeMap, tap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { filter, first, map, mergeMap, skip, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
 })
 export class LogOutService {
+    private readonly SAML_LOGOUT_PARAMS_KEYS: string[] = ['SAMLResponse', 'SigAlg', 'Signature'];
+
     constructor(
         private oAuthService: OAuthService,
         private authService: AuthHolderService,
         private authenticationService: AuthenticationService,
         private router: Router,
+        private activatedRoute: ActivatedRoute,
     ) {}
+
+    /**
+     * Remove URL param variables 'SAMLResponse', 'SigAlg' and 'Signature'.
+     */
+    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
+        this.activatedRoute.queryParamMap
+        .pipe(
+            skip(1),
+            filter(queryParamMap => !!this.SAML_LOGOUT_PARAMS_KEYS.find(paramKey => queryParamMap.has(paramKey))),
+            switchMap(() => {
+                // map param values from ['key1', 'key2'] to {'key1': null, 'key2': null }
+                const queryParams = {};
+                this.SAML_LOGOUT_PARAMS_KEYS.forEach(paramKey => (queryParams[paramKey] = null));
+
+                return from(
+                    this.router.navigate([], {
+                        queryParams,
+                        queryParamsHandling: 'merge',
+                    }),
+                );
+            }),
+        )
+        .subscribe();
+    }
 
     logOut(): Observable<boolean> {
         return this.authenticationService.getAuthConfig().pipe(
-            mergeMap(config => this.processNativeOrSSOLogout(config)),
-            tap(() => this.authService.clearTokensInStorage()),
+            mergeMap(config => this.processNativeOrSSOLogout(config))
         );
     }
 
@@ -28,15 +54,32 @@ export class LogOutService {
             .getAuthConfig()
             .pipe(
                 first(),
-                mergeMap(config => this.processNativeOrSSOLogout(config)),
-                tap(() => this.authService.clearTokensInStorage()),
+                mergeMap(config => this.processNativeOrSSOLogout(config))
             )
             .subscribe(() => this.router.navigateByUrl(navigateTo).then());
     }
 
     private processNativeOrSSOLogout(config: SiteAuthConfig) : Observable<boolean> {
-        const isNativeLogout = !config || config.type === 'SAML_20';
-        return isNativeLogout ? this.logOutNative() : this.logOutSSO(config);
+        if(!config) {
+            // Native Logout
+            return this.logOutNative()
+            .pipe(tap(() => this.authService.clearTokensInStorage()));
+        } else if (config.type === 'SAML_20') {
+            // Saml 2.0 Logout
+            return this.logOutNative()
+            .pipe(
+                tap(() => this.authService.clearTokensInStorage()),
+                switchMap(() => this.processSamlLogout(config)));
+        } else {
+            // Auth2 Logout
+            this.authService.clearTokensInStorage();
+            return this.logOutSSO(config);
+        }
+    }
+
+    private processSamlLogout(config: SiteAuthConfig): Observable<never> {
+        window.location.href = config.singleLogOutUrl;
+        return of(); // no redirect need for SAML 2.0, redirect URL configured on the SAML provider.
     }
 
     private isAuthorizationCodeFlow(authConfig: SiteAuthConfig): boolean {
