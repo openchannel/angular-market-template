@@ -1,11 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { InviteUserModel, InviteUserService, NativeLoginService, UserAccountTypesService } from '@openchannel/angular-common-services';
+import {
+    AuthenticationService,
+    InviteUserModel,
+    InviteUserService,
+    NativeLoginService,
+    UserAccountTypesService,
+} from '@openchannel/angular-common-services';
 import { Subject } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { merge } from 'lodash';
 import { LogOutService } from '@core/services/logout-service/log-out.service';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { filter, finalize, map, takeUntil } from 'rxjs/operators';
 import { AppFormField } from '@openchannel/angular-common-components';
 
 @Component({
@@ -41,9 +47,11 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         private typeService: UserAccountTypesService,
         private logOutService: LogOutService,
         private nativeLoginService: NativeLoginService,
+        private authService: AuthenticationService,
     ) {}
 
     ngOnInit(): void {
+        this.checkSSO();
         this.getInviteDetails();
     }
 
@@ -175,5 +183,18 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
 
     setFormData(resultData: any): void {
         this.formResultData = resultData;
+    }
+
+    private checkSSO(): void {
+        this.authService
+            .getAuthConfig()
+            .pipe(
+                map(value => !!value),
+                filter(isSSO => isSSO),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(() => {
+                this.router.navigate(['login']).then();
+            });
     }
 }
