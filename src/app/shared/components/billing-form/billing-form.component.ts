@@ -273,6 +273,9 @@ export class BillingFormComponent implements OnInit, OnDestroy {
             this.cardForm.cardCvc.element.clear();
             this.cardForm.cardExpiration.element.clear();
         }
+        if (this.goBackOnCancel) {
+            history.back();
+        }
     }
 
     showStripeForm(): void {
