@@ -8,6 +8,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { siteConfig } from '../assets/data/siteConfig';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
+import { LogOutService } from '@core/services/logout-service/log-out.service';
 
 @Component({
     selector: 'app-root',
@@ -26,11 +27,16 @@ export class AppComponent implements OnInit {
         private titleService: TitleService,
         private metaTagService: MarketMetaTagService,
         private cmsService: CmsContentService,
+        private logOutService: LogOutService,
     ) {
         this.loader = this.loadingBar.useRef();
     }
 
     ngOnInit(): void {
+
+        // Clear user authorization, when in the URL params present specific key for SAML 2.0
+        this.logOutService.removeSpecificParamKeyFromTheUrlForSaml2Logout();
+
         this.initSiteConfig();
 
         // refresh JWT token if exists`
