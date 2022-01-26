@@ -65,6 +65,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
     }
 
     onClick(): void {
+        const actionType = this.appData?.ownership?.ownershipStatus === 'active' ? 'OWNED' : 'UNOWNED';
         switch (this.buttonAction.type) {
             case 'form':
                 this.processForm(this.buttonAction);
@@ -76,7 +77,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                 this.uninstallOwnership();
                 break;
             case 'download':
-                this.downloadFile(this.buttonAction);
+                this.processOwnershipAndDownload(actionType, this.buttonAction);
                 break;
             case 'purchase':
                 this.processPurchase();
@@ -142,18 +143,37 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         }
     }
 
-    private installOwnership(): void {
+    private processOwnershipAndDownload(actionType: 'OWNED' | 'UNOWNED', actionConfig: DownloadButtonType): void {
+        if (this.authService.isLoggedInUser()) {
+            switch (actionType) {
+                case 'OWNED':
+                    this.downloadFile(actionConfig).pipe(takeUntil(this.$destroy)).subscribe();
+                    break;
+                case 'UNOWNED':
+                    this.installOwnership(() => this.downloadFile(actionConfig).pipe(takeUntil(this.$destroy)));
+                    break;
+                default:
+                    this.toasterService.error(`Error: invalid owned button type: ${actionType}`);
+            }
+        } else {
+            this.navigateToLoginPage();
+        }
+    }
+
+    private installOwnership(actionAfterInstall: () => Observable<any> = of): void {
         if (!this.authService.isLoggedInUser()) {
             this.navigateToLoginPage();
         } else if (this.appData?.model?.length > 0) {
             this.processAction(
-                this.ownershipService.installOwnership(
-                    {
-                        appId: this.appData.appId,
-                        modelId: this.appData?.model[0].modelId,
-                    },
-                    new HttpHeaders({ 'x-handle-error': '403, 500' }),
-                ),
+                this.ownershipService
+                    .installOwnership(
+                        {
+                            appId: this.appData.appId,
+                            modelId: this.appData?.model[0].modelId,
+                        },
+                        new HttpHeaders({ 'x-handle-error': '403, 500' }),
+                    )
+                    .pipe(mergeMap(actionAfterInstall)),
                 error => this.handleOwnershipResponseError(error, 'You don’t have permission to install this app'),
             );
         } else {
@@ -237,26 +257,38 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
         }
     }
 
-    private downloadFile(actionConfig: DownloadButtonType): void {
-        const file = get(this.appData, actionConfig.pathToFile);
-        const regex: RegExp = new RegExp(/^(http(s)?:)?\/\//gm);
-        if (regex.test(file)) {
-            window.open(file);
-        } else {
-            this.fileService
-                .downloadFileDetails(file)
-                .pipe(
-                    mergeMap(fileInfo => this.fileService.getFileUrl(fileInfo.fileId)),
-                    tap(res => window.open(res.url)),
-                    mergeMap(fileUrl =>
-                        this.buttonAction.statistic
-                            ? this.statisticService.record(this.buttonAction.statistic, this.appData.appId)
-                            : of(fileUrl),
-                    ),
-                    takeUntil(this.$destroy),
-                )
-                .subscribe(() => {});
-        }
+    private downloadFile(actionConfig: DownloadButtonType): Observable<void> {
+        return new Observable(subscriber => {
+            const file = get(this.appData, actionConfig.pathToFile);
+            const regex: RegExp = new RegExp(/^(http(s)?:)?\/\//gm);
+            if (regex.test(file)) {
+                window.open(file);
+                subscriber.next();
+                subscriber.complete();
+            } else {
+                this.fileService
+                    .downloadFileDetails(file)
+                    .pipe(
+                        mergeMap(fileInfo => this.fileService.getFileUrl(fileInfo.fileId)),
+                        tap(res => window.open(res.url)),
+                        mergeMap(fileUrl =>
+                            this.buttonAction.statistic
+                                ? this.statisticService.record(this.buttonAction.statistic, this.appData.appId)
+                                : of(fileUrl),
+                        ),
+                        catchError(err => {
+                            subscriber.error(err);
+                            return throwError(err);
+                        }),
+                        tap(() => {
+                            subscriber.next();
+                            subscriber.complete();
+                        }),
+                        takeUntil(this.$destroy),
+                    )
+                    .subscribe(() => {});
+            }
+        });
     }
 
     private handleOwnershipResponseError(error: any, forbiddenMessage: string): Observable<never> {
