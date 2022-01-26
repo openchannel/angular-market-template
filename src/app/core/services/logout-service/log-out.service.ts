@@ -9,7 +9,7 @@ import { filter, first, map, mergeMap, skip, switchMap, tap } from 'rxjs/operato
     providedIn: 'root',
 })
 export class LogOutService {
-    private readonly SAML_LOGOUT_PARAMS_KEYS: string[] = ['SAMLResponse', 'SigAlg', 'Signature'];
+    private readonly samlLogoutParamKeys: string[] = ['SAMLResponse', 'SigAlg', 'Signature'];
 
     constructor(
         private oAuthService: OAuthService,
@@ -26,11 +26,11 @@ export class LogOutService {
         this.activatedRoute.queryParamMap
         .pipe(
             skip(1),
-            filter(queryParamMap => !!this.SAML_LOGOUT_PARAMS_KEYS.find(paramKey => queryParamMap.has(paramKey))),
+            filter(queryParamMap => !!this.samlLogoutParamKeys.find(paramKey => queryParamMap.has(paramKey))),
             switchMap(() => {
                 // map param values from ['key1', 'key2'] to {'key1': null, 'key2': null }
                 const queryParams = {};
-                this.SAML_LOGOUT_PARAMS_KEYS.forEach(paramKey => (queryParams[paramKey] = null));
+                this.samlLogoutParamKeys.forEach(paramKey => (queryParams[paramKey] = null));
 
                 return from(
                     this.router.navigate([], {
