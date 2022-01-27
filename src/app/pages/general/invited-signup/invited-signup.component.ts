@@ -1,16 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+    AuthenticationService,
     InviteUserModel,
     InviteUserService,
     NativeLoginService,
-    UserAccountTypeModel,
-    UserAccountTypesService,
+   UserAccountTypeModel, UserAccountTypesService,
 } from '@openchannel/angular-common-services';
 import { Subject } from 'rxjs';
 import { merge } from 'lodash';
 import { LogOutService } from '@core/services/logout-service/log-out.service';
-import { finalize, map, takeUntil } from 'rxjs/operators';
+import { filter, finalize, map, takeUntil } from 'rxjs/operators';
 import { AppFormField, OcEditUserFormConfig, OcEditUserResult } from '@openchannel/angular-common-components';
 import { OcEditUserTypeService } from '@core/services/user-type-service/user-type.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -89,10 +89,12 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
         private loadingBarService: LoadingBarService,
         private ocEditTypeService: OcEditUserTypeService,
         private toaster: ToastrService,
+        private authService: AuthenticationService,
     ) {}
 
     ngOnInit(): void {
         this.loaderBar = this.loadingBarService.useRef();
+        this.checkSSO();
         this.getInviteDetails();
     }
 
@@ -251,5 +253,18 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
                 },
             },
         ];
+    }
+
+    private checkSSO(): void {
+        this.authService
+            .getAuthConfig()
+            .pipe(
+                map(value => !!value),
+                filter(isSSO => isSSO),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(() => {
+                this.router.navigate(['login']).then();
+            });
     }
 }
