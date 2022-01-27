@@ -1,3 +1,13 @@
+## Release notes - template3-marketsite-frontend - Version 1.61.0 (1/27/2022)<br>
+### Bug<br>
+AT-1605 - [Components] Custom sign up form should support DFA fields<br>
+### Task<br>
+AT-1581 - For CAP, Change cache control timing<br>
+AT-1579 - For CAP, make /content, /apps/textSearch and /apps/{appId} cachable<br>
+### Bug<br>
+AT-1510 - [AT-1446] Form Rate limit should show only 1 validation.<br>
+AT-1434 - CMS must be enabled for Portal and Market sites.<br>
+AT-1346 - [SSO] For External SSO Identity Configuration the Invite Request has the /auth/native/invite in URL.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.60.0 (1/25/2022)<br>
 ### Bug<br>
 AT-1612 - [Market] My apps page loads with incorrect pageNumber when page loads already scrolled to the bottom<br>
