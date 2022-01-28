@@ -44,42 +44,44 @@ export class LogOutService {
     }
 
     logOut(): Observable<boolean> {
-        return this.authenticationService.getAuthConfig().pipe(
-            mergeMap(config => this.processNativeOrSSOLogout(config))
-        );
+        return this.authenticationService.getAuthConfig().pipe(mergeMap(config => this.processNativeOrSSOLogout(config)));
     }
 
     logOutAndRedirect(navigateTo: string): void {
         this.authenticationService
-            .getAuthConfig()
-            .pipe(
-                first(),
-                mergeMap(config => this.processNativeOrSSOLogout(config))
-            )
-            .subscribe(() => this.router.navigateByUrl(navigateTo).then());
+        .getAuthConfig()
+        .pipe(
+            first(),
+            mergeMap(config => this.processNativeOrSSOLogout(config, navigateTo)),
+        )
+        .subscribe();
     }
 
-    private processNativeOrSSOLogout(config: SiteAuthConfig) : Observable<boolean> {
-        if(!config) {
+    private processNativeOrSSOLogout(config: SiteAuthConfig, navigateTo?: string): Observable<boolean> {
+        if (!config) {
             // Native Logout
-            return this.logOutNative()
-            .pipe(tap(() => this.authService.clearTokensInStorage()));
+            return this.logOutNative().pipe(
+                tap(() => this.authService.clearTokensInStorage()),
+                switchMap(() => this.navigateByUrl(navigateTo)),
+            );
         } else if (config.type === 'SAML_20') {
             // Saml 2.0 Logout
-            return this.logOutNative()
-            .pipe(
+            return this.logOutNative().pipe(
                 tap(() => this.authService.clearTokensInStorage()),
-                switchMap(() => this.processSamlLogout(config)));
+                switchMap(() => this.processSamlLogout(config)),
+            );
         } else {
             // Auth2 Logout
-            this.authService.clearTokensInStorage();
-            return this.logOutSSO(config);
+            return this.logOutSSO(config).pipe(
+                tap(() => this.authService.clearTokensInStorage()),
+                switchMap(() => this.navigateByUrl(navigateTo)),
+            );
         }
     }
 
-    private processSamlLogout(config: SiteAuthConfig): Observable<never> {
+    private processSamlLogout(config: SiteAuthConfig): Observable<boolean> {
         window.location.href = config.singleLogOutUrl;
-        return of(); // no redirect need for SAML 2.0, redirect URL configured on the SAML provider.
+        return of(true); // no redirect need for SAML 2.0, redirect URL configured on the SAML provider.
     }
 
     private isAuthorizationCodeFlow(authConfig: SiteAuthConfig): boolean {
@@ -108,5 +110,13 @@ export class LogOutService {
             first(),
             map(() => true),
         );
+    }
+
+    private navigateByUrl(navigateTo: string): Observable<boolean> {
+        if (navigateTo?.length >= 0) {
+            return from(this.router.navigateByUrl(navigateTo));
+        } else {
+            return of(true);
+        }
     }
 }
