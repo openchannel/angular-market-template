@@ -14,7 +14,15 @@ const subPaths =
               { path: 'billing-history', component: MyProfileComponent, canActivate: [AuthGuard] },
           ]
         : [];
+
 const routes: Routes = [
+    // Redirect to the first page in the block (`profile-details`),
+    // when the route doesn't contain an end part, `profile-details`, for example
+    {
+        path: 'my-profile',
+        pathMatch: 'full',
+        redirectTo: 'my-profile/profile-details',
+    },
     {
         path: 'my-profile',
         data: { title: 'My profile' },
@@ -25,6 +33,14 @@ const routes: Routes = [
         ],
     },
     { path: 'my-apps', component: MyAppsComponent, canActivate: [AuthGuard], data: { title: 'Manage apps' } },
+
+    // Redirect to the first page in the block (`company-details`),
+    // when the route doesn't contain an end part, `company-details`, for example
+    {
+        path: 'my-company',
+        pathMatch: 'full',
+        redirectTo: 'my-company/company-details',
+    },
     {
         path: 'my-company',
         data: { title: 'My company' },
