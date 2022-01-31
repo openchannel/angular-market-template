@@ -211,7 +211,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private processSamlLogin(authConfig: SiteAuthConfig) {
         this.loader.complete();
         const samlLoginUrl = `${authConfig.singleSignOnUrl}?RelayState=${window.location.href}`;
-        window.open(samlLoginUrl);
+        window.open(samlLoginUrl, "_self");
     }
 
     private getSamlJwtTokens(): LoginResponse {
