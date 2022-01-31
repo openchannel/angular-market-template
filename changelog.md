@@ -1,3 +1,10 @@
+## Release notes - template3-marketsite-frontend - Version 1.63.0 (1/31/2022)<br>
+### Story<br>
+AT-1665 - A user is able to log in from SSO using SAML 2.0<br>
+### Bug<br>
+AT-1659 - [Market][Portal] Page is not loading correctly when URL is like `my-profile` (without `profile-details` end part)<br>
+AT-1657 - Long word is not truncated in oc-app-card on market<br>
+AT-1636 - [Sign Up] Sign up form does not load all the fields of the Dev/User Org type.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.62.0 (1/27/2022)<br>
 ### Task<br>
 AT-1583 - For CAP, compress responses using gzip<br>
