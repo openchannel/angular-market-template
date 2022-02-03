@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.64.0 (2/3/2022)<br>
+### Bug<br>
+AT-1701 - [AT-1665] SAML 2.0 setup opens login page in new tab.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.63.0 (1/31/2022)<br>
 ### Story<br>
 AT-1665 - A user is able to log in from SSO using SAML 2.0<br>
