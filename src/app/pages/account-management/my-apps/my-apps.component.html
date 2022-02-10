@@ -23,19 +23,21 @@
             *ngFor="let app of appList"
             [app]="app"
             class="mb-2"
-            [customDropdown]="dropdownTemplate"
-            (clickByAppCard)="navigateTo(['details', $event.safeName[0]])"></oc-app-short-info>
+            (clickByAppCard)="navigateTo(['details', $event.safeName[0]])">
+                <div ngbDropdown placement="bottom-right" class="mr-2 app-options-dropdown">
+                    <button class="menu-button" ngbDropdownToggle>
+                        <img src="assets/img/dots-hr-icon.svg" alt="more-icon" class="icon-dots">
+                    </button>
+                    <div ngbDropdownMenu class="app-options-dropdown-menu">
+                        <app-button-action class="dropdown-item" *ngFor="let action of app.listingActions"
+                                [appData]="app"
+                                [buttonAction]="action"
+                                (updateAppData)="onUpdateAppData()"
+                                viewType="simple">
+                        </app-button-action>
+                    </div>
+                </div>
+        </oc-app-short-info>
     </div>
 </div>
 <div class="mt-8"></div>
-
-<ng-template #dropdownTemplate>
-    <div ngbDropdown placement="bottom-right" class="mr-2">
-        <button class="btn btn-outline-info menu-button" ngbDropdownToggle>
-            <img src="assets/img/dots-hr-icon.svg" alt="more-icon" class="icon-dots">
-        </button>
-        <div ngbDropdownMenu>
-            <button class="dropdown-item">To Do...</button>
-        </div>
-    </div>
-</ng-template>

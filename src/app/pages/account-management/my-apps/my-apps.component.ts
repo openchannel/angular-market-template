@@ -2,11 +2,21 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppsService, FrontendService } from '@openchannel/angular-common-services';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { pageConfig } from '../../../../assets/data/configData';
+import { ActionButton, actionButtons, pageConfig, uninstallButton } from 'assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Router } from '@angular/router';
 import { FullAppData, DropdownModel } from '@openchannel/angular-common-components';
+import { ButtonActionService } from '@features/button-action/button-action.service';
+import { CustomDataAppConfig } from '@openchannel/angular-common-components/src/lib/common-components';
+
+class LocalFullAppData extends FullAppData {
+    listingActions: ActionButton[];
+    constructor(appData: any, customDataConfig: CustomDataAppConfig, listingActions: ActionButton[]) {
+        super(appData, customDataConfig);
+        this.listingActions = listingActions;
+    }
+}
 
 @Component({
     selector: 'app-my-apps',
@@ -14,10 +24,11 @@ import { FullAppData, DropdownModel } from '@openchannel/angular-common-componen
     styleUrls: ['./my-apps.component.scss'],
 })
 export class MyAppsComponent implements OnInit, OnDestroy {
-    appList: FullAppData[] = [];
+    appList: LocalFullAppData[] = [];
     appSorts: DropdownModel<string>[];
     selectedSort: DropdownModel<string>;
     appsLoaded = false;
+    appOptions: ActionButton[] = actionButtons;
 
     private pageNumber = 1;
     private destroy$ = new Subject();
@@ -29,6 +40,7 @@ export class MyAppsComponent implements OnInit, OnDestroy {
         private router: Router,
         private frontendService: FrontendService,
         private loadingBar: LoadingBarService,
+        private buttonActionService: ButtonActionService,
     ) {}
 
     ngOnInit(): void {
@@ -67,8 +79,10 @@ export class MyAppsComponent implements OnInit, OnDestroy {
     }
 
     onScrollDown(): void {
-        this.pageNumber++;
-        this.loadApps();
+        if (this.appList.length > 0) {
+            this.pageNumber++;
+            this.loadApps();
+        }
     }
 
     goBack(): void {
@@ -79,19 +93,32 @@ export class MyAppsComponent implements OnInit, OnDestroy {
         this.router.navigate(parts).then();
     }
 
+    onUpdateAppData(): void {
+        this.appList = [];
+        this.loadApps();
+    }
+
     private loadApps(): void {
         const sort = this.selectedSort ? this.selectedSort.value : '';
         this.appsService
             .getApps(this.pageNumber, 5, sort, '', true)
-            .pipe(
-                finalize(() => {
-                    this.loader.complete();
-                }),
-                takeUntil(this.destroy$),
-            )
-            .subscribe(res => {
-                this.appList = [...this.appList, ...res.list.map(app => new FullAppData(app, pageConfig.fieldMappings))];
-                this.appsLoaded = true;
-            });
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                res => {
+                    this.appList = [
+                        ...this.appList,
+                        ...res.list.map(
+                            app =>
+                                new LocalFullAppData(app, pageConfig.fieldMappings, [
+                                    ...this.buttonActionService.canBeShow(app, actionButtons),
+                                    uninstallButton,
+                                ]),
+                        ),
+                    ];
+                    this.appsLoaded = true;
+                },
+                error => this.loader.complete(),
+                () => this.loader.complete(),
+            );
     }
 }
