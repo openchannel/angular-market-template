@@ -7,63 +7,64 @@ import {
     mockUserServiceProvider,
     mockToastrService,
     mockUserRoleServiceProvider,
-    MockOcMenuUserGridComponent, MockUserRoleService,
+    MockOcMenuUserGridComponent,
+    MockUserRoleService,
 } from '../../../../../mock/mock';
-import {Observable, of, throwError} from 'rxjs';
-import {UserAccount} from '@openchannel/angular-common-services';
+import { Observable, of, throwError } from 'rxjs';
+import { UserAccount } from '@openchannel/angular-common-services';
 import { ManagementModalService } from './management-modal.service';
-import {InviteUserModel} from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
-import {times} from 'lodash';
+import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+import { times } from 'lodash';
 
 class MockManagementModalService {
-     openDeleteInviteModal(): Observable<boolean> {
-         return null;
-     }
+    openDeleteInviteModal(): Observable<boolean> {
+        return null;
+    }
 
-     openDeleteCurrentUserAccountModal(): Observable<boolean> {
-         return null;
-     }
+    openDeleteCurrentUserAccountModal(): Observable<boolean> {
+        return null;
+    }
 
-     openDeleteAnotherUserAccountModal(): Observable<boolean> {
-         return null;
-     }
+    openDeleteAnotherUserAccountModal(): Observable<boolean> {
+        return null;
+    }
 
-     openEditUserAccountModal(userAccount: UserAccount): Observable<boolean> {
-         return null;
-     }
+    openEditUserAccountModal(userAccount: UserAccount): Observable<boolean> {
+        return null;
+    }
 
-     openEditUserInviteModal(userInvite: UserAccount): Observable<boolean> {
-         return null;
-     }
+    openEditUserInviteModal(userInvite: UserAccount): Observable<boolean> {
+        return null;
+    }
 }
 
 jest.mock('./management-modal.service', () => {
     class ManagementModalService {}
-    return {ManagementModalService};
-})
+    return { ManagementModalService };
+});
 
 describe('ManagementComponent', () => {
     let component: ManagementComponent;
     let fixture: ComponentFixture<ManagementComponent>;
 
-    const userId = "testUserId";
+    const userId = 'testUserId';
 
     const mainUserAccount: UserAccount = {
-        userAccountId: "mainUserAccountId",
+        userAccountId: 'mainUserAccountId',
         userId,
         name: 'mainUserAccount',
-        roles: [MockUserRoleService.ADMIN_ROLE_ID]
+        roles: [MockUserRoleService.ADMIN_ROLE_ID],
     } as UserAccount;
 
-    const userInvites: InviteUserModel[] = times(3, (index) => ({
+    const userInvites: InviteUserModel[] = times(3, index => ({
         userId,
         userInviteId: `inviteId_${index}`,
         userAccountId: `inviteAccountId_${index}`,
         name: `inviteName_${index}`,
-        roles: [MockUserRoleService.ADMIN_ROLE_ID]
+        roles: [MockUserRoleService.ADMIN_ROLE_ID],
     }));
 
-    const userAccounts: UserAccount[] = times(3, (index) => ({
+    const userAccounts: UserAccount[] = times(3, index => ({
         userId,
         userAccountId: `userAccountId_${index}`,
         name: `userAccountName_${index}`,
@@ -81,7 +82,7 @@ describe('ManagementComponent', () => {
                     mockInviteUserServiceProvider(userInvites),
                     mockInviteUserAccountServiceProvider(mainUserAccount, userAccounts),
                 ],
-                declarations: [ManagementComponent, MockOcMenuUserGridComponent ],
+                declarations: [ManagementComponent, MockOcMenuUserGridComponent],
             }).compileComponents();
         }),
     );
@@ -89,7 +90,7 @@ describe('ManagementComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ManagementComponent);
         component = fixture.componentInstance;
-        (component as any)['USERS_LIMIT_PER_REQUEST'] = 1;
+        (component as any).USERS_LIMIT_PER_REQUEST = 1;
     });
 
     it('should create', () => {
@@ -110,7 +111,7 @@ describe('ManagementComponent', () => {
         expect((component as any).destroy$.next).toHaveBeenCalled();
         expect((component as any).destroy$.complete).toHaveBeenCalled();
         expect((component as any).loader.complete).toHaveBeenCalled();
-    })
+    });
 
     it('The loader bar must be opened and then closed when we load new users and invites. All HTTP requests with successful responses.', () => {
         fixture.detectChanges();
@@ -129,8 +130,7 @@ describe('ManagementComponent', () => {
         jest.spyOn((component as any).loader, 'start');
         jest.spyOn((component as any).loader, 'complete');
 
-        jest.spyOn((component as any).userAccountService, 'getUserAccounts')
-        .mockReturnValue(throwError(() => 'an error'));
+        jest.spyOn((component as any).userAccountService, 'getUserAccounts').mockReturnValue(throwError(() => 'an error'));
 
         component.getAllUsers(false);
         fixture.detectChanges();
@@ -161,7 +161,7 @@ describe('ManagementComponent', () => {
         expect(component.userProperties.data.list[1].userAccountId).toBe(accountIdsFromTwoPages[1]);
         expect(component.userProperties.data.list[2].userAccountId).toBe(accountIdsFromTwoPages[2]);
         expect(component.userProperties.data.list[3].userAccountId).toBe(accountIdsFromTwoPages[3]);
-    })
+    });
 
     it('Table scrolling and loading a new invites and accounts.', () => {
         fixture.detectChanges();
@@ -214,11 +214,11 @@ describe('ManagementComponent', () => {
                 email: -1,
                 date: 1,
             },
-            changedSortOption: 'date'
+            changedSortOption: 'date',
         });
 
         fixture.detectChanges();
-        const searchQuery = '{\"createdDate\":1}';
+        const searchQuery = '{"createdDate":1}';
         expect((component as any).inviteUserService.getUserInvites).toHaveBeenCalledWith(1, 1, searchQuery);
         expect((component as any).userAccountService.getUserAccounts).toHaveBeenCalledWith(1, 1, searchQuery);
     });
@@ -235,11 +235,11 @@ describe('ManagementComponent', () => {
                 email: 1,
                 date: 1,
             },
-            changedSortOption: 'email'
+            changedSortOption: 'email',
         });
 
         fixture.detectChanges();
-        const searchQuery = '{\"email\":1}';
+        const searchQuery = '{"email":1}';
         expect((component as any).inviteUserService.getUserInvites).toHaveBeenCalledWith(1, 1, searchQuery);
         expect((component as any).userAccountService.getUserAccounts).toHaveBeenCalledWith(1, 1, searchQuery);
     });
@@ -291,7 +291,7 @@ describe('ManagementComponent', () => {
             userId,
             action: 'EDIT',
             inviteId: 'inviteId_0',
-        })
+        });
 
         fixture.detectChanges();
 
@@ -309,7 +309,7 @@ describe('ManagementComponent', () => {
             userAccountId: 'mainUserAccountId',
         });
         fixture.detectChanges();
-        expect((component as any).managementModalService.openEditUserAccountModal).toHaveBeenCalled()
+        expect((component as any).managementModalService.openEditUserAccountModal).toHaveBeenCalled();
     });
 
     function deleteUserInvite(inviteId: string, modalResult: boolean) {
@@ -328,14 +328,16 @@ describe('ManagementComponent', () => {
         const userAccountId = 'mainUserAccountId';
 
         (component as any).authHolderService.userDetails = {
-            individualId: userAccountId
+            individualId: userAccountId,
         };
 
         fixture.detectChanges(); // loading user and invites.
 
         expect(component.userProperties.data.list[1].userAccountId).toBe(userAccountId);
 
-        jest.spyOn((component as any).managementModalService, 'openDeleteCurrentUserAccountModal').mockReturnValue(toModalResult(modalResult));
+        jest.spyOn((component as any).managementModalService, 'openDeleteCurrentUserAccountModal').mockReturnValue(
+            toModalResult(modalResult),
+        );
         jest.spyOn((component as any).userAccountService, 'deleteUserAccount');
 
         component.userAction({
@@ -350,7 +352,6 @@ describe('ManagementComponent', () => {
     }
 
     function deleteAnotherUserAccount(userAccountId: string, modalResult: boolean): void {
-
         (component as any).authHolderService.userDetails = { individualId: 'mainUserAccountId' };
 
         // loading first page
@@ -362,7 +363,9 @@ describe('ManagementComponent', () => {
 
         expect(component.userProperties.data.list[3].userAccountId).toBe(userAccountId);
 
-        jest.spyOn((component as any).managementModalService, 'openDeleteAnotherUserAccountModal').mockReturnValue(toModalResult(modalResult));
+        jest.spyOn((component as any).managementModalService, 'openDeleteAnotherUserAccountModal').mockReturnValue(
+            toModalResult(modalResult),
+        );
         jest.spyOn((component as any).userAccountService, 'deleteUserAccount');
 
         component.userAction({
