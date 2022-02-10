@@ -1,6 +1,6 @@
-import { Component, Directive, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, Directive, EventEmitter, Input, Output, Pipe, PipeTransform, TemplateRef } from '@angular/core';
 import { asyncScheduler, Observable, of } from 'rxjs';
-import { Page, Permission, SortResponse } from '@openchannel/angular-common-services';
+import { Page, Permission, SortResponse, Transaction } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
@@ -453,6 +453,11 @@ export class MockNgbDropdownToggleDirective {}
 })
 export class MockNgbDropdownMenuDirective {}
 
+@Directive({
+    selector: 'ngbDropdownItem',
+})
+export class MockNgbDropdownItemDirective {}
+
 export class MockNgbModalRef {
     result = new Promise((resolve, reject) => {
         this.resolve = resolve;
@@ -899,6 +904,67 @@ export class MockEditUserTypeService {
 
     injectTypeDataIntoConfigs(): Observable<any> {
         return of(MockEditUserTypeService.MOCK_FORM_CONFIGS_RESPONSE);
+    }
+}
+
+@Component({
+    selector: 'oc-app-table',
+    template: '',
+})
+export class MockAppTableComponent {
+    @Input() properties: any;
+    @Input() noAppMessage: string = 'You have no apps in your list';
+    @Input() menuUrl: string = 'assets/angular-common-components/dots-menu.svg';
+    @Input() ascendingSortIcon: string = '';
+    @Input() descendingSortIcon: string = '';
+    @Input() defaultAppIcon: string = '';
+    @Input() activeColumns: any[] = [];
+    @Input() modifyColumns: any = {};
+    @Input() sortOptions: any;
+    @Input() tableBottomRowTemplate: TemplateRef<any>;
+    @Input() selectAppFieldByPathConfig: any;
+    @Output() readonly menuClicked: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly pageScrolled: EventEmitter<number> = new EventEmitter<number>();
+    @Output() readonly sortChosen: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly sortOptionsChosen: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Pipe({
+    name: 'transactionAmount',
+})
+export class MockTransactionAmountPipe implements PipeTransform {
+    transform(s: string): string {
+        return s;
+    }
+}
+
+export class MockTransactionsService {
+    static MOCK_TRANSACTION: Transaction = {
+        transactionId: '61d4035a8ebc4e5af2cfdbc6',
+        ownershipId: '61d403278ebc4e5af2cfdbb2',
+        appId: '61d402ef8ebc4e5af2cfdba2',
+        userId: '644d352b-7be2-4b3e-8ee3-967f89d2bef0',
+        developerId: '34df9c9f-9257-4334-9462-93d70393a9f3',
+        date: 1641284441000,
+        invoiceUrl:
+            'https://pay.stripe.com/invoice/acct_1KC5ZkC6zKuu5PJY/test_YWNjdF8xS0M1WmtDNnpLdXU1UEpZLF9LdHc4OHhwb1Z4RmU5NERwM2VocFQzaFBGY3FLTGJ30100Zn7mRDfy/pdf',
+        recieptUrl:
+            'https://pay.stripe.com/receipts/acct_1KC5ZkC6zKuu5PJY/ch_3KE8G4C6zKuu5PJY0QOxir37/rcpt_Ktw8UTDAHQRegzIZK3cqLjGLtVe81Dn',
+        amount: 300,
+        feeAmount: 39,
+        marketplaceAmount: 0,
+        developerAmount: 261,
+        type: 'payment',
+    };
+    static MOCK_TRANSACTIONS_LIST = {
+        count: 2,
+        pages: 1,
+        pageNumber: 1,
+        list: [{ ...MockTransactionsService.MOCK_TRANSACTION }],
+    };
+
+    getTransactionsList(): Observable<any> {
+        return of(MockTransactionsService.MOCK_TRANSACTIONS_LIST);
     }
 }
 
