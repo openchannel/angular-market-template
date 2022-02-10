@@ -1,7 +1,7 @@
 <div class="bg-container height-unset">
     <div class="container header-padding">
         <img src="assets/img/arrow-left.svg" alt="arrow-icon">
-        <a class="font-m font-med pl-1 cursor-pointer link" (click)="goBack()">Back</a>
+        <a class="font-m font-med pl-1 cursor-pointer link back-link" (click)="goBack()">Back</a>
         <h3 class="page-title page-title-size">My apps</h3>
     </div>
 </div>
@@ -18,7 +18,7 @@
             [selected]="selectedSort"></oc-dropdown>
     </div>
 
-    <div (scrolled)="onScrollDown()" class="d-flex flex-column" infiniteScroll>
+    <div (scrolled)="onScrollDown()" class="d-flex flex-column apps-container" infiniteScroll>
         <oc-app-short-info
             *ngFor="let app of appList"
             [app]="app"
