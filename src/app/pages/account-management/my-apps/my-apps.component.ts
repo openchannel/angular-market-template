@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppsService, FrontendService } from '@openchannel/angular-common-services';
-import { takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { pageConfig } from '../../../../assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
@@ -18,7 +18,7 @@ export class MyAppsComponent implements OnInit, OnDestroy {
     appSorts: DropdownModel<string>[];
     selectedSort: DropdownModel<string>;
     appsLoaded = false;
-    
+
     private pageNumber = 1;
     private destroy$ = new Subject();
 
@@ -37,26 +37,26 @@ export class MyAppsComponent implements OnInit, OnDestroy {
 
         this.frontendService
             .getSorts()
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(
-                page => {
-                    this.appSorts = page.list[0]
-                        ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
-                        : null;
-                    if (this.appSorts) {
-                        this.selectedSort = this.appSorts[0];
-                    }
+            .pipe(
+                finalize(() => {
+                    this.loader.complete();
+                }),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(page => {
+                this.appSorts = page.list[0] ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort)) : null;
+                if (this.appSorts) {
+                    this.selectedSort = this.appSorts[0];
+                }
 
-                    this.loadApps();
-                },
-                error => this.loader.complete(),
-                () => this.loader.complete(),
-            );
+                this.loadApps();
+            });
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+        this.loader?.complete();
     }
 
     onSortChange(selected: DropdownModel<string>): void {
@@ -83,14 +83,15 @@ export class MyAppsComponent implements OnInit, OnDestroy {
         const sort = this.selectedSort ? this.selectedSort.value : '';
         this.appsService
             .getApps(this.pageNumber, 5, sort, '', true)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(
-                res => {
-                    this.appList = [...this.appList, ...res.list.map(app => new FullAppData(app, pageConfig.fieldMappings))];
-                    this.appsLoaded = true;
-                },
-                error => this.loader.complete(),
-                () => this.loader.complete(),
-            );
+            .pipe(
+                finalize(() => {
+                    this.loader.complete();
+                }),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(res => {
+                this.appList = [...this.appList, ...res.list.map(app => new FullAppData(app, pageConfig.fieldMappings))];
+                this.appsLoaded = true;
+            });
     }
 }

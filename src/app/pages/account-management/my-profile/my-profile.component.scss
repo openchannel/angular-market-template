@@ -21,18 +21,16 @@
 ul.list-unstyled {
     @include media-breakpoint-lg {
         display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 0;
     }
 
     li {
         padding: 1rem 0;
         @include media-breakpoint-lg {
             padding: 0;
-        }
-
-        & + li {
-            @include media-breakpoint-lg {
-                margin-left: 30px;
-            }
+            margin-right: 4rem;
+            margin-bottom: 2rem;
         }
 
         a {

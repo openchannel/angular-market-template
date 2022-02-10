@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Page } from 'app/pages/account-management/my-company/my-company.component';
-import { StripeLoaderService } from '@core/services/stripe-loader.service';
+import { siteConfig } from 'assets/data/siteConfig';
+import { PaymentsGateways } from '@openchannel/angular-common-services';
 
 @Component({
     selector: 'app-my-profile',
@@ -10,7 +11,7 @@ import { StripeLoaderService } from '@core/services/stripe-loader.service';
     styleUrls: ['./my-profile.component.scss'],
 })
 export class MyProfileComponent implements OnInit {
-    pages: Page[] = [
+    basePages: Page[] = [
         {
             pageId: 'profile-details',
             placeholder: 'Profile Details',
@@ -23,6 +24,8 @@ export class MyProfileComponent implements OnInit {
             routerLink: '/my-profile/password',
             permissions: [],
         },
+    ];
+    billingPages: Page[] = [
         {
             pageId: 'billing',
             placeholder: 'Billing',
@@ -36,12 +39,20 @@ export class MyProfileComponent implements OnInit {
             permissions: [],
         },
     ];
-    selectedPage: Page = this.pages[0];
+    pages: Page[] = this.getAvailablePages();
+    selectedPage: Page;
 
-    constructor(private router: Router, private location: Location, private stripeLoader: StripeLoaderService) {}
+    constructor(private router: Router, private location: Location) {}
 
     ngOnInit(): void {
-        this.selectedPage = this.pages.find(page => this.router.url.includes(page.routerLink));
+        this.selectedPage = this.pages.find(page => this.router.url === page.routerLink);
+    }
+
+    getAvailablePages(): Page[] {
+        return [
+            ...this.basePages,
+            ...(siteConfig.paymentsEnabled && siteConfig.paymentsGateway === PaymentsGateways.STRIPE ? this.billingPages : []),
+        ];
     }
 
     gotoPage(newPage: Page): void {

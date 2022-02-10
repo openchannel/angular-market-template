@@ -5,18 +5,25 @@
 <div class="container">
     <div class="page-navigation row">
         <div class="col-lg-3 col-xxl-2">
-            <ul class="list-unstyled">
-                <li *ngFor="let page of pages">
+            <ul class="list-unstyled pages-list">
+                <li *ngFor="let page of pages" class="pages-list__item">
                     <a (click)="gotoPage(page)" class="font-m" [class.active-link]="page.pageId === selectedPage.pageId">
                         {{ page.placeholder }}
                     </a>
                 </li>
             </ul>
         </div>
-        <div class="col-md-12 col-lg-5 col-xxl-6 mt-3 mt-lg-1" [ngSwitch]="selectedPage.pageId">
+        <div
+            class="col-md-12 col-lg-5 col-xxl-6 mt-3 mt-lg-1 pages-container"
+            [class.col-lg-9]="selectedPage.pageId === 'billing-history'"
+            [class.col-xxl-10]="selectedPage.pageId === 'billing-history'"
+            [ngSwitch]="selectedPage.pageId">
             <app-general-profile *ngSwitchCase="pages[0].pageId"></app-general-profile>
             <app-change-password *ngSwitchCase="pages[1].pageId"></app-change-password>
-            <app-billing *ngSwitchCase="pages[2].pageId"></app-billing>
+            <ng-container *ngIf="pages.length === 4">
+                <app-billing *ngSwitchCase="pages[2].pageId"></app-billing>
+                <app-billing-history *ngSwitchCase="pages[3].pageId"></app-billing-history>
+            </ng-container>
         </div>
     </div>
 </div>
