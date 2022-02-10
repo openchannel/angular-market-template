@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NativeLoginService } from '@openchannel/angular-common-services';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { OcEditUserFormConfig, OcEditUserResult, SignupRouterState } from '@openchannel/angular-common-components';
@@ -78,9 +78,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-        if (this.loaderBar) {
-            this.loaderBar.complete();
-        }
+        this.loaderBar.complete();
     }
 
     onSignup(userData: OcEditUserResult): void {
@@ -92,14 +90,15 @@ export class SignupComponent implements OnInit, OnDestroy {
                     organization: userData?.organization,
                     password: userData?.password,
                 })
-                .pipe(takeUntil(this.destroy$))
-                .subscribe(
-                    () => {
+                .pipe(
+                    finalize(() => {
                         this.inProcess = false;
-                        this.showSignupFeedbackPage = true;
-                    },
-                    () => (this.inProcess = false),
-                );
+                    }),
+                    takeUntil(this.destroy$),
+                )
+                .subscribe(() => {
+                    this.showSignupFeedbackPage = true;
+                });
         }
     }
 
@@ -107,17 +106,15 @@ export class SignupComponent implements OnInit, OnDestroy {
         this.loaderBar.start();
         this.ocEditTypeService
             .injectTypeDataIntoConfigs(this.formConfigsWithoutTypeData, true, true)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(
-                formConfigs => {
-                    this.loaderBar.complete();
-                    this.formConfigs = formConfigs;
-                    this.formConfigsLoading = false;
-                },
-                () => {
+            .pipe(
+                finalize(() => {
                     this.loaderBar.complete();
                     this.formConfigsLoading = false;
-                },
-            );
+                }),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(formConfigs => {
+                this.formConfigs = formConfigs;
+            });
     }
 }

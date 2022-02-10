@@ -6,7 +6,6 @@ import {
     TransactionsService,
     FullTransaction,
     TransactionOptions,
-    FileUploadDownloadService,
     TransactionStatus,
 } from '@openchannel/angular-common-services';
 import { catchError, map, mergeMap, takeUntil } from 'rxjs/operators';
@@ -47,7 +46,6 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
     constructor(
         private appsService: AppsService,
         private transactionsService: TransactionsService,
-        private fileDownloadService: FileUploadDownloadService,
         private loadingBar: LoadingBarService,
     ) {}
 
@@ -59,7 +57,7 @@ export class BillingHistoryComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.$destroy.next();
         this.$destroy.complete();
-        this.loader?.complete();
+        this.loader.complete();
     }
 
     changeSortByKey(key: string): void {

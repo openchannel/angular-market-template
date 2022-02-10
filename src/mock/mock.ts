@@ -1,17 +1,7 @@
-import { Component, Directive, EventEmitter, Input, Output, Provider, TemplateRef } from '@angular/core';
+import { Component, Directive, EventEmitter, Input, Output, Provider, Pipe, PipeTransform, TemplateRef } from '@angular/core';
 import { asyncScheduler, Observable, of } from 'rxjs';
-import {
-    InviteUserService,
-    Page,
-    Permission,
-    SortResponse,
-    UserAccount,
-    UserAccountService,
-    UserRoleService,
-    UsersService,
-} from '@openchannel/angular-common-services';
-import {
-    ComponentsUserGridActionModel,
+import { Page, Permission, SortResponse, UserAccountService, Transaction, InviteUserService, UserAccount, UserRoleService, UsersService } from '@openchannel/angular-common-services';
+import {     ComponentsUserGridActionModel,
     ComponentsUsersGridParametersModel,
     ErrorMessageFormId,
     Filter,
@@ -19,8 +9,7 @@ import {
     ModalUpdateUserModel,
     SortField,
     UserGridSortOrder,
-    UserSortChosen,
-} from '@openchannel/angular-common-components';
+    UserSortChosen, } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
 import {OcInviteModalComponent} from '@openchannel/angular-common-components/src/lib/management-components/oc-invite-modal/oc-invite-modal.component';
@@ -542,6 +531,11 @@ export class MockNgbDropdownToggleDirective {}
 })
 export class MockNgbDropdownMenuDirective {}
 
+@Directive({
+    selector: 'ngbDropdownItem',
+})
+export class MockNgbDropdownItemDirective {}
+
 export class MockNgbModalRef {
     result = new Promise((resolve, reject) => {
         this.resolve = resolve;
@@ -940,6 +934,301 @@ export class MockTypeMapperUtils {
         return {};
     }
 }
+@Component({
+    selector: 'oc-signup-custom',
+    template: '',
+})
+export class MockSignupCustom {
+    @Input() loginUrl: string;
+    @Input() signupUrl: string;
+    @Input() activationUrl: string;
+    @Input() termsUrl: string;
+    @Input() policyUrl: string;
+    @Input() companyLogoUrl: string;
+    @Input() process: boolean = false;
+    @Input() forgotPasswordDoneUrl: string;
+    @Input() showSignupFeedbackPage: boolean = false;
+    @Input() showLoginLink: boolean = true;
+    @Input() formConfigsLoading: boolean = true;
+    @Input() formConfigs: any[];
+    @Input() defaultTypeLabelText = 'Type';
+    @Input() customTermsDescription: TemplateRef<any>;
+    @Input() headingTag: string = 'h1';
+    @Input() headingInvitationText: string = 'Enter your personal details below';
+    @Input() formId: any = 'signupCustom';
+    @Input() customFormTemplate: TemplateRef<any>;
+    @Output() readonly showSignupFeedbackPageChange = new EventEmitter<boolean>();
+    @Output() readonly resultUserData = new EventEmitter<any>();
+}
+
+export class MockNativeLoginService {
+    signup(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockEditUserTypeService {
+    static MOCK_FORM_CONFIGS_RESPONSE = [
+        {
+            name: 'Default',
+            organization: {
+                type: 'default',
+                typeData: {
+                    userTypeId: 'default',
+                    fields: [
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'name',
+                            label: 'Company Name',
+                            type: 'text',
+                        },
+                    ],
+                    createdDate: 1639656055769,
+                    description: '',
+                    label: 'Default',
+                },
+                includeFields: ['name', 'customData.company'],
+            },
+            account: {
+                type: 'default',
+                typeData: {
+                    fields: [
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'name',
+                            label: 'Name',
+                            type: 'text',
+                        },
+                        {
+                            attributes: {
+                                required: true,
+                            },
+                            id: 'email',
+                            label: 'Email',
+                            type: 'emailAddress',
+                        },
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'username',
+                            label: 'Username',
+                            type: 'text',
+                        },
+                    ],
+                    createdDate: 1639656055763,
+                    description: '',
+                    userAccountTypeId: 'default',
+                    label: 'Default',
+                },
+                includeFields: ['name', 'email'],
+            },
+            fieldsOrder: ['name', 'email', 'org--name', 'password'],
+        },
+    ];
+
+    injectTypeDataIntoConfigs(): Observable<any> {
+        return of(MockEditUserTypeService.MOCK_FORM_CONFIGS_RESPONSE);
+    }
+}
+
+@Component({
+    selector: 'oc-app-table',
+    template: '',
+})
+export class MockAppTableComponent {
+    @Input() properties: any;
+    @Input() noAppMessage: string = 'You have no apps in your list';
+    @Input() menuUrl: string = 'assets/angular-common-components/dots-menu.svg';
+    @Input() ascendingSortIcon: string = '';
+    @Input() descendingSortIcon: string = '';
+    @Input() defaultAppIcon: string = '';
+    @Input() activeColumns: any[] = [];
+    @Input() modifyColumns: any = {};
+    @Input() sortOptions: any;
+    @Input() tableBottomRowTemplate: TemplateRef<any>;
+    @Input() selectAppFieldByPathConfig: any;
+    @Output() readonly menuClicked: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly pageScrolled: EventEmitter<number> = new EventEmitter<number>();
+    @Output() readonly sortChosen: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly sortOptionsChosen: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Pipe({
+    name: 'transactionAmount',
+})
+export class MockTransactionAmountPipe implements PipeTransform {
+    transform(s: string): string {
+        return s;
+    }
+}
+
+export class MockTransactionsService {
+    static MOCK_TRANSACTION: Transaction = {
+        transactionId: '61d4035a8ebc4e5af2cfdbc6',
+        ownershipId: '61d403278ebc4e5af2cfdbb2',
+        appId: '61d402ef8ebc4e5af2cfdba2',
+        userId: '644d352b-7be2-4b3e-8ee3-967f89d2bef0',
+        developerId: '34df9c9f-9257-4334-9462-93d70393a9f3',
+        date: 1641284441000,
+        invoiceUrl:
+            'https://pay.stripe.com/invoice/acct_1KC5ZkC6zKuu5PJY/test_YWNjdF8xS0M1WmtDNnpLdXU1UEpZLF9LdHc4OHhwb1Z4RmU5NERwM2VocFQzaFBGY3FLTGJ30100Zn7mRDfy/pdf',
+        recieptUrl:
+            'https://pay.stripe.com/receipts/acct_1KC5ZkC6zKuu5PJY/ch_3KE8G4C6zKuu5PJY0QOxir37/rcpt_Ktw8UTDAHQRegzIZK3cqLjGLtVe81Dn',
+        amount: 300,
+        feeAmount: 39,
+        marketplaceAmount: 0,
+        developerAmount: 261,
+        type: 'payment',
+    };
+    static MOCK_TRANSACTIONS_LIST = {
+        count: 2,
+        pages: 1,
+        pageNumber: 1,
+        list: [{ ...MockTransactionsService.MOCK_TRANSACTION }],
+    };
+
+    getTransactionsList(): Observable<any> {
+        return of(MockTransactionsService.MOCK_TRANSACTIONS_LIST);
+    }
+}
+
+@Component({
+    selector: 'oc-edit-user-form',
+    template: '',
+})
+export class MockEditUserFormComponent {
+    @Input() formConfigs: any[];
+    @Input() enableTypesDropdown = false;
+    @Input() enablePasswordField = false;
+    @Input() enableTermsCheckbox: any;
+    @Input() defaultTypeLabelText = 'Type';
+    @Input() defaultAccountData: any;
+    @Input() defaultOrganizationData: any;
+    @Input() defaultEmptyConfigsErrorTemplate: TemplateRef<any>;
+    @Input() defaultEmptyConfigsErrorMessage: string = 'There are no forms configured';
+    @Input() customTermsDescription: TemplateRef<any>;
+    @Input() formId: any = 'editUser';
+    @Output() readonly resultFormDataChange = new EventEmitter<any>();
+    @Output() readonly createdFormGroup = new EventEmitter<any>();
+}
+
+export class MockEditUserTypeService {
+    static MOCK_FORM_CONFIGS_RESPONSE = [
+        {
+            name: 'Default',
+            organization: {
+                type: 'default',
+                typeData: {
+                    userTypeId: 'default',
+                    fields: [
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'name',
+                            label: 'Company Name',
+                            type: 'text',
+                        },
+                    ],
+                    createdDate: 1639656055769,
+                    description: '',
+                    label: 'Default',
+                },
+                includeFields: ['name', 'customData.company'],
+            },
+            account: {
+                type: 'default',
+                typeData: {
+                    fields: [
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'name',
+                            label: 'Name',
+                            type: 'text',
+                        },
+                        {
+                            attributes: {
+                                required: true,
+                            },
+                            id: 'email',
+                            label: 'Email',
+                            type: 'emailAddress',
+                        },
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'username',
+                            label: 'Username',
+                            type: 'text',
+                        },
+                    ],
+                    createdDate: 1639656055763,
+                    description: '',
+                    userAccountTypeId: 'default',
+                    label: 'Default',
+                },
+                includeFields: ['name', 'email'],
+            },
+            fieldsOrder: ['name', 'email', 'org--name', 'password'],
+        },
+    ];
+
+    injectTypeDataIntoConfigs(): Observable<any> {
+        return of(MockEditUserTypeService.MOCK_FORM_CONFIGS_RESPONSE);
+    }
+}
+
+export class MockUserAccountService {
+    static MOCK_USER_ACCOUNT_RESPONSE = {
+        userAccountId: '81443c4109834d6fb83b16914e907db2',
+        userId: '78df34ab-b518-465b-9921-1454e72f8d7f',
+        created: 1639659898263,
+        email: 'dirik26586@gyn5.com',
+        customData: {},
+        roles: ['user-admin'],
+        type: 'default',
+    };
+
+    updateUserAccount(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+
+    getUserAccount(): Observable<any> {
+        return of(MockUserAccountService.MOCK_USER_ACCOUNT_RESPONSE);
+    }
+}
+
+@Component({
+    selector: 'app-general-profile',
+    template: '',
+})
+export class MockGeneralProfileComponent {}
+
+@Component({
+    selector: 'app-change-password',
+    template: '',
+})
+export class MockChangePasswordComponent {}
+
+@Component({
+    selector: 'app-billing',
+    template: '',
+})
+export class MockBillingComponent {}
+
+@Component({
+    selector: 'app-billing-history',
+    template: '',
+})
+export class MockBillingHistoryComponent {}
 
 // providers
 export function mockUserServiceProvider(): Provider {
