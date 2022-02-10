@@ -1,7 +1,18 @@
 import { Component, Directive, EventEmitter, Input, Output, Provider, Pipe, PipeTransform, TemplateRef } from '@angular/core';
 import { asyncScheduler, Observable, of } from 'rxjs';
-import { Page, Permission, SortResponse, UserAccountService, Transaction, InviteUserService, UserAccount, UserRoleService, UsersService } from '@openchannel/angular-common-services';
-import {     ComponentsUserGridActionModel,
+import {
+    Page,
+    Permission,
+    SortResponse,
+    UserAccountService,
+    Transaction,
+    InviteUserService,
+    UserAccount,
+    UserRoleService,
+    UsersService,
+} from '@openchannel/angular-common-services';
+import {
+    ComponentsUserGridActionModel,
     ComponentsUsersGridParametersModel,
     ErrorMessageFormId,
     Filter,
@@ -9,12 +20,12 @@ import {     ComponentsUserGridActionModel,
     ModalUpdateUserModel,
     SortField,
     UserGridSortOrder,
-    UserSortChosen, } from '@openchannel/angular-common-components';
+    UserSortChosen,
+} from '@openchannel/angular-common-components';
 import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
-import {OcInviteModalComponent} from '@openchannel/angular-common-components/src/lib/management-components/oc-invite-modal/oc-invite-modal.component';
 import { ToastrService } from 'ngx-toastr';
-import {InviteUserModel} from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 
 class MockPagination<T> {
     private values: T[];
@@ -30,16 +41,17 @@ class MockPagination<T> {
             result = this.values.slice(0, normalizedSizeNumber);
         } else {
             result = this.values.slice(
-                normalizedPageNumber * normalizedSizeNumber -1,
-                (normalizedPageNumber + 1) * normalizedSizeNumber -1);
+                normalizedPageNumber * normalizedSizeNumber - 1,
+                (normalizedPageNumber + 1) * normalizedSizeNumber - 1,
+            );
         }
 
         return {
             count: this.values.length,
             list: result,
             pages: Math.ceil(this.values.length / normalizedSizeNumber),
-            pageNumber: normalizedPageNumber
-        }
+            pageNumber: normalizedPageNumber,
+        };
     }
 }
 
@@ -195,7 +207,7 @@ export class MockAppGetStartedComponent {
 
 @Component({
     selector: 'oc-menu-user-grid',
-    template: ''
+    template: '',
 })
 export class MockOcMenuUserGridComponent {
     @Input() properties: ComponentsUsersGridParametersModel;
@@ -210,7 +222,7 @@ export class MockOcMenuUserGridComponent {
 
 @Component({
     selector: 'oc-invite-modal',
-    template: ''
+    template: '',
 })
 export class MockOcInviteModalComponent {
     @Input() modalData: ModalInviteUserModel | ModalUpdateUserModel;
@@ -219,7 +231,7 @@ export class MockOcInviteModalComponent {
 
 @Component({
     selector: 'oc-confirmation-modal',
-    template: ''
+    template: '',
 })
 export class OcConfirmationModalComponent {
     @Input() modalTitle: string = '';
@@ -755,7 +767,7 @@ export class MockUserAccountService {
     }
 
     updateUserAccount(accountData: any): Observable<any> {
-        return of({});
+        return of('1').pipe(observeOn(asyncScheduler));
     }
 
     deleteUserAccount(userAccountId: string): Observable<any> {
@@ -1117,95 +1129,6 @@ export class MockEditUserFormComponent {
     @Output() readonly createdFormGroup = new EventEmitter<any>();
 }
 
-export class MockEditUserTypeService {
-    static MOCK_FORM_CONFIGS_RESPONSE = [
-        {
-            name: 'Default',
-            organization: {
-                type: 'default',
-                typeData: {
-                    userTypeId: 'default',
-                    fields: [
-                        {
-                            attributes: {
-                                required: false,
-                            },
-                            id: 'name',
-                            label: 'Company Name',
-                            type: 'text',
-                        },
-                    ],
-                    createdDate: 1639656055769,
-                    description: '',
-                    label: 'Default',
-                },
-                includeFields: ['name', 'customData.company'],
-            },
-            account: {
-                type: 'default',
-                typeData: {
-                    fields: [
-                        {
-                            attributes: {
-                                required: false,
-                            },
-                            id: 'name',
-                            label: 'Name',
-                            type: 'text',
-                        },
-                        {
-                            attributes: {
-                                required: true,
-                            },
-                            id: 'email',
-                            label: 'Email',
-                            type: 'emailAddress',
-                        },
-                        {
-                            attributes: {
-                                required: false,
-                            },
-                            id: 'username',
-                            label: 'Username',
-                            type: 'text',
-                        },
-                    ],
-                    createdDate: 1639656055763,
-                    description: '',
-                    userAccountTypeId: 'default',
-                    label: 'Default',
-                },
-                includeFields: ['name', 'email'],
-            },
-            fieldsOrder: ['name', 'email', 'org--name', 'password'],
-        },
-    ];
-
-    injectTypeDataIntoConfigs(): Observable<any> {
-        return of(MockEditUserTypeService.MOCK_FORM_CONFIGS_RESPONSE);
-    }
-}
-
-export class MockUserAccountService {
-    static MOCK_USER_ACCOUNT_RESPONSE = {
-        userAccountId: '81443c4109834d6fb83b16914e907db2',
-        userId: '78df34ab-b518-465b-9921-1454e72f8d7f',
-        created: 1639659898263,
-        email: 'dirik26586@gyn5.com',
-        customData: {},
-        roles: ['user-admin'],
-        type: 'default',
-    };
-
-    updateUserAccount(): Observable<any> {
-        return of('1').pipe(observeOn(asyncScheduler));
-    }
-
-    getUserAccount(): Observable<any> {
-        return of(MockUserAccountService.MOCK_USER_ACCOUNT_RESPONSE);
-    }
-}
-
 @Component({
     selector: 'app-general-profile',
     template: '',
@@ -1232,15 +1155,15 @@ export class MockBillingHistoryComponent {}
 
 // providers
 export function mockUserServiceProvider(): Provider {
-    return { provide: UsersService, useClass: MockUsersService};
+    return { provide: UsersService, useClass: MockUsersService };
 }
 
-export function mockInviteUserServiceProvider(userInvites?: InviteUserModel[]) : Provider {
-    return {provide: InviteUserService, useFactory:() => new MockInviteUserService(userInvites)};
+export function mockInviteUserServiceProvider(userInvites?: InviteUserModel[]): Provider {
+    return { provide: InviteUserService, useFactory: () => new MockInviteUserService(userInvites) };
 }
 
 export function mockInviteUserAccountServiceProvider(currentUserAccount: UserAccount, otherUserAccounts: UserAccount[]): Provider {
-    return { provide: UserAccountService, useFactory: () => new MockUserAccountService(currentUserAccount, otherUserAccounts) }
+    return { provide: UserAccountService, useFactory: () => new MockUserAccountService(currentUserAccount, otherUserAccounts) };
 }
 
 export function mockUserRoleServiceProvider(): Provider {
@@ -1248,5 +1171,5 @@ export function mockUserRoleServiceProvider(): Provider {
 }
 
 export function mockToastrService(): Provider {
-    return { provide: ToastrService, useClass: MockToastrService};
+    return { provide: ToastrService, useClass: MockToastrService };
 }

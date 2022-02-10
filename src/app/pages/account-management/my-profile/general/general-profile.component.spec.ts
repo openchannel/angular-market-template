@@ -5,17 +5,35 @@ import {
     MockButtonComponent,
     MockEditUserFormComponent,
     MockEditUserTypeService,
+    mockInviteUserAccountServiceProvider,
     MockLoadingBarService,
     MockToastrService,
-    MockUserAccountService,
+    MockUserRoleService,
 } from '../../../../../mock/mock';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { UserAccountService } from '@openchannel/angular-common-services';
+import { UserAccount } from '@openchannel/angular-common-services';
 import { ToastrService } from 'ngx-toastr';
 import { OcEditUserTypeService } from '@core/services/user-type-service/user-type.service';
 import { throwError } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { times } from 'lodash';
+
+const userId = 'testUserId';
+
+const mainUserAccount: UserAccount = {
+    userAccountId: 'mainUserAccountId',
+    userId,
+    name: 'mainUserAccount',
+    roles: [MockUserRoleService.ADMIN_ROLE_ID],
+} as UserAccount;
+
+const userAccounts: UserAccount[] = times(3, index => ({
+    userId,
+    userAccountId: `userAccountId_${index}`,
+    name: `userAccountName_${index}`,
+    roles: [MockUserRoleService.ADMIN_ROLE_ID],
+}));
 
 describe('MyProfileComponent', () => {
     let component: GeneralProfileComponent;
@@ -35,9 +53,9 @@ describe('MyProfileComponent', () => {
             TestBed.configureTestingModule({
                 declarations: [GeneralProfileComponent, MockEditUserFormComponent, MockButtonComponent],
                 providers: [
+                    mockInviteUserAccountServiceProvider(mainUserAccount, userAccounts),
                     { provide: LoadingBarService, useClass: MockLoadingBarService },
                     { provide: ToastrService, useClass: MockToastrService },
-                    { provide: UserAccountService, useClass: MockUserAccountService },
                     { provide: OcEditUserTypeService, useClass: MockEditUserTypeService },
                 ],
             }).compileComponents();
@@ -160,7 +178,7 @@ describe('MyProfileComponent', () => {
         (component as any).initDefaultFormConfig();
         tick();
 
-        expect(component.formAccountData).toEqual(MockUserAccountService.MOCK_USER_ACCOUNT_RESPONSE);
+        expect(component.formAccountData).toEqual(mainUserAccount);
         expect(component.formConfigs).toEqual(MockEditUserTypeService.MOCK_FORM_CONFIGS_RESPONSE);
     }));
 
