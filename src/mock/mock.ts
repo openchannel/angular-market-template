@@ -1,6 +1,6 @@
 import { Component, Directive, EventEmitter, Input, Output, Pipe, PipeTransform, TemplateRef } from '@angular/core';
 import { asyncScheduler, Observable, of } from 'rxjs';
-import { Page, Permission, SortResponse, Transaction } from '@openchannel/angular-common-services';
+import { Page, Permission, SortResponse, UserAccountService, Transaction } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
@@ -965,6 +965,115 @@ export class MockTransactionsService {
 
     getTransactionsList(): Observable<any> {
         return of(MockTransactionsService.MOCK_TRANSACTIONS_LIST);
+    }
+}
+
+@Component({
+    selector: 'oc-edit-user-form',
+    template: '',
+})
+export class MockEditUserFormComponent {
+    @Input() formConfigs: any[];
+    @Input() enableTypesDropdown = false;
+    @Input() enablePasswordField = false;
+    @Input() enableTermsCheckbox: any;
+    @Input() defaultTypeLabelText = 'Type';
+    @Input() defaultAccountData: any;
+    @Input() defaultOrganizationData: any;
+    @Input() defaultEmptyConfigsErrorTemplate: TemplateRef<any>;
+    @Input() defaultEmptyConfigsErrorMessage: string = 'There are no forms configured';
+    @Input() customTermsDescription: TemplateRef<any>;
+    @Input() formId: any = 'editUser';
+    @Output() readonly resultFormDataChange = new EventEmitter<any>();
+    @Output() readonly createdFormGroup = new EventEmitter<any>();
+}
+
+export class MockEditUserTypeService {
+    static MOCK_FORM_CONFIGS_RESPONSE = [
+        {
+            name: 'Default',
+            organization: {
+                type: 'default',
+                typeData: {
+                    userTypeId: 'default',
+                    fields: [
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'name',
+                            label: 'Company Name',
+                            type: 'text',
+                        },
+                    ],
+                    createdDate: 1639656055769,
+                    description: '',
+                    label: 'Default',
+                },
+                includeFields: ['name', 'customData.company'],
+            },
+            account: {
+                type: 'default',
+                typeData: {
+                    fields: [
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'name',
+                            label: 'Name',
+                            type: 'text',
+                        },
+                        {
+                            attributes: {
+                                required: true,
+                            },
+                            id: 'email',
+                            label: 'Email',
+                            type: 'emailAddress',
+                        },
+                        {
+                            attributes: {
+                                required: false,
+                            },
+                            id: 'username',
+                            label: 'Username',
+                            type: 'text',
+                        },
+                    ],
+                    createdDate: 1639656055763,
+                    description: '',
+                    userAccountTypeId: 'default',
+                    label: 'Default',
+                },
+                includeFields: ['name', 'email'],
+            },
+            fieldsOrder: ['name', 'email', 'org--name', 'password'],
+        },
+    ];
+
+    injectTypeDataIntoConfigs(): Observable<any> {
+        return of(MockEditUserTypeService.MOCK_FORM_CONFIGS_RESPONSE);
+    }
+}
+
+export class MockUserAccountService {
+    static MOCK_USER_ACCOUNT_RESPONSE = {
+        userAccountId: '81443c4109834d6fb83b16914e907db2',
+        userId: '78df34ab-b518-465b-9921-1454e72f8d7f',
+        created: 1639659898263,
+        email: 'dirik26586@gyn5.com',
+        customData: {},
+        roles: ['user-admin'],
+        type: 'default',
+    };
+
+    updateUserAccount(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+
+    getUserAccount(): Observable<any> {
+        return of(MockUserAccountService.MOCK_USER_ACCOUNT_RESPONSE);
     }
 }
 
