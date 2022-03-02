@@ -25,11 +25,11 @@
             "aot": true,
             "preserveSymlinks": true,
             "assets": [
+              {"glob": "**/*", "input": "node_modules/@openchannel/angular-common-components/assets/img",
+                "output": "/assets/angular-common-components"},
               "src/assets",
               "src/robots.txt",
               "src/_redirects",
-              {"glob": "**/*", "input": "node_modules/@openchannel/angular-common-components/assets/img",
-                "output": "/assets/angular-common-components"},
               { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
             ],
             "styles": [
