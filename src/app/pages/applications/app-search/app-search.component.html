@@ -16,7 +16,7 @@
                     <oc-sidebar
                         *ngSwitchCase="SINGLE_FILTER"
                         class="mb-1"
-                        (sidebarChange)="onSingleFilterChange(filter, $event, true)"
+                        (sidebarChange)="onSingleFilterChange(filter, $event)"
                         [title]="filter.name"
                         [sidebarModel]="filter.values"></oc-sidebar>
                     <oc-sidebar

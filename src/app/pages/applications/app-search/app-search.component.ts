@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { AppsService, FrontendService, Page, TitleService } from '@openchannel/angular-common-services';
+import { AppsService, FilterResponse, FrontendService, Page, TitleService } from '@openchannel/angular-common-services';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,14 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { HttpParams } from '@angular/common/http';
 import { isString, forEach } from 'lodash';
-import { Filter, FullAppData, OcSidebarSelectModel, SelectedFilter, SidebarValue } from '@openchannel/angular-common-components';
+import {
+    Filter,
+    FilterValue,
+    FullAppData,
+    OcSidebarSelectModel,
+    SelectedFilter,
+    SidebarValue,
+} from '@openchannel/angular-common-components';
 
 @Component({
     selector: 'app-app-search',
@@ -26,7 +33,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
     selectedFilterValues: BehaviorSubject<SelectedFilter[]> = new BehaviorSubject<SelectedFilter[]>([]);
     tagsTitles: string[] = [];
 
-    loadFilters$: Observable<Page<Filter>>;
+    loadFilters$: Observable<Page<FilterResponse>>;
 
     loader: LoadingBarState;
     private destroy$: Subject<void> = new Subject();
@@ -71,15 +78,12 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         this.loadFilters$.subscribe(data => {
             this.filters = data.list;
 
-            for (const filterModel of this.filters) {
-                const checkedValues = filterValues[filterModel.id] as string[];
-                filterModel.values = filterModel.values.map(filterValue => {
-                    return {
-                        ...filterValue,
-                        checked: checkedValues?.includes(filterValue.id),
-                    };
-                });
-            }
+            this.filters.forEach(filter => {
+                const checkedValues = filterValues[filter.id] as string[];
+                if (checkedValues) {
+                    filter.values.map(value => this.findAndCheckChildFilter(value, checkedValues));
+                }
+            });
 
             this.loader.complete();
 
@@ -157,40 +161,23 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         }
     }
 
-    onSingleFilterChange(currentFilter: Filter, filterValue: OcSidebarSelectModel, cleanAnotherFilters: boolean): void {
-        this.updateFilterValues(false, currentFilter, filterValue, cleanAnotherFilters, true);
+    onSingleFilterChange(currentFilter: Filter, filterValue: OcSidebarSelectModel): void {
+        this.updateFilterValues(true, currentFilter, filterValue);
     }
 
     onMultiFilterChange(currentFilter: Filter, filterValue: OcSidebarSelectModel): void {
-        this.updateFilterValues(true, currentFilter, filterValue, false, false);
+        this.updateFilterValues(false, currentFilter, filterValue);
     }
 
-    updateFilterValues(
-        isMultiFilter: boolean,
-        currentFilter: Filter,
-        selectModel: OcSidebarSelectModel,
-        cleanAnotherFilters: boolean,
-        cleanValuesFromCurrentFilter: boolean,
-    ): void {
-        const currentParentValue = selectModel?.parent?.checked;
+    updateFilterValues(isSingleFilter: boolean, currentFilter: Filter, selectModel: OcSidebarSelectModel): void {
+        const switchedFilter = selectModel.child || selectModel.parent;
+        const currentParentValue = switchedFilter?.checked;
         this.filters.forEach(filter => {
-            const isCurrentFilter = selectModel?.parent?.id === filter?.id;
-
-            const cleanRequired = isCurrentFilter ? cleanValuesFromCurrentFilter : cleanAnotherFilters;
-
-            if (cleanRequired) {
-                filter?.values?.forEach(value => {
-                    if (value?.checked) {
-                        value.checked = false;
-                    }
-                });
+            if (isSingleFilter) {
+                this.disableFilterValues(filter);
             }
         });
-        selectModel.parent.checked = !currentParentValue;
-        this.getData();
-    }
-
-    onFilterChange(): void {
+        switchedFilter.checked = !currentParentValue;
         this.getData();
     }
 
@@ -200,10 +187,6 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         this.getData();
     }
 
-    hasCheckedValue(filter: Filter): boolean {
-        return filter.values.findIndex(value => value.checked) > -1;
-    }
-
     disableFilterValue({ parentFilterId, selectedFilterValue }: SelectedFilter): void {
         const filterValueModel = {
             parent: selectedFilterValue,
@@ -211,7 +194,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         };
         const currentFilter = this.filters.find(filter => filter.id === parentFilterId);
         if (parentFilterId === this.SINGLE_FILTER) {
-            this.onSingleFilterChange(currentFilter, filterValueModel, false);
+            this.onSingleFilterChange(currentFilter, filterValueModel);
         } else {
             this.onMultiFilterChange(currentFilter, filterValueModel);
         }
@@ -257,6 +240,17 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             });
     }
 
+    private disableFilterValues(filter: Filter | SidebarValue): void {
+        filter.values?.forEach(childFilter => {
+            if (childFilter.checked) {
+                childFilter.checked = false;
+            }
+            if (childFilter.values) {
+                this.disableFilterValues(childFilter);
+            }
+        });
+    }
+
     private getFilterQuery(): string {
         const filterValues = this.getSelectedFilterValues();
         const queries = filterValues.map(filterValue => filterValue.selectedFilterValue.query).filter(q => q);
@@ -268,20 +262,29 @@ export class AppSearchComponent implements OnDestroy, OnInit {
 
     private getSelectedFilterValues(): SelectedFilter[] {
         const filterValues: SelectedFilter[] = [];
-        const filterLabels = [];
-        this.filters.forEach(filter => {
-            filter.values.forEach(value => {
-                if (value.checked) {
-                    const selectedFilter: SelectedFilter = {
-                        parentFilterId: filter.id,
-                        selectedFilterValue: value as SidebarValue,
-                    };
-                    filterValues.push(selectedFilter);
-                    filterLabels.push(value.label);
-                }
-            });
+        this.filters.forEach(category => {
+            filterValues.push(...this.getSelectedChildFilters(category, category.id));
         });
+
+        const filterLabels = filterValues.map(value => value.selectedFilterValue.label);
         this.titleService.setSpecialTitle(filterLabels.join(', '));
+
+        return filterValues;
+    }
+
+    private getSelectedChildFilters(filter: Filter | SidebarValue, parentFilterId: string): SelectedFilter[] {
+        const filterValues: SelectedFilter[] = [];
+        filter.values.forEach(filterValue => {
+            if (filterValue.values) {
+                filterValues.push(...this.getSelectedChildFilters(filterValue, parentFilterId));
+            }
+            if (filterValue.checked) {
+                filterValues.push({
+                    parentFilterId,
+                    selectedFilterValue: filterValue as SidebarValue,
+                });
+            }
+        });
         return filterValues;
     }
 
@@ -328,5 +331,16 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         } else {
             return queryParams.delete('search');
         }
+    }
+
+    private findAndCheckChildFilter(filter: SidebarValue, checkedValues: string[]): any {
+        if (filter.values && filter.values.length > 0) {
+            filter.values = filter.values.map(value => this.findAndCheckChildFilter(value, checkedValues));
+            filter.expanded = !!filter.values.find(value => value.checked);
+        } else {
+            filter.checked = checkedValues?.includes(filter.id);
+        }
+
+        return filter;
     }
 }
