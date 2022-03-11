@@ -11,7 +11,7 @@ import { PaymentsGateways } from '@openchannel/angular-common-services';
     styleUrls: ['./my-profile.component.scss'],
 })
 export class MyProfileComponent implements OnInit {
-    pages: Page[] = [
+    basePages: Page[] = [
         {
             pageId: 'profile-details',
             placeholder: 'Profile Details',
@@ -25,31 +25,34 @@ export class MyProfileComponent implements OnInit {
             permissions: [],
         },
     ];
-    selectedPage: Page = this.pages[0];
+    billingPages: Page[] = [
+        {
+            pageId: 'billing',
+            placeholder: 'Billing',
+            routerLink: '/my-profile/billing',
+            permissions: [],
+        },
+        {
+            pageId: 'billing-history',
+            placeholder: 'Billing history',
+            routerLink: '/my-profile/billing-history',
+            permissions: [],
+        },
+    ];
+    pages: Page[] = this.getAvailablePages();
+    selectedPage: Page;
 
     constructor(private router: Router, private location: Location) {}
 
     ngOnInit(): void {
-        const billingPages =
-            siteConfig.paymentsEnabled && siteConfig.paymentsGateway === PaymentsGateways.STRIPE
-                ? [
-                      {
-                          pageId: 'billing',
-                          placeholder: 'Billing',
-                          routerLink: '/my-profile/billing',
-                          permissions: [],
-                      },
-                      {
-                          pageId: 'billing-history',
-                          placeholder: 'Billing history',
-                          routerLink: '/my-profile/billing-history',
-                          permissions: [],
-                      },
-                  ]
-                : [];
-        this.pages = [...this.pages, ...billingPages];
-
         this.selectedPage = this.pages.find(page => this.router.url === page.routerLink);
+    }
+
+    getAvailablePages(): Page[] {
+        return [
+            ...this.basePages,
+            ...(siteConfig.paymentsEnabled && siteConfig.paymentsGateway === PaymentsGateways.STRIPE ? this.billingPages : []),
+        ];
     }
 
     gotoPage(newPage: Page): void {

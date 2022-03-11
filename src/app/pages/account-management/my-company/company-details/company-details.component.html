@@ -1,12 +1,14 @@
 <div *ngIf="formConfig?.fields" class="company-container">
-  <oc-form  [formJsonData]="formConfig"
-            [showButton]="false"
-            (createdForm)="setCreatedForm($event)"
-            (formDataUpdated)="setResultData($event)">
-  </oc-form>
-  <oc-button type="primary" text="Save" class="save-button"
-             [appPermissions]="savePermissions"
-             [process]="inProcess"
-             (click)="saveOrganization()">
-  </oc-button>
+    <oc-form
+        [formJsonData]="formConfig"
+        [showButton]="false"
+        (createdForm)="setCreatedForm($event)"
+        (formDataUpdated)="setResultData($event)"></oc-form>
+    <oc-button
+        type="primary"
+        text="Save"
+        class="save-button"
+        [appPermissions]="savePermissions"
+        [process]="inProcess"
+        (click)="saveOrganization()"></oc-button>
 </div>

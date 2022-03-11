@@ -10,8 +10,8 @@
 <div class="container">
     <div class="row pt-5">
         <div class="col-lg-2 col-xl-3 col-xxl-2">
-            <ul class="list-unstyled">
-                <li *ngFor="let page of currentPages" class="py-1">
+            <ul class="list-unstyled pages-list">
+                <li *ngFor="let page of currentPages" class="py-1 pages-list__item">
                     <a (click)="gotoPage(page)" [ngClass]="{ 'active-link': page.pageId === selectedPage.pageId }">
                         {{ page.placeholder }}
                     </a>

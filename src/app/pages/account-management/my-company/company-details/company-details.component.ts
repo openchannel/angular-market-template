@@ -1,18 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
     AccessLevel,
-    AuthHolderService,
     DeveloperTypeFieldModel,
     Permission,
     PermissionType,
     TypeMapperUtils,
     TypeModel,
-    UserAccountService,
     UserCompanyModel,
     UsersService,
 } from '@openchannel/angular-common-services';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
@@ -52,13 +50,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
         },
     ];
 
-    constructor(
-        private loadingBar: LoadingBarService,
-        private toastService: ToastrService,
-        private authHolderService: AuthHolderService,
-        private userAccountService: UserAccountService,
-        private usersService: UsersService,
-    ) {}
+    constructor(private loadingBar: LoadingBarService, private toastService: ToastrService, private usersService: UsersService) {}
 
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
@@ -68,9 +60,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.$destroy.next();
         this.$destroy.complete();
-        if (this.loader) {
-            this.loader.complete();
-        }
+        this.loader.complete();
     }
 
     initCompanyForm(): void {
@@ -117,17 +107,19 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
             this.inProcess = true;
             this.usersService
                 .updateUserCompany(TypeMapperUtils.buildDataForSaving(this.organizationResult))
-                .pipe(takeUntil(this.$destroy))
-                .subscribe(
-                    () => {
-                        this.inProcess = false;
-                        this.toastService.success('Your company details has been updated');
-                    },
-                    () => {
-                        this.inProcess = false;
+                .pipe(
+                    catchError(err => {
                         this.toastService.error("Sorry! Can't update a company data. Please, try again later");
-                    },
-                );
+                        return throwError(err);
+                    }),
+                    finalize(() => {
+                        this.inProcess = false;
+                    }),
+                    takeUntil(this.$destroy),
+                )
+                .subscribe(() => {
+                    this.toastService.success('Your company details has been updated');
+                });
         }
     }
 

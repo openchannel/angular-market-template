@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthenticationService, UserAccountService, UserAccountTypesService } from '@openchannel/angular-common-services';
+import { UserAccountService } from '@openchannel/angular-common-services';
 import { Subject } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -52,8 +52,6 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
     constructor(
         private loadingBar: LoadingBarService,
         private accountService: UserAccountService,
-        private accountTypeService: UserAccountTypesService,
-        private authService: AuthenticationService,
         private toasterService: ToastrService,
         private ocTypeService: OcEditUserTypeService,
     ) {}
@@ -65,10 +63,8 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.$destroy.next();
-        this.$destroy.unsubscribe();
-        if (this.loader) {
-            this.loader.complete();
-        }
+        this.$destroy.complete();
+        this.loader.complete();
     }
 
     saveUserData(): void {
@@ -82,19 +78,15 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
             this.accountService
                 .updateUserAccount(accountData)
                 .pipe(
-                    tap(() => this.toasterService.success('Your profile has been updated')),
+                    finalize(() => {
+                        this.inSaveProcess = false;
+                        this.loader.complete();
+                    }),
                     takeUntil(this.$destroy),
                 )
-                .subscribe(
-                    () => {
-                        this.inSaveProcess = false;
-                        this.loader.complete();
-                    },
-                    () => {
-                        this.inSaveProcess = false;
-                        this.loader.complete();
-                    },
-                );
+                .subscribe(() => {
+                    this.toasterService.success('Your profile has been updated');
+                });
         }
     }
 
@@ -103,14 +95,17 @@ export class GeneralProfileComponent implements OnInit, OnDestroy {
         forkJoin({
             accountData: this.accountService.getUserAccount(),
             formConfigs: this.ocTypeService.injectTypeDataIntoConfigs(this.formConfigsWithoutTypeData, false, true),
-        }).subscribe(
-            result => {
-                this.loader.complete();
+        })
+            .pipe(
+                finalize(() => {
+                    this.loader.complete();
+                }),
+                takeUntil(this.$destroy),
+            )
+            .subscribe(result => {
                 this.formAccountData = result.accountData;
                 this.formConfigs = result.formConfigs;
                 this.formConfigsLoaded = true;
-            },
-            () => this.loader.complete(),
-        );
+            });
     }
 }

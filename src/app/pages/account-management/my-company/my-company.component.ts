@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import {
@@ -75,7 +75,6 @@ export class MyCompanyComponent implements OnInit, OnDestroy {
         private userService: UsersService,
         private inviteService: InviteUserService,
         private router: Router,
-        private activeRoute: ActivatedRoute,
         private location: Location,
     ) {}
 

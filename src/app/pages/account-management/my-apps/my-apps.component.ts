@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppsService, FrontendService } from '@openchannel/angular-common-services';
-import { takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActionButton, actionButtons, pageConfig, uninstallButton } from 'assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
@@ -49,26 +49,26 @@ export class MyAppsComponent implements OnInit, OnDestroy {
 
         this.frontendService
             .getSorts()
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(
-                page => {
-                    this.appSorts = page.list[0]
-                        ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
-                        : null;
-                    if (this.appSorts) {
-                        this.selectedSort = this.appSorts[0];
-                    }
+            .pipe(
+                finalize(() => {
+                    this.loader.complete();
+                }),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(page => {
+                this.appSorts = page.list[0] ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort)) : null;
+                if (this.appSorts) {
+                    this.selectedSort = this.appSorts[0];
+                }
 
-                    this.loadApps();
-                },
-                error => this.loader.complete(),
-                () => this.loader.complete(),
-            );
+                this.loadApps();
+            });
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+        this.loader?.complete();
     }
 
     onSortChange(selected: DropdownModel<string>): void {

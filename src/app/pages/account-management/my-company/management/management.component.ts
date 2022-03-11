@@ -10,17 +10,14 @@ import {
     UserGridActionModel,
     UserRoleService,
     UsersGridParametersModel,
-    UsersService,
 } from '@openchannel/angular-common-services';
 import { Observable, of, Subject } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { OcConfirmationModalComponent, OcInviteModalComponent, ModalUpdateUserModel } from '@openchannel/angular-common-components';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { mergeMap, map, takeUntil, tap } from 'rxjs/operators';
-import { cloneDeep } from 'lodash';
+import {mergeMap, map, takeUntil, tap, switchMap} from 'rxjs/operators';
 import { SortField, UserGridSortOrder, UserSortChosen } from '@openchannel/angular-common-components/src/lib/management-components';
+import { ManagementModalService } from './management-modal.service';
 
 @Component({
     selector: 'app-management',
@@ -64,13 +61,12 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     constructor(
         private loadingBar: LoadingBarService,
-        private userService: UsersService,
         private inviteUserService: InviteUserService,
         private userAccountService: UserAccountService,
         private userRolesService: UserRoleService,
         private toaster: ToastrService,
-        private modal: NgbModal,
         private authHolderService: AuthHolderService,
+        private managementModalService: ManagementModalService,
     ) {}
 
     ngOnInit(): void {
@@ -91,8 +87,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             if (field === sortChosen.changedSortOption) {
                 this.tableSortOptions[field] = sortChosen.sortOptions[sortChosen.changedSortOption];
                 // build sort query for the current table column
-                this.sortQuery = `{\"${this.tableSortFieldName[sortChosen.changedSortOption]}\":
-                ${this.tableSortOptions[sortChosen.changedSortOption]}}`;
+                this.sortQuery = `{\"${this.tableSortFieldName[sortChosen.changedSortOption]}\":${this.tableSortOptions[sortChosen.changedSortOption]}}`;
             } else {
                 this.tableSortOptions[field] = -1;
             }
@@ -204,24 +199,29 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     deleteInvite(user: UserAccountGridModel): void {
-        this.openDeleteModal('Delete invite', 'Are you sure you want to delete this invite?', 'Yes, delete invite', () =>
-            this.inviteUserService.deleteUserInvite(user?.inviteId).subscribe(() => {
-                this.deleteUserFromResultArray(user);
-                this.toaster.success('Invite has been deleted');
-            }),
-        );
+        this.managementModalService.openDeleteInviteModal()
+        .pipe(
+            switchMap(() => this.inviteUserService.deleteUserInvite(user?.inviteId)),
+            takeUntil(this.destroy$)
+        ).subscribe(() => {
+            this.deleteUserFromResultArray(user);
+            this.toaster.success('Invite has been deleted');
+        })
     }
 
     deleteAccount(user: UserAccountGridModel): void {
         if (user.userAccountId === this.authHolderService.userDetails.individualId) {
-            this.openDeleteModal('Delete user', "You can't delete yourself!", 'Ok', null, 'Close');
+            this.managementModalService.openDeleteCurrentUserAccountModal()
+            .subscribe();
         } else {
-            this.openDeleteModal('Delete user', 'Delete this user from the marketplace now?', 'Yes, delete user', () =>
-                this.userAccountService.deleteUserAccount(user?.userAccountId).subscribe(() => {
-                    this.deleteUserFromResultArray(user);
-                    this.toaster.success('User has been deleted from your organization');
-                }),
-            );
+            this.managementModalService.openDeleteAnotherUserAccountModal()
+            .pipe(
+                switchMap(() => this.userAccountService.deleteUserAccount(user?.userAccountId)),
+                takeUntil(this.destroy$)
+            ).subscribe(() => {
+                this.deleteUserFromResultArray(user);
+                this.toaster.success('User has been deleted from your organization');
+            });
         }
     }
 
@@ -272,24 +272,6 @@ export class ManagementComponent implements OnInit, OnDestroy {
         return null;
     }
 
-    private openDeleteModal(
-        modalTitle: string,
-        modalText: string,
-        confirmText: string,
-        deleteCallback: () => void,
-        cancelText?: string,
-    ): void {
-        const modalSuspendRef = this.modal.open(OcConfirmationModalComponent, { size: 'md' });
-        modalSuspendRef.componentInstance.modalTitle = modalTitle;
-        modalSuspendRef.componentInstance.modalText = modalText;
-        modalSuspendRef.componentInstance.confirmButtonText = confirmText;
-        modalSuspendRef.componentInstance.confirmButtonType = 'danger';
-        if (cancelText) {
-            modalSuspendRef.componentInstance.rejectButtonText = cancelText;
-        }
-        modalSuspendRef.result.then(deleteCallback, () => {});
-    }
-
     private editUser(userAction: UserGridActionModel, user: UserAccountGridModel): void {
         const userAccount = { ...user };
         if (user?.inviteStatus === 'INVITED') {
@@ -303,30 +285,11 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     private editUserAccount(userAccount: UserAccount): void {
-        const modalRef = this.modal.open(OcInviteModalComponent, { size: 'sm' });
-        modalRef.componentInstance.ngbModalRef = modalRef;
-
-        const modalData = new ModalUpdateUserModel();
-        modalData.userData = cloneDeep(userAccount);
-        modalData.modalTitle = 'Edit member';
-        modalData.successButtonText = 'Save';
-
-        modalData.requestFindUserRoles = () => {
-            return this.userRolesService.getUserRoles(1, 100);
-        };
-
-        modalData.requestUpdateAccount = (accountId: string, accountData: any) => {
-            return this.userAccountService.updateUserAccountFieldsForAnotherUser(accountId, true, accountData);
-        };
-
-        modalRef.componentInstance.modalData = modalData;
-        modalRef.result.then(
-            () => {
-                this.getAllUsers(true);
-                this.toaster.success('User details have been updated');
-            },
-            () => {},
-        );
+        this.managementModalService.openEditUserAccountModal(userAccount)
+        .subscribe(() => {
+            this.getAllUsers(true);
+            this.toaster.success('User details have been updated');
+        });
     }
 
     private deleteUserFromResultArray(user: UserAccountGridModel): void {
@@ -339,21 +302,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     private editUserInvite(userInvite: UserAccount): void {
-        const modalRef = this.modal.open(OcInviteModalComponent, { size: 'sm' });
-        const modalData = new ModalUpdateUserModel();
-        modalData.userData = userInvite;
-        modalData.modalTitle = 'Edit invite';
-        modalData.successButtonText = 'Save';
-        modalData.requestFindUserRoles = () => this.userRolesService.getUserRoles(1, 100);
-        modalData.requestUpdateAccount = (accountId: string, accountData: any) =>
-            this.inviteUserService.editUserInvite(accountData.inviteId, accountData);
-        modalRef.componentInstance.modalData = modalData;
-        modalRef.result.then(
-            () => {
-                this.getAllUsers(true);
-                this.toaster.success('User details have been updated');
-            },
-            () => {},
-        );
+        this.managementModalService.openEditUserInviteModal(userInvite)
+        .subscribe(() => {
+            this.getAllUsers(true);
+            this.toaster.success('User details have been updated');
+        });
     }
 }

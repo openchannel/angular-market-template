@@ -25,11 +25,11 @@
             "aot": true,
             "preserveSymlinks": true,
             "assets": [
+              {"glob": "**/*", "input": "node_modules/@openchannel/angular-common-components/assets/img",
+                "output": "/assets/angular-common-components"},
               "src/assets",
               "src/robots.txt",
               "src/_redirects",
-              {"glob": "**/*", "input": "node_modules/@openchannel/angular-common-components/assets/img",
-                "output": "/assets/angular-common-components"},
               { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
             ],
             "styles": [
@@ -154,20 +154,11 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "jestConfig": ["jest.config.js"],
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/assets",
-              "src/favicon.png"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": []
+            "setupFile": ["jest.setup.js"]
           }
         },
         "lint": {

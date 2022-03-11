@@ -8,7 +8,7 @@ import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { catchError, map, takeUntil, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { forIn } from 'lodash';
-import { AppCategoryDetail, Filter, FullAppData } from '@openchannel/angular-common-components';
+import { AppCategoryDetail, Filter, FullAppData, OcSidebarSelectModel } from '@openchannel/angular-common-components';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 
 export interface GalleryItem {
@@ -183,7 +183,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 color: '#4691de',
             },
         ];
-        const categoryProps = pageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
+        const categoryProps = this.homePageConfig.appListPage.find(list => list.type === 'filter-values-card-list');
         let categoryIndex = 0;
         if (categoryProps) {
             this.categoriesData = [...filters.find(filter => filter.id === categoryProps.filterId).values];
@@ -261,5 +261,10 @@ export class HomeComponent implements OnInit, OnDestroy {
                 bottomCalloutButtonLocation: 'content-callout.button.location',
             })
             .subscribe(content => (this.cmsData = content as CMSData));
+    }
+
+    onFilterSelect(filterId: string, selected: OcSidebarSelectModel): void {
+        const childFilterId = selected.child ? selected.child.id : selected.parent.id;
+        this.router.navigate(['browse', filterId, childFilterId]).then();
     }
 }
