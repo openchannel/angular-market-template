@@ -81,7 +81,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             this.filters.forEach(filter => {
                 const checkedValues = filterValues[filter.id] as string[];
                 if (checkedValues) {
-                    filter.values.map(value => this.findAndCheckChildFilter(value, checkedValues));
+                    filter.values.forEach(value => this.findAndCheckChildFilter(value as SidebarValue, checkedValues));
                 }
             });
 
@@ -240,7 +240,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
             });
     }
 
-    private disableFilterValues(filter: Filter | SidebarValue): void {
+    private disableFilterValues(filter: Filter | FilterValue): void {
         filter.values?.forEach(childFilter => {
             if (childFilter.checked) {
                 childFilter.checked = false;
@@ -272,7 +272,7 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         return filterValues;
     }
 
-    private getSelectedChildFilters(filter: Filter | SidebarValue, parentFilterId: string): SelectedFilter[] {
+    private getSelectedChildFilters(filter: Filter | FilterValue, parentFilterId: string): SelectedFilter[] {
         const filterValues: SelectedFilter[] = [];
         filter.values.forEach(filterValue => {
             if (filterValue.values) {
@@ -333,14 +333,12 @@ export class AppSearchComponent implements OnDestroy, OnInit {
         }
     }
 
-    private findAndCheckChildFilter(filter: SidebarValue, checkedValues: string[]): any {
+    private findAndCheckChildFilter(filter: SidebarValue, checkedValues: string[]): void {
         if (filter.values && filter.values.length > 0) {
-            filter.values = filter.values.map(value => this.findAndCheckChildFilter(value, checkedValues));
+            filter.values.forEach(value => this.findAndCheckChildFilter(value, checkedValues));
             filter.expanded = !!filter.values.find(value => value.checked);
         } else {
             filter.checked = checkedValues?.includes(filter.id);
         }
-
-        return filter;
     }
 }
