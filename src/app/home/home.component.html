@@ -29,7 +29,7 @@
                 *ngFor="let filter of sidebarFilters"
                 class="d-md-block mb-3"
                 [ngbCollapse]="filterCollapsed"
-                [baseNavigation]="'browse/' + filter.id"
+                (sidebarChange)="onFilterSelect(filter.id, $event)"
                 [title]="filter.name"
                 [sidebarModel]="filter.values"></oc-sidebar>
         </div>

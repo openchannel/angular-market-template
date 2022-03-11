@@ -1,3 +1,7 @@
+## Release notes - template3-marketsite-frontend - Version 1.66.0 (3/11/2022)<br>
+### Bug<br>
+AT-1733 - [Search result page] When selecting the sub-category filter, it's NOT fetching the results. <br>
+AT-1732 - [Homepage] Sidebar does not show the subcategories on the homepage of marketsite.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.64.0 (2/3/2022)<br>
 ### Bug<br>
 AT-1701 - [AT-1665] SAML 2.0 setup opens login page in new tab.<br>
