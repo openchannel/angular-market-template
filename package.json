@@ -18,7 +18,11 @@
   "resolutions": {
     "glob-parent": "5.1.2",
     "ansi-html": ">=0.0.8",
-    "url-parse": ">=1.5.9"
+    "url-parse": ">=1.5.9",
+    "nanoid": ">=3.1.31",
+    "follow-redirects": ">=1.14.8",
+    "marked": ">=4.0.10",
+    "node-forge": ">=1.0.0"
   },
   "private": true,
   "dependencies": {
