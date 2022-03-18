@@ -17,7 +17,8 @@
   },
   "resolutions": {
     "glob-parent": "5.1.2",
-    "ansi-html": ">=0.0.8"
+    "ansi-html": ">=0.0.8",
+    "url-parse": ">=1.5.9"
   },
   "private": true,
   "dependencies": {
