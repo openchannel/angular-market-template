@@ -16,7 +16,8 @@
     "preinstall": "npx npm-force-resolutions"
   },
   "resolutions": {
-    "glob-parent": "5.1.2"
+    "glob-parent": "5.1.2",
+    "ansi-html": ">=0.0.8"
   },
   "private": true,
   "dependencies": {
