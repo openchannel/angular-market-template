@@ -17,7 +17,7 @@ import {
     ErrorMessageFormId,
     Filter,
     ModalInviteUserModel,
-    ModalUpdateUserModel,
+    ModalUpdateUserModel, SocialLink,
     SortField,
     UserGridSortOrder,
     UserSortChosen,
@@ -393,6 +393,7 @@ export class MockFrontendService {
         description: 'All applications are listed here..',
         query: '{"status.value":"approved"}',
         checked: false,
+        values: [],
     };
 
     static MOCK_FILTERS_PAGE: Page<Filter> = {
@@ -1128,7 +1129,13 @@ export class MockEditUserFormComponent {
     @Output() readonly resultFormDataChange = new EventEmitter<any>();
     @Output() readonly createdFormGroup = new EventEmitter<any>();
 }
-
+@Component({
+    selector: 'oc-social-links',
+    template: '',
+})
+export class MockSocialLinks {
+    @Input() socialLinks: SocialLink[];
+}
 @Component({
     selector: 'app-general-profile',
     template: '',
