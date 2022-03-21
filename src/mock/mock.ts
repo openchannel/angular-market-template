@@ -393,6 +393,7 @@ export class MockFrontendService {
         description: 'All applications are listed here..',
         query: '{"status.value":"approved"}',
         checked: false,
+        values: [],
     };
 
     static MOCK_FILTERS_PAGE: Page<Filter> = {
@@ -973,8 +974,24 @@ export class MockSignupCustom {
     @Output() readonly resultUserData = new EventEmitter<any>();
 }
 
+@Component({
+    selector: 'oc-resend-activation',
+    template: '',
+})
+export class MockResendActivation {
+    @Input() activationModel: any;
+    @Input() loginUrl: string;
+    @Input() signupUrl: string;
+    @Input() companyLogoUrl: string;
+    @Input() process: boolean = false;
+    @Output() readonly buttonClick = new EventEmitter<any>();
+}
+
 export class MockNativeLoginService {
     signup(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+    sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 }
