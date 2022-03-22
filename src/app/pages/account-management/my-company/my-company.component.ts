@@ -125,7 +125,9 @@ export class MyCompanyComponent implements OnInit, OnDestroy {
                     this.toaster.success('Invitation sent');
                     this.appManagement.getAllUsers(true);
                 },
-                () => {},
+                () => {
+                    // do nothing.
+                },
             );
         });
     }

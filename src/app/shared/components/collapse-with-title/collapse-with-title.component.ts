@@ -12,7 +12,9 @@ export class CollapseWithTitleComponent {
 
     @Output() readonly collapseChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor() {}
+    constructor() {
+        // do nothing.
+    }
 
     changeCollapseStatus(): void {
         this.collapseChanged.emit(!this.collapsed);
