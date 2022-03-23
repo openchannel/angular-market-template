@@ -250,9 +250,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             modalRef.componentInstance.formJsonData = {
                 fields: formFields,
             };
-            modalRef.result.then(callback, () => {
-                // do nothing.
-            });
+            modalRef.result.then(callback);
         }
     }
 
@@ -285,9 +283,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                         }),
                         takeUntil(this.$destroy),
                     )
-                    .subscribe(() => {
-                        // do nothing.
-                    });
+                    .subscribe();
             }
         });
     }
