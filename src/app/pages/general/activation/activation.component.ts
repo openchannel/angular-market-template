@@ -17,6 +17,8 @@ export class ActivationComponent implements OnDestroy {
     activationUrl = '';
     inProcess = false;
 
+    testBool = false;
+
     activationModel = new ComponentsUserActivationModel();
 
     private destroy$: Subject<void> = new Subject();
@@ -39,6 +41,7 @@ export class ActivationComponent implements OnDestroy {
                 .subscribe(
                     res => {
                         this.inProcess = false;
+                        this.testBool = true;
                         this.toastr.success('Account successfully activated!');
                         this.router.navigate(['login']);
                     },

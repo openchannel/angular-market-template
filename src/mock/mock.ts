@@ -12,10 +12,12 @@ import {
     UsersService,
 } from '@openchannel/angular-common-services';
 import {
+    ComponentsUserActivationModel,
     ComponentsUserGridActionModel,
     ComponentsUsersGridParametersModel,
     ErrorMessageFormId,
     Filter,
+    HeadingTag,
     ModalInviteUserModel,
     ModalUpdateUserModel,
     SortField,
@@ -29,9 +31,11 @@ import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/
 
 class MockPagination<T> {
     private values: T[];
+
     constructor(values: T[]) {
         this.values = values || [];
     }
+
     getByPaginate(page: number, size: number): Page<T> {
         const normalizedPageNumber = page || 1; // min page number is 1
         const normalizedSizeNumber = size || 100; // max page size is 100
@@ -77,7 +81,9 @@ export class MockNotificationComponent {}
 
 export class MockPrerenderRequestsWatcherService {
     setPrerenderStatus(ready: boolean): void {}
+
     create404MetaTag(): void {}
+
     remove404MetaTag(): void {}
 }
 
@@ -206,6 +212,20 @@ export class MockAppGetStartedComponent {
 }
 
 @Component({
+    selector: 'oc-activation',
+    template: '',
+})
+export class MockOcActivationComponent {
+    @Input() resendActivationUrl: any[] | string | null | undefined;
+    @Input() signupUrl: any[] | string | null | undefined;
+    @Input() companyLogoUrl: string = '';
+    @Input() process: boolean = false;
+    @Input() activationModel: ComponentsUserActivationModel;
+    @Output() readonly buttonClick: EventEmitter<any> = new EventEmitter<any>();
+    @Input() headingTag: HeadingTag = 'h1';
+}
+
+@Component({
     selector: 'oc-menu-user-grid',
     template: '',
 })
@@ -247,7 +267,9 @@ export class OcConfirmationModalComponent {
 
 export class MockLoadingBarState {
     complete(): void {}
+
     start(): void {}
+
     stop(): void {}
 }
 
@@ -393,6 +415,7 @@ export class MockFrontendService {
         description: 'All applications are listed here..',
         query: '{"status.value":"approved"}',
         checked: false,
+        values: [],
     };
 
     static MOCK_FILTERS_PAGE: Page<Filter> = {
@@ -585,6 +608,7 @@ export class MockNgbModal {
 
 export class MockToastrService {
     success(): void {}
+
     error(): void {}
 }
 
@@ -946,6 +970,7 @@ export class MockTypeMapperUtils {
         return {};
     }
 }
+
 @Component({
     selector: 'oc-signup-custom',
     template: '',
@@ -976,6 +1001,10 @@ export class MockSignupCustom {
 export class MockNativeLoginService {
     signup(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
+    }
+
+    activate(): Observable<any> {
+        return of('1');
     }
 }
 
@@ -1139,37 +1168,43 @@ export class MockGeneralProfileComponent {}
     selector: 'app-change-password',
     template: '',
 })
-export class MockChangePasswordComponent {}
+export class MockChangePasswordComponent {
+}
 
 @Component({
     selector: 'app-billing',
     template: '',
 })
-export class MockBillingComponent {}
+export class MockBillingComponent {
+}
 
 @Component({
     selector: 'app-billing-history',
     template: '',
 })
-export class MockBillingHistoryComponent {}
+export class MockBillingHistoryComponent {
+}
 
 // providers
 export function mockUserServiceProvider(): Provider {
-    return { provide: UsersService, useClass: MockUsersService };
+    return {provide: UsersService, useClass: MockUsersService};
 }
 
 export function mockInviteUserServiceProvider(userInvites?: InviteUserModel[]): Provider {
-    return { provide: InviteUserService, useFactory: () => new MockInviteUserService(userInvites) };
+    return {provide: InviteUserService, useFactory: () => new MockInviteUserService(userInvites)};
 }
 
 export function mockInviteUserAccountServiceProvider(currentUserAccount: UserAccount, otherUserAccounts: UserAccount[]): Provider {
-    return { provide: UserAccountService, useFactory: () => new MockUserAccountService(currentUserAccount, otherUserAccounts) };
+    return {
+        provide: UserAccountService,
+        useFactory: () => new MockUserAccountService(currentUserAccount, otherUserAccounts)
+    };
 }
 
 export function mockUserRoleServiceProvider(): Provider {
-    return { provide: UserRoleService, useClass: MockUserRoleService };
+    return {provide: UserRoleService, useClass: MockUserRoleService};
 }
 
 export function mockToastrService(): Provider {
-    return { provide: ToastrService, useClass: MockToastrService };
+    return {provide: ToastrService, useClass: MockToastrService};
 }
