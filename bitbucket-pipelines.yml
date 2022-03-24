@@ -3,7 +3,7 @@ image: node:14.17.6
 definitions:
   services:
     docker:
-      memory: 1536
+      memory: 2048
   caches:
     sonar: ~/.sonar/cache
   steps:
