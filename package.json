@@ -19,7 +19,8 @@
     "glob-parent": "5.1.2",
     "node-forge": "^1.0.0",
     "ansi-regex": "5.0.1",
-    "json-schema": "^0.4.0"
+    "json-schema": "^0.4.0",
+    "marked": "^4.0.10"
   },
   "private": true,
   "dependencies": {
