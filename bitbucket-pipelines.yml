@@ -47,13 +47,18 @@ definitions:
           - export AWS_S3="`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/AWS_S3 --output text --query Parameter.Value`"
           - aws s3 sync --delete dist/ s3://$AWS_S3
           - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths /index.html "/assets*"
-    - step: &build-test-sonarcloud
-        name: Build, test and analyze on SonarCloud
+    - step: &build-test
+        name: Build and test
         caches:
           - sonar
         script:
           - npm install
           - ./node_modules/.bin/ng build --configuration=dev1
+    - step: &analyze-sonarcloud
+        name: Analyze on SonarCloud
+        caches:
+          - sonar
+        script:
           - pipe: sonarsource/sonarcloud-scan:1.2.1
             variables:
               SONAR_SCANNER_OPTS: -Xmx2048m
@@ -96,7 +101,8 @@ definitions:
 pipelines:
   pull-requests:
     '**':
-      - step: *build-test-sonarcloud
+      - step: *build-test
+      - step: *analyze-sonarcloud
   custom:
     dev1:
       - step:
@@ -115,11 +121,13 @@ pipelines:
       - variables:
           - name: JIRA_RELEASE_VERSION
           - name: PUSH_TAG_FORCE
-      - step: *build-test-sonarcloud
+      - step: *build-test
       - step: *create-changelog-with-git-tag
   branches:
     develop:
-      - step: *build-test-sonarcloud
+      - step: *build-test
+      - step: *analyze-sonarcloud
     master:
-      - step: *build-test-sonarcloud
+      - step: *build-test
+      - step: *analyze-sonarcloud
       - step: *push-to-github
