@@ -7,7 +7,7 @@ import {
     MockAuthHolderService,
     MockCompanyDetailsComponent,
     MockInviteModalComponent,
-    MockInviteUserService,
+    mockInviteUserServiceProvider,
     MockManagementComponent,
     MockModalInviteUserModel,
     MockNgbModal,
@@ -18,7 +18,7 @@ import {
     MockUsersService,
 } from '../../../../mock/mock';
 import { ToastrService } from 'ngx-toastr';
-import { AuthHolderService, InviteUserService, UserRoleService, UsersService } from '@openchannel/angular-common-services';
+import { AuthHolderService, UserRoleService, UsersService } from '@openchannel/angular-common-services';
 import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
@@ -54,7 +54,7 @@ describe('MyCompanyComponent', () => {
                     { provide: AuthHolderService, useClass: MockAuthHolderService },
                     { provide: UserRoleService, useClass: MockUserRoleService },
                     { provide: UsersService, useClass: MockUsersService },
-                    { provide: InviteUserService, useClass: MockInviteUserService },
+                    mockInviteUserServiceProvider([]),
                 ],
             }).compileComponents();
             router = TestBed.inject(Router);

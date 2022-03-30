@@ -4,6 +4,8 @@ import { MyAppsComponent } from './my-apps.component';
 import {
     MockAppShortInfoComponent,
     MockAppsService,
+    MockButtonActionComponent,
+    MockButtonActionService,
     MockDropdownComponent,
     MockFrontendService,
     MockInfiniteScrollDirective,
@@ -14,10 +16,11 @@ import {
     MockRoutingComponent,
 } from '../../../../mock/mock';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AppsService, FrontendService } from '../../../../../../angular-template-libraries/dist/angular-common-services';
+import { AppsService, FrontendService } from '@openchannel/angular-common-services';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { ButtonActionService } from '@features/button-action/button-action.service';
 
 describe('MyAppsComponent', () => {
     let component: MyAppsComponent;
@@ -35,6 +38,7 @@ describe('MyAppsComponent', () => {
                     MockNgbDropdownMenuDirective,
                     MockNgbDropdownDirective,
                     MockNgbDropdownToggleDirective,
+                    MockButtonActionComponent,
                 ],
                 imports: [
                     RouterTestingModule.withRoutes([
@@ -48,6 +52,7 @@ describe('MyAppsComponent', () => {
                     { provide: AppsService, useClass: MockAppsService },
                     { provide: FrontendService, useClass: MockFrontendService },
                     { provide: LoadingBarService, useClass: MockLoadingBarService },
+                    { provide: ButtonActionService, useClass: MockButtonActionService },
                 ],
             }).compileComponents();
             router = TestBed.inject(Router);
