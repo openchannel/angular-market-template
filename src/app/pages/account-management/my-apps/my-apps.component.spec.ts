@@ -39,6 +39,7 @@ describe('MyAppsComponent', () => {
                     MockNgbDropdownDirective,
                     MockNgbDropdownToggleDirective,
                     MockButtonActionComponent,
+                    MockRoutingComponent,
                 ],
                 imports: [
                     RouterTestingModule.withRoutes([

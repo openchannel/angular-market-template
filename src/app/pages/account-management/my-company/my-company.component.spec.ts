@@ -35,7 +35,13 @@ describe('MyCompanyComponent', () => {
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
-                declarations: [MyCompanyComponent, MockPageTitleComponent, MockCompanyDetailsComponent, MockManagementComponent],
+                declarations: [
+                    MyCompanyComponent,
+                    MockPageTitleComponent,
+                    MockCompanyDetailsComponent,
+                    MockManagementComponent,
+                    MockRoutingComponent,
+                ],
                 imports: [
                     RouterTestingModule.withRoutes([
                         {

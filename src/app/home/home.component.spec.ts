@@ -48,6 +48,7 @@ describe('HomeComponent', () => {
                     MockAppGalleryComponent,
                     MockAppGetStartedComponent,
                     MockTextSearchComponent,
+                    MockRoutingComponent,
                 ],
                 imports: [
                     HttpClientTestingModule,
