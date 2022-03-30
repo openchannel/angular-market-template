@@ -53,7 +53,8 @@ definitions:
           - sonar
         script:
           - npm install
-          - ./node_modules/.bin/ng build --configuration=dev1
+          - npm run build --configuration=dev1
+          - npm run test
     - step: &analyze-sonarcloud
         name: Analyze on SonarCloud
         max-time: 15
