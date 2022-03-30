@@ -1171,6 +1171,10 @@ export class MockButtonActionService {
     }
 }
 
+export class MockLogOutService {
+    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {}
+}
+
 // providers
 export function mockUserServiceProvider(): Provider {
     return { provide: UsersService, useClass: MockUsersService };
