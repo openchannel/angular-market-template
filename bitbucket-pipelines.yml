@@ -55,6 +55,8 @@ definitions:
           - npm install
           - npm run build --configuration=dev1
           - npm run test
+        artifacts:
+          - coverage/**
     - step: &analyze-sonarcloud
         name: Analyze on SonarCloud
         max-time: 15
@@ -69,6 +71,7 @@ definitions:
                 -Dsonar.sources=src/app
                 -Dsonar.tests=src
                 -Dsonar.test.inclusions=**/*.spec.ts
+                -Dsonar.coverage.exclusions=**/*.spec.ts,**/mock/**
                 -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
               '
     - step: &push-to-github
