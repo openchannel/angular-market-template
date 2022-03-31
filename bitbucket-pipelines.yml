@@ -56,7 +56,7 @@ definitions:
           - npm run build --configuration=dev1
           - npm run test
         artifacts:
-          - coverage/**
+          - coverage/lcov.info
     - step: &analyze-sonarcloud
         name: Analyze on SonarCloud
         max-time: 15
