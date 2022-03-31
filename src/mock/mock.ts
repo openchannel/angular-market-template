@@ -1,5 +1,5 @@
 import { Component, Directive, EventEmitter, Input, Output, Provider, Pipe, PipeTransform, TemplateRef } from '@angular/core';
-import { asyncScheduler, Observable, of } from 'rxjs';
+import { asyncScheduler, Observable, of, Subject } from 'rxjs';
 import {
     Page,
     Permission,
@@ -495,6 +495,18 @@ export class MockAuthenticationService {
     initCsrf(): Observable<any> {
         return of('1');
     }
+
+    getAuthConfig(): Observable<any> {
+        return of({});
+    }
+
+    verifyCode(...args: any): Observable<any> {
+        return of({});
+    }
+
+    login(...args: any): Observable<any> {
+        return of({});
+    }
 }
 
 @Component({
@@ -594,6 +606,12 @@ export class MockAuthHolderService {
 
     hasAnyPermission(): boolean {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
+    }
+
+    persist(...args: any): void {}
+
+    isLoggedInUser(...args: any): boolean {
+        return true;
     }
 }
 
@@ -978,6 +996,14 @@ export class MockNativeLoginService {
     signup(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
+
+    signIn(...args: any): Observable<any> {
+        return of({});
+    }
+
+    sendActivationCode(...args: any): Observable<any> {
+        return of({});
+    }
 }
 
 export class MockEditUserTypeService {
@@ -1163,6 +1189,38 @@ export class MockButtonActionComponent {
     @Input() appData: any;
     @Input() viewType: string = 'button';
     @Output() readonly updateAppData: EventEmitter<void> = new EventEmitter<void>();
+}
+
+@Component({
+    selector: 'oc-login',
+    template: '',
+})
+export class MockOcLoginComponent {
+    @Input() loginModel: any = {};
+    @Input() loginButtonText: string = 'Log in';
+    @Input() forgotPwdUrl: string;
+    @Input() signupUrl: string;
+    @Input() companyLogoUrl: string = './assets/angular-common-components/logo-company.png';
+    @Input() process: boolean = false;
+    @Input() incorrectEmailErrorCode: string = 'email_is_incorrect';
+    @Input() incorrectEmailErrorCodeTemplate: TemplateRef<any>;
+    @Input() notVerifiedEmailErrorCode: string = 'email_not_verified';
+    @Input() notVerifiedEmailErrorTemplate: TemplateRef<any>;
+    @Input() passwordResetRequiredErrorCode: string = 'password_reset_required';
+    @Input() passwordResetRequiredErrorTemplate: TemplateRef<any>;
+    @Input() headingTag: string = 'h1';
+    @Output() readonly loginModelChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly submit: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() readonly sendActivationLink: EventEmitter<string> = new EventEmitter<string>();
+}
+
+export class MockOAuthService {
+    events: Subject<any> = new Subject<any>();
+    state = {};
+
+    logOut(...args: any): void {}
+    loadDiscoveryDocumentAndLogin(...args: any): void {}
+    configure(...args: any): void {}
 }
 
 export class MockButtonActionService {
