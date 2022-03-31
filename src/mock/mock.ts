@@ -505,7 +505,7 @@ export class MockAuthenticationService {
     }
 
     login(...args: any): Observable<any> {
-        return of({});
+        return of({}).pipe(observeOn(asyncScheduler));
     }
 }
 
@@ -1214,13 +1214,35 @@ export class MockOcLoginComponent {
     @Output() readonly sendActivationLink: EventEmitter<string> = new EventEmitter<string>();
 }
 
+export class MockLoginRequest {
+    idToken: string;
+    accessToken: string;
+
+    constructor(idToken: string, accessToken: string) {
+        this.idToken = idToken;
+        this.accessToken = accessToken;
+    }
+}
+
 export class MockOAuthService {
     events: Subject<any> = new Subject<any>();
     state = {};
 
     logOut(...args: any): void {}
-    loadDiscoveryDocumentAndLogin(...args: any): void {}
+
+    loadDiscoveryDocumentAndLogin(...args: any): Promise<any> {
+        return Promise.resolve({});
+    }
+
     configure(...args: any): void {}
+
+    getIdToken(): string {
+        return '';
+    }
+
+    getAccessToken(): string {
+        return '';
+    }
 }
 
 export class MockButtonActionService {
