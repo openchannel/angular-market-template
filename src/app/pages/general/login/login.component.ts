@@ -8,7 +8,7 @@ import {
     SiteAuthConfig,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, takeUntil, tap } from 'rxjs/operators';
+import { filter, finalize, takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ToastrService } from 'ngx-toastr';
@@ -127,6 +127,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+        this.loader.complete();
     }
 
     login(event: boolean): void {
@@ -134,14 +135,15 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.inProcess = true;
             this.nativeLoginService
                 .signIn(this.signIn)
-                .pipe(takeUntil(this.destroy$))
-                .subscribe(
-                    (response: LoginResponse) => {
-                        this.processLoginResponse(response, this.returnUrl);
+                .pipe(
+                    finalize(() => {
                         this.inProcess = false;
-                    },
-                    () => (this.inProcess = false),
-                );
+                    }),
+                    takeUntil(this.destroy$),
+                )
+                .subscribe((response: LoginResponse) => {
+                    this.processLoginResponse(response, this.returnUrl);
+                });
         }
     }
 
