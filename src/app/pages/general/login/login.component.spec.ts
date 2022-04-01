@@ -2,6 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 
 import { LoginComponent } from './login.component';
 import {
+    createMockedBrowserStorage,
     MockAuthenticationService,
     MockAuthHolderService,
     MockCmsContentService,
@@ -24,6 +25,10 @@ jest.doMock('@openchannel/angular-common-services', () => ({
     ...jest.requireActual('@openchannel/angular-common-services'),
     LoginRequest: MockLoginRequest,
 }));
+
+Object.defineProperty(window, 'sessionStorage', {
+    value: createMockedBrowserStorage(),
+});
 
 describe('LoginComponent', () => {
     let component: LoginComponent;
@@ -55,6 +60,7 @@ describe('LoginComponent', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        window.sessionStorage.clear();
     });
 
     it('should create', () => {
@@ -193,8 +199,9 @@ describe('LoginComponent', () => {
 
     it('should decode redirectUrl if authConfig.grantType=authorization_code and pass it to processLoginResponse() (setupLoginFlowResponseProcess())', fakeAsync(() => {
         // Test setup
-        const mockDecodeURI = jest.spyOn(global, 'decodeURIComponent');
         const mockAuthState = 'testState';
+        const mockAuthStateDecoded = 'testStateDecoded';
+        jest.spyOn(global, 'decodeURIComponent').mockReturnValue(mockAuthStateDecoded);
 
         (component as any).oauthService.state = mockAuthState;
         (component as any).processLoginResponse = jest.fn();
@@ -205,8 +212,7 @@ describe('LoginComponent', () => {
         // Test that decodeURIComponent is called with authState if authConfig.grantType=authorization_code
         (component as any).oauthService.events.next({ type: 'token_received' });
         tick();
-        expect((component as any).processLoginResponse).toHaveBeenCalledWith(expect.anything(), mockAuthState);
-        expect(mockDecodeURI).toHaveBeenCalledWith(mockAuthState);
+        expect((component as any).processLoginResponse).toHaveBeenCalledWith(expect.anything(), mockAuthStateDecoded);
     }));
 
     it('should call oauthService.logOut() if openIdAuthService.login() errors (setupLoginFlowResponseProcess())', fakeAsync(() => {
@@ -220,5 +226,42 @@ describe('LoginComponent', () => {
         (component as any).oauthService.events.next({ type: 'token_received' });
         tick();
         expect(mockOauthLogout).toHaveBeenCalledWith(true);
+    }));
+
+    it('should set decoded url part to the returnUrl (checkState())', fakeAsync(() => {
+        // Test setup
+        const urlPartDecoded = 'testUrlPartDecoded';
+
+        (component as any).router.navigate([], { queryParams: { state: 'testState;testUrlPart' } });
+        tick();
+
+        jest.spyOn(global, 'decodeURIComponent').mockReturnValue(urlPartDecoded);
+        (component as any).returnUrl = '';
+
+        // Test that return url is set after checkState() execution
+        (component as any).checkState();
+        expect((component as any).returnUrl).toBe(urlPartDecoded);
+    }));
+
+    it('should set null to the returnUrl if encodedUrlPart does not exist (checkState())', fakeAsync(() => {
+        // Test setup
+        (component as any).router.navigate([], { queryParams: { state: 'testState' } });
+        tick();
+
+        // Test that null is set to the returnUrl
+        (component as any).checkState();
+        expect((component as any).returnUrl).toBeNull();
+    }));
+
+    it('should return true if the url state is equal to the "nonce" from the sessionStorage (checkState())', fakeAsync(() => {
+        // Test setup
+        const state = 'testState';
+
+        (component as any).router.navigate([], { queryParams: { state } });
+        tick();
+        window.sessionStorage.setItem('nonce', state);
+
+        // Test that checkState returns true if state === nonce from the sessionStorage
+        expect((component as any).checkState()).toBe(true);
     }));
 });

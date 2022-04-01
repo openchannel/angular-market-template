@@ -1255,6 +1255,25 @@ export class MockLogOutService {
     removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {}
 }
 
+export const createMockedBrowserStorage = () => {
+    let store = {};
+
+    return {
+        getItem(key: string): any {
+            return store[key] || null;
+        },
+        setItem(key: string, value: any): void {
+            store[key] = value.toString();
+        },
+        removeItem(key: string): void {
+            delete store[key];
+        },
+        clear(): void {
+            store = {};
+        },
+    };
+};
+
 // providers
 export function mockUserServiceProvider(): Provider {
     return { provide: UsersService, useClass: MockUsersService };
