@@ -76,9 +76,15 @@ export class MockNgxLoadingBarComponent {
 export class MockNotificationComponent {}
 
 export class MockPrerenderRequestsWatcherService {
-    setPrerenderStatus(ready: boolean): void {}
-    create404MetaTag(): void {}
-    remove404MetaTag(): void {}
+    setPrerenderStatus(ready: boolean): void {
+        // do nothing.
+    }
+    create404MetaTag(): void {
+        // do nothing.
+    }
+    remove404MetaTag(): void {
+        // do nothing.
+    }
 }
 
 @Component({
@@ -246,9 +252,15 @@ export class OcConfirmationModalComponent {
 }
 
 export class MockLoadingBarState {
-    complete(): void {}
-    start(): void {}
-    stop(): void {}
+    complete(): void {
+        // do nothing.
+    }
+    start(): void {
+        // do nothing.
+    }
+    stop(): void {
+        // do nothing.
+    }
 }
 
 export class MockLoadingBarService {
@@ -480,11 +492,15 @@ export class MockSiteConfigService {
         return of(MockSiteConfigService.PAGE_CONFIG);
     }
 
-    initSiteConfiguration(config: any): void {}
+    initSiteConfiguration(config: any): void {
+        // do nothing.
+    }
 }
 
 export class MockTitleService {
-    setSpecialTitle(): void {}
+    setSpecialTitle(): void {
+        // do nothing.
+    }
 }
 
 export class MockAuthenticationService {
@@ -585,8 +601,12 @@ export class MockNgbModal {
 }
 
 export class MockToastrService {
-    success(): void {}
-    error(): void {}
+    success(): void {
+        // do nothing.
+    }
+    error(): void {
+        // do nothing.
+    }
 }
 
 export class MockAuthHolderService {
