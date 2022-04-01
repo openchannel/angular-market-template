@@ -15,7 +15,7 @@ import {
 } from '../../../../mock/mock';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { AuthenticationService, AuthHolderService, NativeLoginService } from '@openchannel/angular-common-services';
+import { AuthenticationService, AuthHolderService, NativeLoginService, SiteAuthConfig } from '@openchannel/angular-common-services';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ToastrService } from 'ngx-toastr';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
@@ -263,5 +263,153 @@ describe('LoginComponent', () => {
 
         // Test that checkState returns true if state === nonce from the sessionStorage
         expect((component as any).checkState()).toBe(true);
+    }));
+
+    it('should call oauthService.configure() (configureOAuthService())', () => {
+        // Test setup
+        const mockOAuthConfigure = jest.spyOn((component as any).oauthService, 'configure');
+        (component as any).authConfig = { grantType: 'implicit' };
+        (component as any).isClientAccessTypeConfidential = jest.fn();
+
+        // Test that oauthService.configure() was called
+        (component as any).configureOAuthService();
+        expect(mockOAuthConfigure).toHaveBeenCalled();
+    });
+
+    it('should pass responseType to the oauthService.configure() according to the authConfig.grantType (configureOAuthService())', () => {
+        // Test setup
+        const mockOAuthConfigure = jest.spyOn((component as any).oauthService, 'configure');
+        (component as any).authConfig = { grantType: 'implicit' };
+        (component as any).isClientAccessTypeConfidential = jest.fn();
+
+        // Test that responseType is '' if the authConfig.grantType is 'implicit'
+        (component as any).configureOAuthService();
+        expect(mockOAuthConfigure).toHaveBeenCalledWith(expect.objectContaining({ responseType: '' }));
+
+        // Test setup
+        (component as any).authConfig = { grantType: 'someType' };
+
+        // Test that responseType is 'code' if the authConfig.grantType is not 'implicit'
+        (component as any).configureOAuthService();
+        expect(mockOAuthConfigure).toHaveBeenCalledWith(expect.objectContaining({ responseType: 'code' }));
+    });
+
+    it('disablePKCE should be result of the isClientAccessTypeConfidential() method (configureOAuthService())', () => {
+        // Test setup
+        const mockIsClientAccessConfident = true;
+        const mockOAuthConfigure = jest.spyOn((component as any).oauthService, 'configure');
+        (component as any).authConfig = { grantType: 'implicit' };
+        (component as any).isClientAccessTypeConfidential = jest.fn().mockReturnValue(mockIsClientAccessConfident);
+
+        // Test that disablePKCE is a result of the isClientAccessTypeConfidential() method
+        (component as any).configureOAuthService();
+        expect(mockOAuthConfigure).toHaveBeenCalledWith(expect.objectContaining({ disablePKCE: mockIsClientAccessConfident }));
+    });
+
+    it('should return true if authConfig.clientAccessType is "confidential" (isClientAccessTypeConfidential())', () => {
+        // Test setup
+        (component as any).authConfig = { clientAccessType: 'confidential' };
+
+        // Test
+        expect((component as any).isClientAccessTypeConfidential()).toBeTruthy();
+    });
+
+    it('should set returnUrl from the queryParams (retrieveRedirectUrl())', fakeAsync(() => {
+        // Test setup
+        const mockReturnUrl = 'google.com';
+
+        (component as any).router.navigate([], { queryParams: { returnUrl: mockReturnUrl } });
+        tick();
+
+        // Test
+        (component as any).retrieveRedirectUrl();
+        expect((component as any).returnUrl).toBe(mockReturnUrl);
+    }));
+
+    it('should call authHolderService.persist() with access and refresh tokens from the response (processLoginResponse())', () => {
+        // Test setup
+        const response = {
+            refreshToken: 'refreshToken123',
+            accessToken: 'accessToken123',
+        };
+        const mockAuthHolderPersist = jest.spyOn((component as any).authHolderService, 'persist');
+
+        // Test
+        (component as any).processLoginResponse(response, '');
+        expect(mockAuthHolderPersist).toHaveBeenCalledWith(response.accessToken, response.refreshToken);
+    });
+
+    it('should navigate to the redirectUrl passed to the method (processLoginResponse())', () => {
+        // Test setup
+        const response = {
+            refreshToken: 'refreshToken123',
+            accessToken: 'accessToken123',
+        };
+        const redirectUrl = 'google.com';
+        (component as any).router.navigateByUrl = jest.fn().mockReturnValue(Promise.resolve());
+
+        // Test
+        (component as any).processLoginResponse(response, redirectUrl);
+        expect((component as any).router.navigateByUrl).toHaveBeenCalledWith(redirectUrl);
+    });
+
+    it('should navigate to the "" if the redirectUrl is not specified (processLoginResponse())', () => {
+        // Test setup
+        const response = {
+            refreshToken: 'refreshToken123',
+            accessToken: 'accessToken123',
+        };
+        (component as any).router.navigateByUrl = jest.fn().mockReturnValue(Promise.resolve());
+
+        // Test
+        (component as any).processLoginResponse(response);
+        expect((component as any).router.navigateByUrl).toHaveBeenCalledWith('');
+    });
+
+    it('should open new window in the current tab with correct saml login url (processSamlLogin())', () => {
+        // Test setup
+        const authConfig = { singleSignOnUrl: 'test.com' };
+        Object.defineProperty(window, 'location', {
+            value: {
+                href: 'test2.com',
+            },
+        });
+        window.open = jest.fn();
+
+        // Test
+        (component as any).processSamlLogin(authConfig as SiteAuthConfig);
+        expect(window.open).toHaveBeenCalledWith(`${authConfig.singleSignOnUrl}?RelayState=${window.location.href}`, '_self');
+    });
+
+    it('should return access and refresh saml jwt tokens from the queryParamMap (getSamlJwtTokens())', fakeAsync(() => {
+        // Test setup
+        const samlTokens = {
+            accessToken: 'accessToken123',
+            refreshToken: 'refreshToken123',
+        };
+        (component as any).router.navigate([], {
+            queryParams: {
+                [(component as any).SAML_JWT_ACCESS_TOKEN_KEY]: samlTokens.accessToken,
+                [(component as any).SAML_JWT_REFRESH_TOKEN_KEY]: samlTokens.refreshToken,
+            },
+        });
+        tick();
+
+        // Test
+        expect((component as any).getSamlJwtTokens()).toEqual(samlTokens);
+    }));
+
+    it('should return null if there is no tokens in queryParams (getSamlJwtTokens())', () => {
+        expect((component as any).getSamlJwtTokens()).toBeNull();
+    });
+
+    it('should set cmsData (initCMSData())', fakeAsync(() => {
+        // Test setup
+        component.cmsData = { loginImageURL: null };
+
+        // Test
+        (component as any).initCMSData();
+        tick();
+        expect(component.cmsData.loginImageURL).not.toBeNull();
     }));
 });
