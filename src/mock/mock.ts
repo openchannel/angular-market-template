@@ -393,6 +393,7 @@ export class MockFrontendService {
         description: 'All applications are listed here..',
         query: '{"status.value":"approved"}',
         checked: false,
+        values: [],
     };
 
     static MOCK_FILTERS_PAGE: Page<Filter> = {
@@ -1152,6 +1153,27 @@ export class MockBillingComponent {}
     template: '',
 })
 export class MockBillingHistoryComponent {}
+
+@Component({
+    selector: 'app-button-action',
+    template: '',
+})
+export class MockButtonActionComponent {
+    @Input() buttonAction: any;
+    @Input() appData: any;
+    @Input() viewType: string = 'button';
+    @Output() readonly updateAppData: EventEmitter<void> = new EventEmitter<void>();
+}
+
+export class MockButtonActionService {
+    canBeShow(app: any, buttons: any): any {
+        return buttons;
+    }
+}
+
+export class MockLogOutService {
+    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {}
+}
 
 // providers
 export function mockUserServiceProvider(): Provider {
