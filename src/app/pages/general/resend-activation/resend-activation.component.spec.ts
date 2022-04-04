@@ -8,11 +8,13 @@ import { MockNativeLoginService, MockResendActivation, MockRoutingComponent, Moc
 import { throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { ToastrService } from 'ngx-toastr';
+import { Location } from '@angular/common';
 
 describe.skip('ResendActivationComponent', () => {
     let component: ResendActivationComponent;
     let fixture: ComponentFixture<ResendActivationComponent>;
     let router: Router;
+    let location: Location;
 
     const getActivationResendDE = () => fixture.debugElement.query(By.directive(MockResendActivation));
 
@@ -37,6 +39,7 @@ describe.skip('ResendActivationComponent', () => {
     beforeEach(() => {
         const routerState = { extras: { state: {} } };
 
+        location = TestBed.inject(Location);
         router = TestBed.inject(Router);
         router.getCurrentNavigation = jest.fn().mockReturnValue(routerState);
     });
@@ -51,92 +54,24 @@ describe.skip('ResendActivationComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should complete destroy$ in ngOnDestroy hook', () => {
-        jest.spyOn((component as any).destroy$, 'complete');
-
-        // tslint:disable-next-line:no-lifecycle-call
-        component.ngOnDestroy();
-
-        expect((component as any).destroy$.complete).toHaveBeenCalled();
-    });
-
-    it('should call nativeLoginService.sendActivationCode when event=true and inProcess=false', () => {
+    it('should call nativeLoginService.sendActivationCode and to check response success actions', fakeAsync(() => {
         jest.spyOn((component as any).nativeLoginService, 'sendActivationCode');
-        const event = true;
-        component.inProcess = false;
 
-        component.sendActivationMail(event);
-
-        expect((component as any).nativeLoginService.sendActivationCode).toHaveBeenCalled();
-    });
-
-    it('should not call nativeLoginService.sendActivationCode when event=false', () => {
-        jest.spyOn((component as any).nativeLoginService, 'sendActivationCode');
-        const event = false;
-        component.inProcess = false;
-
-        component.sendActivationMail(event);
-
-        expect((component as any).nativeLoginService.sendActivationCode).not.toHaveBeenCalled();
-    });
-
-    it('should not call nativeLoginService.sendActivationCode when inProgress=true', () => {
-        jest.spyOn((component as any).nativeLoginService, 'sendActivationCode');
-        const event = true;
-        component.inProcess = true;
-
-        component.sendActivationMail(event);
-
-        expect((component as any).nativeLoginService.sendActivationCode).not.toHaveBeenCalled();
-    });
-
-    it('should set inProcess=true before subscribing to the nativeLoginService.sendActivationCode', () => {
-        const event = true;
-        component.inProcess = false;
-
-        component.sendActivationMail(event);
+        const ocResendActivationMock = getActivationResendDE().componentInstance;
+        ocResendActivationMock.buttonClick.emit(true);
+        tick();
 
         expect(component.inProcess).toBeTruthy();
-    });
-
-    it('should set inProcess=false when nativeLoginService.sendActivationCode successfully completes', fakeAsync(() => {
-        const event = true;
-        component.inProcess = false;
-
-        component.sendActivationMail(event);
-        tick();
-
-        expect(component.inProcess).toBeFalsy();
-    }));
-
-    it('should show message when nativeLoginService.sendActivationCode successfully completes', fakeAsync(() => {
-        jest.spyOn((component as any).toaster, 'success');
-        const event = true;
-        component.inProcess = false;
-
-        component.sendActivationMail(event);
-        tick();
         expect((component as any).toaster.success).toHaveBeenCalled();
+        expect(location.path()).toBe('/login');
     }));
 
-    it('should navigate to /login when nativeLoginService.sendActivationCode successfully completes', fakeAsync(() => {
-        const event = true;
-        component.inProcess = false;
-
-        component.sendActivationMail(event);
+    it('should set inProcess=false when nativeLoginService.sendActivationCode throws error', fakeAsync(() => {
+        const ocResendActivationMock = getActivationResendDE().componentInstance;
+        ocResendActivationMock.buttonClick.emit(true);
         tick();
-        expect(router.url).toBe('/login');
-    }));
 
-    it('should set inProcess=false when nativeLoginService.sendActivationCode errors', fakeAsync(() => {
-        const event = true;
-        component.inProcess = false;
-        (component as any).nativeLoginService.sendActivationMail = () => throwError('Error');
-
-        try {
-            component.sendActivationMail(event);
-            tick();
-        } catch {}
+        (component as any).nativeLoginService.sendActivationCode = () => throwError('Error');
 
         expect(component.inProcess).toBeFalsy();
     }));
@@ -155,14 +90,5 @@ describe.skip('ResendActivationComponent', () => {
         Object.values(customActivationResendBindingsComponentPropsMap).forEach(([binding, propName]) => {
             expect(activationResendInstance[binding]).toEqual(component[propName]);
         });
-    });
-
-    it('should call sendActivationMail method with data from the event when app-resend-activation emits buttonClick', () => {
-        const event = true;
-        jest.spyOn(component, 'sendActivationMail');
-
-        getActivationResendDE().triggerEventHandler('buttonClick', event);
-
-        expect(component.sendActivationMail).toHaveBeenCalledWith(event);
     });
 });
