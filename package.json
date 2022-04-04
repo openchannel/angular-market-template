@@ -1,6 +1,6 @@
 {
   "name": "template3-marketsite",
-  "version": "1.66.0",
+  "version": "1.66.3",
   "scripts": {
     "ng": "ng",
     "start": "./node_modules/.bin/ng serve",
@@ -17,14 +17,10 @@
   },
   "resolutions": {
     "glob-parent": "5.1.2",
-    "ansi-html": "^0.0.8",
-    "url-parse": "^1.5.9",
-    "nanoid": "^3.1.31",
-    "follow-redirects": "^1.14.8",
-    "marked": "^4.0.10",
     "node-forge": "^1.0.0",
+    "ansi-regex": "5.0.1",
     "json-schema": "^0.4.0",
-    "ansi-regex": "^5.0.1"
+    "minimist": "^1.2.6"
   },
   "private": true,
   "dependencies": {
@@ -41,8 +37,8 @@
     "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "@ng-select/ng-select": "^6.1.0",
     "@ngx-loading-bar/core": "^5.1.1",
-    "@openchannel/angular-common-components": "^2.55.1",
-    "@openchannel/angular-common-services": "^2.55.1",
+    "@openchannel/angular-common-components": "^2.55.3",
+    "@openchannel/angular-common-services": "^2.55.3",
     "@stripe/stripe-js": "^1.21.1",
     "@tinymce/tinymce-angular": "^4.2.1",
     "angular-oauth2-oidc": "^10.0.3",
@@ -56,17 +52,17 @@
     "ngx-toastr": "^13.1.0",
     "popper.js": "^1.16.0",
     "rxjs": "~6.6.3",
-    "tinymce": "^5.6.2",
+    "tinymce": "^5.9.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular-builders/jest": "^13.0.2",
-    "@angular-devkit/build-angular": "~0.1102.14",
+    "@angular-devkit/build-angular": "~0.1102.18",
     "@angular/cli": "~11.2.14",
     "@angular/compiler-cli": "~11.2.14",
     "@angular/language-service": "~11.2.14",
-    "@compodoc/compodoc": "^1.1.15",
+    "@compodoc/compodoc": "^1.1.19",
     "@types/chart.js": "^2.9.20",
     "@types/jest": "^27.0.3",
     "@types/node": "^12.11.1",

@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.66.3 (3/29/2022)<br>
+### Bug<br>
+AT-1760 - [Hot-fix] [Prod] Number field does not accept the value grater than 0.<br>
 ## Release notes - template3-marketsite-frontend - Version 1.66.0 (3/11/2022)<br>
 ### Bug<br>
 AT-1733 - [Search result page] When selecting the sub-category filter, it's NOT fetching the results. <br>

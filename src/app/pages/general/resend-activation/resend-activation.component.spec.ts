@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ResendActivationComponent } from './resend-activation.component';
 
-describe('ResendActivationComponent', () => {
+describe.skip('ResendActivationComponent', () => {
     let component: ResendActivationComponent;
     let fixture: ComponentFixture<ResendActivationComponent>;
 
