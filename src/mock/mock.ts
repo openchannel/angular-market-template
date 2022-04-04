@@ -1004,7 +1004,7 @@ export class MockNativeLoginService {
     }
 
     activate(): Observable<any> {
-        return of('1');
+        return of(null).pipe(observeOn(asyncScheduler));
     }
 }
 
