@@ -15,7 +15,7 @@ describe('NotFoundComponent', () => {
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
-                declarations: [NotFoundComponent, MockButtonComponent],
+                declarations: [NotFoundComponent, MockButtonComponent, MockRoutingComponent],
                 imports: [RouterTestingModule.withRoutes([{ path: 'some-page', component: MockRoutingComponent }])],
                 providers: [{ useClass: MockPrerenderRequestsWatcherService, provide: PrerenderRequestsWatcherService }],
             }).compileComponents();

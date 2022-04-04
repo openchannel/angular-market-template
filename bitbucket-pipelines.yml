@@ -53,9 +53,13 @@ definitions:
           - sonar
         script:
           - npm install
-          - ./node_modules/.bin/ng build --configuration=dev1
+          - npm run build --configuration=dev1
+          - npm run test
+        artifacts:
+          - coverage/lcov.info
     - step: &analyze-sonarcloud
         name: Analyze on SonarCloud
+        max-time: 15
         caches:
           - sonar
         script:
@@ -63,11 +67,13 @@ definitions:
             variables:
               SONAR_SCANNER_OPTS: -Xmx2048m
               SONAR_TOKEN: ${SONAR_TOKEN}
-              EXTRA_ARGS: '-Dsonar.sources=src/app
-              -Dsonar.tests=src
-              -Dsonar.test.inclusions="**/*.spec.ts
-              -Dsonar.coverage.exclusions="**/node_modules/**,**/*.spec.ts
-              -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info'
+              EXTRA_ARGS: '
+                -Dsonar.sources=src/app
+                -Dsonar.tests=src
+                -Dsonar.test.inclusions=**/*.spec.ts
+                -Dsonar.coverage.exclusions=**/mock/**
+                -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+              '
     - step: &push-to-github
         name: Push to GitHub
         script:
