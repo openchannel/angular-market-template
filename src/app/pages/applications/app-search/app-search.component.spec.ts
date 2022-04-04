@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AppSearchComponent } from './app-search.component';
 
-describe('AppSearchComponent', () => {
+describe.skip('AppSearchComponent', () => {
     let component: AppSearchComponent;
     let fixture: ComponentFixture<AppSearchComponent>;
 

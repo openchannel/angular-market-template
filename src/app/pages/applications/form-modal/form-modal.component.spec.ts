@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FormModalComponent } from './form-modal.component';
 
-describe('FormModalComponent', () => {
+describe.skip('FormModalComponent', () => {
     let component: FormModalComponent;
     let fixture: ComponentFixture<FormModalComponent>;
 

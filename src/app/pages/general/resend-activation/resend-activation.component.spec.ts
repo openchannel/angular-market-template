@@ -9,7 +9,7 @@ import { throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { ToastrService } from 'ngx-toastr';
 
-describe('ResendActivationComponent', () => {
+describe.skip('ResendActivationComponent', () => {
     let component: ResendActivationComponent;
     let fixture: ComponentFixture<ResendActivationComponent>;
     let router: Router;
