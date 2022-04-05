@@ -2,14 +2,12 @@ import { ComponentFixture, TestBed, waitForAsync, tick, fakeAsync } from '@angul
 
 import { ActivationComponent } from './activation.component';
 import {
-    MockFormComponent,
     MockNativeLoginService,
     MockNgbModal,
     MockOcActivationComponent,
     MockRoutingComponent,
     MockToastrService,
 } from '../../../../mock/mock';
-import { By } from '@angular/platform-browser';
 
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -18,18 +16,16 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { NativeLoginService } from '@openchannel/angular-common-services';
 import { throwError } from 'rxjs';
-import { Location } from '@angular/common';
 
 describe('ActivationComponent', () => {
     let component: ActivationComponent;
     let fixture: ComponentFixture<ActivationComponent>;
     let router: Router;
-    let location: Location;
 
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
-                declarations: [ActivationComponent, MockOcActivationComponent],
+                declarations: [ActivationComponent, MockOcActivationComponent, MockRoutingComponent],
                 imports: [
                     RouterTestingModule.withRoutes([
                         {
