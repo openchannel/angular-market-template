@@ -10,12 +10,18 @@ import {
     MockLoginRequest,
     MockNativeLoginService,
     MockOAuthService,
-    MockOcLoginComponent,
+    MockOcLoginComponent, MockRoutingComponent,
     MockToastrService,
 } from '../../../../mock/mock';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { AuthenticationService, AuthHolderService, NativeLoginService, SiteAuthConfig } from '@openchannel/angular-common-services';
+import {
+    AuthenticationService,
+    AuthHolderService,
+    NativeLoginService,
+    SiteAuthConfig,
+} from '@openchannel/angular-common-services';
+import { Location } from '@angular/common';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ToastrService } from 'ngx-toastr';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
@@ -33,12 +39,15 @@ Object.defineProperty(window, 'sessionStorage', {
 describe('LoginComponent', () => {
     let component: LoginComponent;
     let fixture: ComponentFixture<LoginComponent>;
+    let location: Location;
 
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [LoginComponent, MockOcLoginComponent],
-                imports: [RouterTestingModule],
+                imports: [RouterTestingModule.withRoutes([
+                    { path: '', component: MockRoutingComponent },
+                ])],
                 providers: [
                     { provide: LoadingBarService, useClass: MockLoadingBarService },
                     { provide: AuthHolderService, useClass: MockAuthHolderService },
@@ -49,6 +58,8 @@ describe('LoginComponent', () => {
                     { provide: CmsContentService, useClass: MockCmsContentService },
                 ],
             }).compileComponents();
+
+            location = TestBed.inject(Location);
         }),
     );
 
@@ -412,4 +423,45 @@ describe('LoginComponent', () => {
         tick();
         expect(component.cmsData.loginImageURL).not.toBeNull();
     }));
+
+    // Ng on init logic tests
+
+    it('should redirect to the route page if the user is logged in (ngOnInit())', fakeAsync(() => {
+        // Test setup
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(true);
+
+        // Test
+        component.ngOnInit();
+        tick();
+        expect(location.path()).toBe('/');
+    }));
+
+    it('should call processLoginResponse if saml jwt tokens exist (ngOnInit())', fakeAsync(() => {
+        // Test setup
+        (component as any).getSamlJwtTokens = jest.fn().mockReturnValue({
+            refreshToken: 'refreshToken123',
+            accessToken: 'accessToken123',
+        });
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(false);
+        const mockProcessLogin = jest.spyOn(component as any, 'processLoginResponse');
+
+        // Test
+        component.ngOnInit();
+        expect(mockProcessLogin).toHaveBeenCalled();
+    }));
+
+    it('should call setupLoginFlowResponseProcess() if the user is not logged in (ngOnInit())', () => {
+    });
+    it('should call set isSSO to false if openIdAuthService.getAuthConfig() fails (ngOnInit())', () => {
+    });
+    it('should call processSamlLogin() if authConfigType is SAML_20 (ngOnInit())', () => {
+    });
+    it('should call openIdAuthService.verifyCode() if code exists, isClientAccessTypeConfidential() and checkState() return true (ngOnInit())', () => {
+    });
+    it('should call processLoginResponse() when openIdAuthService.verifyCode() emits (ngOnInit())', () => {
+    });
+    it('should call oauthService.logOut() when openIdAuthService.verifyCode() errors (ngOnInit())', () => {
+    });
+    it('should call configureOAuthService() and oauthService.loadDiscoveryDocumentAndLogin() if code does not exist (ngOnInit())', () => {
+    });
 });
