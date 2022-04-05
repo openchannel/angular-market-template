@@ -216,8 +216,8 @@ export class MockAppGetStartedComponent {
     template: '',
 })
 export class MockOcActivationComponent {
-    @Input() resendActivationUrl: any[] | string | null | undefined;
-    @Input() signupUrl: any[] | string | null | undefined;
+    @Input() resendActivationUrl: any;
+    @Input() signupUrl: any;
     @Input() companyLogoUrl: string = '';
     @Input() process: boolean = false;
     @Input() activationModel: ComponentsUserActivationModel;
@@ -1168,22 +1168,19 @@ export class MockGeneralProfileComponent {}
     selector: 'app-change-password',
     template: '',
 })
-export class MockChangePasswordComponent {
-}
+export class MockChangePasswordComponent {}
 
 @Component({
     selector: 'app-billing',
     template: '',
 })
-export class MockBillingComponent {
-}
+export class MockBillingComponent {}
 
 @Component({
     selector: 'app-billing-history',
     template: '',
 })
-export class MockBillingHistoryComponent {
-}
+export class MockBillingHistoryComponent {}
 
 @Component({
     selector: 'app-button-action',

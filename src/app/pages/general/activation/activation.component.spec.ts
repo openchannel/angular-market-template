@@ -18,11 +18,13 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { NativeLoginService } from '@openchannel/angular-common-services';
 import { throwError } from 'rxjs';
+import { Location } from '@angular/common';
 
-describe.skip('ActivationComponent', () => {
+describe('ActivationComponent', () => {
     let component: ActivationComponent;
     let fixture: ComponentFixture<ActivationComponent>;
     let router: Router;
+    let location: Location;
 
     beforeEach(
         waitForAsync(() => {
@@ -69,56 +71,43 @@ describe.skip('ActivationComponent', () => {
     it('check rendered of oc-activate element', () => {
         component.inProcess = false;
         let activateElement = fixture.nativeElement.querySelector('oc-activation');
-        // console.log('activate Element', activateElement1);
         expect(activateElement).toBeTruthy();
     });
 
-    it('The activation code is false, checking the logic (bad request)', fakeAsync(() => {
-        var event = true;
+    it('should dont navigate to login page and dont show success message if token is broken and nativeLoginService doesnt work ', fakeAsync(() => {
+        let event = true;
         component.inProcess = false;
         (component as any).nativeLoginService.activate = () => throwError('Error');
         jest.spyOn((component as any).toastr, 'success');
         jest.spyOn((component as any).nativeLoginService, 'activate');
         jest.spyOn(component as any, 'activate');
-        try {
-            component.activate(event);
-            tick();
-            expect((component as any).activate).toHaveBeenCalled();
-            expect((component as any).nativeLoginService.activate).toHaveBeenCalled();
 
-            expect((component as any).toastr.success).not.toHaveBeenCalled();
-            // did not go to the next page
-            expect(router.url).toBe('/');
-        } catch (e) {
-            console.log('error', e);
-        }
+        component.activate(event);
+        tick();
+        expect((component as any).nativeLoginService.activate).toHaveBeenCalled();
+
+        expect((component as any).toastr.success).not.toHaveBeenCalled();
+        // stay on the activate  page
+        expect(router.url).toBe('/');
 
         expect(component.inProcess).toBeFalsy();
     }));
 
-    it('The activation code is true, checking the logic (good request)', fakeAsync(() => {
-        var event = true;
+    it('should navigate to login page and show success message if token is right and nativeLoginService worked out', fakeAsync(() => {
+        let event = true;
         component.inProcess = false;
 
         jest.spyOn((component as any).toastr, 'success');
         jest.spyOn((component as any).nativeLoginService, 'activate');
         jest.spyOn(component as any, 'activate');
 
-        try {
-            expect((component as any).nativeLoginService.activate).not.toHaveBeenCalled();
-
-            component.activate(event);
-
-            tick();
-
-            expect((component as any).activate).toHaveBeenCalled();
-            expect((component as any).nativeLoginService.activate).toHaveBeenCalled();
-            // go to the next page
-            expect(router.url).toBe('/login');
-            expect((component as any).toastr.success).toHaveBeenCalled();
-        } catch (e) {
-            console.log('error', e);
-        }
+        component.activate(event);
+        expect((component as any).nativeLoginService.activate).toHaveBeenCalled();
+        tick();
+        expect((component as any).nativeLoginService.activate).toHaveBeenCalled();
+        // go to the next page
+        expect(router.url).toBe('/login');
+        expect((component as any).toastr.success).toHaveBeenCalled();
 
         expect(component.inProcess).toBeFalsy();
     }));
