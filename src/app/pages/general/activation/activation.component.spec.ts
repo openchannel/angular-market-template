@@ -71,7 +71,7 @@ describe('ActivationComponent', () => {
     });
 
     it('should dont navigate to login page and dont show success message if token is broken and nativeLoginService doesnt work ', fakeAsync(() => {
-        let event = true;
+        const event = true;
         component.inProcess = false;
         (component as any).nativeLoginService.activate = () => throwError('Error');
         jest.spyOn((component as any).toastr, 'success');
@@ -90,7 +90,7 @@ describe('ActivationComponent', () => {
     }));
 
     it('should navigate to login page and show success message if token is right and nativeLoginService worked out', fakeAsync(() => {
-        let event = true;
+        const event = true;
         component.inProcess = false;
 
         jest.spyOn((component as any).toastr, 'success');

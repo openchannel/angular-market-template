@@ -69,7 +69,7 @@
     "angular-svg-icon": "^11.0.0",
     "codelyzer": "^6.0.0",
     "glob-parent": "5.1.2",
-    "jest": "^27.5.1",
+    "jest": "^27.4.5",
     "jest-preset-angular": "^11.0.1",
     "jwt-decode": "^3.1.2",
     "ngx-color-picker": "^10.1.0",
