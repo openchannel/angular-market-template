@@ -18,7 +18,7 @@ import { of, Subject } from 'rxjs';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { catchError, finalize, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { OcConfirmationModalComponent } from '@openchannel/angular-common-components';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { HttpHeaders } from '@angular/common/http';

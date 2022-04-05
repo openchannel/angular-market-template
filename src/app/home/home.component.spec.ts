@@ -48,6 +48,7 @@ describe('HomeComponent', () => {
                     MockAppGalleryComponent,
                     MockAppGetStartedComponent,
                     MockTextSearchComponent,
+                    MockRoutingComponent,
                 ],
                 imports: [
                     HttpClientTestingModule,
@@ -288,7 +289,6 @@ describe('HomeComponent', () => {
         const firstSidebarInstance = sidebars[0].componentInstance;
         const firstFilter = component.sidebarFilters[0];
 
-        expect(firstSidebarInstance.baseNavigation).toBe(`browse/${firstFilter.id}`);
         expect(firstSidebarInstance.title).toBe(firstFilter.name);
         expect(firstSidebarInstance.sidebarModel).toEqual(firstFilter.values);
         expect(sidebars.length).toBe(component.sidebarFilters.length);
