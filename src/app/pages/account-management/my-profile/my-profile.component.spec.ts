@@ -41,6 +41,7 @@ describe('MyProfileComponent', () => {
                     MockChangePasswordComponent,
                     MockBillingComponent,
                     MockBillingHistoryComponent,
+                    MockRoutingComponent,
                 ],
                 imports: [
                     RouterTestingModule.withRoutes([
