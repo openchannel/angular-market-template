@@ -102,7 +102,6 @@ describe('ActivationComponent', () => {
         jest.spyOn(component as any, 'activate');
 
         component.activate(event);
-        expect((component as any).nativeLoginService.activate).toHaveBeenCalled();
         tick();
         expect((component as any).nativeLoginService.activate).toHaveBeenCalled();
         // go to the next page
