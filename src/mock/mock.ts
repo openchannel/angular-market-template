@@ -883,6 +883,21 @@ export class MockPageTitleComponent {
 }
 
 @Component({
+    selector: 'oc-forgot-password',
+    template: '',
+})
+export class MockOcForgotPasswordComponent {
+    @Input() loginUrl: any;
+    @Input() signupUrl: any;
+    @Input() showResultPage: any;
+    @Input() forgotPasswordDoneUrl: any;
+    @Input() companyLogoUrl: any;
+    @Input() process: any;
+    @Input() loginModel: any;
+    @Output() buttonClick: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Component({
     selector: 'app-company-details',
     template: '',
 })
@@ -1012,6 +1027,9 @@ export class MockNativeLoginService {
         return of('1').pipe(observeOn(asyncScheduler));
     }
     sendActivationCode(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+    sendResetCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 }
@@ -1208,7 +1226,9 @@ export class MockButtonActionService {
 }
 
 export class MockLogOutService {
-    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {}
+    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
+       //nothing to do
+    }
 }
 
 // providers
