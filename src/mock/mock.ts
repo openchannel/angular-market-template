@@ -611,9 +611,19 @@ export class MockToastrService {
 
 export class MockAuthHolderService {
     static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
+    readonly ACCESS_TOKEN_KEY = 'accessToken';
+    readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
     hasAnyPermission(): boolean {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
+    }
+
+    persist(): void {
+        window.localStorage.setItem(this.ACCESS_TOKEN_KEY, 'access');
+        window.localStorage.setItem(this.REFRESH_TOKEN_KEY, 'refresh');
+    }
+    refreshToken(): string {
+        return this.REFRESH_TOKEN_KEY;
     }
 }
 
@@ -1009,6 +1019,9 @@ export class MockResendActivation {
 
 export class MockNativeLoginService {
     signup(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+    changePassword(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
     sendActivationCode(): Observable<any> {
