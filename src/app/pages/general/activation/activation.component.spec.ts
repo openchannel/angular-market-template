@@ -16,11 +16,14 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { NativeLoginService } from '@openchannel/angular-common-services';
 import { throwError } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 describe('ActivationComponent', () => {
     let component: ActivationComponent;
     let fixture: ComponentFixture<ActivationComponent>;
     let router: Router;
+
+    const getActivationDE = () => fixture.debugElement.query(By.directive(MockOcActivationComponent));
 
     beforeEach(
         waitForAsync(() => {
@@ -41,12 +44,15 @@ describe('ActivationComponent', () => {
                 ],
             }).compileComponents();
             router = TestBed.inject(Router);
+            router.navigate(['/'], { queryParams: { token: '213123123' } });
         }),
     );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ActivationComponent);
+
         component = fixture.componentInstance;
+
         fixture.detectChanges();
     });
 
@@ -70,13 +76,48 @@ describe('ActivationComponent', () => {
         expect(activateElement).toBeTruthy();
     });
 
+    it('pass all necessary variables to the app-activation', () => {
+        component.activationModel = {
+            password: '221122',
+
+            email: 'test@test.com',
+
+            code: '2211321',
+        };
+
+        component.inProcess = true;
+
+        fixture.detectChanges();
+
+        const activationInstance = getActivationDE().componentInstance;
+
+        expect(activationInstance.activationModel).toEqual(component.activationModel);
+        expect(activationInstance.process).toBeTruthy();
+    });
+
+    it('check set this.activationModel.code from route parameter ', fakeAsync(() => {
+        expect(component.activationModel.code).toEqual((component as any).route.queryParams.value.token);
+    }));
+
+    it('check button click trigger function event', fakeAsync(() => {
+        const path = router.url;
+        const activationInstance = getActivationDE().componentInstance;
+        jest.spyOn(component, 'activate');
+        activationInstance.buttonClick.emit(false);
+
+        tick();
+        expect(component.activate).toHaveBeenCalled();
+        expect(router.url).toBe(path);
+    }));
+
     it('should dont navigate to login page and dont show success message if token is broken and nativeLoginService doesnt work ', fakeAsync(() => {
         const event = true;
         component.inProcess = false;
+        const oldPath = router.url;
+
         (component as any).nativeLoginService.activate = () => throwError('Error');
         jest.spyOn((component as any).toastr, 'success');
         jest.spyOn((component as any).nativeLoginService, 'activate');
-        jest.spyOn(component as any, 'activate');
 
         component.activate(event);
         tick();
@@ -84,7 +125,7 @@ describe('ActivationComponent', () => {
 
         expect((component as any).toastr.success).not.toHaveBeenCalled();
         // stay on the activate  page
-        expect(router.url).toBe('/');
+        expect(router.url).toBe(oldPath);
 
         expect(component.inProcess).toBeFalsy();
     }));
@@ -95,7 +136,6 @@ describe('ActivationComponent', () => {
 
         jest.spyOn((component as any).toastr, 'success');
         jest.spyOn((component as any).nativeLoginService, 'activate');
-        jest.spyOn(component as any, 'activate');
 
         component.activate(event);
         tick();
