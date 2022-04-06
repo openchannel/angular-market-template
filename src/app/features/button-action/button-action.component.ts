@@ -119,13 +119,10 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                                         new HttpHeaders({ 'x-handle-error': '429' }),
                                     ),
                                     err => {
-                                        switch (err.status) {
-                                            case 429:
-                                                this.toasterService.error(formAction.showToaster.tooManyAttemptsMessage);
-                                                break;
-                                            default:
-                                                this.toasterService.error(formAction.showToaster.errorMessage);
-                                                break;
+                                        if (err.status === 429) {
+                                            this.toasterService.error(formAction.showToaster.tooManyAttemptsMessage);
+                                        } else {
+                                            this.toasterService.error(formAction.showToaster.errorMessage);
                                         }
 
                                         return throwError(err);
@@ -253,7 +250,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             modalRef.componentInstance.formJsonData = {
                 fields: formFields,
             };
-            modalRef.result.then(callback, () => {});
+            modalRef.result.then(callback);
         }
     }
 
@@ -286,7 +283,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                         }),
                         takeUntil(this.$destroy),
                     )
-                    .subscribe(() => {});
+                    .subscribe();
             }
         });
     }
