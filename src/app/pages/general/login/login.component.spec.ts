@@ -10,17 +10,13 @@ import {
     MockLoginRequest,
     MockNativeLoginService,
     MockOAuthService,
-    MockOcLoginComponent, MockRoutingComponent,
+    MockOcLoginComponent,
+    MockRoutingComponent,
     MockToastrService,
 } from '../../../../mock/mock';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import {
-    AuthenticationService,
-    AuthHolderService,
-    NativeLoginService,
-    SiteAuthConfig,
-} from '@openchannel/angular-common-services';
+import { AuthenticationService, AuthHolderService, NativeLoginService, SiteAuthConfig } from '@openchannel/angular-common-services';
 import { Location } from '@angular/common';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ToastrService } from 'ngx-toastr';
@@ -45,9 +41,7 @@ describe('LoginComponent', () => {
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [LoginComponent, MockOcLoginComponent],
-                imports: [RouterTestingModule.withRoutes([
-                    { path: '', component: MockRoutingComponent },
-                ])],
+                imports: [RouterTestingModule.withRoutes([{ path: '', component: MockRoutingComponent }])],
                 providers: [
                     { provide: LoadingBarService, useClass: MockLoadingBarService },
                     { provide: AuthHolderService, useClass: MockAuthHolderService },
@@ -431,6 +425,7 @@ describe('LoginComponent', () => {
         (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(true);
 
         // Test
+        // tslint:disable-next-line:no-lifecycle-call
         component.ngOnInit();
         tick();
         expect(location.path()).toBe('/');
@@ -446,22 +441,128 @@ describe('LoginComponent', () => {
         const mockProcessLogin = jest.spyOn(component as any, 'processLoginResponse');
 
         // Test
+        // tslint:disable-next-line:no-lifecycle-call
         component.ngOnInit();
         expect(mockProcessLogin).toHaveBeenCalled();
     }));
 
-    it('should call setupLoginFlowResponseProcess() if the user is not logged in (ngOnInit())', () => {
+    it('should call setupLoginFlowResponseProcess() if the user is not logged in and no saml jwt tokens (ngOnInit())', () => {
+        // Test setup
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(false);
+        (component as any).getSamlJwtTokens = jest.fn().mockReturnValue(null);
+        const mockSetupLoginFlow = jest.spyOn(component as any, 'setupLoginFlowResponseProcess');
+
+        // Test
+        // tslint:disable-next-line:no-lifecycle-call
+        component.ngOnInit();
+        expect(mockSetupLoginFlow).toHaveBeenCalled();
     });
-    it('should call set isSSO to false if openIdAuthService.getAuthConfig() fails (ngOnInit())', () => {
+
+    it('should set isSSO to false if openIdAuthService.getAuthConfig() fails (ngOnInit())', () => {
+        // Test setup
+        component.isSsoLogin = true;
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(false);
+        (component as any).getSamlJwtTokens = jest.fn().mockReturnValue(null);
+        (component as any).openIdAuthService.getAuthConfig = jest.fn().mockReturnValue(throwError('Error'));
+
+        // Test
+        // tslint:disable-next-line:no-lifecycle-call
+        component.ngOnInit();
+        expect(component.isSsoLogin).toBeFalsy();
     });
+
     it('should call processSamlLogin() if authConfigType is SAML_20 (ngOnInit())', () => {
+        // Test setup
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(false);
+        (component as any).getSamlJwtTokens = jest.fn().mockReturnValue(null);
+        (component as any).openIdAuthService.getAuthConfig = jest.fn().mockReturnValue(of({ type: 'SAML_20' }));
+        (component as any).processSamlLogin = jest.fn();
+
+        // Test
+        // tslint:disable-next-line:no-lifecycle-call
+        component.ngOnInit();
+        expect((component as any).processSamlLogin).toHaveBeenCalled();
     });
-    it('should call openIdAuthService.verifyCode() if code exists, isClientAccessTypeConfidential() and checkState() return true (ngOnInit())', () => {
-    });
-    it('should call processLoginResponse() when openIdAuthService.verifyCode() emits (ngOnInit())', () => {
-    });
-    it('should call oauthService.logOut() when openIdAuthService.verifyCode() errors (ngOnInit())', () => {
-    });
-    it('should call configureOAuthService() and oauthService.loadDiscoveryDocumentAndLogin() if code does not exist (ngOnInit())', () => {
-    });
+
+    it('should call openIdAuthService.verifyCode() if code exists, isClientAccessTypeConfidential() and checkState() return true (ngOnInit())', fakeAsync(() => {
+        // Test setup
+        const mockVerifyCode = jest.spyOn((component as any).openIdAuthService, 'verifyCode');
+
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(false);
+        (component as any).getSamlJwtTokens = jest.fn().mockReturnValue(null);
+        (component as any).checkState = jest.fn().mockReturnValue(true);
+        (component as any).isClientAccessTypeConfidential = jest.fn().mockReturnValue(true);
+        (component as any).openIdAuthService.getAuthConfig = jest.fn().mockReturnValue(of({ type: 'SOME_TYPE' }));
+
+        (component as any).router.navigate([], { queryParams: { code: 'code' } });
+        tick();
+
+        // Test
+        // tslint:disable-next-line:no-lifecycle-call
+        component.ngOnInit();
+        expect(mockVerifyCode).toHaveBeenCalled();
+    }));
+
+    it('should call processLoginResponse() when openIdAuthService.verifyCode() emits (ngOnInit())', fakeAsync(() => {
+        // Test setup
+        const mockProcessLoginResponse = jest.spyOn(component as any, 'processLoginResponse');
+
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(false);
+        (component as any).getSamlJwtTokens = jest.fn().mockReturnValue(null);
+        (component as any).checkState = jest.fn().mockReturnValue(true);
+        (component as any).isClientAccessTypeConfidential = jest.fn().mockReturnValue(true);
+        (component as any).openIdAuthService.getAuthConfig = jest.fn().mockReturnValue(of({ type: 'SOME_TYPE' }));
+
+        (component as any).router.navigate([], { queryParams: { code: 'code' } });
+        tick();
+
+        // Test
+        // tslint:disable-next-line:no-lifecycle-call
+        component.ngOnInit();
+        tick();
+        expect(mockProcessLoginResponse).toHaveBeenCalled();
+    }));
+
+    it('should call oauthService.logOut() when openIdAuthService.verifyCode() errors (ngOnInit())', fakeAsync(() => {
+        // Test setup
+        const mockOAuthLogout = jest.spyOn((component as any).oauthService, 'logOut');
+
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(false);
+        (component as any).getSamlJwtTokens = jest.fn().mockReturnValue(null);
+        (component as any).checkState = jest.fn().mockReturnValue(true);
+        (component as any).isClientAccessTypeConfidential = jest.fn().mockReturnValue(true);
+        (component as any).openIdAuthService.getAuthConfig = jest.fn().mockReturnValue(of({ type: 'SOME_TYPE' }));
+        (component as any).openIdAuthService.verifyCode = jest.fn().mockReturnValue(throwError('Error'));
+
+        (component as any).router.navigate([], { queryParams: { code: 'code' } });
+        tick();
+
+        // Test
+        // tslint:disable-next-line:no-lifecycle-call
+        component.ngOnInit();
+        tick();
+        expect(mockOAuthLogout).toHaveBeenCalled();
+    }));
+
+    it('should call configureOAuthService() and oauthService.loadDiscoveryDocumentAndLogin() if code does not exist (ngOnInit())', fakeAsync(() => {
+        // Test setup
+        const mockConfigureAuthService = jest.spyOn(component as any, 'configureOAuthService');
+        const mockLoadDocument = jest.spyOn((component as any).oauthService, 'loadDiscoveryDocumentAndLogin');
+
+        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(false);
+        (component as any).getSamlJwtTokens = jest.fn().mockReturnValue(null);
+        (component as any).checkState = jest.fn().mockReturnValue(true);
+        (component as any).isClientAccessTypeConfidential = jest.fn().mockReturnValue(true);
+        (component as any).openIdAuthService.getAuthConfig = jest.fn().mockReturnValue(of({ type: 'SOME_TYPE' }));
+
+        (component as any).router.navigate([], { queryParams: { code: null } });
+        tick();
+
+        // Test
+        // tslint:disable-next-line:no-lifecycle-call
+        component.ngOnInit();
+        tick();
+        expect(mockConfigureAuthService).toHaveBeenCalled();
+        expect(mockLoadDocument).toHaveBeenCalled();
+    }));
 });
