@@ -21,7 +21,7 @@ describe('ResendActivationComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [ResendActivationComponent, MockResendActivation],
+            declarations: [ResendActivationComponent, MockResendActivation, MockRoutingComponent],
             imports: [
                 RouterTestingModule.withRoutes([
                     { path: 'login', component: MockRoutingComponent },
