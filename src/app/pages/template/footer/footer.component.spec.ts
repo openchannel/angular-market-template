@@ -32,8 +32,19 @@ describe('FooterComponent', () => {
 
     it('should set correct cmsData in initCMSData', fakeAsync(() => {
         component.cmsData = {
-            logoImageURL: '',
-            columnsDFA: [],
+            logoImageURL: 'logo.png',
+            columnsDFA: [
+                {
+                    label: 'label',
+                    location: 'location',
+                    items: [
+                        {
+                            label: 'label',
+                            location: 'location',
+                        },
+                    ],
+                },
+            ],
         };
 
         component.initCMSData();
