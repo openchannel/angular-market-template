@@ -5,6 +5,7 @@ import { MockCmsContentService, MockSocialLinks } from '../../../../mock/mock';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
+import { of } from 'rxjs';
 
 describe('FooterComponent', () => {
     let component: FooterComponent;
@@ -30,30 +31,11 @@ describe('FooterComponent', () => {
     });
 
     it('should set correct cmsData in initCMSData', fakeAsync(() => {
-        const contentPath = {
-            logoImageURL: 'default-footer.logo',
-            columnsDFA: 'default-footer.menu.items',
-        };
-        component.cmsData = {
-            logoImageURL: 'logo.png',
-            columnsDFA: [
-                {
-                    label: 'label',
-                    location: 'location',
-                    items: [
-                        {
-                            label: 'label',
-                            location: 'location',
-                        },
-                    ],
-                },
-            ],
-        };
-
-        (component as any).cmsService.getContentByPaths(contentPath);
+        jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(of({}));
+        fixture.detectChanges();
 
         tick();
-        fixture.detectChanges();
+
         expect(component.cmsData.logoImageURL).toBe(MockCmsContentService.CMS_DATA['default-footer'].logo);
         expect(component.cmsData.columnsDFA).toStrictEqual(MockCmsContentService.CMS_DATA['default-footer'].menu.items);
     }));
