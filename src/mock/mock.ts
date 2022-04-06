@@ -80,11 +80,15 @@ export class MockNgxLoadingBarComponent {
 export class MockNotificationComponent {}
 
 export class MockPrerenderRequestsWatcherService {
-    setPrerenderStatus(ready: boolean): void {}
-
-    create404MetaTag(): void {}
-
-    remove404MetaTag(): void {}
+    setPrerenderStatus(ready: boolean): void {
+        // do nothing.
+    }
+    create404MetaTag(): void {
+        // do nothing.
+    }
+    remove404MetaTag(): void {
+        // do nothing.
+    }
 }
 
 @Component({
@@ -266,11 +270,15 @@ export class OcConfirmationModalComponent {
 }
 
 export class MockLoadingBarState {
-    complete(): void {}
-
-    start(): void {}
-
-    stop(): void {}
+    complete(): void {
+        // do nothing.
+    }
+    start(): void {
+        // do nothing.
+    }
+    stop(): void {
+        // do nothing.
+    }
 }
 
 export class MockLoadingBarService {
@@ -502,11 +510,15 @@ export class MockSiteConfigService {
         return of(MockSiteConfigService.PAGE_CONFIG);
     }
 
-    initSiteConfiguration(config: any): void {}
+    initSiteConfiguration(config: any): void {
+        // do nothing.
+    }
 }
 
 export class MockTitleService {
-    setSpecialTitle(): void {}
+    setSpecialTitle(): void {
+        // do nothing.
+    }
 }
 
 export class MockAuthenticationService {
@@ -607,9 +619,12 @@ export class MockNgbModal {
 }
 
 export class MockToastrService {
-    success(): void {}
-
-    error(): void {}
+    success(): void {
+        // do nothing.
+    }
+    error(): void {
+        // do nothing.
+    }
 }
 
 export class MockAuthHolderService {
@@ -970,7 +985,6 @@ export class MockTypeMapperUtils {
         return {};
     }
 }
-
 @Component({
     selector: 'oc-signup-custom',
     template: '',
@@ -998,8 +1012,24 @@ export class MockSignupCustom {
     @Output() readonly resultUserData = new EventEmitter<any>();
 }
 
+@Component({
+    selector: 'oc-resend-activation',
+    template: '',
+})
+export class MockResendActivation {
+    @Input() activationModel: any;
+    @Input() loginUrl: string;
+    @Input() signupUrl: string;
+    @Input() companyLogoUrl: string;
+    @Input() process: boolean = false;
+    @Output() readonly buttonClick = new EventEmitter<any>();
+}
+
 export class MockNativeLoginService {
     signup(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+    sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 
@@ -1205,24 +1235,21 @@ export class MockLogOutService {
 
 // providers
 export function mockUserServiceProvider(): Provider {
-    return {provide: UsersService, useClass: MockUsersService};
+    return { provide: UsersService, useClass: MockUsersService };
 }
 
 export function mockInviteUserServiceProvider(userInvites?: InviteUserModel[]): Provider {
-    return {provide: InviteUserService, useFactory: () => new MockInviteUserService(userInvites)};
+    return { provide: InviteUserService, useFactory: () => new MockInviteUserService(userInvites) };
 }
 
 export function mockInviteUserAccountServiceProvider(currentUserAccount: UserAccount, otherUserAccounts: UserAccount[]): Provider {
-    return {
-        provide: UserAccountService,
-        useFactory: () => new MockUserAccountService(currentUserAccount, otherUserAccounts)
-    };
+    return { provide: UserAccountService, useFactory: () => new MockUserAccountService(currentUserAccount, otherUserAccounts) };
 }
 
 export function mockUserRoleServiceProvider(): Provider {
-    return {provide: UserRoleService, useClass: MockUserRoleService};
+    return { provide: UserRoleService, useClass: MockUserRoleService };
 }
 
 export function mockToastrService(): Provider {
-    return {provide: ToastrService, useClass: MockToastrService};
+    return { provide: ToastrService, useClass: MockToastrService };
 }
