@@ -120,13 +120,10 @@ export class MyCompanyComponent implements OnInit, OnDestroy {
 
             modalRef.componentInstance.modalData = modalData;
 
-            modalRef.result.then(
-                () => {
-                    this.toaster.success('Invitation sent');
-                    this.appManagement.getAllUsers(true);
-                },
-                () => {},
-            );
+            modalRef.result.then(() => {
+                this.toaster.success('Invitation sent');
+                this.appManagement.getAllUsers(true);
+            });
         });
     }
 

@@ -7,7 +7,8 @@ import {
     TitleService,
     FrontendService,
     StatisticService,
-    SiteContentService, AuthHolderService,
+    SiteContentService,
+    AuthHolderService,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
@@ -22,7 +23,7 @@ import {
     OverallRatingSummary,
     Review,
     ReviewListOptionType,
-    Filter
+    Filter,
 } from '@openchannel/angular-common-components';
 import { HttpHeaders } from '@angular/common/http';
 import { Location } from '@angular/common';
@@ -101,14 +102,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
         this.getAppData();
 
-        this.frontendService
-            .getSorts()
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(page => {
-                this.reviewsSorts = page.list[0]
-                    ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
-                    : null;
-            });
+        this.initReviewSortQueries();
 
         this.getRecommendedApps();
 
@@ -120,23 +114,24 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     }
 
     initAllowReviewsWithoutOwnershipProperty(): void {
-        this.siteContentService.getSecuritySettings()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(settings => {
-            // The user must be logged
-            this.allowReviewsWithoutOwnership = this.authHolderService.isLoggedInUser() && settings?.allowReviewsWithoutOwnership;
-        })
+        this.siteContentService
+            .getSecuritySettings()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(settings => {
+                // The user must be logged
+                this.allowReviewsWithoutOwnership = this.authHolderService.isLoggedInUser() && settings?.allowReviewsWithoutOwnership;
+            });
     }
 
     initReviewSortQueries(): void {
         this.frontendService
-        .getSorts()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(page => {
-            this.reviewsSorts = page.list[0]
-                ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
-                : null;
-        });
+            .getSorts()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(page => {
+                this.reviewsSorts = page.list[0]
+                    ? page.list[0].values.map(value => new DropdownModel<string>(value.label, value.sort))
+                    : null;
+            });
     }
 
     initCurrentUserId(): void {
@@ -228,7 +223,9 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 mergeMap(() => this.statisticService.recordVisitToApp(this.app.appId, new HttpHeaders({ 'x-handle-error': '400' }))),
             )
             .subscribe(
-                () => {},
+                () => {
+                    // do nothing.
+                },
                 () => this.loader.complete(),
             );
     }
