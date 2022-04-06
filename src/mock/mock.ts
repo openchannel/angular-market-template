@@ -17,7 +17,8 @@ import {
     ErrorMessageFormId,
     Filter,
     ModalInviteUserModel,
-    ModalUpdateUserModel, SocialLink,
+    ModalUpdateUserModel,
+    SocialLink,
     SortField,
     UserGridSortOrder,
     UserSortChosen,
@@ -1214,7 +1215,9 @@ export class MockButtonActionService {
 }
 
 export class MockLogOutService {
-    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {}
+    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
+        // do nothing
+    }
 }
 
 // providers

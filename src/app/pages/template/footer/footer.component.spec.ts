@@ -31,29 +31,29 @@ describe('FooterComponent', () => {
     });
 
     it('should set correct cmsData in initCMSData', fakeAsync(() => {
-        jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(
-            of({
-                logoImageURL: 'assets/img/logo-company.png',
-                columnsDFA: [
-                    {
-                        label: '',
-                        location: '',
-                        items: [
-                            {
-                                label: '',
-                                location: '',
-                            },
-                        ],
-                    },
-                ],
-            }),
-        );
+        const mockedResult = {
+            logoImageURL: 'assets/img/logo-company.png',
+            columnsDFA: [
+                {
+                    label: '',
+                    location: '',
+                    items: [
+                        {
+                            label: '',
+                            location: '',
+                        },
+                    ],
+                },
+            ],
+        };
+
+        jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
         fixture.detectChanges();
 
         tick();
 
-        expect(component.cmsData.logoImageURL).toBe(MockCmsContentService.CMS_DATA['default-footer'].logo);
-        expect(component.cmsData.columnsDFA).toStrictEqual(MockCmsContentService.CMS_DATA['default-footer'].menu.items);
+        expect(component.cmsData.logoImageURL).toBe(mockedResult.logoImageURL);
+        expect(component.cmsData.columnsDFA).toStrictEqual(mockedResult.columnsDFA);
     }));
 
     it('should pass all necessary variables to the oc-social-links', () => {
