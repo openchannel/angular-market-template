@@ -1029,15 +1029,12 @@ export class MockNativeLoginService {
     signup(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
+
     sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 
     signIn(...args: any): Observable<any> {
-        return of({});
-    }
-
-    sendActivationCode(...args: any): Observable<any> {
         return of({});
     }
 }
