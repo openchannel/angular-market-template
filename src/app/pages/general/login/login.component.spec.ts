@@ -22,6 +22,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { ToastrService } from 'ngx-toastr';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 import { of, throwError } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 jest.doMock('@openchannel/angular-common-services', () => ({
     ...jest.requireActual('@openchannel/angular-common-services'),
@@ -40,7 +41,7 @@ describe('LoginComponent', () => {
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
-                declarations: [LoginComponent, MockOcLoginComponent],
+                declarations: [LoginComponent, MockOcLoginComponent, MockRoutingComponent],
                 imports: [RouterTestingModule.withRoutes([{ path: '', component: MockRoutingComponent }])],
                 providers: [
                     { provide: LoadingBarService, useClass: MockLoadingBarService },
@@ -72,7 +73,7 @@ describe('LoginComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should complete destroy$ and loader in ngOnDestroy hook', () => {
+    it('should complete destroy$ and loader when component destroys', () => {
         // Test setup
         jest.spyOn((component as any).destroy$, 'complete');
         jest.spyOn((component as any).loader, 'complete');
@@ -574,4 +575,48 @@ describe('LoginComponent', () => {
         expect(mockConfigureAuthService).toHaveBeenCalled();
         expect(mockLoadDocument).toHaveBeenCalled();
     }));
+
+    it('should set hidden to the container if isLoading=true (template)', () => {
+        // Test setup
+        component.isLoading = true;
+        fixture.detectChanges();
+
+        // Test
+        const container = fixture.debugElement.query(By.css('.bg-container'));
+        expect(container.nativeElement.hidden).toBeTruthy();
+    });
+
+    it('should correctly respond to the oc-login events (template)', () => {
+        // Test setup
+        component.login = jest.fn();
+        component.sendActivationEmail = jest.fn();
+        const ocLogin = fixture.debugElement.query(By.directive(MockOcLoginComponent));
+
+        // Test
+        ocLogin.triggerEventHandler('submit', true);
+        expect(component.login).toHaveBeenCalled();
+
+        // Test
+        ocLogin.triggerEventHandler('sendActivationLink', true);
+        expect(component.sendActivationEmail).toHaveBeenCalled();
+    });
+
+    it('should pass correct data to the oc-login (template)', () => {
+        // Test setup
+        component.signIn = {
+            email: 'email',
+            password: 'password',
+            isChecked: false,
+        };
+        component.inProcess = true;
+        component.isSsoLogin = true;
+        fixture.detectChanges();
+
+        const ocLogin = fixture.debugElement.query(By.directive(MockOcLoginComponent));
+
+        // Test
+        expect(ocLogin.componentInstance.loginModel).toEqual(component.signIn);
+        expect(ocLogin.componentInstance.process).toBe(component.inProcess);
+        expect(ocLogin.nativeElement.hidden).toEqual(component.isSsoLogin);
+    });
 });
