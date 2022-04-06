@@ -18,7 +18,7 @@ describe('ChangePasswordComponent', () => {
     let component: ChangePasswordComponent;
     let fixture: ComponentFixture<ChangePasswordComponent>;
 
-    const fg = new FormGroup({
+    const formGroup = new FormGroup({
         password: new FormControl(),
     });
 
@@ -38,7 +38,7 @@ describe('ChangePasswordComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ChangePasswordComponent);
         component = fixture.componentInstance;
-        component.setPasswordFormGroup(fg);
+        component.setPasswordFormGroup(formGroup);
         component.passwordFormGroup.controls.password.setValue('testPassword123');
         fixture.detectChanges();
 
@@ -53,7 +53,6 @@ describe('ChangePasswordComponent', () => {
         jest.spyOn(component, 'changePassword');
         component.passwordFormGroup.controls.password.setValue('');
         component.changePassword();
-        expect(component.changePassword).toHaveBeenCalled();
         expect(component.passwordFormGroup.valid).toBeFalsy();
         expect(component.isSaveInProcess).toBeFalsy();
     });
