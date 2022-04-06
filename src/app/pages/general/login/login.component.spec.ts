@@ -73,29 +73,34 @@ describe('LoginComponent', () => {
     });
 
     it('should complete destroy$ and loader in ngOnDestroy hook', () => {
+        // Test setup
         jest.spyOn((component as any).destroy$, 'complete');
         jest.spyOn((component as any).loader, 'complete');
 
-        // tslint:disable-next-line:no-lifecycle-call
-        component.ngOnDestroy();
-
+        // Test
+        fixture.destroy();
         expect((component as any).destroy$.complete).toHaveBeenCalled();
         expect((component as any).loader.complete).toHaveBeenCalled();
     });
 
     it('should call nativeLoginService.signIn() method if method was invoked with event=true (login())', () => {
+        // Test setup
         const signInMock = jest.spyOn((component as any).nativeLoginService, 'signIn');
 
+        // Test
         component.login(true);
         expect(signInMock).toHaveBeenCalled();
 
+        // Reset mocks
         signInMock.mockClear();
 
+        // Test
         component.login(false);
         expect(signInMock).not.toHaveBeenCalled();
     });
 
     it('should call nativeLoginService.signIn() method with signIn component"s model (login())', () => {
+        // Test setup
         const mockSignInModel = {
             email: 'test@gmail.com',
             password: 'qwerty123',
@@ -104,11 +109,13 @@ describe('LoginComponent', () => {
         const signInMock = jest.spyOn((component as any).nativeLoginService, 'signIn');
         component.signIn = mockSignInModel;
 
+        // Test
         component.login(true);
         expect(signInMock).toHaveBeenCalledWith(mockSignInModel);
     });
 
     it('should call processLoginResponse() with correct arguments if nativeLoginService.signIn() emits (login())', fakeAsync(() => {
+        // Test setup
         const mockLoginResponse = {
             refreshToken: '1',
             accessToken: '2',
@@ -116,44 +123,48 @@ describe('LoginComponent', () => {
         (component as any).nativeLoginService.signIn = jest.fn().mockReturnValue(of(mockLoginResponse));
         jest.spyOn(component as any, 'processLoginResponse');
 
+        // Test
         component.login(true);
         tick();
-
         expect((component as any).processLoginResponse).toHaveBeenCalledWith(mockLoginResponse, (component as any).returnUrl);
     }));
 
     it('should set inProcess=false if nativeLoginService.signIn() completes (login())', fakeAsync(() => {
+        // Test setup
         component.inProcess = true;
 
+        // Test
         component.login(true);
         tick();
-
         expect(component.inProcess).toBeFalsy();
     }));
 
     it('should call nativeLoginService.sendActivationCode() with correct arguments (sendActivationEmail())', () => {
+        // Test setup
         const email = 'test@gmail.com';
         const mockSendActivationCode = jest.spyOn((component as any).nativeLoginService, 'sendActivationCode');
 
+        // Test
         component.sendActivationEmail(email);
-
         expect(mockSendActivationCode).toHaveBeenCalledWith(email);
     });
 
     it('should show toaster when nativeLoginService.sendActivationCode() emits (sendActivationEmail())', fakeAsync(() => {
+        // Test setup
         const mockToasterSuccess = jest.spyOn((component as any).toastService, 'success');
 
+        // Test
         component.sendActivationEmail('');
         tick();
-
         expect(mockToasterSuccess).toHaveBeenCalled();
     }));
 
     it('should subscribe to the oAuth events (setupLoginFlowResponseProcess())', () => {
+        // Test setup
         const mockAuthEventsSubscribe = jest.spyOn((component as any).oauthService.events, 'subscribe');
 
+        // Test
         (component as any).setupLoginFlowResponseProcess();
-
         expect(mockAuthEventsSubscribe).toHaveBeenCalled();
     });
 
@@ -196,7 +207,7 @@ describe('LoginComponent', () => {
 
         (component as any).setupLoginFlowResponseProcess();
 
-        // Test that processLoginResponse is called with login response
+        // Test
         (component as any).oauthService.events.next({ type: 'token_received' });
         tick();
         expect((component as any).processLoginResponse).toHaveBeenCalledWith(mockLoginResp, expect.anything());
@@ -214,7 +225,7 @@ describe('LoginComponent', () => {
 
         (component as any).setupLoginFlowResponseProcess();
 
-        // Test that decodeURIComponent is called with authState if authConfig.grantType=authorization_code
+        // Test
         (component as any).oauthService.events.next({ type: 'token_received' });
         tick();
         expect((component as any).processLoginResponse).toHaveBeenCalledWith(expect.anything(), mockAuthStateDecoded);
@@ -227,7 +238,7 @@ describe('LoginComponent', () => {
 
         (component as any).setupLoginFlowResponseProcess();
 
-        // Test that oauthService.logOut is called on login error
+        // Test
         (component as any).oauthService.events.next({ type: 'token_received' });
         tick();
         expect(mockOauthLogout).toHaveBeenCalledWith(true);
@@ -243,7 +254,7 @@ describe('LoginComponent', () => {
         jest.spyOn(global, 'decodeURIComponent').mockReturnValue(urlPartDecoded);
         (component as any).returnUrl = '';
 
-        // Test that return url is set after checkState() execution
+        // Test
         (component as any).checkState();
         expect((component as any).returnUrl).toBe(urlPartDecoded);
     }));
@@ -253,7 +264,7 @@ describe('LoginComponent', () => {
         (component as any).router.navigate([], { queryParams: { state: 'testState' } });
         tick();
 
-        // Test that null is set to the returnUrl
+        // Test
         (component as any).checkState();
         expect((component as any).returnUrl).toBeNull();
     }));
@@ -266,7 +277,7 @@ describe('LoginComponent', () => {
         tick();
         window.sessionStorage.setItem('nonce', state);
 
-        // Test that checkState returns true if state === nonce from the sessionStorage
+        // Test
         expect((component as any).checkState()).toBe(true);
     }));
 
@@ -276,7 +287,7 @@ describe('LoginComponent', () => {
         (component as any).authConfig = { grantType: 'implicit' };
         (component as any).isClientAccessTypeConfidential = jest.fn();
 
-        // Test that oauthService.configure() was called
+        // Test
         (component as any).configureOAuthService();
         expect(mockOAuthConfigure).toHaveBeenCalled();
     });
@@ -306,7 +317,7 @@ describe('LoginComponent', () => {
         (component as any).authConfig = { grantType: 'implicit' };
         (component as any).isClientAccessTypeConfidential = jest.fn().mockReturnValue(mockIsClientAccessConfident);
 
-        // Test that disablePKCE is a result of the isClientAccessTypeConfidential() method
+        // Test
         (component as any).configureOAuthService();
         expect(mockOAuthConfigure).toHaveBeenCalledWith(expect.objectContaining({ disablePKCE: mockIsClientAccessConfident }));
     });
@@ -417,8 +428,6 @@ describe('LoginComponent', () => {
         tick();
         expect(component.cmsData.loginImageURL).not.toBeNull();
     }));
-
-    // Ng on init logic tests
 
     it('should redirect to the route page if the user is logged in (ngOnInit())', fakeAsync(() => {
         // Test setup
