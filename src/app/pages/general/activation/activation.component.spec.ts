@@ -79,9 +79,7 @@ describe('ActivationComponent', () => {
     it('pass all necessary variables to the app-activation', () => {
         component.activationModel = {
             password: '221122',
-
             email: 'test@test.com',
-
             code: '2211321',
         };
 
@@ -92,10 +90,10 @@ describe('ActivationComponent', () => {
         const activationInstance = getActivationDE().componentInstance;
 
         expect(activationInstance.activationModel).toEqual(component.activationModel);
-        expect(activationInstance.process).toBeTruthy();
+        expect(activationInstance.process).toBe(component.inProcess);
     });
 
-    it('check set this.activationModel.code from route parameter ', fakeAsync(() => {
+    it('check set this.activationModel.code from route parameter', fakeAsync(() => {
         expect(component.activationModel.code).toEqual((component as any).route.queryParams.value.token);
     }));
 
