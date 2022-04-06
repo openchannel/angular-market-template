@@ -31,7 +31,23 @@ describe('FooterComponent', () => {
     });
 
     it('should set correct cmsData in initCMSData', fakeAsync(() => {
-        jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(of({}));
+        jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(
+            of({
+                logoImageURL: 'assets/img/logo-company.png',
+                columnsDFA: [
+                    {
+                        label: '',
+                        location: '',
+                        items: [
+                            {
+                                label: '',
+                                location: '',
+                            },
+                        ],
+                    },
+                ],
+            }),
+        );
         fixture.detectChanges();
 
         tick();
