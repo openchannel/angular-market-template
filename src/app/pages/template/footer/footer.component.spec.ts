@@ -21,7 +21,6 @@ describe('FooterComponent', () => {
 
         fixture = TestBed.createComponent(FooterComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
 
         jest.resetAllMocks();
     });
@@ -31,6 +30,10 @@ describe('FooterComponent', () => {
     });
 
     it('should set correct cmsData in initCMSData', fakeAsync(() => {
+        const contentPath = {
+            logoImageURL: 'default-footer.logo',
+            columnsDFA: 'default-footer.menu.items',
+        };
         component.cmsData = {
             logoImageURL: 'logo.png',
             columnsDFA: [
@@ -47,10 +50,10 @@ describe('FooterComponent', () => {
             ],
         };
 
-        component.initCMSData();
+        (component as any).cmsService.getContentByPaths(contentPath);
 
         tick();
-
+        fixture.detectChanges();
         expect(component.cmsData.logoImageURL).toBe(MockCmsContentService.CMS_DATA['default-footer'].logo);
         expect(component.cmsData.columnsDFA).toStrictEqual(MockCmsContentService.CMS_DATA['default-footer'].menu.items);
     }));
