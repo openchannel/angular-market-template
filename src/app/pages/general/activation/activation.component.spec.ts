@@ -24,7 +24,7 @@ describe('ActivationComponent', () => {
     let router: Router;
 
     const getActivationDE = () => fixture.debugElement.query(By.directive(MockOcActivationComponent));
-
+    const tokenValue = 's1123sa1a';
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
@@ -44,7 +44,7 @@ describe('ActivationComponent', () => {
                 ],
             }).compileComponents();
             router = TestBed.inject(Router);
-            router.navigate(['/'], { queryParams: { token: '213123123' } });
+            router.navigate(['/'], { queryParams: { token: tokenValue } });
         }),
     );
 
