@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 describe('FooterComponent', () => {
     let component: FooterComponent;
     let fixture: ComponentFixture<FooterComponent>;
+    let bottomInfo: HTMLElement;
 
     const getSocialLinksDE = () => fixture.debugElement.query(By.directive(MockSocialLinks));
 
@@ -22,6 +23,7 @@ describe('FooterComponent', () => {
 
         fixture = TestBed.createComponent(FooterComponent);
         component = fixture.componentInstance;
+        bottomInfo = fixture.nativeElement.querySelector('.bottom-info');
 
         jest.resetAllMocks();
     });
@@ -46,15 +48,16 @@ describe('FooterComponent', () => {
                 },
             ],
         };
-        const currentYear = new Date().getFullYear();
+
+        // using .toString() because bottomInfo.textContent has string type
+        const currentYear = new Date().getFullYear().toString();
 
         jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
+
         fixture.detectChanges();
-
-        expect(component.currentYear).toEqual(currentYear);
-
         tick();
 
+        expect(bottomInfo.textContent).toContain(currentYear);
         expect(component.cmsData.logoImageURL).toBe(mockedResult.logoImageURL);
         expect(component.cmsData.columnsDFA).toStrictEqual(mockedResult.columnsDFA);
     }));
