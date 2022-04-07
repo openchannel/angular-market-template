@@ -99,6 +99,7 @@ export class MockButtonComponent {
     @Input() style: string;
     @Input() process: boolean;
     @Input() customTemplate: TemplateRef<any>;
+    @Output() readonly click: EventEmitter<void> = new EventEmitter<void>();
 }
 
 @Component({
@@ -623,7 +624,6 @@ export class MockToastrService {
 
 export class MockAuthHolderService {
     static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
-    readonly ACCESS_TOKEN_KEY = 'accessToken';
     readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
     hasAnyPermission(): boolean {

@@ -9,14 +9,18 @@ import {
     MockNativeLoginService,
     MockToastrService,
 } from '../../../../../mock/mock';
-import { asyncScheduler, throwError } from 'rxjs';
+import { asyncScheduler, of, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup } from '@angular/forms';
 import { observeOn } from 'rxjs/operators';
+import { By } from '@angular/platform-browser';
 
 describe('ChangePasswordComponent', () => {
     let component: ChangePasswordComponent;
     let fixture: ComponentFixture<ChangePasswordComponent>;
+
+    const getOcButtonDE = () => fixture.debugElement.query(By.directive(MockButtonComponent));
+    const getFormDE = () => fixture.debugElement.query(By.directive(MockFormComponent));
 
     const formGroup = new FormGroup({
         password: new FormControl(),
@@ -49,21 +53,60 @@ describe('ChangePasswordComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should pass config to mockFormComponent', () => {
+        component.formPasswordDefinition = {
+            fields: [
+                {
+                    id: 'password',
+                    label: 'Current Password Test',
+                    type: 'password',
+                    attributes: {},
+                },
+                {
+                    id: 'newPassword',
+                    label: 'New Password Test',
+                    type: 'password',
+                    attributes: {
+                        required: true,
+                    },
+                },
+            ],
+        };
+        fixture.detectChanges();
+        const formComponentMock = getFormDE().componentInstance;
+        expect(formComponentMock.formJsonData).toEqual(component.formPasswordDefinition);
+    });
+
+    it('should call emitter for CreatedForm output', () => {
+        jest.spyOn(component, 'setPasswordFormGroup');
+        const formComponentMock = getFormDE().componentInstance;
+        formComponentMock.createdForm.emit(formGroup);
+        component.passwordFormGroup.controls.password.setValue('');
+        expect(component.setPasswordFormGroup).toHaveBeenCalled();
+        expect(component.passwordFormGroup.controls.password.errors).toEqual({ required: true });
+    });
+
     it('should return if isSaveInProcess or passwordFormGroup is invalid', () => {
         jest.spyOn(component, 'changePassword');
         component.passwordFormGroup.controls.password.setValue('');
-        component.changePassword();
+        const ocButtonMock = getOcButtonDE().componentInstance;
+        ocButtonMock.click.emit();
         expect(component.passwordFormGroup.valid).toBeFalsy();
         expect(component.isSaveInProcess).toBeFalsy();
     });
 
     it('should set tokens to localstorage', fakeAsync(() => {
         jest.spyOn((component as any).authHolderService, 'persist');
-        component.changePassword();
+        (component as any).nativeLoginService.changePassword = jest.fn().mockReturnValue(
+            of({
+                refreshToken: 'refreshToken123',
+                accessToken: 'accessToken123',
+            }),
+        );
+        const ocButtonMock = getOcButtonDE().componentInstance;
+        ocButtonMock.click.emit();
         tick();
-        expect((component as any).authHolderService.persist).toHaveBeenCalled();
-        expect(window.localStorage.getItem('accessToken')).toEqual('access');
-        expect(window.localStorage.getItem('refreshToken')).toEqual('refresh');
+        expect((component as any).authHolderService.persist).toHaveBeenCalledWith('accessToken123', 'refreshToken123');
     }));
 
     it('should call changePassword and throw error', fakeAsync(() => {
@@ -71,7 +114,8 @@ describe('ChangePasswordComponent', () => {
         window.localStorage.setItem('accessToken', 'test1');
         window.localStorage.setItem('refreshToken', 'test2');
         (component as any).nativeLoginService.changePassword = () => throwError('Error').pipe(observeOn(asyncScheduler));
-        component.changePassword();
+        const ocButtonMock = getOcButtonDE().componentInstance;
+        ocButtonMock.click.emit();
         tick();
         expect(window.localStorage.getItem('accessToken') === 'access').toBeFalsy();
         expect(window.localStorage.getItem('refreshToken') === 'refresh').toBeFalsy();
@@ -80,7 +124,8 @@ describe('ChangePasswordComponent', () => {
 
     it('should call changePassword and show toaster message', fakeAsync(() => {
         jest.spyOn((component as any).toasterService, 'success');
-        component.changePassword();
+        const ocButtonMock = getOcButtonDE().componentInstance;
+        ocButtonMock.click.emit();
         tick();
         expect((component as any).toasterService.success).toHaveBeenCalled();
     }));
