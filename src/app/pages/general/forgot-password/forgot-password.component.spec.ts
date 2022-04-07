@@ -36,10 +36,6 @@ describe('ForgotPasswordComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should reander', () => {
-        expect(fixture).toBeTruthy();
-    });
-
     it('should complete destroy$ in ngOnDestroy hook', () => {
         jest.spyOn((component as any).destroy$, 'complete');
 
@@ -51,12 +47,11 @@ describe('ForgotPasswordComponent', () => {
     it('check rendered of oc-forgot-password element', () => {
         component.inProcess = false;
 
-        let activateElement = fixture.nativeElement.querySelector('oc-forgot-password');
-
+        const activateElement = fixture.debugElement.query(By.css('.forgot-pass-position'));
         expect(activateElement).toBeTruthy();
     });
 
-    it( 'pass all necessary variables to the forgot-password', fakeAsync(() => {
+    it('pass all necessary variables to the forgot-password', fakeAsync(() => {
         component.signIn = {
             uname:'tes',
             password: 'tes',
@@ -67,28 +62,24 @@ describe('ForgotPasswordComponent', () => {
         fixture.detectChanges();
         tick();
         const getForgotInstance = getForgotPasswordDE().componentInstance;
-        expect(getForgotInstance.loginModel).toEqual(component.signIn );
+        expect(getForgotInstance.loginModel).toEqual(component.signIn);
         expect(getForgotInstance.process).toBe(component.inProcess);
     }));
 
-    it('check call reset-password function by click ', fakeAsync(() => {
+    it('check call reset-password function by click', fakeAsync(() => {
         const activationInstance = getForgotPasswordDE().componentInstance;
         jest.spyOn(component, 'resetPwd');
         activationInstance.buttonClick.emit(true);
-        fixture.detectChanges();
         tick();
-
         expect(component.resetPwd).toBeCalled();
         expect(component.showResultPage).toBeTruthy();
     }));
 
-    it('if bad request to server should drop resets-password and showResultPage be falsy ', fakeAsync(() => {
+    it('if bad request to server should drop resets-password and showResultPage be falsy', fakeAsync(() => {
         (component as any).nativeLoginService.sendResetCode = () => throwError('Error');
         jest.spyOn(component, 'resetPwd');
         component.resetPwd();
         tick();
-
-        expect(component.resetPwd).toBeCalled();
         expect(component.showResultPage).toBeFalsy();
     }));
 
@@ -96,7 +87,6 @@ describe('ForgotPasswordComponent', () => {
         const activationInstance = getForgotPasswordDE().componentInstance;
         jest.spyOn(component, 'resetPwd');
         activationInstance.buttonClick.emit(true);
-        fixture.detectChanges();
         tick();
         expect(component.resetPwd).toBeCalled();
         expect(component.showResultPage).toBeTruthy();
@@ -105,7 +95,6 @@ describe('ForgotPasswordComponent', () => {
         component.inProcess = true;
         component.showResultPage = false;
         activationInstance.buttonClick.emit(true);
-        fixture.detectChanges();
         tick();
         expect(component.resetPwd).toBeCalled();
         expect(component.showResultPage).toBeFalsy();
