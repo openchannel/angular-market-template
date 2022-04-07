@@ -1,5 +1,5 @@
 import { Component, Directive, EventEmitter, Input, Output, Provider, Pipe, PipeTransform, TemplateRef } from '@angular/core';
-import { asyncScheduler, Observable, of } from 'rxjs';
+import { asyncScheduler, Observable, of, Subject } from 'rxjs';
 import {
     Page,
     Permission,
@@ -511,6 +511,18 @@ export class MockAuthenticationService {
     initCsrf(): Observable<any> {
         return of('1');
     }
+
+    getAuthConfig(): Observable<any> {
+        return of({});
+    }
+
+    verifyCode(...args: any): Observable<any> {
+        return of({});
+    }
+
+    login(...args: any): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
 }
 
 @Component({
@@ -618,10 +630,12 @@ export class MockAuthHolderService {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
     }
 
-    persist(): void {
-        window.localStorage.setItem(this.ACCESS_TOKEN_KEY, 'access');
-        window.localStorage.setItem(this.REFRESH_TOKEN_KEY, 'refresh');
+    persist(...args: any): void {}
+
+    isLoggedInUser(...args: any): boolean {
+        return true;
     }
+
     refreshToken(): string {
         return this.REFRESH_TOKEN_KEY;
     }
@@ -1021,11 +1035,17 @@ export class MockNativeLoginService {
     signup(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
+
     changePassword(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
+
     sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
+    }
+
+    signIn(...args: any): Observable<any> {
+        return of({});
     }
 }
 
@@ -1214,6 +1234,60 @@ export class MockButtonActionComponent {
     @Output() readonly updateAppData: EventEmitter<void> = new EventEmitter<void>();
 }
 
+@Component({
+    selector: 'oc-login',
+    template: '',
+})
+export class MockOcLoginComponent {
+    @Input() loginModel: any = {};
+    @Input() loginButtonText: string = 'Log in';
+    @Input() forgotPwdUrl: string;
+    @Input() signupUrl: string;
+    @Input() companyLogoUrl: string = './assets/angular-common-components/logo-company.png';
+    @Input() process: boolean = false;
+    @Input() incorrectEmailErrorCode: string = 'email_is_incorrect';
+    @Input() incorrectEmailErrorCodeTemplate: TemplateRef<any>;
+    @Input() notVerifiedEmailErrorCode: string = 'email_not_verified';
+    @Input() notVerifiedEmailErrorTemplate: TemplateRef<any>;
+    @Input() passwordResetRequiredErrorCode: string = 'password_reset_required';
+    @Input() passwordResetRequiredErrorTemplate: TemplateRef<any>;
+    @Input() headingTag: string = 'h1';
+    @Output() readonly loginModelChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly submit: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() readonly sendActivationLink: EventEmitter<string> = new EventEmitter<string>();
+}
+
+export class MockLoginRequest {
+    idToken: string;
+    accessToken: string;
+
+    constructor(idToken: string, accessToken: string) {
+        this.idToken = idToken;
+        this.accessToken = accessToken;
+    }
+}
+
+export class MockOAuthService {
+    events: Subject<any> = new Subject<any>();
+    state = {};
+
+    logOut(...args: any): void {}
+
+    loadDiscoveryDocumentAndLogin(...args: any): Promise<any> {
+        return Promise.resolve({});
+    }
+
+    configure(...args: any): void {}
+
+    getIdToken(): string {
+        return '';
+    }
+
+    getAccessToken(): string {
+        return '';
+    }
+}
+
 export class MockButtonActionService {
     canBeShow(app: any, buttons: any): any {
         return buttons;
@@ -1223,6 +1297,25 @@ export class MockButtonActionService {
 export class MockLogOutService {
     removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {}
 }
+
+export const createMockedBrowserStorage = () => {
+    let store = {};
+
+    return {
+        getItem(key: string): any {
+            return store[key] || null;
+        },
+        setItem(key: string, value: any): void {
+            store[key] = value.toString();
+        },
+        removeItem(key: string): void {
+            delete store[key];
+        },
+        clear(): void {
+            store = {};
+        },
+    };
+};
 
 // providers
 export function mockUserServiceProvider(): Provider {
