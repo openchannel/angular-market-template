@@ -269,6 +269,38 @@ export class MockLoadingBarService {
     }
 }
 
+export class MockSiteContentService {
+    getAllContent(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    getSecuritySettings(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockMarketMetaTagService {
+    getMetaTagsConfig(): any {
+        return {};
+    }
+
+    initDefaultPageDataForAllPages(): { [name: string]: any } {
+        return {
+            windowUrl: 'url',
+        };
+    }
+}
+
+export class MockStatisticService {
+    recordVisitToApp(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    record(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
 export class MockAppsService {
     static MOCK_APP = {
         allow: {},
@@ -1146,6 +1178,12 @@ export class MockTransactionsService {
     }
 }
 
+export class MockAppVersionService {
+    getAppByVersion(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
 @Component({
     selector: 'oc-edit-user-form',
     template: '',
@@ -1199,6 +1237,120 @@ export class MockButtonActionComponent {
     @Input() appData: any;
     @Input() viewType: string = 'button';
     @Output() readonly updateAppData: EventEmitter<void> = new EventEmitter<void>();
+}
+
+@Component({
+    selector: 'oc-rating',
+    template: '',
+})
+export class MockOcRatingComponent {
+    @Input() type: 'single-star' | 'multi-star' = 'single-star';
+    @Input() rating: number;
+    @Input() reviewCount: number = 0;
+    @Input() label: string = '';
+    @Input() labelClass: string = 'medium md';
+    @Input() disabled: boolean = false;
+}
+
+@Component({
+    selector: 'oc-video',
+    template: '',
+})
+export class MockOcVideoComponent {
+    @Input() videoUrl: string = '';
+}
+
+@Component({
+    selector: 'oc-image-gallery',
+    template: '',
+})
+export class MockOcImageGalleryComponent {
+    @Input() gallery: any = [];
+    @Input() maxItems: number = 3;
+    @Input() displayDetails: boolean = true;
+    @Input() allowArrowControllers: boolean = false;
+    @Input() mediaDimensions: any = {};
+    @Input() expandOnClick: boolean = false;
+    @Input() carouselOptions: any = {};
+    @Input() componentIconsPath: any = {};
+    @Input() imageModalIconsPath: any = {};
+    @Input() isShowCounterInImageModal: boolean = false;
+}
+
+@Component({
+    selector: 'oc-app-description',
+    template: '',
+})
+export class MockOcAppDescriptionComponent {
+    @Input() appDescription: string = '';
+    @Input() header: string = '';
+    @Input() headerTag: any = 'h4';
+    @Input() showFullDescription: boolean = false;
+    @Input() headerClass: string;
+    @Input() enableTruncateTextLogic: boolean = true;
+    @Input() truncateTextLength: number = 800;
+    @Input() showMoreDescriptionText: string = 'Show more';
+    @Input() showLessDescriptionText: string = 'Show less';
+}
+
+@Component({
+    selector: 'oc-overall-rating',
+    template: '',
+})
+export class MockOcOverallRatingComponent {
+    @Input() overallReviewLabel: string = 'Overall rating';
+    @Input() allReviewSummary: any = {};
+}
+
+@Component({
+    selector: 'oc-review-list',
+    template: '',
+})
+export class MockOcReviewListComponent {
+    @Input() reviewListTitle: string = 'Most recent reviews';
+    @Input() headingTag: any = 'h2';
+    @Input() reviewHeadingTag: any = 'h3';
+    @Input() totalReview: number;
+    @Input() maxReviewDisplay: number = 3;
+    @Input() noReviewMessage: string = 'There is no review for this app.';
+    @Input() reviewsList: any = [];
+    @Input() allowWriteReview: boolean = true;
+    @Input() menuUrl: string = 'assets/angular-common-components/dots-menu.svg';
+    @Input() currentUserId: string = '';
+    @Output() readonly writeAReview: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly chosenAction: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Component({
+    selector: 'oc-review',
+    template: '',
+})
+export class MockOcReviewComponent {
+    @Input() heading: string = '';
+    @Input() enableButtons: boolean = false;
+    @Input() cancelButtonText: string = 'Cancel';
+    @Input() submitButtonText: string = 'Submit';
+    @Input() hidCancelButton: boolean = false;
+    @Input() reviewData: any;
+    @Input() submitInProgress: boolean = false;
+    @Output() readonly reviewFormData: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly cancelReview: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() readonly isFormInvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
+}
+
+@Component({
+    selector: 'oc-recommended-apps',
+    template: '',
+})
+export class MockOcRecomendedAppsComponent {
+    @Input() appList: any[] = [];
+    @Input() noAppMessage: string = '';
+    @Input() recommendedAppTitle: string = 'Recommended Apps';
+    @Input() headingTag: any = 'h2';
+    @Input() customAppCardTemplate: TemplateRef<any>;
+    @Input() routerLinkForOneApp: string | any;
+    @Input() appNavigationParam: string;
+    @Output() readonly clickByAppCard: EventEmitter<any> = new EventEmitter<any>();
 }
 
 export class MockButtonActionService {
