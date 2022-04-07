@@ -46,9 +46,12 @@ describe('FooterComponent', () => {
                 },
             ],
         };
+        const currentYear = new Date().getFullYear();
 
         jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
         fixture.detectChanges();
+
+        expect(component.currentYear).toEqual(currentYear);
 
         tick();
 
