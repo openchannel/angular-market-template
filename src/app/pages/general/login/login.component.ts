@@ -8,7 +8,7 @@ import {
     SiteAuthConfig,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, takeUntil, tap } from 'rxjs/operators';
+import { filter, finalize, takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ToastrService } from 'ngx-toastr';
@@ -23,8 +23,8 @@ import { CmsContentService } from '@core/services/cms-content-service/cms-conten
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-    private readonly SAML_JWT_ACCESS_TOKEN_KEY = "jwtAccessToken";
-    private readonly SAML_JWT_REFRESH_TOKEN_KEY = "jwtRefreshToken";
+    private readonly SAML_JWT_ACCESS_TOKEN_KEY = 'jwtAccessToken';
+    private readonly SAML_JWT_REFRESH_TOKEN_KEY = 'jwtRefreshToken';
 
     signupUrl = '/signup';
     forgotPwdUrl = '/forgot-password';
@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         // get redirect URL from the params
         this.retrieveRedirectUrl();
 
-        let samlJwtTokens = this.getSamlJwtTokens();
+        const samlJwtTokens = this.getSamlJwtTokens();
 
         if (this.authHolderService.isLoggedInUser()) {
             this.router.navigate(['']).then();
@@ -73,52 +73,52 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.setupLoginFlowResponseProcess();
 
             this.openIdAuthService
-            .getAuthConfig()
-            .pipe(
-                tap(value => (this.isSsoLogin = !!value)),
-                filter(value => !!value),
-                takeUntil(this.destroy$),
-            )
-            .subscribe(
-                authConfig => {
-                    this.authConfig = authConfig;
+                .getAuthConfig()
+                .pipe(
+                    tap(value => (this.isSsoLogin = !!value)),
+                    filter(value => !!value),
+                    takeUntil(this.destroy$),
+                )
+                .subscribe(
+                    authConfig => {
+                        this.authConfig = authConfig;
 
-                    const code = this.route.snapshot.queryParamMap.get('code');
+                        const code = this.route.snapshot.queryParamMap.get('code');
 
-                    if (authConfig?.type === 'SAML_20') {
-                        // SAML 2.0 login
-                        this.processSamlLogin(authConfig);
-                    } else if (code && this.isClientAccessTypeConfidential()) {
-                        if (this.checkState()) {
-                            this.openIdAuthService
-                            .verifyCode(code, this.redirectUri)
-                            .pipe(takeUntil(this.destroy$))
-                            .subscribe(
-                                response => {
-                                    this.processLoginResponse(response, this.returnUrl);
-                                    this.loader.complete();
-                                },
-                                () => this.oauthService.logOut(true),
-                            );
+                        if (authConfig?.type === 'SAML_20') {
+                            // SAML 2.0 login
+                            this.processSamlLogin(authConfig);
+                        } else if (code && this.isClientAccessTypeConfidential()) {
+                            if (this.checkState()) {
+                                this.openIdAuthService
+                                    .verifyCode(code, this.redirectUri)
+                                    .pipe(takeUntil(this.destroy$))
+                                    .subscribe(
+                                        response => {
+                                            this.processLoginResponse(response, this.returnUrl);
+                                            this.loader.complete();
+                                        },
+                                        () => this.oauthService.logOut(true),
+                                    );
+                            } else {
+                                // tslint:disable-next-line:no-console
+                                console.error('State is incorrect');
+                            }
                         } else {
-                            // tslint:disable-next-line:no-console
-                            console.error('State is incorrect');
-                        }
-                    } else {
-                        this.configureOAuthService();
+                            this.configureOAuthService();
 
-                        this.oauthService
-                        .loadDiscoveryDocumentAndLogin({
-                            state: this.returnUrl,
-                        })
-                        .then(() => {
-                            this.loader.complete();
-                        });
-                    }
-                },
-                () => (this.isSsoLogin = false),
-                () => this.loader.complete(),
-            );
+                            this.oauthService
+                                .loadDiscoveryDocumentAndLogin({
+                                    state: this.returnUrl,
+                                })
+                                .then(() => {
+                                    this.loader.complete();
+                                });
+                        }
+                    },
+                    () => (this.isSsoLogin = false),
+                    () => this.loader.complete(),
+                );
         }
 
         this.initCMSData();
@@ -127,6 +127,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+        this.loader.complete();
     }
 
     login(event: boolean): void {
@@ -134,14 +135,15 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.inProcess = true;
             this.nativeLoginService
                 .signIn(this.signIn)
-                .pipe(takeUntil(this.destroy$))
-                .subscribe(
-                    (response: LoginResponse) => {
-                        this.processLoginResponse(response, this.returnUrl);
+                .pipe(
+                    finalize(() => {
                         this.inProcess = false;
-                    },
-                    () => (this.inProcess = false),
-                );
+                    }),
+                    takeUntil(this.destroy$),
+                )
+                .subscribe((response: LoginResponse) => {
+                    this.processLoginResponse(response, this.returnUrl);
+                });
         }
     }
 
@@ -208,19 +210,19 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(redirectUrl || '').then();
     }
 
-    private processSamlLogin(authConfig: SiteAuthConfig) {
+    private processSamlLogin(authConfig: SiteAuthConfig): void {
         this.loader.complete();
         const samlLoginUrl = `${authConfig.singleSignOnUrl}?RelayState=${window.location.href}`;
-        window.open(samlLoginUrl, "_self");
+        window.open(samlLoginUrl, '_self');
     }
 
     private getSamlJwtTokens(): LoginResponse {
-        let queryParamMap = this.route.snapshot.queryParamMap;
+        const queryParamMap = this.route.snapshot.queryParamMap;
         if (queryParamMap.has(this.SAML_JWT_ACCESS_TOKEN_KEY) && queryParamMap.has(this.SAML_JWT_REFRESH_TOKEN_KEY)) {
-           return {
-               accessToken: queryParamMap.get(this.SAML_JWT_ACCESS_TOKEN_KEY),
-               refreshToken: queryParamMap.get(this.SAML_JWT_REFRESH_TOKEN_KEY)
-           }
+            return {
+                accessToken: queryParamMap.get(this.SAML_JWT_ACCESS_TOKEN_KEY),
+                refreshToken: queryParamMap.get(this.SAML_JWT_REFRESH_TOKEN_KEY),
+            };
         }
         return null;
     }
