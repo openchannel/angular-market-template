@@ -101,11 +101,10 @@ describe('ResetPasswordComponent', () => {
     }));
 
     it('should navigate to login page and show success message if code is right', fakeAsync(() => {
-        const event = true;
         component.inProcess = false;
         jest.spyOn((component as any).toaster, 'success');
         jest.spyOn((component as any).nativeLoginService, 'resetPassword');
-        component.reset(event);
+        component.reset(true);
         tick();
         expect((component as any).nativeLoginService.resetPassword).toHaveBeenCalled();
         // go to the next page
