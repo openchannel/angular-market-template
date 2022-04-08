@@ -12,12 +12,15 @@ import {
     UsersService,
 } from '@openchannel/angular-common-services';
 import {
+    ComponentsUserActivationModel,
     ComponentsUserGridActionModel,
     ComponentsUsersGridParametersModel,
     ErrorMessageFormId,
     Filter,
+    HeadingTag,
     ModalInviteUserModel,
     ModalUpdateUserModel,
+    SocialLink,
     SortField,
     UserGridSortOrder,
     UserSortChosen,
@@ -99,6 +102,7 @@ export class MockButtonComponent {
     @Input() style: string;
     @Input() process: boolean;
     @Input() customTemplate: TemplateRef<any>;
+    @Output() readonly click: EventEmitter<void> = new EventEmitter<void>();
 }
 
 @Component({
@@ -209,6 +213,20 @@ export class MockAppGetStartedComponent {
     @Input() getStartedButtonText: string = '';
     @Input() getStartedType: 'home' | 'search' = 'home';
     @Output() readonly getStarted: EventEmitter<void> = new EventEmitter<void>();
+}
+
+@Component({
+    selector: 'oc-activation',
+    template: '',
+})
+export class MockOcActivationComponent {
+    @Input() resendActivationUrl: any;
+    @Input() signupUrl: any;
+    @Input() companyLogoUrl: string = '';
+    @Input() process: boolean = false;
+    @Input() activationModel: ComponentsUserActivationModel;
+    @Output() readonly buttonClick: EventEmitter<any> = new EventEmitter<any>();
+    @Input() headingTag: HeadingTag = 'h1';
 }
 
 @Component({
@@ -623,15 +641,22 @@ export class MockToastrService {
 
 export class MockAuthHolderService {
     static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
+    readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
     hasAnyPermission(): boolean {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
     }
 
-    persist(...args: any): void {}
+    persist(...args: any): void {
+        // do nothing
+    }
 
     isLoggedInUser(...args: any): boolean {
         return true;
+    }
+
+    refreshToken(): string {
+        return this.REFRESH_TOKEN_KEY;
     }
 }
 
@@ -1042,6 +1067,10 @@ export class MockNativeLoginService {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 
+    changePassword(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+
     sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
@@ -1050,11 +1079,19 @@ export class MockNativeLoginService {
         return of({});
     }
 
+    activate(): Observable<any> {
+        return of(null).pipe(observeOn(asyncScheduler));
+    }
+
     resetPassword():Observable<any>{
         return of('1').pipe(observeOn(asyncScheduler));
     }
 }
-
+export class MockNgbActiveModal {
+    close(...args: any): void {
+        // do nothing
+    }
+}
 export class MockEditUserTypeService {
     static MOCK_FORM_CONFIGS_RESPONSE = [
         {
@@ -1204,7 +1241,13 @@ export class MockEditUserFormComponent {
     @Output() readonly resultFormDataChange = new EventEmitter<any>();
     @Output() readonly createdFormGroup = new EventEmitter<any>();
 }
-
+@Component({
+    selector: 'oc-social-links',
+    template: '',
+})
+export class MockSocialLinks {
+    @Input() socialLinks: SocialLink[];
+}
 @Component({
     selector: 'app-general-profile',
     template: '',
@@ -1277,13 +1320,17 @@ export class MockOAuthService {
     events: Subject<any> = new Subject<any>();
     state = {};
 
-    logOut(...args: any): void {}
+    logOut(...args: any): void {
+        // do nothing
+    }
 
     loadDiscoveryDocumentAndLogin(...args: any): Promise<any> {
         return Promise.resolve({});
     }
 
-    configure(...args: any): void {}
+    configure(...args: any): void {
+        // do nothing
+    }
 
     getIdToken(): string {
         return '';
@@ -1301,7 +1348,9 @@ export class MockButtonActionService {
 }
 
 export class MockLogOutService {
-    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {}
+    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
+        // do nothing
+    }
 }
 
 export const createMockedBrowserStorage = () => {
