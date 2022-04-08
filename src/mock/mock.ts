@@ -912,6 +912,18 @@ export class MockUsersService {
         return of(1).pipe(observeOn(asyncScheduler));
     }
 }
+@Component({
+    selector: 'oc-reset-password',
+    template: '',
+})
+export class MockOcResetPasswordComponent {
+    @Input() companyLogoUrl: any;
+    @Input() process: any;
+    @Input() loginUrl: any;
+    @Input() signupUrl: any;
+    @Output() readonly buttonClick: EventEmitter<any> = new EventEmitter<any>();
+    @Input() resetModel: any;
+}
 
 @Component({
     selector: 'app-page-title',
@@ -1084,6 +1096,10 @@ export class MockNativeLoginService {
 
     activate(): Observable<any> {
         return of(null).pipe(observeOn(asyncScheduler));
+    }
+
+    resetPassword():Observable<any>{
+        return of('1').pipe(observeOn(asyncScheduler));
     }
     sendResetCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
