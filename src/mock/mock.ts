@@ -629,7 +629,9 @@ export class MockAuthHolderService {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
     }
 
-    persist(...args: any): void {}
+    persist(...args: any): void {
+        // do nothing
+    }
 
     isLoggedInUser(...args: any): boolean {
         return true;
@@ -1039,7 +1041,11 @@ export class MockNativeLoginService {
         return of({});
     }
 }
-
+export class MockNgbActiveModal {
+    close(...args: any): void {
+        // do nothing
+    }
+}
 export class MockEditUserTypeService {
     static MOCK_FORM_CONFIGS_RESPONSE = [
         {
@@ -1268,13 +1274,17 @@ export class MockOAuthService {
     events: Subject<any> = new Subject<any>();
     state = {};
 
-    logOut(...args: any): void {}
+    logOut(...args: any): void {
+        // do nothing
+    }
 
     loadDiscoveryDocumentAndLogin(...args: any): Promise<any> {
         return Promise.resolve({});
     }
 
-    configure(...args: any): void {}
+    configure(...args: any): void {
+        // do nothing
+    }
 
     getIdToken(): string {
         return '';
