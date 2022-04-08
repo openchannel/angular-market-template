@@ -10,6 +10,7 @@ import {
     UserAccount,
     UserRoleService,
     UsersService,
+    ReviewsService,
 } from '@openchannel/angular-common-services';
 import {
     ComponentsUserGridActionModel,
@@ -354,6 +355,10 @@ export class MockAppsService {
     getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
+
+    getAppBySafeName(): Observable<any> {
+        return of(MockAppsService.MOCK_APP);
+    }
 }
 
 export class MockCmsContentService {
@@ -643,6 +648,8 @@ export class MockToastrService {
 
 export class MockAuthHolderService {
     static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
+
+    userDetails = {};
 
     hasAnyPermission(): boolean {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
@@ -1180,6 +1187,28 @@ export class MockTransactionsService {
 
 export class MockAppVersionService {
     getAppByVersion(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockReviewsService {
+    getReviewsByAppId(): Observable<any> {
+        return of({ list: [] }).pipe(observeOn(asyncScheduler));
+    }
+
+    updateReview(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    createReview(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    getOneReview(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    deleteReview(): Observable<any> {
         return of({}).pipe(observeOn(asyncScheduler));
     }
 }
