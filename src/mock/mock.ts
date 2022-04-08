@@ -18,6 +18,7 @@ import {
     Filter,
     ModalInviteUserModel,
     ModalUpdateUserModel,
+    SocialLink,
     SortField,
     UserGridSortOrder,
     UserSortChosen,
@@ -1194,7 +1195,13 @@ export class MockEditUserFormComponent {
     @Output() readonly resultFormDataChange = new EventEmitter<any>();
     @Output() readonly createdFormGroup = new EventEmitter<any>();
 }
-
+@Component({
+    selector: 'oc-social-links',
+    template: '',
+})
+export class MockSocialLinks {
+    @Input() socialLinks: SocialLink[];
+}
 @Component({
     selector: 'app-general-profile',
     template: '',
