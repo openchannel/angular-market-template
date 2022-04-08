@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 describe('FooterComponent', () => {
     let component: FooterComponent;
     let fixture: ComponentFixture<FooterComponent>;
-    let bottomInfo: HTMLElement;
 
     const getSocialLinksDE = () => fixture.debugElement.query(By.directive(MockSocialLinks));
 
@@ -23,7 +22,6 @@ describe('FooterComponent', () => {
 
         fixture = TestBed.createComponent(FooterComponent);
         component = fixture.componentInstance;
-        bottomInfo = fixture.nativeElement.querySelector('.bottom-info');
 
         jest.resetAllMocks();
     });
@@ -51,6 +49,7 @@ describe('FooterComponent', () => {
 
         // using .toString() because bottomInfo.textContent has string type
         const currentYear = new Date().getFullYear().toString();
+        const bottomInfo: HTMLElement = fixture.nativeElement.querySelector('.bottom-info');
 
         jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
 
