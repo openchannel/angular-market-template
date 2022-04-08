@@ -12,10 +12,12 @@ import {
     UsersService,
 } from '@openchannel/angular-common-services';
 import {
+    ComponentsUserActivationModel,
     ComponentsUserGridActionModel,
     ComponentsUsersGridParametersModel,
     ErrorMessageFormId,
     Filter,
+    HeadingTag,
     ModalInviteUserModel,
     ModalUpdateUserModel,
     SocialLink,
@@ -30,6 +32,7 @@ import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/
 
 class MockPagination<T> {
     private values: T[];
+
     constructor(values: T[]) {
         this.values = values || [];
     }
@@ -211,6 +214,20 @@ export class MockAppGetStartedComponent {
     @Input() getStartedButtonText: string = '';
     @Input() getStartedType: 'home' | 'search' = 'home';
     @Output() readonly getStarted: EventEmitter<void> = new EventEmitter<void>();
+}
+
+@Component({
+    selector: 'oc-activation',
+    template: '',
+})
+export class MockOcActivationComponent {
+    @Input() resendActivationUrl: any;
+    @Input() signupUrl: any;
+    @Input() companyLogoUrl: string = '';
+    @Input() process: boolean = false;
+    @Input() activationModel: ComponentsUserActivationModel;
+    @Output() readonly buttonClick: EventEmitter<any> = new EventEmitter<any>();
+    @Input() headingTag: HeadingTag = 'h1';
 }
 
 @Component({
@@ -1049,6 +1066,10 @@ export class MockNativeLoginService {
 
     signIn(...args: any): Observable<any> {
         return of({});
+    }
+
+    activate(): Observable<any> {
+        return of(null).pipe(observeOn(asyncScheduler));
     }
 }
 export class MockNgbActiveModal {
