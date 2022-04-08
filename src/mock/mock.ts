@@ -100,6 +100,7 @@ export class MockButtonComponent {
     @Input() style: string;
     @Input() process: boolean;
     @Input() customTemplate: TemplateRef<any>;
+    @Output() readonly click: EventEmitter<void> = new EventEmitter<void>();
 }
 
 @Component({
@@ -624,6 +625,7 @@ export class MockToastrService {
 
 export class MockAuthHolderService {
     static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
+    readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
     hasAnyPermission(): boolean {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
@@ -635,6 +637,10 @@ export class MockAuthHolderService {
 
     isLoggedInUser(...args: any): boolean {
         return true;
+    }
+
+    refreshToken(): string {
+        return this.REFRESH_TOKEN_KEY;
     }
 }
 
@@ -1030,6 +1036,10 @@ export class MockResendActivation {
 
 export class MockNativeLoginService {
     signup(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+
+    changePassword(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 
