@@ -26,6 +26,7 @@ import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+import { UserAccountTypeModel } from '@openchannel/angular-common-services/lib/model/api/user-type.model';
 
 class MockPagination<T> {
     private values: T[];
@@ -764,6 +765,14 @@ export class MockUserRoleService {
     }
 }
 
+export class MockUserAccountTypesService{
+
+    getUserAccountType(type:any): Observable<any>{
+        return of(1);
+    }
+
+}
+
 export class MockInviteUserService {
     userInvites: MockPagination<InviteUserModel>;
 
@@ -781,6 +790,10 @@ export class MockInviteUserService {
 
     getUserInvites(pageNumber?: number, limit?: number, sort?: string, query?: string): Observable<Page<InviteUserModel>> {
         return of(this.userInvites.getByPaginate(pageNumber, limit));
+    }
+
+    getUserInviteInfoByToken(userToken: string): Observable<any>{
+        return of({});
     }
 }
 
