@@ -29,7 +29,6 @@ import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
-import { SvgIconRegistryService, SvgLoader } from 'angular-svg-icon';
 import { Router } from '@angular/router';
 
 class MockPagination<T> {
