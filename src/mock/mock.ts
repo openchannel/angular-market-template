@@ -29,6 +29,8 @@ import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+import { SvgIconRegistryService, SvgLoader } from 'angular-svg-icon';
+import { Router } from '@angular/router';
 
 class MockPagination<T> {
     private values: T[];
@@ -141,7 +143,13 @@ export class MockTextSearchComponent {
     @Output() readonly tagDeleted: EventEmitter<number> = new EventEmitter<number>();
     @Output() readonly allTagsDeleted: EventEmitter<void> = new EventEmitter<void>();
 }
-
+@Component({
+    selector: 'oc-profile-navbar',
+    template: '',
+})
+export class MockOcProfileNavbar {
+    @Input() username: string;
+}
 @Component({
     selector: 'app-collapse-with-title',
     template: '',
@@ -286,7 +294,15 @@ export class MockLoadingBarService {
         return new MockLoadingBarState();
     }
 }
-
+@Component({
+    selector: 'svg-icon',
+    template: '',
+})
+export class MockSvgIconComponent {
+    @Input() src: string;
+    @Input() svgClass: string;
+    @Input() ngbTooltip: string;
+}
 export class MockAppsService {
     static MOCK_APP = {
         allow: {},
@@ -1098,7 +1114,7 @@ export class MockNativeLoginService {
         return of(null).pipe(observeOn(asyncScheduler));
     }
 
-    resetPassword():Observable<any>{
+    resetPassword(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
     sendResetCode(): Observable<any> {
@@ -1366,8 +1382,13 @@ export class MockButtonActionService {
 }
 
 export class MockLogOutService {
+    constructor(private router: Router) {}
+
     removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
         // do nothing
+    }
+    logOutAndRedirect(): void {
+        this.router.navigate(['/']);
     }
 }
 
