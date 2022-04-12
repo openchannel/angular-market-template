@@ -31,6 +31,7 @@ import {
     AppVersionService,
     AuthHolderService,
     FrontendService,
+    Page,
     ReviewsService,
     SiteContentService,
     StatisticService,
@@ -42,10 +43,30 @@ import { ButtonActionService } from '@features/button-action/button-action.servi
 import { RouterTestingModule } from '@angular/router/testing';
 import { asyncScheduler, of, throwError } from 'rxjs';
 import { observeOn } from 'rxjs/operators';
-import { FullAppData } from '@openchannel/angular-common-components/src/lib/common-components';
 import { ActivatedRoute } from '@angular/router';
-import { Filter, Review } from '@openchannel/angular-common-components';
+import { Filter, OCReviewDetails, OverallRatingSummary, Review } from '@openchannel/angular-common-components';
 import { Location } from '@angular/common';
+import { FullAppData } from '@openchannel/angular-common-components/src/lib/common-components';
+import { pageConfig } from '../../../../assets/data/configData';
+
+const mockReviewsDetailsPage: Page<OCReviewDetails> = {
+    count: 1,
+    pages: 1,
+    pageNumber: 1,
+    list: [
+        {
+            rating: 450,
+            userId: 'amazon',
+            reviewId: '600eef817ec0f53371d1cb1b',
+            reviewOwnerName: 'Amazon',
+            review: 'Review',
+            status: {
+                reason: 'Auto approved',
+                value: 'approved',
+            },
+        },
+    ],
+};
 
 const mockSearchFilters: Filter[] = [
     {
@@ -453,5 +474,137 @@ describe('AppDetailComponent', () => {
         const mockLocationBack = jest.spyOn((component as any).location, 'back');
         component.goBack();
         expect(mockLocationBack).toHaveBeenCalled();
+    });
+
+    it('should call frontendService.getFilters() and set searchFilters (getSearchFilters())', fakeAsync(() => {
+        const mockGetFilters = jest.spyOn((component as any).frontendService, 'getFilters');
+        component.searchFilters = null;
+
+        (component as any).getSearchFilters();
+        tick();
+        expect(mockGetFilters).toHaveBeenCalled();
+        expect(component.searchFilters).toEqual(MockFrontendService.MOCK_FILTERS_PAGE.list);
+    }));
+
+    it('should not affect reviewsPage if the current user does not have review (makeCurrentUserReviewFirst())', () => {
+        component.reviewsPage = mockReviewsDetailsPage;
+        component.currentUserId = 'some-id';
+        const initialReviewsPage = component.reviewsPage;
+
+        (component as any).makeCurrentUserReviewFirst();
+        expect(initialReviewsPage).toEqual(component.reviewsPage);
+    });
+
+    it('should call reviewsService.getOneReview(), set userReview and isWritingReview (editReview())', fakeAsync(() => {
+        const mockGetOneReview = jest
+            .spyOn((component as any).reviewsService, 'getOneReview')
+            .mockReturnValue(of(mockReview).pipe(observeOn(asyncScheduler)));
+        component.isWritingReview = false;
+        component.userReview = mockReview;
+
+        (component as any).editReview();
+        component.userReview = null;
+        tick();
+        expect(mockGetOneReview).toHaveBeenCalled();
+        expect(component.isWritingReview).toBeTruthy();
+        expect(component.userReview).toEqual(mockReview);
+    }));
+
+    it('should call method to get app according to safeName existence (getApp())', () => {
+        const mockGetBySafeName = jest.spyOn((component as any).appService, 'getAppBySafeName');
+        const mockGetByVersion = jest.spyOn((component as any).appVersionService, 'getAppByVersion');
+
+        (component as any).getApp('safeName', 'id', 'version');
+        expect(mockGetBySafeName).toHaveBeenCalled();
+
+        (component as any).getApp(null, 'id', 'version');
+        expect(mockGetByVersion).toHaveBeenCalled();
+    });
+
+    it('should navigate to the 404 page if getAppBySafeName returns 404 (getApp())', fakeAsync(() => {
+        jest.spyOn((component as any).appService, 'getAppBySafeName').mockReturnValue(
+            throwError({ status: 404 }).pipe(observeOn(asyncScheduler)),
+        );
+
+        try {
+            (component as any).getApp('safeName', 'id', 'version').subscribe();
+            tick();
+        } catch {}
+        expect(location.path()).toBe('/not-found');
+    }));
+
+    it('should call metaTagService.pushSelectedFieldsToTempPageData() and titleService.setSpecialTitle() (getApp())', fakeAsync(() => {
+        jest.spyOn((component as any).appService, 'getAppBySafeName').mockReturnValue(of(MockAppsService.MOCK_APP));
+        const mockPushFields = jest.spyOn((component as any).metaTagService, 'pushSelectedFieldsToTempPageData');
+        const mockSetTitle = jest.spyOn((component as any).titleService, 'setSpecialTitle');
+
+        (component as any).getApp('safeName', 'id', 'version').subscribe();
+        tick();
+        expect(mockPushFields).toHaveBeenCalledWith({ app: MockAppsService.MOCK_APP });
+        expect(mockSetTitle).toHaveBeenCalledWith(MockAppsService.MOCK_APP.name);
+    }));
+
+    it('should set app and correctly map it (getApp())', fakeAsync(() => {
+        const app = { ...MockAppsService.MOCK_APP };
+        const mappedApp = new FullAppData(app, pageConfig.fieldMappings);
+        jest.spyOn((component as any).appService, 'getAppBySafeName').mockReturnValue(of(app));
+
+        (component as any).getApp('safeName', 'id', 'version').subscribe();
+        tick();
+        expect(component.app).toEqual(mappedApp);
+    }));
+
+    it('should call loadReviews() and set reviewSubmitInProgress, isWritingReview to false (reloadReview())', () => {
+        const mockLoadReviews = jest.spyOn(component, 'loadReviews').mockImplementation();
+        component.reviewSubmitInProgress = true;
+        component.isWritingReview = true;
+
+        (component as any).reloadReview();
+        expect(mockLoadReviews).toHaveBeenCalled();
+        expect(component.reviewSubmitInProgress).toBeFalsy();
+        expect(component.isWritingReview).toBeFalsy();
+    });
+
+    it('should call reviewsService.deleteReview() and loadReviews() after deleting (deleteReview())', fakeAsync(() => {
+        const mockDeleteReview = jest.spyOn((component as any).reviewsService, 'deleteReview');
+        const mockLoadReviews = jest.spyOn(component, 'loadReviews').mockImplementation();
+        component.userReview = { ...mockReview };
+
+        (component as any).deleteReview();
+        tick();
+        expect(mockDeleteReview).toHaveBeenCalledWith(component.userReview.reviewId);
+        expect(mockLoadReviews).toHaveBeenCalled();
+    }));
+
+    it('should correctly set overallRating (countRating())', () => {
+        component.app = { ...mockFullAppData };
+        component.reviewsPage = { ...mockReviewsDetailsPage };
+
+        const approvedReviews = component.reviewsPage.list.filter(review => review.status.value === 'approved');
+        const expectedRating = new OverallRatingSummary(component.app.rating / 100, component.app.reviewCount);
+        approvedReviews.forEach(review => expectedRating[Math.floor(review.rating / 100)]++);
+
+        (component as any).countRating();
+        expect(component.overallRating).toEqual(expectedRating);
+    });
+
+    it('should call correct methods to setup component (ngOnInit())', () => {
+        const expectedMethodsToCall = [
+            'initCurrentUserId',
+            'initAllowReviewsWithoutOwnershipProperty',
+            'initReviewSortQueries',
+            'getAppData',
+            'initReviewSortQueries',
+            'getRecommendedApps',
+            'getSearchFilters',
+        ];
+        expectedMethodsToCall.forEach(method => {
+            jest.spyOn(component, method as any).mockImplementation();
+        });
+
+        fixture.detectChanges();
+        expectedMethodsToCall.forEach(method => {
+            expect(component[method]).toHaveBeenCalled();
+        });
     });
 });

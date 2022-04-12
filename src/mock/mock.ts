@@ -290,6 +290,10 @@ export class MockMarketMetaTagService {
             windowUrl: 'url',
         };
     }
+
+    pushSelectedFieldsToTempPageData(): void {
+        // do nothing.
+    }
 }
 
 export class MockStatisticService {
@@ -506,7 +510,7 @@ export class MockFrontendService {
     };
 
     getFilters(): Observable<any> {
-        return of(MockFrontendService.MOCK_FILTERS_PAGE);
+        return of(MockFrontendService.MOCK_FILTERS_PAGE).pipe(observeOn(asyncScheduler));
     }
 
     getSorts(): Observable<any> {
@@ -1006,6 +1010,7 @@ export class MockTypeMapperUtils {
         return {};
     }
 }
+
 @Component({
     selector: 'oc-signup-custom',
     template: '',

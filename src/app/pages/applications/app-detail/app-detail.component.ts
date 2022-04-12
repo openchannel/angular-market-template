@@ -11,7 +11,7 @@ import {
     AuthHolderService,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, throwError } from 'rxjs';
 import { catchError, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { ActionButton, actionButtons, pageConfig } from 'assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
@@ -332,7 +332,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
                 if (error.status === 404) {
                     this.router.navigate(['/not-found']).then(() => this.loader.complete());
                 }
-                return of(error);
+                return throwError(error);
             }),
             tap(appResponse =>
                 this.metaTagService.pushSelectedFieldsToTempPageData({
@@ -353,7 +353,6 @@ export class AppDetailComponent implements OnInit, OnDestroy {
             tap(app => {
                 this.titleService.setSpecialTitle(app.name);
                 this.app = app;
-                return this.app;
             }),
         );
     }
