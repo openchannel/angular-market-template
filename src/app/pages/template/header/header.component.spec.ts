@@ -101,7 +101,7 @@ describe('HeaderComponent', () => {
         const brandLogo = fixture.debugElement.query(By.css('.company-logo'));
         const headerItemsDFA = fixture.debugElement.queryAll(By.css('.navbar-collapse .navbar-nav .nav-item[routerLinkActive="active"]'));
 
-        expect(brandLogo.attributes.src).toBe(mockedResult.headerLogoURL);
+        expect(brandLogo.nativeElement.getAttribute('src')).toBe(mockedResult.headerLogoURL);
         expect(headerItemsDFA.length).toBe(mockedResult.headerItemsDFA.length);
     }));
 
