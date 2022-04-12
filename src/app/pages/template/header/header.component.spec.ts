@@ -13,28 +13,22 @@ import {
     MockSvgIconComponent,
 } from '../../../../mock/mock';
 import { of } from 'rxjs';
-import { ActivatedRoute, Router, Routes } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
 import { AuthenticationService, AuthHolderService } from '@openchannel/angular-common-services';
 import { LogOutService } from '@core/services/logout-service/log-out.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
 import { By } from '@angular/platform-browser';
+import { siteConfig } from 'assets/data/siteConfig';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
     let fixture: ComponentFixture<HeaderComponent>;
     let router: Router;
     let location: Location;
-    let activatedRoute: ActivatedRoute;
 
     const getMockProfileNavbar = () => fixture.debugElement.query(By.directive(MockOcProfileNavbar));
-    const routes: Routes = [
-        {
-            path: 'mock',
-            component: MockRoutingComponent,
-        },
-    ];
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -43,15 +37,9 @@ describe('HeaderComponent', () => {
                 { provide: CmsContentService, useClass: MockCmsContentService },
                 { provide: AuthHolderService, useClass: MockAuthHolderService },
                 { provide: AuthenticationService, useClass: MockAuthenticationService },
-                { provide: LogOutService, useClass: MockLogOutService, deps: [Router] },
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        snapshot: { fragment: '#mock' },
-                    },
-                },
+                { provide: LogOutService, useClass: MockLogOutService },
             ],
-            imports: [RouterTestingModule.withRoutes(routes), NgbModule],
+            imports: [RouterTestingModule, NgbModule],
         }).compileComponents();
 
         fixture = TestBed.createComponent(HeaderComponent);
@@ -61,7 +49,6 @@ describe('HeaderComponent', () => {
 
         router = TestBed.inject(Router);
         location = TestBed.inject(Location);
-        activatedRoute = TestBed.inject(ActivatedRoute);
     });
 
     it('should create', () => {
@@ -71,19 +58,18 @@ describe('HeaderComponent', () => {
     it('openIdAuthService.getAuthConfig() should set isSsoConfigExist value', fakeAsync(() => {
         component.isSsoConfigExist = true;
 
-        jest.spyOn((component as any).openIdAuthService, 'getAuthConfig').mockReturnValue(of(false));
+        jest.spyOn((component as any).openIdAuthService, 'getAuthConfig').mockReturnValue(of({}));
 
         fixture.detectChanges();
         tick();
 
-        expect(component.isSsoConfigExist).toBeFalsy();
+        expect(component.isSsoConfigExist).toBeTruthy();
     }));
 
-    it('should set correct cmsData in initCMSData', fakeAsync(() => {
-        component.cmsData = {
-            headerLogoURL: '',
-            headerItemsDFA: [],
-        };
+    it('should set correct data in ngOnInit', fakeAsync(() => {
+        const cmsService = TestBed.inject(CmsContentService);
+        const authHolderService = TestBed.inject(AuthHolderService);
+
         const mockedResult = {
             headerLogoURL: 'assets/img/logo-company.png',
             headerItemsDFA: [
@@ -93,28 +79,44 @@ describe('HeaderComponent', () => {
                 },
             ],
         };
+        component.cmsData = {
+            headerLogoURL: '',
+            headerItemsDFA: [],
+        };
 
-        jest.spyOn((component as any).cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
+        jest.spyOn(cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
         jest.spyOn(component, 'initCMSData');
 
         fixture.detectChanges();
         tick();
 
+        expect(component.isBilling).toEqual(siteConfig.paymentsEnabled);
+        expect(component.isSSO).toEqual(authHolderService.userDetails.isSSO);
+
         expect(component.initCMSData).toBeCalled();
+
         expect(component.cmsData.headerLogoURL).toBe(mockedResult.headerLogoURL);
         expect(component.cmsData.headerItemsDFA).toStrictEqual(mockedResult.headerItemsDFA);
+
+        const brandLogo = fixture.debugElement.query(By.css('.company-logo'));
+        const headerItemsDFA = fixture.debugElement.queryAll(By.css('.navbar-collapse .navbar-nav .nav-item[routerLinkActive="active"]'));
+
+        expect(brandLogo.attributes.src).toBe(mockedResult.headerLogoURL);
+        expect(headerItemsDFA.length).toBe(mockedResult.headerItemsDFA.length);
     }));
 
-    it('logout() should redirect to empty route', fakeAsync(() => {
-        jest.spyOn((component as any).logOut, 'logOutAndRedirect');
+    it('should call logOutAndRedirect when .nav-link clicked', fakeAsync(() => {
+        const logOut = TestBed.inject(LogOutService);
+        jest.spyOn(logOut, 'logOutAndRedirect');
 
-        component.router.navigate(['mock']).then(() => {
-            component.logout();
-            tick();
+        fixture.detectChanges();
 
-            expect((component as any).logOut.logOutAndRedirect).toBeCalled();
-            expect(location.path()).toBe('/');
-        });
+        const dropdownItems = fixture.debugElement.queryAll(By.css('.collaps-items .collapse .navbar-nav .nav-item .nav-link'));
+        const logOutElement = dropdownItems[dropdownItems.length - 1];
+
+        logOutElement.triggerEventHandler('click', {});
+
+        expect(logOut.logOutAndRedirect).toBeCalledWith('/');
     }));
 
     it('closeMenu() should set isMenuCollapsed and isCollapsed to true', () => {
@@ -133,11 +135,21 @@ describe('HeaderComponent', () => {
         expect(getMockProfileNavbar().componentInstance.username).toEqual('More');
     });
 
-    it('should check checkIncludesUrl method work', fakeAsync(() => {
-        component.router.navigate(['/mock']).then(() => {
-            const returnedValue = component.checkIncludesUrl('mock');
+    it('should check checkIncludesUrl method work', () => {
+        fixture.detectChanges();
 
-            expect(returnedValue).toBe(true);
-        });
-    }));
+        const urlCheckItem = fixture.debugElement.query(By.css('.navbar-collapse .navbar-nav .collaps-none'));
+
+        jest.spyOn(router, 'url', 'get').mockReturnValue('my-profile');
+
+        fixture.detectChanges();
+
+        expect(urlCheckItem.nativeElement.classList).toContain('active');
+
+        jest.spyOn(router, 'url', 'get').mockReturnValue('test');
+
+        fixture.detectChanges();
+
+        expect(urlCheckItem.nativeElement.classList).not.toContain('active');
+    });
 });

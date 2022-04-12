@@ -15,7 +15,6 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 import { throwError } from 'rxjs';
 import { LogOutService } from '@core/services/logout-service/log-out.service';
-import { Router } from '@angular/router';
 
 describe('AppComponent', () => {
     let component: AppComponent;
@@ -31,7 +30,7 @@ describe('AppComponent', () => {
                     { provide: SiteConfigService, useClass: MockSiteConfigService },
                     { provide: LoadingBarService, useClass: MockLoadingBarService },
                     { provide: CmsContentService, useClass: MockCmsContentService },
-                    { provide: LogOutService, useClass: MockLogOutService, deps: [Router] },
+                    { provide: LogOutService, useClass: MockLogOutService },
                 ],
             }).compileComponents();
         }),

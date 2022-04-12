@@ -658,6 +658,10 @@ export class MockAuthHolderService {
     static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
     readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
+    userDetails = {
+        isSSO: false,
+    };
+
     hasAnyPermission(): boolean {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
     }
@@ -1381,13 +1385,11 @@ export class MockButtonActionService {
 }
 
 export class MockLogOutService {
-    constructor(private router: Router) {}
-
     removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
         // do nothing
     }
     logOutAndRedirect(): void {
-        this.router.navigate(['/']);
+        // do nothing
     }
 }
 
