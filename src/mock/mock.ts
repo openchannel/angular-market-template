@@ -29,7 +29,6 @@ import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
-import { UserAccountTypeModel } from '@openchannel/angular-common-services/lib/model/api/user-type.model';
 
 class MockPagination<T> {
     private values: T[];
@@ -532,7 +531,7 @@ export class MockAuthenticationService {
     }
 
     getAuthConfig(): Observable<any> {
-        return of({});
+        return of('1');
     }
 
     verifyCode(...args: any): Observable<any> {
@@ -790,16 +789,34 @@ export class MockUserRoleService {
     }
 }
 
-export class MockUserAccountTypesService{
-
-    getUserAccountType(type:any): Observable<any>{
+export class MockUserAccountTypesService {
+    getUserAccountType(type: any): Observable<any> {
         return of(1);
     }
-
 }
 
 export class MockInviteUserService {
     userInvites: MockPagination<InviteUserModel>;
+
+     mockInviteUserModelGoodResponse = {
+        userInviteId: '123123wwq2131',
+        userInviteTemplateId: '123123wwq2131',
+        userId: '123123wwq2131',
+        userAccountId: '123123wwq2131',
+        email: '123',
+        expireDate: 2133123123,
+        expireSeconds: 2133123123132,
+        createdDate: 2133123123132,
+        subject: '123',
+        body: '123',
+        name: '123',
+        type: '123',
+        customData: '123',
+        token: '123',
+        lastSent: 2133123123132,
+        roles: ['user'],
+        permissions: ['user'],
+    };
 
     constructor(userInvites?: InviteUserModel[]) {
         this.userInvites = new MockPagination<InviteUserModel>(userInvites);
@@ -817,8 +834,8 @@ export class MockInviteUserService {
         return of(this.userInvites.getByPaginate(pageNumber, limit));
     }
 
-    getUserInviteInfoByToken(userToken: string): Observable<any>{
-        return of({});
+    getUserInviteInfoByToken(userToken: string): Observable<any> {
+        return of(this.mockInviteUserModelGoodResponse);
     }
 }
 
@@ -1099,6 +1116,10 @@ export class MockNativeLoginService {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 
+    signupByInvite():Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    };
+
     sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
@@ -1111,7 +1132,7 @@ export class MockNativeLoginService {
         return of(null).pipe(observeOn(asyncScheduler));
     }
 
-    resetPassword():Observable<any>{
+    resetPassword(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
     sendResetCode(): Observable<any> {
@@ -1381,6 +1402,10 @@ export class MockButtonActionService {
 export class MockLogOutService {
     removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
         // do nothing
+    }
+
+    logOut(): Observable<any> {
+        return of('1');
     }
 }
 

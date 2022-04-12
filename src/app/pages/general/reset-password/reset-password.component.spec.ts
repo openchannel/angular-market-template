@@ -77,7 +77,7 @@ describe('ResetPasswordComponent', () => {
         expect(activateElement).toBeTruthy();
     });
 
-    it('pass all necessary variables to the app-activation', () => {
+    it('pass all necessary variables to the oc-reset-password', () => {
         component.resetModel = {
             newPassword: 'password',
             code: 'asdasda',
@@ -89,7 +89,6 @@ describe('ResetPasswordComponent', () => {
         expect(resetPasswordInstance.resetModel).toEqual(component.resetModel);
         expect(resetPasswordInstance.process).toBe(component.inProcess);
     });
-
 
     it('check button click trigger function event', fakeAsync(() => {
         const resetPasswordInstance = resetPasswordDE().componentInstance;
