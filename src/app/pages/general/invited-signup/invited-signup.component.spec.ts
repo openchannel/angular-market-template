@@ -84,11 +84,6 @@ describe('InvitedSignupComponent', () => {
         jest.resetAllMocks();
     });
 
-    it('should create', () => {
-        fixture.detectChanges();
-        expect(component).toBeTruthy();
-    });
-
     it('should complete destroy$ and loaderBar in ngOnDestroy hook', () => {
         fixture.detectChanges();
         jest.spyOn((component as any).destroy$, 'complete');
@@ -99,12 +94,6 @@ describe('InvitedSignupComponent', () => {
         expect((component as any).loaderBar.complete).toHaveBeenCalled();
     });
 
-    it('check rendered of invited-signup element', () => {
-        fixture.detectChanges();
-        const activateElement = fixture.debugElement.query(By.css('.signup-position'));
-        expect(activateElement).toBeTruthy();
-    });
-
     it('test ngInit call function', () => {
         jest.spyOn(component as any, 'checkSSO');
         jest.spyOn(component, 'getInviteDetails');
@@ -112,15 +101,6 @@ describe('InvitedSignupComponent', () => {
         expect((component as any).checkSSO).toHaveBeenCalled();
         expect(component.getInviteDetails).toHaveBeenCalled();
     });
-
-    it('test checkSSO call function', fakeAsync(() => {
-        fixture.detectChanges();
-        jest.spyOn((component as any).authService, 'getAuthConfig');
-        (component as any).checkSSO();
-        tick();
-        expect((component as any).authService.getAuthConfig).toHaveBeenCalled();
-        expect(router.url).toEqual('/login');
-    }));
 
     it('test getInviteDetails if token undefined then loaderBar.complete and stay on the same page', fakeAsync(() => {
         fixture.detectChanges();
@@ -367,11 +347,11 @@ describe('InvitedSignupComponent', () => {
         expect((component as any).loaderBar.complete).toBeCalled();
     }));
 
-    it('should end process if  call submitForm with bad request and trigger error', fakeAsync(() => {
+    it('should end process if call submitForm with bad request and trigger error', fakeAsync(() => {
         fixture.detectChanges();
 
-        const NativeLogin = TestBed.inject(NativeLoginService);
-        jest.spyOn(NativeLogin, 'signupByInvite');
+        const nativeLoginService = TestBed.inject(NativeLoginService);
+        jest.spyOn(nativeLoginService, 'signupByInvite');
         jest.spyOn((component as any).loaderBar, 'start');
         jest.spyOn((component as any).loaderBar, 'complete');
 
@@ -393,7 +373,7 @@ describe('InvitedSignupComponent', () => {
             password: '',
         };
 
-        NativeLogin.signupByInvite = () => throwError('Error');
+        nativeLoginService.signupByInvite = () => throwError('Error');
         component.submitForm(userData);
         tick();
         expect(component.inProcess).toBeFalsy();
@@ -402,6 +382,10 @@ describe('InvitedSignupComponent', () => {
     }));
 
     it('pass all necessary variables to the oc-signup-custom and test resultUserData event', fakeAsync(() => {
+        fixture.detectChanges();
+        const activateElement = fixture.debugElement.query(By.css('.signup-position'));
+        expect(activateElement).toBeTruthy();
+
         fixture.detectChanges();
         jest.spyOn(component, 'submitForm');
 
