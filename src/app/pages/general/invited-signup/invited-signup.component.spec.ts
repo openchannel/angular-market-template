@@ -14,7 +14,12 @@ import {
     MockUserAccountTypesService,
 } from '../../../../mock/mock';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AuthenticationService, NativeLoginService, UserAccountTypesService } from '@openchannel/angular-common-services';
+import {
+    AuthenticationService,
+    InviteUserService,
+    NativeLoginService,
+    UserAccountTypesService,
+} from '@openchannel/angular-common-services';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { OcEditUserTypeService } from '@core/services/user-type-service/user-type.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -75,6 +80,10 @@ describe('InvitedSignupComponent', () => {
         component = fixture.componentInstance;
     });
 
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
     it('should create', () => {
         fixture.detectChanges();
         expect(component).toBeTruthy();
@@ -96,30 +105,12 @@ describe('InvitedSignupComponent', () => {
         expect(activateElement).toBeTruthy();
     });
 
-    it('test ngInit; create', () => {
-        jest.spyOn(component as any, 'checkSSO');
-        jest.spyOn(component as any, 'getInviteDetails');
-        fixture.detectChanges();
-        expect((component as any).checkSSO).toHaveBeenCalled();
-        expect((component as any).getInviteDetails).toHaveBeenCalled();
-    });
-
     it('test ngInit call function', () => {
-        fixture.detectChanges();
         jest.spyOn(component as any, 'checkSSO');
-        jest.spyOn(component as any, 'getInviteDetails');
-        component.ngOnInit();
-        expect((component as any).checkSSO).toHaveBeenCalled();
-        expect((component as any).getInviteDetails).toHaveBeenCalled();
-    });
-
-    it('test ngInit call function', () => {
+        jest.spyOn(component, 'getInviteDetails');
         fixture.detectChanges();
-        jest.spyOn(component as any, 'checkSSO');
-        jest.spyOn(component as any, 'getInviteDetails');
-        component.ngOnInit();
         expect((component as any).checkSSO).toHaveBeenCalled();
-        expect((component as any).getInviteDetails).toHaveBeenCalled();
+        expect(component.getInviteDetails).toHaveBeenCalled();
     });
 
     it('test checkSSO call function', fakeAsync(() => {
@@ -131,7 +122,7 @@ describe('InvitedSignupComponent', () => {
         expect(router.url).toEqual('/login');
     }));
 
-    it('test getInviteDetails if token undefined then on loaderBar.complete and stay on the same page', fakeAsync(() => {
+    it('test getInviteDetails if token undefined then loaderBar.complete and stay on the same page', fakeAsync(() => {
         fixture.detectChanges();
         jest.spyOn((component as any).loaderBar, 'complete');
         acivateRoute.snapshot.params.token = undefined;
@@ -142,34 +133,38 @@ describe('InvitedSignupComponent', () => {
         expect(router.url).toEqual('/');
     }));
 
-    it('if bad request on server should show notification with error', fakeAsync(() => {
+    it('test getInviteDetails if bad request on server should show notification with error', fakeAsync(() => {
         fixture.detectChanges();
+        const inviteUserService = TestBed.inject(InviteUserService);
+        const toastrService = TestBed.inject(ToastrService);
         jest.spyOn(component as any, 'getInviteDetails');
-        jest.spyOn((component as any).inviteUserService, 'getUserInviteInfoByToken');
-        jest.spyOn((component as any).toaster, 'error');
+        jest.spyOn(inviteUserService, 'getUserInviteInfoByToken');
+        jest.spyOn(toastrService, 'error');
         jest.spyOn((component as any).loaderBar, 'complete');
         (component as any).inviteUserService.getUserInviteInfoByToken = () => throwError('Error');
         component.getInviteDetails();
         tick();
         expect((component as any).loaderBar.complete).toBeCalled();
-        expect((component as any).toaster.error).toBeCalled();
+        expect(toastrService.error).toBeCalled();
     }));
 
-    it('if good request to  inviteUserService and userInviteData.expireDate is Expired', fakeAsync(() => {
+    it('test getInviteDetails if good request to  inviteUserService and userInviteData.expireDate is Expired', fakeAsync(() => {
         fixture.detectChanges();
         jest.spyOn(component as any, 'getInviteDetails');
-        jest.spyOn((component as any).inviteUserService, 'getUserInviteInfoByToken');
+        const inviteUserService = TestBed.inject(InviteUserService);
+        jest.spyOn(inviteUserService, 'getUserInviteInfoByToken');
         jest.spyOn((component as any).loaderBar, 'complete');
         jest.spyOn((component as any).loaderBar, 'start');
         component.getInviteDetails();
+
         tick();
         expect((component as any).loaderBar.start).toHaveBeenCalled();
-        expect((component as any).getInviteDetails).toHaveBeenCalled();
+        expect(inviteUserService.getUserInviteInfoByToken).toHaveBeenCalled();
         expect((component as any).loaderBar.complete).toHaveBeenCalled();
         expect(component.isExpired).toBeTruthy();
     }));
 
-    it('if good request to inviteUserService and userInviteData.expireDate is not Expired', fakeAsync(() => {
+    it('test getInviteDetails if good request to inviteUserService and userInviteData.expireDate is not Expired', fakeAsync(() => {
         const mockInviteUserModelGoodResponse = {
             userInviteId: '0000012',
             userInviteTemplateId: '123123wwq2131',
@@ -191,39 +186,62 @@ describe('InvitedSignupComponent', () => {
         };
 
         fixture.detectChanges();
-        jest.spyOn((component as any).inviteUserService, 'getUserInviteInfoByToken').mockReturnValue(of(mockInviteUserModelGoodResponse));
-        jest.spyOn(component as any, 'getFormConfigs');
-        jest.spyOn(component as any, 'getInviteDetails');
-        tick();
-        component.getInviteDetails();
-
-        expect((component as any).getInviteDetails).toHaveBeenCalled();
-        expect((component as any).getFormConfigs).toHaveBeenCalled();
-    }));
-
-    it('should update formConfig and complete loaderBar if getFormConfigs userAccountTypeId!==undefined and  userAccountTypeId!=="" good request', fakeAsync(() => {
-        fixture.detectChanges();
-
-        jest.spyOn((component as any).typeService, 'getUserAccountType');
+        const inviteUserService = TestBed.inject(InviteUserService);
+        jest.spyOn(inviteUserService, 'getUserInviteInfoByToken').mockReturnValue(of(mockInviteUserModelGoodResponse));
+        jest.spyOn(component, 'getFormConfigs');
+        const uerAccountTypesService = TestBed.inject(UserAccountTypesService);
+        jest.spyOn(uerAccountTypesService, 'getUserAccountType');
         jest.spyOn(component as any, 'mapUserAccountTypeToFormConfigs');
         jest.spyOn(component as any, 'getFormConfigsWithConfiguredFields');
         jest.spyOn((component as any).loaderBar, 'complete');
 
+        //Testing scenario
+
+        // remember configs for compare with function result end-works
         const memoFormConfigs = component.formConfigs;
-        component.getFormConfigs('123123123');
 
         tick();
-        expect((component as any).typeService.getUserAccountType).toHaveBeenCalled();
+        component.getInviteDetails();
+        expect(component.getFormConfigs).toHaveBeenCalled();
+        // call getFormConfigs expected to trigger
+        expect(uerAccountTypesService.getUserAccountType).toHaveBeenCalled();
         expect((component as any).mapUserAccountTypeToFormConfigs).toHaveBeenCalled();
         expect((component as any).getFormConfigsWithConfiguredFields).toHaveBeenCalled();
         expect((component as any).loaderBar.complete).toHaveBeenCalled();
         expect(component.formConfigsLoading).toBeFalsy();
         expect(memoFormConfigs).not.toEqual(component.formConfigs);
+
+        const userAccountType = {
+            userAccountTypeId: '1312sad123',
+            createdDate: 12345678,
+            fields: [
+                {
+                    id: 'as1231321123',
+                    label: 'somelable',
+                    type: 'strongtype',
+                },
+            ],
+        };
+
+        const expampleOfReturnOcEditUserFormConfigArray = [
+            {
+                name: '',
+                account: {
+                    type: '1312sad123',
+                    typeData: { ...userAccountType },
+                    includeFields: ['as1231321123'],
+                },
+            },
+        ];
+        fixture.detectChanges();
+        const returnData = (component as any).getFormConfigsWithConfiguredFields(expampleOfReturnOcEditUserFormConfigArray);
+        expect(returnData).toEqual(expampleOfReturnOcEditUserFormConfigArray);
     }));
 
     it('should update formConfig and complete loaderBar if getFormConfigs userAccountTypeId===undefined good request', fakeAsync(() => {
         fixture.detectChanges();
-        jest.spyOn((component as any).ocEditTypeService, 'injectTypeDataIntoConfigs');
+        const ocEditUserTypeService = TestBed.inject(OcEditUserTypeService);
+        jest.spyOn(ocEditUserTypeService, 'injectTypeDataIntoConfigs');
         jest.spyOn(component as any, 'mapUserAccountTypeToFormConfigs');
         jest.spyOn(component as any, 'getFormConfigsWithConfiguredFields');
         jest.spyOn((component as any).loaderBar, 'complete');
@@ -232,7 +250,7 @@ describe('InvitedSignupComponent', () => {
         component.getFormConfigs(undefined);
 
         tick();
-        expect((component as any).ocEditTypeService.injectTypeDataIntoConfigs).toHaveBeenCalled();
+        expect(ocEditUserTypeService.injectTypeDataIntoConfigs).toHaveBeenCalled();
         expect((component as any).loaderBar.complete).toHaveBeenCalled();
         expect(component.formConfigsLoading).toBeFalsy();
         expect(memoFormConfigs).not.toEqual(component.formConfigs);
@@ -263,34 +281,6 @@ describe('InvitedSignupComponent', () => {
         ];
         fixture.detectChanges();
         const returnData = (component as any).mapUserAccountTypeToFormConfigs(userAccountType);
-        expect(returnData).toEqual(expampleOfReturnOcEditUserFormConfigArray);
-    });
-
-    it('should return valid value from getFormConfigsWithConfiguredFields', () => {
-        const userAccountType = {
-            userAccountTypeId: '1312sad123',
-            createdDate: 12345678,
-            fields: [
-                {
-                    id: 'as1231321123',
-                    label: 'somelable',
-                    type: 'strongtype',
-                },
-            ],
-        };
-
-        const expampleOfReturnOcEditUserFormConfigArray = [
-            {
-                name: '',
-                account: {
-                    type: '1312sad123',
-                    typeData: { ...userAccountType },
-                    includeFields: ['as1231321123'],
-                },
-            },
-        ];
-        fixture.detectChanges();
-        const returnData = (component as any).getFormConfigsWithConfiguredFields(expampleOfReturnOcEditUserFormConfigArray);
         expect(returnData).toEqual(expampleOfReturnOcEditUserFormConfigArray);
     });
 
@@ -339,71 +329,12 @@ describe('InvitedSignupComponent', () => {
         expect(returnData).toEqual(exampleDataForCustomData);
     });
 
-    it('test disableField should return valid value if fieldsIdsToDisable.includes(field.id)', () => {
-        let testAppFormField = {
-            id: 'customData.company',
-            type: 'some type',
-            createDate: 123123123,
-            defaultValue: '',
-            attributes: {
-                disabled: false,
-            },
-            fields: [
-                {
-                    formId: 'asda123',
-                    name: 'some name',
-                },
-            ],
-        };
-
-        const expectedResult = {
-            id: 'customData.company',
-            type: 'some type',
-            createDate: 123123123,
-            defaultValue: '',
-            attributes: { disabled: true },
-            fields: [{ formId: 'asda123', name: 'some name' }],
-        };
+    it('should show SignupFeedbackPage and end process if submitForm call with good request', fakeAsync(() => {
         fixture.detectChanges();
-        const returnData = (component as any).disableField(testAppFormField);
-        expect(returnData).toEqual(expectedResult);
-    });
-
-    it('test getConfiguredFields should call all function', () => {
-        jest.spyOn(component as any, 'disableField');
-        jest.spyOn(component as any, 'injectInviteDataToField');
-        fixture.detectChanges();
-        let testAppFormField = {
-            id: 'customData.company',
-            type: 'some type',
-            createDate: 123123123,
-            defaultValue: '',
-            attributes: {
-                disabled: false,
-            },
-            fields: [
-                {
-                    formId: 'asda123',
-                    name: 'some name',
-                },
-            ],
-        };
-
-        component.userInviteData = {
-            customData: {
-                company: 'company',
-            },
-        };
-
-        (component as any).getConfiguredFields([testAppFormField]);
-        expect((component as any).disableField).toHaveBeenCalled();
-        expect((component as any).injectInviteDataToField).toHaveBeenCalled();
-    });
-
-    it('test call submitForm with good request', fakeAsync(() => {
-        fixture.detectChanges();
-        jest.spyOn((component as any).nativeLoginService, 'signupByInvite');
-        jest.spyOn((component as any).logOutService, 'logOut');
+        const nativeLoginService = TestBed.inject(NativeLoginService);
+        const LogOut = TestBed.inject(LogOutService);
+        jest.spyOn(nativeLoginService, 'signupByInvite');
+        jest.spyOn(LogOut, 'logOut');
         jest.spyOn((component as any).loaderBar, 'start');
         jest.spyOn((component as any).loaderBar, 'complete');
 
@@ -427,18 +358,20 @@ describe('InvitedSignupComponent', () => {
 
         component.submitForm(userData);
         expect(component.inProcess).toBeTruthy();
-        expect((component as any).nativeLoginService.signupByInvite).toBeCalled();
+        expect(nativeLoginService.signupByInvite).toBeCalled();
         expect((component as any).loaderBar.start).toBeCalled();
         tick();
-        expect((component as any).logOutService.logOut).toBeCalled();
+        expect(LogOut.logOut).toBeCalled();
         expect(component.inProcess).toBeFalsy();
         expect(component.showSignupFeedbackPage).toBeTruthy();
         expect((component as any).loaderBar.complete).toBeCalled();
     }));
 
-    it('test call submitForm with bad request and trigger error', fakeAsync(() => {
+    it('should end process if  call submitForm with bad request and trigger error', fakeAsync(() => {
         fixture.detectChanges();
-        jest.spyOn((component as any).nativeLoginService, 'signupByInvite');
+
+        const NativeLogin = TestBed.inject(NativeLoginService);
+        jest.spyOn(NativeLogin, 'signupByInvite');
         jest.spyOn((component as any).loaderBar, 'start');
         jest.spyOn((component as any).loaderBar, 'complete');
 
@@ -460,7 +393,7 @@ describe('InvitedSignupComponent', () => {
             password: '',
         };
 
-        (component as any).nativeLoginService.signupByInvite = () => throwError('Error');
+        NativeLogin.signupByInvite = () => throwError('Error');
         component.submitForm(userData);
         tick();
         expect(component.inProcess).toBeFalsy();
@@ -468,18 +401,10 @@ describe('InvitedSignupComponent', () => {
         expect((component as any).loaderBar.complete).toBeCalled();
     }));
 
-    it('check trigger submitForm event', fakeAsync(() => {
+    it('pass all necessary variables to the oc-signup-custom and test resultUserData event', fakeAsync(() => {
         fixture.detectChanges();
-        const SubmitInvitedSignupComponent = InvitedSignupComponentDE().componentInstance;
         jest.spyOn(component, 'submitForm');
-        SubmitInvitedSignupComponent.resultUserData.emit(true);
-        tick();
-        expect(component.submitForm).toHaveBeenCalled();
-    }));
 
-    it('pass all necessary variables to the oc-signup-custom', () => {
-        (component as any).isExpired = true;
-        (component as any).isExpired = false;
         const userAccountType = {
             userAccountTypeId: '1312sad123',
             createdDate: 12345678,
@@ -500,11 +425,13 @@ describe('InvitedSignupComponent', () => {
                 includeFields: ['as1231321123'],
             },
         };
-        component.formConfigsLoading = true;
-        component.showSignupFeedbackPage = true;
         (component as any).formConfigs = OcEditUserFormConfig;
         fixture.detectChanges();
+        const SubmitInvitedSignupComponent = InvitedSignupComponentDE().componentInstance;
+        SubmitInvitedSignupComponent.resultUserData.emit(true);
+        tick();
+        expect(component.submitForm).toHaveBeenCalled();
         const resetPasswordInstance = InvitedSignupComponentDE().componentInstance;
         expect(resetPasswordInstance.formConfigs).toEqual(component.formConfigs);
-    });
+    }));
 });
