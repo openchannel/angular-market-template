@@ -1098,7 +1098,7 @@ export class MockNativeLoginService {
         return of(null).pipe(observeOn(asyncScheduler));
     }
 
-    resetPassword():Observable<any>{
+    resetPassword(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
     sendResetCode(): Observable<any> {
@@ -1369,6 +1369,22 @@ export class MockLogOutService {
     removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
         // do nothing
     }
+}
+
+export class MockAppFormService{
+
+}
+
+export class MockOwnershipService{
+
+}
+
+export class MockFileUploadDownloadService{
+
+}
+
+export class MockStatisticService{
+
 }
 
 export const createMockedBrowserStorage = () => {
