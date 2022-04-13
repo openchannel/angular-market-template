@@ -117,7 +117,6 @@ describe('InvitedSignupComponent', () => {
         fixture.detectChanges();
         const inviteUserService = TestBed.inject(InviteUserService);
         const toastrService = TestBed.inject(ToastrService);
-        jest.spyOn(component as any, 'getInviteDetails');
         jest.spyOn(inviteUserService, 'getUserInviteInfoByToken');
         jest.spyOn(toastrService, 'error');
         jest.spyOn((component as any).loaderBar, 'complete');
