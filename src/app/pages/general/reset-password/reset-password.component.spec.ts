@@ -1,24 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync, tick, fakeAsync } from '@angular/core/testing';
-
 import { ResetPasswordComponent } from './reset-password.component';
-
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {
-    MockNativeLoginService,
-    MockNgbModal,
-    MockOcResetPasswordComponent,
-    MockRoutingComponent,
-    MockToastrService,
-} from '../../../../mock/mock';
-
 import { RouterTestingModule } from '@angular/router/testing';
-
-import { ToastrService } from 'ngx-toastr';
-import { NativeLoginService } from '@openchannel/angular-common-services';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-
 import { throwError } from 'rxjs';
+import { MockOcResetPasswordComponent, MockRoutingComponent } from '../../../../mock/components.mock';
+import { mockNativeLoginService, mockNgbModal, mockToastrService } from '../../../../mock/providers.mock';
 
 describe('ResetPasswordComponent', () => {
     let component: ResetPasswordComponent;
@@ -40,11 +27,7 @@ describe('ResetPasswordComponent', () => {
                         },
                     ]),
                 ],
-                providers: [
-                    { provide: NgbModal, useClass: MockNgbModal },
-                    { provide: ToastrService, useClass: MockToastrService },
-                    { provide: NativeLoginService, useClass: MockNativeLoginService },
-                ],
+                providers: [mockNgbModal(), mockToastrService(), mockNativeLoginService()],
             }).compileComponents();
             router = TestBed.inject(Router);
             router.navigate(['/'], { queryParams: { token: tokenValue } });
