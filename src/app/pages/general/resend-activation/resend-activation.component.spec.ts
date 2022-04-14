@@ -3,13 +3,12 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { ResendActivationComponent } from './resend-activation.component';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NativeLoginService } from '@openchannel/angular-common-services';
-import { MockNativeLoginService, MockResendActivation, MockRoutingComponent, MockToastrService } from '../../../../mock/mock';
 import { asyncScheduler, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
-import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
 import { observeOn } from 'rxjs/operators';
+import { MockResendActivation, MockRoutingComponent } from '../../../../mock/components.mock';
+import { mockNativeLoginService, mockToastrService } from '../../../../mock/providers.mock';
 
 describe('ResendActivationComponent', () => {
     let component: ResendActivationComponent;
@@ -28,10 +27,7 @@ describe('ResendActivationComponent', () => {
                     { path: 'resend-activation', component: ResendActivationComponent },
                 ]),
             ],
-            providers: [
-                { provide: NativeLoginService, useClass: MockNativeLoginService },
-                { provide: ToastrService, useClass: MockToastrService },
-            ],
+            providers: [mockNativeLoginService(), mockToastrService()],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ResendActivationComponent);
