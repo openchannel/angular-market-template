@@ -1,28 +1,22 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
-import {
-    createMockedBrowserStorage,
-    MockAuthenticationService,
-    MockAuthHolderService,
-    MockCmsContentService,
-    MockLoadingBarService,
-    MockLoginRequest,
-    MockNativeLoginService,
-    MockOAuthService,
-    MockOcLoginComponent,
-    MockRoutingComponent,
-    MockToastrService,
-} from '../../../../mock/mock';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { AuthenticationService, AuthHolderService, NativeLoginService, SiteAuthConfig } from '@openchannel/angular-common-services';
+import { SiteAuthConfig } from '@openchannel/angular-common-services';
 import { Location } from '@angular/common';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { ToastrService } from 'ngx-toastr';
-import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { createMockedBrowserStorage, MockLoginRequest } from '../../../../mock/services.mock';
+import { MockOcLoginComponent, MockRoutingComponent } from '../../../../mock/components.mock';
+import {
+    mockAuthenticationService,
+    mockAuthHolderService,
+    mockCmsContentService,
+    mockLoadingBarService,
+    mockNativeLoginService,
+    mockOAuthService,
+    mockToastrService,
+} from '../../../../mock/providers.mock';
 
 jest.doMock('@openchannel/angular-common-services', () => ({
     ...jest.requireActual('@openchannel/angular-common-services'),
@@ -44,13 +38,13 @@ describe('LoginComponent', () => {
                 declarations: [LoginComponent, MockOcLoginComponent, MockRoutingComponent],
                 imports: [RouterTestingModule.withRoutes([{ path: '', component: MockRoutingComponent }])],
                 providers: [
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: AuthHolderService, useClass: MockAuthHolderService },
-                    { provide: OAuthService, useClass: MockOAuthService },
-                    { provide: AuthenticationService, useClass: MockAuthenticationService },
-                    { provide: NativeLoginService, useClass: MockNativeLoginService },
-                    { provide: ToastrService, useClass: MockToastrService },
-                    { provide: CmsContentService, useClass: MockCmsContentService },
+                    mockLoadingBarService(),
+                    mockAuthHolderService(),
+                    mockOAuthService(),
+                    mockAuthenticationService(),
+                    mockNativeLoginService(),
+                    mockToastrService(),
+                    mockCmsContentService(),
                 ],
             }).compileComponents();
 

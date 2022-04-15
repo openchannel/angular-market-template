@@ -1,19 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 
 import { ChangePasswordComponent } from './change-password.component';
-import { AuthHolderService, NativeLoginService } from '@openchannel/angular-common-services';
-import {
-    MockAuthHolderService,
-    MockButtonComponent,
-    MockFormComponent,
-    MockNativeLoginService,
-    MockToastrService,
-} from '../../../../../mock/mock';
 import { asyncScheduler, of, throwError } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup } from '@angular/forms';
 import { observeOn } from 'rxjs/operators';
 import { By } from '@angular/platform-browser';
+import { MockButtonComponent, MockFormComponent } from '../../../../../mock/components.mock';
+import { mockAuthHolderService, mockNativeLoginService, mockToastrService } from '../../../../../mock/providers.mock';
 
 describe('ChangePasswordComponent', () => {
     let component: ChangePasswordComponent;
@@ -30,11 +23,7 @@ describe('ChangePasswordComponent', () => {
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [ChangePasswordComponent, MockButtonComponent, MockFormComponent],
-                providers: [
-                    { provide: NativeLoginService, useClass: MockNativeLoginService },
-                    { provide: AuthHolderService, useClass: MockAuthHolderService },
-                    { provide: ToastrService, useClass: MockToastrService },
-                ],
+                providers: [mockNativeLoginService(), mockAuthHolderService(), mockToastrService()],
             }).compileComponents();
         }),
     );

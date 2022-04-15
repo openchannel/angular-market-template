@@ -2,6 +2,9 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 
 import { MyProfileComponent } from './my-profile.component';
 import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+import { PaymentsGateways } from '@openchannel/angular-common-services';
 import {
     MockBillingComponent,
     MockBillingHistoryComponent,
@@ -9,10 +12,7 @@ import {
     MockGeneralProfileComponent,
     MockPageTitleComponent,
     MockRoutingComponent,
-} from '../../../../mock/mock';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
-import { PaymentsGateways } from '@openchannel/angular-common-services';
+} from '../../../../mock/components.mock';
 
 // Default site config that is used to reset mockSiteConfig before each test
 const mockSiteConfigDefault = Object.freeze({ paymentsEnabled: true, paymentsGateway: PaymentsGateways.STRIPE });

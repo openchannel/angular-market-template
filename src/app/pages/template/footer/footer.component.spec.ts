@@ -1,11 +1,11 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { FooterComponent } from './footer.component';
-import { MockCmsContentService, MockSocialLinks } from '../../../../mock/mock';
-import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import { MockSocialLinks } from '../../../../mock/components.mock';
+import { mockCmsContentService } from '../../../../mock/providers.mock';
 
 describe('FooterComponent', () => {
     let component: FooterComponent;
@@ -17,7 +17,7 @@ describe('FooterComponent', () => {
         TestBed.configureTestingModule({
             declarations: [FooterComponent, MockSocialLinks],
             imports: [RouterTestingModule],
-            providers: [{ provide: CmsContentService, useClass: MockCmsContentService }],
+            providers: [mockCmsContentService()],
         }).compileComponents();
 
         fixture = TestBed.createComponent(FooterComponent);

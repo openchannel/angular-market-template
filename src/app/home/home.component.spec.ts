@@ -2,32 +2,32 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 
 import { HomeComponent } from './home.component';
 import { Router } from '@angular/router';
-import {
-    MockAppCategoriesComponent,
-    MockAppGalleryComponent,
-    MockAppGetStartedComponent,
-    MockAppsService,
-    MockCmsContentService,
-    MockCollapseWithTitleComponent,
-    MockFeaturedAppsComponent,
-    MockFrontendService,
-    MockLoadingBarService,
-    MockRoutingComponent,
-    MockSidebarComponent,
-    MockSiteConfigService,
-    MockTextSearchComponent,
-    MockTitleService,
-} from '../../mock/mock';
-import { LoadingBarService } from '@ngx-loading-bar/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
-import { AppsService, FrontendService, SiteConfigService, TitleService } from '@openchannel/angular-common-services';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FullAppData } from '@openchannel/angular-common-components/src/lib/common-components';
 import { pageConfig } from '../../assets/data/configData';
 import { By } from '@angular/platform-browser';
-import { get } from 'lodash';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { MockAppsService, MockFrontendService } from '../../mock/services.mock';
+import {
+    MockAppCategoriesComponent,
+    MockAppGalleryComponent,
+    MockAppGetStartedComponent,
+    MockCollapseWithTitleComponent,
+    MockFeaturedAppsComponent,
+    MockRoutingComponent,
+    MockSidebarComponent,
+    MockTextSearchComponent,
+} from '../../mock/components.mock';
+import {
+    mockAppsService,
+    mockCmsContentService,
+    mockFrontendService,
+    mockLoadingBarService,
+    mockSiteConfigService,
+    mockTitleService,
+} from '../../mock/providers.mock';
 
 const sortById = (a, b) => a.id.localeCompare(b.id);
 
@@ -58,12 +58,12 @@ describe('HomeComponent', () => {
                     ]),
                 ],
                 providers: [
-                    { provide: AppsService, useClass: MockAppsService },
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: FrontendService, useClass: MockFrontendService },
-                    { provide: SiteConfigService, useClass: MockSiteConfigService },
-                    { provide: TitleService, useClass: MockTitleService },
-                    { provide: CmsContentService, useClass: MockCmsContentService },
+                    mockAppsService(),
+                    mockLoadingBarService(),
+                    mockFrontendService(),
+                    mockSiteConfigService(),
+                    mockTitleService(),
+                    mockCmsContentService(),
                 ],
             }).compileComponents();
             router = TestBed.inject(Router);
@@ -135,33 +135,35 @@ describe('HomeComponent', () => {
         expect(component.gallery.length).toBe(0);
     });
 
-    it('should set correct cmsData in initCMSData', () => {
-        const namePathMap = {
-            pageInfoTitle: 'big-hero.title',
-            pageInfoSubtext: 'big-hero.subtext',
-            bottomCalloutHeader: 'content-callout.title',
-            bottomCalloutImageURL: 'content-callout.image',
-            bottomCalloutDescription: 'content-callout.body',
-            bottomCalloutButtonText: 'content-callout.button.text',
-            bottomCalloutButtonLocation: 'content-callout.button.location',
+    it('should set correct cmsData in initCMSData', fakeAsync(() => {
+        const cmsService = TestBed.inject(CmsContentService);
+        const mockedResult = {
+            pageInfoTitle: 'Your App Directory',
+            pageInfoSubtext: 'A default design template for implementing your app directory with OpenChannel',
+            bottomCalloutHeader: 'List your app in our app directory',
+            bottomCalloutDescription: 'Register as an app developer and submit your app easily with our Developer Portal',
+            bottomCalloutButtonText: 'Get started as an app developer',
+            bottomCalloutButtonLocation: '',
+            bottomCalloutImageURL: 'assets/img/get-started.svg',
         };
 
-        component.cmsData = {
-            pageInfoTitle: '',
-            pageInfoSubtext: '',
-            bottomCalloutHeader: '',
-            bottomCalloutImageURL: '',
-            bottomCalloutDescription: '',
-            bottomCalloutButtonText: '',
-            bottomCalloutButtonLocation: '',
-        };
+        jest.spyOn(cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
 
         component.initCMSData();
 
-        Object.entries(namePathMap).forEach(([name, path]) => {
-            expect(component.cmsData[name]).toBe(get(MockCmsContentService.CMS_DATA, path));
-        });
-    });
+        fixture.detectChanges();
+
+        const pageTitle = fixture.debugElement.query(By.css('.page-title')).nativeElement;
+        const pageDescription = fixture.debugElement.query(By.css('.page-description')).nativeElement;
+        const getStartedInstance = fixture.debugElement.query(By.directive(MockAppGetStartedComponent)).componentInstance;
+
+        expect(pageTitle.textContent).toBe(component.cmsData.pageInfoTitle);
+        expect(pageDescription.textContent).toBe(component.cmsData.pageInfoSubtext);
+        expect(getStartedInstance.getStartedImage).toBe(component.cmsData.bottomCalloutImageURL);
+        expect(getStartedInstance.getStartedHeader).toBe(component.cmsData.bottomCalloutHeader);
+        expect(getStartedInstance.getStartedDescription).toBe(component.cmsData.bottomCalloutDescription);
+        expect(getStartedInstance.getStartedButtonText).toBe(component.cmsData.bottomCalloutButtonText);
+    }));
 
     it('should set correct categoriesData and categories in getCategoriesToExplore', () => {
         component.categoriesData = [];
@@ -200,19 +202,6 @@ describe('HomeComponent', () => {
 
         expect(component.categoriesData.length).toBe(0);
         expect(component.categories.length).toBe(0);
-    });
-
-    it('should use cmsData in template', () => {
-        const pageTitle = fixture.debugElement.query(By.css('.page-title')).nativeElement;
-        const pageDescription = fixture.debugElement.query(By.css('.page-description')).nativeElement;
-        const getStartedInstance = fixture.debugElement.query(By.directive(MockAppGetStartedComponent)).componentInstance;
-
-        expect(pageTitle.textContent).toBe(component.cmsData.pageInfoTitle);
-        expect(pageDescription.textContent).toBe(component.cmsData.pageInfoSubtext);
-        expect(getStartedInstance.getStartedImage).toBe(component.cmsData.bottomCalloutImageURL);
-        expect(getStartedInstance.getStartedHeader).toBe(component.cmsData.bottomCalloutHeader);
-        expect(getStartedInstance.getStartedDescription).toBe(component.cmsData.bottomCalloutDescription);
-        expect(getStartedInstance.getStartedButtonText).toBe(component.cmsData.bottomCalloutButtonText);
     });
 
     it('should render featured apps only if featuredApp is not empty', () => {

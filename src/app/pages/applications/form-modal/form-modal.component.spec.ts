@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormModalComponent } from './form-modal.component';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { MockButtonComponent, MockFormComponent, MockNgbActiveModal } from '../../../../mock/mock';
 import { By } from '@angular/platform-browser';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MockButtonComponent, MockFormComponent } from '../../../../mock/components.mock';
+import { mockNgbActiveModal } from '../../../../mock/providers.mock';
 
 describe('FormModalComponent', () => {
     let component: FormModalComponent;
@@ -20,7 +20,7 @@ describe('FormModalComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [FormModalComponent, MockFormComponent, MockButtonComponent],
-            providers: [{ provide: NgbActiveModal, useClass: MockNgbActiveModal }],
+            providers: [mockNgbActiveModal()],
         }).compileComponents();
 
         fixture = TestBed.createComponent(FormModalComponent);

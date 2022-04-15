@@ -1,22 +1,21 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { BillingHistoryComponent } from './billing-history.component';
+
+import { Transaction } from '@openchannel/angular-common-services';
+import { of, throwError } from 'rxjs';
+import { TestScheduler } from 'rxjs/testing';
+import { By } from '@angular/platform-browser';
+import { MockAppsService, MockTransactionsService } from '../../../../../mock/services.mock';
 import {
-    MockAppsService,
-    MockAppTableComponent,
-    MockLoadingBarService,
     MockNgbDropdownDirective,
     MockNgbDropdownItemDirective,
     MockNgbDropdownMenuDirective,
     MockNgbDropdownToggleDirective,
-    MockTransactionAmountPipe,
-    MockTransactionsService,
-} from '../../../../../mock/mock';
-import { AppsService, Transaction, TransactionsService } from '@openchannel/angular-common-services';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { of, throwError } from 'rxjs';
-import { TestScheduler } from 'rxjs/testing';
-import { By } from '@angular/platform-browser';
+} from '../../../../../mock/directives.mock';
+import { MockAppTableComponent } from '../../../../../mock/components.mock';
+import { MockTransactionAmountPipe } from '../../../../../mock/pipes.mock';
+import { mockAppsService, mockLoadingBarService, mockTransactionsService } from '../../../../../mock/providers.mock';
 
 describe('BillingHistoryComponent', () => {
     const getTableDE = () => fixture.debugElement.query(By.directive(MockAppTableComponent));
@@ -39,11 +38,7 @@ describe('BillingHistoryComponent', () => {
                 MockNgbDropdownToggleDirective,
                 MockNgbDropdownItemDirective,
             ],
-            providers: [
-                { provide: AppsService, useClass: MockAppsService },
-                { provide: TransactionsService, useClass: MockTransactionsService },
-                { provide: LoadingBarService, useClass: MockLoadingBarService },
-            ],
+            providers: [mockAppsService(), mockTransactionsService(), mockLoadingBarService()],
         }).compileComponents();
     });
 
