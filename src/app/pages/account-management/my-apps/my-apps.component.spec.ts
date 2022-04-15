@@ -1,26 +1,18 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 
 import { MyAppsComponent } from './my-apps.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { MockAppShortInfoComponent, MockButtonActionComponent, MockDropdownComponent, MockRoutingComponent } from 'mock/components.mock';
+import { MockFrontendService } from '../../../../mock/services.mock';
 import {
-    MockAppShortInfoComponent,
-    MockAppsService,
-    MockButtonActionComponent,
-    MockButtonActionService,
-    MockDropdownComponent,
-    MockFrontendService,
     MockInfiniteScrollDirective,
-    MockLoadingBarService,
     MockNgbDropdownDirective,
     MockNgbDropdownMenuDirective,
     MockNgbDropdownToggleDirective,
-    MockRoutingComponent,
-} from '../../../../mock/mock';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AppsService, FrontendService } from '@openchannel/angular-common-services';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { By } from '@angular/platform-browser';
-import { Router } from '@angular/router';
-import { ButtonActionService } from '@features/button-action/button-action.service';
+} from '../../../../mock/directives.mock';
+import { mockAppsService, mockButtonActionService, mockFrontendService, mockLoadingBarService } from '../../../../mock/providers.mock';
 
 describe('MyAppsComponent', () => {
     let component: MyAppsComponent;
@@ -49,12 +41,7 @@ describe('MyAppsComponent', () => {
                         },
                     ]),
                 ],
-                providers: [
-                    { provide: AppsService, useClass: MockAppsService },
-                    { provide: FrontendService, useClass: MockFrontendService },
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: ButtonActionService, useClass: MockButtonActionService },
-                ],
+                providers: [mockAppsService(), mockFrontendService(), mockLoadingBarService(), mockButtonActionService()],
             }).compileComponents();
             router = TestBed.inject(Router);
         }),

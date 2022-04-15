@@ -1,47 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ManagementComponent } from './management.component';
-import {
-    mockInviteUserServiceProvider,
-    mockInviteUserAccountServiceProvider,
-    mockUserServiceProvider,
-    mockToastrService,
-    mockUserRoleServiceProvider,
-    MockOcMenuUserGridComponent,
-    MockUserRoleService,
-} from '../../../../../mock/mock';
 import { Observable, of, throwError } from 'rxjs';
 import { UserAccount } from '@openchannel/angular-common-services';
-import { ManagementModalService } from './management-modal.service';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 import { times } from 'lodash';
-
-class MockManagementModalService {
-    openDeleteInviteModal(): Observable<boolean> {
-        return null;
-    }
-
-    openDeleteCurrentUserAccountModal(): Observable<boolean> {
-        return null;
-    }
-
-    openDeleteAnotherUserAccountModal(): Observable<boolean> {
-        return null;
-    }
-
-    openEditUserAccountModal(userAccount: UserAccount): Observable<boolean> {
-        return null;
-    }
-
-    openEditUserInviteModal(userInvite: UserAccount): Observable<boolean> {
-        return null;
-    }
-}
-
-jest.mock('./management-modal.service', () => {
-    class ManagementModalService {}
-    return { ManagementModalService };
-});
+import {
+    mockInviteUserAccountServiceProvider,
+    mockInviteUserServiceProvider,
+    mockManagementModalService,
+    mockToastrService,
+    mockUserRoleServiceProvider,
+    mockUserServiceProvider,
+} from '../../../../../mock/providers.mock';
+import { MockUserRoleService } from '../../../../../mock/services.mock';
+import { MockOcMenuUserGridComponent } from '../../../../../mock/components.mock';
 
 describe('ManagementComponent', () => {
     let component: ManagementComponent;
@@ -75,7 +48,7 @@ describe('ManagementComponent', () => {
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 providers: [
-                    { provide: ManagementModalService, useClass: MockManagementModalService },
+                    mockManagementModalService(),
                     mockUserServiceProvider(),
                     mockUserRoleServiceProvider(),
                     mockToastrService(),
@@ -105,6 +78,7 @@ describe('ManagementComponent', () => {
         jest.spyOn((component as any).destroy$, 'complete');
         jest.spyOn((component as any).loader, 'complete');
 
+        // tslint:disable-next-line:no-lifecycle-call
         component.ngOnDestroy();
         fixture.detectChanges();
 
