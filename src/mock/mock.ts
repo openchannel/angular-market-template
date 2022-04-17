@@ -628,6 +628,12 @@ export class MockNgbModal {
         MockNgbModal.ACTIVE_MODALS.push(newModal);
         return newModal;
     }
+    hasOpenModals(): any {
+        const newModal = new MockNgbModalRef();
+        MockNgbModal.ACTIVE_MODALS.push(newModal);
+        return newModal;
+    }
+    dismissAll(): any {}
 }
 
 export class MockToastrService {
@@ -1371,20 +1377,39 @@ export class MockLogOutService {
     }
 }
 
-export class MockAppFormService{
-
+export class MockAppFormService {
+    getForm(): Observable<any> {
+        return of(1).pipe(observeOn(asyncScheduler));
+    }
+    createFormSubmission(): Observable<any> {
+        return of(1).pipe(observeOn(asyncScheduler));
+    }
 }
 
-export class MockOwnershipService{
+export class MockOwnershipService {
+    installOwnership(): Observable<any> {
+        return of('1');
+    }
 
+    uninstallOwnership(): Observable<any> {
+        return of('1');
+    }
 }
 
-export class MockFileUploadDownloadService{
+export class MockFileUploadDownloadService {
+    downloadFileDetails(): Observable<any> {
+        return of('1');
+    }
 
+    getFileUrl(): Observable<any> {
+        return of('1');
+    }
 }
 
-export class MockStatisticService{
-
+export class MockStatisticService {
+    record(): Observable<any> {
+        return of('1');
+    }
 }
 
 export const createMockedBrowserStorage = () => {
