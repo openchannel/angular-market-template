@@ -4,15 +4,15 @@ import { InvitedSignupComponent } from './invited-signup.component';
 import {
     MockAuthenticationService,
     MockEditUserTypeService,
-    mockInviteUserServiceProvider,
     MockLoadingBarService,
     MockLogOutService,
     MockNativeLoginService,
-    MockRoutingComponent,
-    MockSignupCustom,
     MockToastrService,
     MockUserAccountTypesService,
-} from '../../../../mock/mock';
+} from '../../../../mock/services.mock';
+import { mockInviteUserServiceProvider } from '../../../../mock/providers.mock';
+import { MockRoutingComponent, MockSignupCustom } from '../../../../mock/components.mock';
+
 import { RouterTestingModule } from '@angular/router/testing';
 import {
     AuthenticationService,
