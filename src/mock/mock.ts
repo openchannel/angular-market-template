@@ -1,5 +1,6 @@
 import { Component, Directive, EventEmitter, Input, Output, Provider, Pipe, PipeTransform, TemplateRef } from '@angular/core';
-import { asyncScheduler, Observable, of, Subject } from 'rxjs';
+import { asyncScheduler, Observable, of, Subject, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import {
     Page,
     Permission,
@@ -1408,7 +1409,7 @@ export class MockFileUploadDownloadService {
 
 export class MockStatisticService {
     record(): Observable<any> {
-        return of('1');
+        return of('1').pipe(observeOn(asyncScheduler), catchError(error => throwError(error)));
     }
 }
 
