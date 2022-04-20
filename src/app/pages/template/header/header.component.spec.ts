@@ -2,43 +2,37 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 
 import { HeaderComponent } from './header.component';
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
-import {
-    MockAuthenticationService,
-    MockAuthHolderService,
-    MockCmsContentService,
-    MockLogOutService,
-    MockOcProfileNavbar,
-    MockPermissionDirective,
-    MockRoutingComponent,
-    MockSvgIconComponent,
-} from '../../../../mock/mock';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthenticationService, AuthHolderService } from '@openchannel/angular-common-services';
+import { AuthHolderService } from '@openchannel/angular-common-services';
 import { LogOutService } from '@core/services/logout-service/log-out.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
 import { By } from '@angular/platform-browser';
 import { siteConfig } from 'assets/data/siteConfig';
 import { RouterTestingModule } from '@angular/router/testing';
+import {
+    mockAuthenticationService,
+    mockAuthHolderService,
+    mockCmsContentService,
+    mockLogOutService,
+} from '../../../../mock/providers.mock';
+import { MockPermissionDirective } from '../../../../mock/directives.mock';
+import { MockOcProfileNavbar, MockRoutingComponent, MockSvgIconComponent } from '../../../../mock/components.mock';
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
     let fixture: ComponentFixture<HeaderComponent>;
     let router: Router;
     let location: Location;
+    let authHolderService;
 
     const getMockProfileNavbar = () => fixture.debugElement.query(By.directive(MockOcProfileNavbar));
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [HeaderComponent, MockRoutingComponent, MockOcProfileNavbar, MockPermissionDirective, MockSvgIconComponent],
-            providers: [
-                { provide: CmsContentService, useClass: MockCmsContentService },
-                { provide: AuthHolderService, useClass: MockAuthHolderService },
-                { provide: AuthenticationService, useClass: MockAuthenticationService },
-                { provide: LogOutService, useClass: MockLogOutService },
-            ],
+            providers: [mockCmsContentService(), mockAuthHolderService(), mockAuthenticationService(), mockLogOutService()],
             imports: [RouterTestingModule, NgbModule],
         }).compileComponents();
 
@@ -49,6 +43,7 @@ describe('HeaderComponent', () => {
 
         router = TestBed.inject(Router);
         location = TestBed.inject(Location);
+        authHolderService = TestBed.inject(AuthHolderService);
     });
 
     it('should create', () => {
@@ -68,7 +63,6 @@ describe('HeaderComponent', () => {
 
     it('should set correct data in ngOnInit', fakeAsync(() => {
         const cmsService = TestBed.inject(CmsContentService);
-        const authHolderService = TestBed.inject(AuthHolderService);
 
         const mockedResult = {
             headerLogoURL: 'assets/img/logo-company.png',
@@ -85,7 +79,7 @@ describe('HeaderComponent', () => {
         };
 
         jest.spyOn(cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
-        jest.spyOn(component, 'initCMSData');
+        jest.spyOn(component as any, 'initCMSData');
 
         fixture.detectChanges();
         tick();
@@ -93,7 +87,7 @@ describe('HeaderComponent', () => {
         expect(component.isBilling).toEqual(siteConfig.paymentsEnabled);
         expect(component.isSSO).toEqual(authHolderService.userDetails.isSSO);
 
-        expect(component.initCMSData).toBeCalled();
+        expect((component as any).initCMSData).toBeCalled();
 
         expect(component.cmsData.headerLogoURL).toBe(mockedResult.headerLogoURL);
         expect(component.cmsData.headerItemsDFA).toStrictEqual(mockedResult.headerItemsDFA);
@@ -118,6 +112,46 @@ describe('HeaderComponent', () => {
 
         expect(logOut.logOutAndRedirect).toBeCalledWith('/');
     }));
+
+    it('should not display collapseMoreContentBlock because *ngIf', () => {
+        const collapseMoreContentBlock = fixture.debugElement.query(By.css('#collapsMoreContent'));
+
+        jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(false);
+
+        expect(collapseMoreContentBlock).toBeNull();
+    });
+
+    it('should check template for *ngIf work', () => {
+        component.isSSO = false;
+        component.isCollapsed = false;
+        let navLink;
+
+        fixture.detectChanges();
+
+        const collapseMoreContentBlock = fixture.debugElement.query(By.css('#collapsMoreContent'));
+        navLink = fixture.debugElement.query(By.css('a[routerLink="/my-profile/profile-details"'));
+        const iconBlock = fixture.debugElement.query(By.css('.navbar-wrapper .cursor-pointer'));
+
+        jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
+
+        expect(navLink).not.toBeNull();
+        expect(collapseMoreContentBlock).not.toBeNull();
+        expect(iconBlock.nativeElement.classList).toContain('close-icon');
+
+        navLink.triggerEventHandler('click', {});
+
+        fixture.detectChanges();
+
+        expect(iconBlock.nativeElement.classList).toContain('navbar-icon');
+
+        component.isSSO = true;
+
+        fixture.detectChanges();
+
+        navLink = fixture.debugElement.query(By.css('a[routerLink="/my-profile/profile-details"'));
+
+        expect(navLink).toBeNull();
+    });
 
     it('closeMenu() should set isMenuCollapsed and isCollapsed to true', () => {
         component.isMenuCollapsed = false;
