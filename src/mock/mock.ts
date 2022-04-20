@@ -1388,8 +1388,8 @@ export class MockAppFormService {
 }
 
 export class MockOwnershipService {
-    installOwnership(): Observable<any> {
-        return of('1');
+    installOwnership(...args: any): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
     }
 
     uninstallOwnership(): Observable<any> {
@@ -1409,7 +1409,7 @@ export class MockFileUploadDownloadService {
 
 export class MockStatisticService {
     record(): Observable<any> {
-        return of('1').pipe(observeOn(asyncScheduler), catchError(error => throwError(error)));
+        return of().pipe( catchError(error => throwError(error)));
     }
 }
 

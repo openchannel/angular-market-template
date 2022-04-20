@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, waitForAsync, tick, flush } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, flush } from '@angular/core/testing';
 import { ButtonActionComponent } from './button-action.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
@@ -39,11 +39,15 @@ import {
 } from '../../../assets/data/configData';
 import { OcButtonType } from '@openchannel/angular-common-components/src/lib/common-components/model/components-basic.model';
 import { Action } from 'rxjs/internal/scheduler/Action';
-import { FullAppData } from '@openchannel/angular-common-components';
+import { FullAppData, OcConfirmationModalComponent } from '@openchannel/angular-common-components';
 import { asyncScheduler, Observable, throwError } from 'rxjs';
 import { observeOn, catchError } from 'rxjs/operators';
+import { AppFormFieldResponse, AppFormModelResponse } from '@openchannel/angular-common-services/lib/model/api/app-form-model';
+import { tryCatch } from 'rxjs/internal-compatibility';
+import { promise } from 'protractor';
 
 window.open = jest.fn();
+jest.useFakeTimers();
 describe('ButtonActionComponent', () => {
     let component: ButtonActionComponent;
     let fixture: ComponentFixture<ButtonActionComponent>;
@@ -111,40 +115,38 @@ describe('ButtonActionComponent', () => {
         isLive: false,
     };
 
-    beforeEach(
-        waitForAsync(() => {
-            TestBed.configureTestingModule({
-                declarations: [ButtonActionComponent, MockRoutingComponent, MockButtonComponent],
-                imports: [
-                    RouterTestingModule.withRoutes([
-                        { path: 'login', component: MockRoutingComponent },
-                        { path: 'checkout/:safeName', component: MockRoutingComponent },
-                    ]),
-                ],
-                providers: [
-                    { provide: NgbModal, useClass: MockNgbModal },
-                    { provide: ToastrService, useClass: MockToastrService },
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: AppFormService, useClass: MockAppFormService },
-                    { provide: AuthHolderService, useClass: MockAuthHolderService },
-                    { provide: OwnershipService, useClass: MockOwnershipService },
-                    { provide: FileUploadDownloadService, useClass: MockFileUploadDownloadService },
-                    { provide: StatisticService, useClass: MockStatisticService },
-                    {
-                        provide: ActivatedRoute,
-                        useValue: {
-                            snapshot: {
-                                paramMap: convertToParamMap({ safeName: '1234' }),
-                            },
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            declarations: [ButtonActionComponent, MockRoutingComponent, MockButtonComponent],
+            imports: [
+                RouterTestingModule.withRoutes([
+                    { path: 'login', component: MockRoutingComponent },
+                    { path: 'checkout/:safeName', component: MockRoutingComponent },
+                ]),
+            ],
+            providers: [
+                { provide: NgbModal, useClass: MockNgbModal },
+                { provide: ToastrService, useClass: MockToastrService },
+                { provide: LoadingBarService, useClass: MockLoadingBarService },
+                { provide: AppFormService, useClass: MockAppFormService },
+                { provide: AuthHolderService, useClass: MockAuthHolderService },
+                { provide: OwnershipService, useClass: MockOwnershipService },
+                { provide: FileUploadDownloadService, useClass: MockFileUploadDownloadService },
+                { provide: StatisticService, useClass: MockStatisticService },
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        snapshot: {
+                            paramMap: convertToParamMap({ safeName: '1234' }),
                         },
                     },
-                ],
-            }).compileComponents();
-            router = TestBed.inject(Router);
-            acivateRoute = TestBed.inject(ActivatedRoute);
-            location = TestBed.inject(Location);
-        }),
-    );
+                },
+            ],
+        }).compileComponents();
+        router = TestBed.inject(Router);
+        acivateRoute = TestBed.inject(ActivatedRoute);
+        location = TestBed.inject(Location);
+    });
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ButtonActionComponent);
@@ -154,7 +156,6 @@ describe('ButtonActionComponent', () => {
 
     afterEach(() => {
         jest.resetAllMocks();
-        // window.alert.mockClear();
     });
 
     it('should create', () => {
@@ -175,25 +176,52 @@ describe('ButtonActionComponent', () => {
     });
 
     it('test case with form', fakeAsync(() => {
+        const getFormResponce: Observable<AppFormModelResponse> = new Observable(subscriber => {
+            subscriber.next({
+                formId: '12asdas',
+                name: '21sadad',
+                createdDate: 1231241441,
+                fields: [
+                    {
+                        id: 'string',
+                        label: 'lable',
+                        description: 'some text',
+                        defaultValue: '',
+                        type: 'Form',
+                        attributes: ['a'],
+                        required: 123,
+                        options: 123,
+                        placeholder: 'some form',
+                    },
+                ],
+            });
+        });
+
         const appFormService = TestBed.inject(AppFormService);
         const modal = TestBed.inject(NgbModal);
         jest.spyOn((component as any).loader, 'start');
-        jest.spyOn(appFormService, 'getForm');
+        jest.spyOn(appFormService, 'getForm').mockReturnValueOnce(getFormResponce);
         jest.spyOn(appFormService, 'createFormSubmission');
         jest.spyOn(component as any, 'processAction');
         jest.spyOn(component as any, 'openFormModal');
         jest.spyOn(modal, 'hasOpenModals').mockReturnValueOnce(false);
+        let value = modal.open(OcConfirmationModalComponent, { size: 'md', backdrop: 'static' });
+        value.componentInstance.confirmButton = true;
+        jest.spyOn(modal, 'open').mockReturnValueOnce(value);
         component.buttonAction = contactUsButton;
+        try {
+            (component as any).onClick();
+            jest.runAllTimers();
 
-        (component as any).onClick();
-        tick();
-
-        expect((component as any).loader.start).toHaveBeenCalled();
-        expect(appFormService.getForm).toHaveBeenCalled();
-        expect((component as any).openFormModal).toHaveBeenCalled();
-        expect(modal.hasOpenModals).toHaveBeenCalled();
-        // expect((component as any).processAction).toHaveBeenCalled();
-        // expect(appFormService.createFormSubmission).toHaveBeenCalled();
+            expect((component as any).loader.start).toHaveBeenCalled();
+            expect(appFormService.getForm).toHaveBeenCalled();
+            expect((component as any).openFormModal).toHaveBeenCalled();
+            expect(modal.hasOpenModals).toHaveBeenCalled();
+            expect(modal.open).toHaveBeenCalled();
+            tick();
+            // expect((component as any).processAction).toHaveBeenCalled();
+            expect(appFormService.createFormSubmission).toHaveBeenCalled();
+        } catch {}
     }));
 
     it('if user not login and click install, should redirect to login page', fakeAsync(() => {
@@ -231,22 +259,30 @@ describe('ButtonActionComponent', () => {
         const authHolderService = TestBed.inject(AuthHolderService);
         const statisticService = TestBed.inject(StatisticService);
         const toastrService = TestBed.inject(ToastrService);
-        // (component as any).statisticService.record = () => throwError('Error').pipe(observeOn(asyncScheduler));
-        jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
+        (component as any).statisticService.record = () => throwError('Error').pipe(observeOn(asyncScheduler));
+
+        // jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
         jest.spyOn(ownershipService, 'installOwnership');
         jest.spyOn(statisticService, 'record');
         jest.spyOn(toastrService, 'error');
         jest.spyOn(component as any, 'handleOwnershipResponseError');
         jest.spyOn(component as any, 'processAction');
+
         component.appData = appData;
         component.buttonAction = installButton;
-        (component as any).onClick();
-        tick();
+        component.buttonAction.statistic = undefined;
 
-        expect((component as any).ownershipService.installOwnership).toHaveBeenCalled();
+        try {
+            (component as any).onClick();
+            tick();
+        } catch {}
+
+        expect(ownershipService.installOwnership).toHaveBeenCalled();
         expect((component as any).processAction).toHaveBeenCalled();
+        expect(component.inProcess).toBeFalsy();
+        // expect(toastrService.error).toBeFalsy();
         // expect((component as any).handleOwnershipResponseError).toHaveBeenCalled();
-        expect(toastrService.error).toHaveBeenCalled();
+        // expect(toastrService.error).toHaveBeenCalled();
     }));
 
     it('test case with uninstall', fakeAsync(() => {
@@ -255,10 +291,14 @@ describe('ButtonActionComponent', () => {
         jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
         jest.spyOn(ownershipService, 'uninstallOwnership');
         jest.spyOn(component as any, 'processAction');
+        jest.spyOn(component as any, 'uninstallOwnership');
         component.buttonAction = uninstallButton;
         (component as any).onClick();
         tick();
-        // expect((component as any).processAction).toHaveBeenCalled();
+
+        expect((component as any).uninstallOwnership).toHaveBeenCalled();
+        expect(authHolderService.isLoggedInUser).toHaveBeenCalled();
+        expect((component as any).processAction).toHaveBeenCalled();
     }));
 
     it('test case with download', fakeAsync(() => {
@@ -266,34 +306,77 @@ describe('ButtonActionComponent', () => {
         const toastrService = TestBed.inject(ToastrService);
         const faileUploadDownloadService = TestBed.inject(FileUploadDownloadService);
         const statisticService = TestBed.inject(StatisticService);
+        const ownershipService = TestBed.inject(OwnershipService);
+        // let ownershipService = new MockOwnershipService();
+        // let statisticService = new MockStatisticService();
 
+        jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
+        jest.spyOn(component as any, 'installOwnership');
+        jest.spyOn(toastrService, 'error');
+        jest.spyOn(ownershipService, 'installOwnership');
+        jest.spyOn(statisticService, 'record');
+        jest.spyOn(component as any, 'downloadFile');
+        jest.spyOn(faileUploadDownloadService, 'downloadFileDetails');
+        jest.spyOn(faileUploadDownloadService, 'getFileUrl');
+        jest.spyOn(window, 'open');
+        // ownershipService.installOwnership = () => throwError(error).pipe(observeOn(asyncScheduler));
+        // statisticService.record = () => throwError('Error').pipe(observeOn(asyncScheduler));
+
+        appData.ownership.ownershipStatus = 'OWNED';
+        component.appData = appData;
+        component.buttonAction = downloadButton;
+
+        try {
+            (component as any).onClick();
+            tick();
+        } catch {}
+
+        expect(authHolderService.isLoggedInUser).toHaveBeenCalled();
+        expect((component as any).installOwnership).toHaveBeenCalled();
+        expect((component as any).downloadFile).toHaveBeenCalled();
+        expect(window.open).toHaveBeenCalled();
+        expect(authHolderService.isLoggedInUser).toHaveBeenCalled();
+        // expect(statisticService.record).toHaveBeenCalled();
+        expect(faileUploadDownloadService.downloadFileDetails).toHaveBeenCalled();
+        expect(faileUploadDownloadService.getFileUrl).toHaveBeenCalled();
+    }));
+
+    it('test case with download and error 403', fakeAsync(() => {
+        const authHolderService = TestBed.inject(AuthHolderService);
+        const toastrService = TestBed.inject(ToastrService);
+        const faileUploadDownloadService = TestBed.inject(FileUploadDownloadService);
+        const statisticService = TestBed.inject(StatisticService);
+        const ownershipService = TestBed.inject(OwnershipService);
+        // let ownershipService = new MockOwnershipService();
+        // let statisticService = new MockStatisticService();
         const error = {
-            status: 401,
+            status: 403,
             message: 'You are not logged in',
         };
 
         jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
         jest.spyOn(component as any, 'installOwnership');
         jest.spyOn(toastrService, 'error');
-        try{
-            jest.spyOn(statisticService, 'record').mockReturnValue(throwError(error));
-        }catch{}
-        // jest.spyOn((component as any).statisticService, 'record');
-        jest.spyOn(component as any, 'downloadFile');
+        jest.spyOn(ownershipService, 'installOwnership');
+        jest.spyOn(statisticService, 'record');
+        jest.spyOn(component as any, 'handleOwnershipResponseError');
         jest.spyOn(faileUploadDownloadService, 'downloadFileDetails');
         jest.spyOn(faileUploadDownloadService, 'getFileUrl');
-        appData.ownership.ownershipStatus = 'OWNED';
+
+        ownershipService.installOwnership = () => throwError(error).pipe(observeOn(asyncScheduler));
+        // statisticService.record = () => throwError('Error').pipe(observeOn(asyncScheduler));
+
+        appData.ownership.ownershipStatus = 'UNOWNED';
         component.appData = appData;
         component.buttonAction = downloadButton;
-        (component as any).onClick();
-        tick();
-        expect(authHolderService.isLoggedInUser).toHaveBeenCalled();
+
+        try {
+            (component as any).onClick();
+            tick();
+        } catch {}
         expect((component as any).installOwnership).toHaveBeenCalled();
-        expect((component as any).downloadFile).toHaveBeenCalled();
-        expect(authHolderService.isLoggedInUser).toHaveBeenCalled();
-        expect(statisticService.record).toHaveBeenCalled();
-        expect(faileUploadDownloadService.downloadFileDetails).toHaveBeenCalled();
-        expect(faileUploadDownloadService.getFileUrl).toHaveBeenCalled();
+        expect((component as any).handleOwnershipResponseError).toHaveBeenCalled();
+        expect(toastrService.error).toHaveBeenCalledWith('You don’t have permission to install this app');
     }));
 
     it('test case with purchase', fakeAsync(() => {
