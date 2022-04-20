@@ -2,10 +2,11 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 
 import { NotFoundComponent } from './not-found.component';
 import { PrerenderRequestsWatcherService } from '@openchannel/angular-common-services';
-import { MockButtonComponent, MockPrerenderRequestsWatcherService, MockRoutingComponent } from '../../mock/mock';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
+import { MockPrerenderRequestsWatcherService } from '../../mock/services.mock';
+import { MockButtonComponent, MockRoutingComponent } from '../../mock/components.mock';
 
 describe('NotFoundComponent', () => {
     let component: NotFoundComponent;

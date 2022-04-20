@@ -1,110 +1,102 @@
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthenticationService, SiteConfigService } from '@openchannel/angular-common-services';
 import { AppComponent } from './app.component';
-import {
-    MockAuthenticationService,
-    MockCmsContentService,
-    MockLoadingBarService,
-    MockLogOutService,
-    MockNgxLoadingBarComponent,
-    MockNotificationComponent,
-    MockSiteConfigService,
-} from '../mock/mock';
-import { LoadingBarService } from '@ngx-loading-bar/core';
+
 import { CmsContentService } from '@core/services/cms-content-service/cms-content-service.service';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { LogOutService } from '@core/services/logout-service/log-out.service';
+import { MockNgxLoadingBarComponent, MockNotificationComponent } from '../mock/components.mock';
+import { siteConfig } from '../assets/data/siteConfig';
+import {
+    mockAuthenticationService,
+    mockCmsContentService,
+    mockLoadingBarService,
+    mockLogOutService,
+    mockSiteConfigService,
+} from '../mock/providers.mock';
 
 describe('AppComponent', () => {
     let component: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
-
-    beforeEach(
-        waitForAsync(() => {
-            TestBed.configureTestingModule({
-                declarations: [AppComponent, MockNgxLoadingBarComponent, MockNotificationComponent],
-                imports: [RouterTestingModule],
-                providers: [
-                    { provide: AuthenticationService, useClass: MockAuthenticationService },
-                    { provide: SiteConfigService, useClass: MockSiteConfigService },
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: CmsContentService, useClass: MockCmsContentService },
-                    { provide: LogOutService, useClass: MockLogOutService },
-                ],
-            }).compileComponents();
-        }),
-    );
+    let authenticationService;
 
     beforeEach(() => {
+        TestBed.configureTestingModule({
+            declarations: [AppComponent, MockNgxLoadingBarComponent, MockNotificationComponent],
+            imports: [RouterTestingModule],
+            providers: [
+                mockAuthenticationService(),
+                mockSiteConfigService(),
+                mockLoadingBarService(),
+                mockCmsContentService(),
+                mockLogOutService(),
+            ],
+        }).compileComponents();
+
         fixture = TestBed.createComponent(AppComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
+        authenticationService = TestBed.inject(AuthenticationService);
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should complete destroy$ and loader in ngOnDestroy hook', () => {
+    it('should check component initialization', fakeAsync(() => {
+        const logOutService = TestBed.inject(LogOutService);
+        const siteService = TestBed.inject(SiteConfigService);
+        const cmsService = TestBed.inject(CmsContentService);
+
+        const config = {
+            ...siteConfig,
+        };
+        config.title = 'App Directory';
+        config.favicon.href = 'assets/img/favicon.png';
+
+        const mockedResult = {
+            siteTitle: 'App Directory',
+            siteFaviconHref: 'App Directory',
+        };
+
+        jest.spyOn(authenticationService, 'tryLoginByRefreshToken');
+        jest.spyOn(authenticationService, 'initCsrf');
+
+        jest.spyOn(logOutService, 'removeSpecificParamKeyFromTheUrlForSaml2Logout');
+
+        jest.spyOn((component as any).loader, 'start');
+        jest.spyOn((component as any).loader, 'stop');
+
+        jest.spyOn(siteService, 'initSiteConfiguration');
+        jest.spyOn(cmsService, 'getContentByPaths').mockReturnValue(of(mockedResult));
+
+        fixture.detectChanges();
+
+        expect(logOutService.removeSpecificParamKeyFromTheUrlForSaml2Logout).toBeCalled();
+        expect(siteService.initSiteConfiguration).toBeCalledWith(config);
+
+        expect((component as any).loader.start).toBeCalled();
+
+        expect((component as any).loader.stop).toBeCalled();
+
+        expect(authenticationService.initCsrf).toBeCalled();
+
+        // should check ngOnDestroy method
         jest.spyOn((component as any).destroy$, 'complete');
         jest.spyOn((component as any).loader, 'complete');
 
-        // tslint:disable-next-line:no-lifecycle-call
-        component.ngOnDestroy();
+        fixture.destroy();
 
         expect((component as any).destroy$.complete).toHaveBeenCalled();
         expect((component as any).loader.complete).toHaveBeenCalled();
-    });
-
-    it('should init site config in ngOnInit hook', fakeAsync(() => {
-        jest.spyOn((component as any).siteService, 'initSiteConfiguration');
-
-        // tslint:disable-next-line:no-lifecycle-call
-        component.ngOnInit();
-        tick();
-
-        expect((component as any).siteService.initSiteConfiguration).toHaveBeenCalled();
     }));
 
-    it('should try login by refresh token in ngOnInit hook', () => {
-        jest.spyOn((component as any).authenticationService, 'tryLoginByRefreshToken');
-
-        // tslint:disable-next-line:no-lifecycle-call
-        component.ngOnInit();
-
-        expect((component as any).authenticationService.tryLoginByRefreshToken).toHaveBeenCalled();
-    });
-
-    it('should init csrf token in ngOnInit hook', () => {
-        jest.spyOn((component as any).authenticationService, 'initCsrf');
-
-        // tslint:disable-next-line:no-lifecycle-call
-        component.ngOnInit();
-
-        expect((component as any).authenticationService.initCsrf).toHaveBeenCalled();
-    });
-
-    it('should stop loader if try login by refresh token in ngOnInit hook fails', fakeAsync(() => {
-        (component as any).authenticationService.tryLoginByRefreshToken = () => throwError('Error');
+    it('should stop loader if tryLoginByRefreshToken fails', fakeAsync(() => {
+        jest.spyOn(authenticationService, 'tryLoginByRefreshToken').mockReturnValue(throwError('Error'));
         jest.spyOn((component as any).loader, 'stop');
 
-        // tslint:disable-next-line:no-lifecycle-call
-        component.ngOnInit();
-        tick();
+        fixture.detectChanges();
 
         expect((component as any).loader.stop).toHaveBeenCalled();
-    }));
-
-    it('should set title and favicon href in config from cms data', fakeAsync(() => {
-        (component as any).siteService.initSiteConfiguration = jest.fn();
-
-        component.initSiteConfig();
-        tick();
-
-        const setConfig = (component as any).siteService.initSiteConfiguration.mock.calls[0][0];
-
-        expect(setConfig.title).toBe(MockCmsContentService.CMS_DATA.site.title);
-        expect(setConfig.favicon.href).toBe(MockCmsContentService.CMS_DATA.site.favicon);
     }));
 });
