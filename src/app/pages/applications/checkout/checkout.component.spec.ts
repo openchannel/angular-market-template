@@ -22,6 +22,8 @@ import { FullAppData } from '@openchannel/angular-common-components/src/lib/comm
 import { pageConfig } from '../../../../assets/data/configData';
 import { of, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { MockCheckoutPricePipe } from '../../../../mock/pipes.mock';
+import { FormsModule } from '@angular/forms';
 
 const userId = 'testUserId';
 
@@ -52,7 +54,14 @@ describe('CheckoutComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [CheckoutComponent, MockAppBillingForm, MockPageTitleComponent, MockButtonComponent, MockOcConsentComponent],
+            declarations: [
+                CheckoutComponent,
+                MockAppBillingForm,
+                MockCheckoutPricePipe,
+                MockPageTitleComponent,
+                MockButtonComponent,
+                MockOcConsentComponent,
+            ],
             providers: [
                 mockLoadingBarService(),
                 mockAppVersionService(),
@@ -62,7 +71,7 @@ describe('CheckoutComponent', () => {
                 mockStripeLoaderService(),
                 mockStripeService(),
             ],
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, FormsModule],
         }).compileComponents();
 
         fixture = TestBed.createComponent(CheckoutComponent);
