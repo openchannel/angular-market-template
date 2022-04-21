@@ -13,12 +13,7 @@ import {
 import { Purchase, StripeService, UserAccount, UserAccountService } from '@openchannel/angular-common-services';
 import { MockAppsService, MockUserRoleService } from '../../../../mock/services.mock';
 import { times } from 'lodash';
-import {
-    MockAppBillingForm,
-    MockButtonComponent,
-    MockOcConsentComponent,
-    MockPageTitleComponent,
-} from '../../../../mock/components.mock';
+import { MockAppBillingForm, MockButtonComponent, MockOcConsentComponent, MockPageTitleComponent } from '../../../../mock/components.mock';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -52,7 +47,6 @@ describe('CheckoutComponent', () => {
 
     const getAppPageTitleComponent = () => fixture.debugElement.query(By.directive(MockPageTitleComponent));
     const getAppBillingFormComponent = () => fixture.debugElement.query(By.directive(MockAppBillingForm));
-    const getOcConsentComponent = () => fixture.debugElement.query(By.directive(MockOcConsentComponent));
 
     let stripeService;
 
