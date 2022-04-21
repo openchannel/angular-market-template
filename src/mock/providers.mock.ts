@@ -1,12 +1,14 @@
 import { Provider } from '@angular/core';
 import {
     AppsService,
+    AppVersionService,
     AuthenticationService,
     AuthHolderService,
     FrontendService,
     InviteUserService,
     NativeLoginService,
     SiteConfigService,
+    StripeService,
     TitleService,
     TransactionsService,
     UserAccount,
@@ -18,6 +20,7 @@ import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/
 import { ToastrService } from 'ngx-toastr';
 import {
     MockAppsService,
+    MockAppVersionService,
     MockAuthenticationService,
     MockAuthHolderService,
     MockButtonActionService,
@@ -31,6 +34,8 @@ import {
     MockNativeLoginService,
     MockOAuthService,
     MockSiteConfigService,
+    MockStripeLoaderService,
+    MockStripeService,
     MockTitleService,
     MockToastrService,
     MockTransactionsService,
@@ -47,6 +52,7 @@ import { LogOutService } from '@core/services/logout-service/log-out.service';
 import { ButtonActionService } from '@features/button-action/button-action.service';
 import { ManagementModalService } from '../app/pages/account-management/my-company/management/management-modal.service';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { StripeLoaderService } from '@core/services/stripe-loader.service';
 
 export function mockUserServiceProvider(): Provider {
     return { provide: UsersService, useClass: MockUsersService };
@@ -134,4 +140,16 @@ export function mockAuthHolderService(): Provider {
 
 export function mockOAuthService(): Provider {
     return { provide: OAuthService, useClass: MockOAuthService };
+}
+
+export function mockAppVersionService(): Provider {
+    return { provide: AppVersionService, useClass: MockAppVersionService };
+}
+
+export function mockStripeLoaderService(): Provider {
+    return { provide: StripeLoaderService, useClass: MockStripeLoaderService };
+}
+
+export function mockStripeService(): Provider {
+    return { provide: StripeService, useClass: MockStripeService };
 }

@@ -1,8 +1,9 @@
 import { asyncScheduler, Observable, of, Subject } from 'rxjs';
-import { Page, SortResponse, Transaction, UserAccount } from '@openchannel/angular-common-services';
+import { Page, SortResponse, StripeService, Transaction, UserAccount } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { observeOn } from 'rxjs/operators';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+import { StripeLoaderService } from '@core/services/stripe-loader.service';
 
 class MockPagination<T> {
     private values: T[];
@@ -546,6 +547,9 @@ export class MockAppsService {
     getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
+    getAppBySafeName(...args: any): Observable<any> {
+        return of('1');
+    }
 }
 
 export class MockCmsContentService {
@@ -756,6 +760,28 @@ export class MockButtonActionService {
 export class MockLogOutService {
     removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
         // do nothing
+    }
+}
+
+export class MockAppVersionService {
+    getAppByVersion(...args: any): Observable<any> {
+        return of('1');
+    }
+}
+
+export class MockStripeLoaderService {
+    loadStripe(): void {
+        // do nothing
+    }
+}
+
+export class MockStripeService {
+    getTaxesAndPayment(...args: any): Observable<any> {
+        return of('1');
+    }
+
+    makePurchase(...args: any): Observable<any> {
+        return of('1');
     }
 }
 
