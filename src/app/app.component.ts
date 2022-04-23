@@ -30,7 +30,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-
         // Clear user authorization, when in the URL params present specific key for SAML 2.0
         this.logOutService.removeSpecificParamKeyFromTheUrlForSaml2Logout();
 
@@ -56,7 +55,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.loader.complete();
     }
 
-    initSiteConfig(): void {
+    private initSiteConfig(): void {
         this.cmsService
             .getContentByPaths({
                 siteTitle: 'site.title',

@@ -5,7 +5,8 @@ import {
     InviteUserModel,
     InviteUserService,
     NativeLoginService,
-   UserAccountTypeModel, UserAccountTypesService,
+    UserAccountTypeModel,
+    UserAccountTypesService,
 } from '@openchannel/angular-common-services';
 import { Subject } from 'rxjs';
 import { merge } from 'lodash';
@@ -126,7 +127,7 @@ export class InvitedSignupComponent implements OnInit, OnDestroy {
             this.ocEditTypeService
                 .injectTypeDataIntoConfigs(this.formConfigsWithoutTypeData || this.formConfigsWithoutTypeDataDefault, false, true)
                 .pipe(
-                    map(formConfigs => this.getFormConfigsWithConfiguredFields(formConfigs)),
+                        map(formConfigs => this.getFormConfigsWithConfiguredFields(formConfigs)),
                     finalize(() => {
                         this.loaderBar.complete();
                         this.formConfigsLoading = false;

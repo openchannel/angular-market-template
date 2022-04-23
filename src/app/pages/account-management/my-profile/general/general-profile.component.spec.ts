@@ -1,23 +1,19 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 
 import { GeneralProfileComponent } from './general-profile.component';
-import {
-    MockButtonComponent,
-    MockEditUserFormComponent,
-    MockEditUserTypeService,
-    mockInviteUserAccountServiceProvider,
-    MockLoadingBarService,
-    MockToastrService,
-    MockUserRoleService,
-} from '../../../../../mock/mock';
-import { LoadingBarService } from '@ngx-loading-bar/core';
 import { UserAccount } from '@openchannel/angular-common-services';
-import { ToastrService } from 'ngx-toastr';
-import { OcEditUserTypeService } from '@core/services/user-type-service/user-type.service';
 import { throwError } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { times } from 'lodash';
+import { MockEditUserTypeService, MockUserRoleService } from '../../../../../mock/services.mock';
+import {
+    mockEditUserTypeService,
+    mockInviteUserAccountServiceProvider,
+    mockLoadingBarService,
+    mockToastrService,
+} from '../../../../../mock/providers.mock';
+import { MockButtonComponent, MockEditUserFormComponent } from '../../../../../mock/components.mock';
 
 const userId = 'testUserId';
 
@@ -54,9 +50,9 @@ describe('MyProfileComponent', () => {
                 declarations: [GeneralProfileComponent, MockEditUserFormComponent, MockButtonComponent],
                 providers: [
                     mockInviteUserAccountServiceProvider(mainUserAccount, userAccounts),
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: ToastrService, useClass: MockToastrService },
-                    { provide: OcEditUserTypeService, useClass: MockEditUserTypeService },
+                    mockLoadingBarService(),
+                    mockToastrService(),
+                    mockEditUserTypeService(),
                 ],
             }).compileComponents();
         }),

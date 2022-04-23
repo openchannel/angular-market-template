@@ -2,29 +2,30 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 
 import { MyCompanyComponent } from './my-company.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import {
-    MockAuthHolderService,
     MockCompanyDetailsComponent,
-    MockInviteModalComponent,
-    mockInviteUserServiceProvider,
     MockManagementComponent,
     MockModalInviteUserModel,
     MockNgbModal,
+    MockOcInviteModalComponent,
     MockPageTitleComponent,
     MockRoutingComponent,
-    MockToastrService,
-    MockUserRoleService,
-    MockUsersService,
-} from '../../../../mock/mock';
-import { ToastrService } from 'ngx-toastr';
-import { AuthHolderService, UserRoleService, UsersService } from '@openchannel/angular-common-services';
-import { Router } from '@angular/router';
-import { By } from '@angular/platform-browser';
+} from 'mock/components.mock';
+import { MockAuthHolderService, MockUsersService } from '../../../../mock/services.mock';
+import {
+    mockAuthHolderService,
+    mockInviteUserServiceProvider,
+    mockNgbModal,
+    mockToastrService,
+    mockUserRoleServiceProvider,
+    mockUserServiceProvider,
+} from '../../../../mock/providers.mock';
 
 jest.mock('@openchannel/angular-common-components', () => ({
     ModalInviteUserModel: jest.fn().mockImplementation(() => MockModalInviteUserModel),
-    OcInviteModalComponent: jest.fn().mockImplementation(() => MockInviteModalComponent),
+    OcInviteModalComponent: jest.fn().mockImplementation(() => MockOcInviteModalComponent),
 }));
 
 describe('MyCompanyComponent', () => {
@@ -55,11 +56,11 @@ describe('MyCompanyComponent', () => {
                     ]),
                 ],
                 providers: [
-                    { provide: NgbModal, useClass: MockNgbModal },
-                    { provide: ToastrService, useClass: MockToastrService },
-                    { provide: AuthHolderService, useClass: MockAuthHolderService },
-                    { provide: UserRoleService, useClass: MockUserRoleService },
-                    { provide: UsersService, useClass: MockUsersService },
+                    mockNgbModal(),
+                    mockToastrService(),
+                    mockAuthHolderService(),
+                    mockUserRoleServiceProvider(),
+                    mockUserServiceProvider(),
                     mockInviteUserServiceProvider([]),
                 ],
             }).compileComponents();
@@ -225,7 +226,7 @@ describe('MyCompanyComponent', () => {
         (component as any).appManagement.getAllUsers = jest.fn();
 
         component.openInviteModal();
-        MockNgbModal.ACTIVE_MODALS[MockNgbModal.ACTIVE_MODALS.length - 1].close();
+            MockNgbModal.ACTIVE_MODALS[MockNgbModal.ACTIVE_MODALS.length - 1].close();
         tick();
 
         expect((component as any).toaster.success).toHaveBeenCalled();

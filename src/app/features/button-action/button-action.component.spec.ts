@@ -1,18 +1,7 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, flush } from '@angular/core/testing';
 import { ButtonActionComponent } from './button-action.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {
-    MockAppFormService,
-    MockAuthHolderService,
-    MockLoadingBarService,
-    MockOwnershipService,
-    MockNgbModal,
-    MockToastrService,
-    MockFileUploadDownloadService,
-    MockStatisticService,
-    MockRoutingComponent,
-    MockButtonComponent,
-} from '../../../mock/mock';
+import { MockNgbModal, MockRoutingComponent, MockButtonComponent } from '../../../mock/components.mock';
 import { ToastrService } from 'ngx-toastr';
 import {
     AppFormService,
@@ -43,8 +32,16 @@ import { FullAppData, OcConfirmationModalComponent } from '@openchannel/angular-
 import { asyncScheduler, Observable, throwError } from 'rxjs';
 import { observeOn, catchError } from 'rxjs/operators';
 import { AppFormFieldResponse, AppFormModelResponse } from '@openchannel/angular-common-services/lib/model/api/app-form-model';
-import { tryCatch } from 'rxjs/internal-compatibility';
-import { promise } from 'protractor';
+import {
+    mockAppFormService,
+    mockAuthHolderService,
+    mockFileUploadDownloadService,
+    mockLoadingBarService,
+    mockNgbModal,
+    mockOwnershipService,
+    mockStatisticService,
+    mockToastrService,
+} from '../../../mock/providers.mock';
 
 window.open = jest.fn();
 jest.useFakeTimers();
@@ -52,11 +49,19 @@ describe('ButtonActionComponent', () => {
     let component: ButtonActionComponent;
     let fixture: ComponentFixture<ButtonActionComponent>;
     let router: Router;
-    let acivateRoute: ActivatedRoute;
+    let acivatedRoute: ActivatedRoute;
     let location: Location;
 
+    let authHolderService: AuthHolderService;
+    let toastrService: ToastrService;
+    let fileUploadDownloadService: FileUploadDownloadService;
+    let statisticService: StatisticService;
+    let ownershipService: OwnershipService;
+
+    let ngbModal: NgbModal;
+    let appFormService: AppFormService;
     // declare appData its all data about app status and else
-    const appData: FullAppData = {
+    let appData: FullAppData = {
         appId: '123123',
         lastUpdated: 123123123,
         version: 2,
@@ -80,7 +85,7 @@ describe('ButtonActionComponent', () => {
             userId: 'asdw123',
             developerId: 'asdw123',
             ownershipType: 'full',
-            ownershipStatus: 'pending',
+            ownershipStatus: 'active',
             model: {
                 type: 'string',
                 price: 12,
@@ -115,6 +120,32 @@ describe('ButtonActionComponent', () => {
         isLive: false,
     };
 
+    const getFormResponce: Observable<AppFormModelResponse> = new Observable(subscriber => {
+        subscriber.next({
+            formId: '12asdas',
+            name: '21sadad',
+            createdDate: 1231241441,
+            fields: [
+                {
+                    id: 'string',
+                    label: 'lable',
+                    description: 'some text',
+                    defaultValue: '',
+                    type: 'Form',
+                    attributes: ['a'],
+                    required: 123,
+                    options: 123,
+                    placeholder: 'some form',
+                },
+            ],
+        });
+    });
+
+    let error = {
+        status: 403,
+        message: 'You are not logged in',
+    };
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [ButtonActionComponent, MockRoutingComponent, MockButtonComponent],
@@ -125,14 +156,14 @@ describe('ButtonActionComponent', () => {
                 ]),
             ],
             providers: [
-                { provide: NgbModal, useClass: MockNgbModal },
-                { provide: ToastrService, useClass: MockToastrService },
-                { provide: LoadingBarService, useClass: MockLoadingBarService },
-                { provide: AppFormService, useClass: MockAppFormService },
-                { provide: AuthHolderService, useClass: MockAuthHolderService },
-                { provide: OwnershipService, useClass: MockOwnershipService },
-                { provide: FileUploadDownloadService, useClass: MockFileUploadDownloadService },
-                { provide: StatisticService, useClass: MockStatisticService },
+                mockNgbModal(),
+                mockToastrService(),
+                mockLoadingBarService(),
+                mockAppFormService(),
+                mockAuthHolderService(),
+                mockOwnershipService(),
+                mockFileUploadDownloadService(),
+                mockStatisticService(),
                 {
                     provide: ActivatedRoute,
                     useValue: {
@@ -144,8 +175,16 @@ describe('ButtonActionComponent', () => {
             ],
         }).compileComponents();
         router = TestBed.inject(Router);
-        acivateRoute = TestBed.inject(ActivatedRoute);
+        acivatedRoute = TestBed.inject(ActivatedRoute);
         location = TestBed.inject(Location);
+
+        ngbModal = TestBed.inject(NgbModal);
+        appFormService = TestBed.inject(AppFormService);
+        authHolderService = TestBed.inject(AuthHolderService);
+        toastrService = TestBed.inject(ToastrService);
+        fileUploadDownloadService = TestBed.inject(FileUploadDownloadService);
+        statisticService = TestBed.inject(StatisticService);
+        ownershipService = TestBed.inject(OwnershipService);
     });
 
     beforeEach(() => {
@@ -163,7 +202,6 @@ describe('ButtonActionComponent', () => {
     });
 
     it('should complete destroy$ in ngOnDestroy hook', () => {
-        const ngbModal = TestBed.inject(NgbModal);
         jest.spyOn(ngbModal, 'dismissAll');
         jest.spyOn((component as any).$destroy, 'next');
         jest.spyOn((component as any).$destroy, 'complete');
@@ -175,57 +213,74 @@ describe('ButtonActionComponent', () => {
         expect((component as any).loader.complete).toHaveBeenCalled();
     });
 
-    it('test case with form', fakeAsync(() => {
-        const getFormResponce: Observable<AppFormModelResponse> = new Observable(subscriber => {
-            subscriber.next({
-                formId: '12asdas',
-                name: '21sadad',
-                createdDate: 1231241441,
-                fields: [
-                    {
-                        id: 'string',
-                        label: 'lable',
-                        description: 'some text',
-                        defaultValue: '',
-                        type: 'Form',
-                        attributes: ['a'],
-                        required: 123,
-                        options: 123,
-                        placeholder: 'some form',
-                    },
-                ],
-            });
-        });
-
-        const appFormService = TestBed.inject(AppFormService);
-        const modal = TestBed.inject(NgbModal);
+    it('should open some appForm', fakeAsync(() => {
         jest.spyOn((component as any).loader, 'start');
         jest.spyOn(appFormService, 'getForm').mockReturnValueOnce(getFormResponce);
         jest.spyOn(appFormService, 'createFormSubmission');
         jest.spyOn(component as any, 'processAction');
         jest.spyOn(component as any, 'openFormModal');
-        jest.spyOn(modal, 'hasOpenModals').mockReturnValueOnce(false);
-        let value = modal.open(OcConfirmationModalComponent, { size: 'md', backdrop: 'static' });
+        jest.spyOn(ngbModal, 'hasOpenModals').mockReturnValueOnce(false);
+        let value = ngbModal.open(OcConfirmationModalComponent, { size: 'md', backdrop: 'static' });
         value.componentInstance.confirmButton = true;
-        jest.spyOn(modal, 'open').mockReturnValueOnce(value);
+        jest.spyOn(ngbModal, 'open').mockReturnValueOnce(value);
+        component.appData = appData;
         component.buttonAction = contactUsButton;
         try {
             (component as any).onClick();
-            jest.runAllTimers();
-
-            expect((component as any).loader.start).toHaveBeenCalled();
-            expect(appFormService.getForm).toHaveBeenCalled();
-            expect((component as any).openFormModal).toHaveBeenCalled();
-            expect(modal.hasOpenModals).toHaveBeenCalled();
-            expect(modal.open).toHaveBeenCalled();
+            MockNgbModal.ACTIVE_MODALS[MockNgbModal.ACTIVE_MODALS.length - 1].close({
+                name: 'name1123',
+                appId: '123aAD',
+                userId: '11sad12',
+                email: 'email',
+                formData: {
+                    data: 'somedata',
+                },
+            });
             tick();
-            // expect((component as any).processAction).toHaveBeenCalled();
-            expect(appFormService.createFormSubmission).toHaveBeenCalled();
         } catch {}
+        expect((component as any).loader.start).toHaveBeenCalled();
+        expect(appFormService.getForm).toHaveBeenCalled();
+        expect((component as any).openFormModal).toHaveBeenCalled();
+        expect(ngbModal.hasOpenModals).toHaveBeenCalled();
+        expect(ngbModal.open).toHaveBeenCalled();
+        expect((component as any).processAction).toHaveBeenCalled();
+        expect(appFormService.createFormSubmission).toHaveBeenCalled();
+    }));
+
+    it('should show error message from buttonAction.showToaster.errorMessage if get error from server ', fakeAsync(() => {
+        jest.spyOn((component as any).loader, 'start');
+        jest.spyOn(appFormService, 'getForm').mockReturnValueOnce(getFormResponce);
+        jest.spyOn(appFormService, 'createFormSubmission');
+        jest.spyOn(component as any, 'processAction');
+        jest.spyOn(component as any, 'openFormModal');
+        jest.spyOn(toastrService, 'error');
+        jest.spyOn(ngbModal, 'dismissAll');
+        jest.spyOn(ngbModal, 'hasOpenModals').mockReturnValueOnce(false);
+        component.appData = appData;
+        appFormService.createFormSubmission = () => throwError(error).pipe(observeOn(asyncScheduler));
+        component.buttonAction = contactUsButton;
+        try {
+            (component as any).onClick();
+            MockNgbModal.ACTIVE_MODALS[MockNgbModal.ACTIVE_MODALS.length - 1].close({
+                name: 'name1123',
+                appId: '123aAD',
+                userId: '11sad12',
+                email: 'email',
+                formData: {
+                    data: 'somedata',
+                },
+            });
+            tick();
+        } catch {}
+        expect(ngbModal.dismissAll).toHaveBeenCalled();
+        expect(appFormService.getForm).toHaveBeenCalled();
+        expect((component as any).openFormModal).toHaveBeenCalled();
+        expect(ngbModal.hasOpenModals).toHaveBeenCalled();
+        expect((component as any).processAction).toHaveBeenCalled();
+        expect(toastrService.error).toHaveBeenCalledWith(component.buttonAction.showToaster.errorMessage);
     }));
 
     it('if user not login and click install, should redirect to login page', fakeAsync(() => {
-        const authHolderService = TestBed.inject(AuthHolderService);
         component.buttonAction = installButton;
         jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(false);
         jest.spyOn(component as any, 'navigateToLoginPage');
@@ -238,9 +293,6 @@ describe('ButtonActionComponent', () => {
     }));
 
     it('if user is login and app install without errors should ', fakeAsync(() => {
-        const ownershipService = TestBed.inject(OwnershipService);
-        const authHolderService = TestBed.inject(AuthHolderService);
-        const statisticService = TestBed.inject(StatisticService);
         component.appData = appData;
         component.buttonAction = installButton;
         jest.spyOn(statisticService, 'record');
@@ -255,18 +307,12 @@ describe('ButtonActionComponent', () => {
     }));
 
     it('if user is login and app install with errors should show error', fakeAsync(() => {
-        const ownershipService = TestBed.inject(OwnershipService);
-        const authHolderService = TestBed.inject(AuthHolderService);
-        const statisticService = TestBed.inject(StatisticService);
-        const toastrService = TestBed.inject(ToastrService);
-        (component as any).statisticService.record = () => throwError('Error').pipe(observeOn(asyncScheduler));
-
-        // jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
         jest.spyOn(ownershipService, 'installOwnership');
         jest.spyOn(statisticService, 'record');
         jest.spyOn(toastrService, 'error');
         jest.spyOn(component as any, 'handleOwnershipResponseError');
         jest.spyOn(component as any, 'processAction');
+        // ownershipService.installOwnership = () => throwError(error).pipe(observeOn(asyncScheduler));
 
         component.appData = appData;
         component.buttonAction = installButton;
@@ -277,94 +323,76 @@ describe('ButtonActionComponent', () => {
             tick();
         } catch {}
 
-        expect(ownershipService.installOwnership).toHaveBeenCalled();
         expect((component as any).processAction).toHaveBeenCalled();
+        expect(ownershipService.installOwnership).toHaveBeenCalled();
         expect(component.inProcess).toBeFalsy();
-        // expect(toastrService.error).toBeFalsy();
         // expect((component as any).handleOwnershipResponseError).toHaveBeenCalled();
         // expect(toastrService.error).toHaveBeenCalled();
     }));
 
-    it('test case with uninstall', fakeAsync(() => {
-        const authHolderService = TestBed.inject(AuthHolderService);
-        const ownershipService = TestBed.inject(OwnershipService);
+    it('should show error toastr message if you dont have permission uninstall', fakeAsync(() => {
         jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
         jest.spyOn(ownershipService, 'uninstallOwnership');
         jest.spyOn(component as any, 'processAction');
         jest.spyOn(component as any, 'uninstallOwnership');
+        jest.spyOn(component as any, 'handleOwnershipResponseError');
+        jest.spyOn(toastrService, 'error');
         component.buttonAction = uninstallButton;
-        (component as any).onClick();
-        tick();
+        component.appData = appData;
+        ownershipService.uninstallOwnership = () => throwError('Error').pipe(observeOn(asyncScheduler));
+        statisticService.record = () => throwError('Error').pipe(observeOn(asyncScheduler));
+        try {
+            (component as any).onClick();
+            MockNgbModal.ACTIVE_MODALS[MockNgbModal.ACTIVE_MODALS.length - 1].close(true);
+            tick();
+        } catch {}
 
         expect((component as any).uninstallOwnership).toHaveBeenCalled();
         expect(authHolderService.isLoggedInUser).toHaveBeenCalled();
         expect((component as any).processAction).toHaveBeenCalled();
+        expect((component as any).handleOwnershipResponseError).toHaveBeenCalled();
+        expect(toastrService.error).toHaveBeenCalledWith(component.buttonAction.showToaster?.errorMessage);
     }));
 
-    it('test case with download', fakeAsync(() => {
-        const authHolderService = TestBed.inject(AuthHolderService);
-        const toastrService = TestBed.inject(ToastrService);
-        const faileUploadDownloadService = TestBed.inject(FileUploadDownloadService);
-        const statisticService = TestBed.inject(StatisticService);
-        const ownershipService = TestBed.inject(OwnershipService);
-        // let ownershipService = new MockOwnershipService();
-        // let statisticService = new MockStatisticService();
-
+    it('should download file is user click download ', fakeAsync(() => {
         jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
         jest.spyOn(component as any, 'installOwnership');
         jest.spyOn(toastrService, 'error');
         jest.spyOn(ownershipService, 'installOwnership');
         jest.spyOn(statisticService, 'record');
         jest.spyOn(component as any, 'downloadFile');
-        jest.spyOn(faileUploadDownloadService, 'downloadFileDetails');
-        jest.spyOn(faileUploadDownloadService, 'getFileUrl');
+        jest.spyOn(fileUploadDownloadService, 'downloadFileDetails');
+        jest.spyOn(fileUploadDownloadService, 'getFileUrl');
         jest.spyOn(window, 'open');
-        // ownershipService.installOwnership = () => throwError(error).pipe(observeOn(asyncScheduler));
-        // statisticService.record = () => throwError('Error').pipe(observeOn(asyncScheduler));
 
-        appData.ownership.ownershipStatus = 'OWNED';
+        appData.ownership.ownershipStatus = 'active';
         component.appData = appData;
         component.buttonAction = downloadButton;
 
         try {
             (component as any).onClick();
-            tick();
         } catch {}
 
         expect(authHolderService.isLoggedInUser).toHaveBeenCalled();
-        expect((component as any).installOwnership).toHaveBeenCalled();
         expect((component as any).downloadFile).toHaveBeenCalled();
         expect(window.open).toHaveBeenCalled();
         expect(authHolderService.isLoggedInUser).toHaveBeenCalled();
-        // expect(statisticService.record).toHaveBeenCalled();
-        expect(faileUploadDownloadService.downloadFileDetails).toHaveBeenCalled();
-        expect(faileUploadDownloadService.getFileUrl).toHaveBeenCalled();
+        expect(statisticService.record).toHaveBeenCalled();
+        expect(fileUploadDownloadService.downloadFileDetails).toHaveBeenCalled();
+        expect(fileUploadDownloadService.getFileUrl).toHaveBeenCalled();
     }));
 
-    it('test case with download and error 403', fakeAsync(() => {
-        const authHolderService = TestBed.inject(AuthHolderService);
-        const toastrService = TestBed.inject(ToastrService);
-        const faileUploadDownloadService = TestBed.inject(FileUploadDownloadService);
-        const statisticService = TestBed.inject(StatisticService);
-        const ownershipService = TestBed.inject(OwnershipService);
-        // let ownershipService = new MockOwnershipService();
-        // let statisticService = new MockStatisticService();
-        const error = {
-            status: 403,
-            message: 'You are not logged in',
-        };
-
+    it('should show toastrService error message if click download and get error 403', fakeAsync(() => {
         jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(true);
         jest.spyOn(component as any, 'installOwnership');
         jest.spyOn(toastrService, 'error');
         jest.spyOn(ownershipService, 'installOwnership');
         jest.spyOn(statisticService, 'record');
         jest.spyOn(component as any, 'handleOwnershipResponseError');
-        jest.spyOn(faileUploadDownloadService, 'downloadFileDetails');
-        jest.spyOn(faileUploadDownloadService, 'getFileUrl');
+        jest.spyOn(fileUploadDownloadService, 'downloadFileDetails');
+        jest.spyOn(fileUploadDownloadService, 'getFileUrl');
 
         ownershipService.installOwnership = () => throwError(error).pipe(observeOn(asyncScheduler));
-        // statisticService.record = () => throwError('Error').pipe(observeOn(asyncScheduler));
 
         appData.ownership.ownershipStatus = 'UNOWNED';
         component.appData = appData;
@@ -379,7 +407,18 @@ describe('ButtonActionComponent', () => {
         expect(toastrService.error).toHaveBeenCalledWith('You don’t have permission to install this app');
     }));
 
-    it('test case with purchase', fakeAsync(() => {
+    it('should redirect to login file is user click download ', fakeAsync(() => {
+        jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValueOnce(false);
+        jest.spyOn(component as any, 'navigateToLoginPage');
+        appData.ownership.ownershipStatus = 'active';
+        component.appData = appData;
+        component.buttonAction = downloadButton;
+
+        (component as any).onClick();
+        expect((component as any).navigateToLoginPage).toHaveBeenCalled();
+    }));
+
+    it('should redirect to checkout', fakeAsync(() => {
         jest.spyOn((component as any).router, 'navigate');
         tick();
         component.buttonAction = buyNowButton;

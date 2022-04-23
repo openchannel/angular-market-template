@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PageTitleComponent } from './page-title.component';
-import { MockButtonComponent } from '../../../../mock/mock';
 import { By } from '@angular/platform-browser';
+import { MockButtonComponent } from '../../../../mock/components.mock';
 
 describe('PageTitleComponent', () => {
     let component: PageTitleComponent;

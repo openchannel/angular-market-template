@@ -1,14 +1,13 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 
 import { SignupComponent } from './signup.component';
-import { MockEditUserTypeService, MockLoadingBarService, MockNativeLoginService, MockSignupCustom } from '../../../../mock/mock';
-import { NativeLoginService } from '@openchannel/angular-common-services';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { OcEditUserTypeService } from '@core/services/user-type-service/user-type.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { MockEditUserTypeService } from '../../../../mock/services.mock';
+import { MockSignupCustom } from '../../../../mock/components.mock';
+import { mockEditUserTypeService, mockLoadingBarService, mockNativeLoginService } from '../../../../mock/providers.mock';
 
 describe('SignupComponent', () => {
     let component: SignupComponent;
@@ -22,11 +21,7 @@ describe('SignupComponent', () => {
             TestBed.configureTestingModule({
                 declarations: [SignupComponent, MockSignupCustom],
                 imports: [RouterTestingModule],
-                providers: [
-                    { provide: NativeLoginService, useClass: MockNativeLoginService },
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: OcEditUserTypeService, useClass: MockEditUserTypeService },
-                ],
+                providers: [mockNativeLoginService(), mockLoadingBarService(), mockEditUserTypeService()],
             }).compileComponents();
         }),
     );
