@@ -1,22 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync, tick, fakeAsync } from '@angular/core/testing';
 
 import { ActivationComponent } from './activation.component';
-import {
-    MockNativeLoginService,
-    MockNgbModal,
-    MockOcActivationComponent,
-    MockRoutingComponent,
-    MockToastrService,
-} from '../../../../mock/mock';
 
 import { RouterTestingModule } from '@angular/router/testing';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrService } from 'ngx-toastr';
 
 import { Router } from '@angular/router';
-import { NativeLoginService } from '@openchannel/angular-common-services';
 import { throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { MockOcActivationComponent, MockRoutingComponent } from '../../../../mock/components.mock';
+import { mockNativeLoginService, mockNgbModal, mockToastrService } from '../../../../mock/providers.mock';
 
 describe('ActivationComponent', () => {
     let component: ActivationComponent;
@@ -37,11 +29,7 @@ describe('ActivationComponent', () => {
                         },
                     ]),
                 ],
-                providers: [
-                    { provide: NgbModal, useClass: MockNgbModal },
-                    { provide: ToastrService, useClass: MockToastrService },
-                    { provide: NativeLoginService, useClass: MockNativeLoginService },
-                ],
+                providers: [mockNgbModal(), mockToastrService(), mockNativeLoginService()],
             }).compileComponents();
             router = TestBed.inject(Router);
             router.navigate(['/'], { queryParams: { token: tokenValue } });

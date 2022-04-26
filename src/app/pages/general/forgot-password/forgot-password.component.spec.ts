@@ -1,13 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync, tick, fakeAsync } from '@angular/core/testing';
 
 import { ForgotPasswordComponent } from './forgot-password.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NativeLoginService } from '@openchannel/angular-common-services';
-
-import { MockNativeLoginService, MockNgbModal, MockOcForgotPasswordComponent } from '../../../../mock/mock';
 
 import { throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { MockOcForgotPasswordComponent } from '../../../../mock/components.mock';
+import { mockNativeLoginService, mockNgbModal } from '../../../../mock/providers.mock';
 
 describe('ForgotPasswordComponent', () => {
     let component: ForgotPasswordComponent;
@@ -18,10 +16,7 @@ describe('ForgotPasswordComponent', () => {
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [ForgotPasswordComponent, MockOcForgotPasswordComponent],
-                providers: [
-                    { provide: NgbModal, useClass: MockNgbModal },
-                    { provide: NativeLoginService, useClass: MockNativeLoginService },
-                ],
+                providers: [mockNgbModal(), mockNativeLoginService()],
             }).compileComponents();
         }),
     );
@@ -53,7 +48,7 @@ describe('ForgotPasswordComponent', () => {
 
     it('pass all necessary variables to the forgot-password', fakeAsync(() => {
         component.signIn = {
-            uname:'tes',
+            uname: 'tes',
             password: 'tes',
             email: 'te',
             company: 'sss',
