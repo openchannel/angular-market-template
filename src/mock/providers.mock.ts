@@ -11,6 +11,7 @@ import {
     TransactionsService,
     UserAccount,
     UserAccountService,
+    UserAccountTypesService,
     UserRoleService,
     UsersService,
 } from '@openchannel/angular-common-services';
@@ -35,6 +36,7 @@ import {
     MockToastrService,
     MockTransactionsService,
     MockUserAccountService,
+    MockUserAccountTypesService,
     MockUserRoleService,
     MockUsersService,
 } from './services.mock';
@@ -86,6 +88,10 @@ export function mockEditUserTypeService(): Provider {
 
 export function mockAuthenticationService(): Provider {
     return { provide: AuthenticationService, useClass: MockAuthenticationService };
+}
+
+export function mockUserAccountTypesService(): Provider {
+    return { provide: UserAccountTypesService, useClass: MockUserAccountTypesService };
 }
 
 export function mockSiteConfigService(): Provider {
