@@ -546,6 +546,10 @@ export class MockAppsService {
     getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
+
+    searchApp(): Observable<any> {
+        return of('1');
+    }
 }
 
 export class MockCmsContentService {
