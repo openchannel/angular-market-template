@@ -1,4 +1,4 @@
-import { Component, Directive, EventEmitter, Input, Output, Provider, Pipe, PipeTransform, TemplateRef } from '@angular/core';
+import { Component, Directive, EventEmitter, Input, Output, Provider, Pipe, PipeTransform, TemplateRef, forwardRef } from '@angular/core';
 import { asyncScheduler, Observable, of, Subject } from 'rxjs';
 import {
     Page,
@@ -10,11 +10,13 @@ import {
     UserAccount,
     UserRoleService,
     UsersService,
+    CountriesModel,
 } from '@openchannel/angular-common-services';
 import {
     ComponentsUserActivationModel,
     ComponentsUserGridActionModel,
     ComponentsUsersGridParametersModel,
+    ErrorMessage,
     ErrorMessageFormId,
     Filter,
     HeadingTag,
@@ -22,6 +24,7 @@ import {
     ModalUpdateUserModel,
     SocialLink,
     SortField,
+    TransformTextType,
     UserGridSortOrder,
     UserSortChosen,
 } from '@openchannel/angular-common-components';
@@ -29,6 +32,7 @@ import { get } from 'lodash';
 import { observeOn } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+import { AbstractControl, AbstractControlDirective, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 
 class MockPagination<T> {
     private values: T[];
@@ -88,6 +92,81 @@ export class MockPrerenderRequestsWatcherService {
     remove404MetaTag(): void {
         // do nothing.
     }
+}
+
+@Component({
+    selector: 'oc-error',
+    template: '',
+})
+export class MockErrorComponent {
+    @Input() control: AbstractControlDirective | AbstractControl | NgModel;
+    @Input() field: string;
+    @Input() formId: ErrorMessageFormId;
+    @Input() modifyErrors: string;
+    @Input() updateMessages: ErrorMessage;
+}
+
+@Component({
+    selector: 'oc-select',
+    template: '',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MockSelectComponent),
+            multi: true,
+        },
+    ],
+})
+export class MockSelectComponent implements ControlValueAccessor {
+    @Input() selectValArr: any | object[] = [];
+    @Input() form: FormControl;
+    @Input() formControl: AbstractControl;
+    @Input() transformText: TransformTextType;
+    registerOnChange(fn: any): void {}
+    registerOnTouched(fn: any): void {}
+    writeValue(obj: any): void {}
+}
+
+@Component({
+    selector: 'oc-label',
+    template: '',
+})
+export class MockLabelComponent {
+    /** Label text */
+    @Input() text: string = '';
+    /** Show indicator of required field */
+    @Input() required: boolean = false;
+    /** Set global classes for label */
+    @Input() class: string = '';
+}
+
+@Component({
+    selector: 'oc-input',
+    template: '',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MockInputComponent),
+            multi: true,
+        },
+    ],
+})
+export class MockInputComponent implements ControlValueAccessor {
+    @Input() placeholder: string = '';
+
+    registerOnChange(fn: any): void {}
+    registerOnTouched(fn: any): void {}
+    writeValue(obj: any): void {}
+}
+
+@Component({
+    selector: 'svg-icon',
+    template: '',
+})
+export class MockSvgIconComponent {
+    @Input() src: string;
+    @Input() svgClass: string;
+    @Input() ngbTooltip: string;
 }
 
 @Component({
@@ -1077,6 +1156,41 @@ export class MockResendActivation {
     @Output() readonly buttonClick = new EventEmitter<any>();
 }
 
+export class MockCountryStateService {
+    getCountries(): any {
+        return of('1');
+    }
+    getStates(): any {
+        return of({
+            data: {
+                states: [],
+            },
+        });
+    }
+}
+
+export class MockSvgIconRegistryService {
+
+}
+
+export class MockStripeService {
+    getMarketplaceStripeSettings(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+    updateUserCreditCard(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+    deleteUserCreditCard(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockStripeLoaderService {
+    loadStripe(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+}
+
 export class MockNativeLoginService {
     signup(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
@@ -1098,7 +1212,7 @@ export class MockNativeLoginService {
         return of(null).pipe(observeOn(asyncScheduler));
     }
 
-    resetPassword():Observable<any>{
+    resetPassword(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
     sendResetCode(): Observable<any> {
