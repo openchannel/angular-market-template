@@ -10,9 +10,9 @@ import {
     SiteContentService,
     AuthHolderService,
 } from '@openchannel/angular-common-services';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, Event, NavigationEnd, NavigationStart, Router, RouterEvent, RoutesRecognized } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
-import { catchError, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, pairwise, takeUntil, tap } from 'rxjs/operators';
 import { ActionButton, actionButtons, pageConfig } from 'assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -89,18 +89,19 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private siteContentService: SiteContentService,
         private authHolderService: AuthHolderService,
         private buttonActionService: ButtonActionService,
-    ) {
-        this.router.events.subscribe(ev => {
-            if (ev instanceof NavigationStart) {
-                this.getAppPageData();
-            }
-        });
-    }
+    ) {}
 
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
-        this.initAppDetails();
-        this.getAppPageData();
+        this.initPageData();
+        let currentId = this.route.snapshot.url[0].path;
+        this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+            const nextId = event.url.split('/')[2];
+            if (currentId !== nextId) {
+                this.loadAppPageData();
+                currentId = nextId;
+            }
+        });
     }
 
     initAllowReviewsWithoutOwnershipProperty(): void {
@@ -284,15 +285,15 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         this.location.back();
     }
 
-    private initAppDetails(): void {
+    private initPageData(): void {
         this.initCurrentUserId();
         this.initAllowReviewsWithoutOwnershipProperty();
         this.initReviewSortQueries();
-        this.initReviewSortQueries();
         this.getSearchFilters();
+        this.loadAppPageData();
     }
 
-    private getAppPageData(): void {
+    private loadAppPageData(): void {
         this.getAppData();
         this.getRecommendedApps();
     }
