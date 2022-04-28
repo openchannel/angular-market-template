@@ -10,7 +10,7 @@ import {
     SiteContentService,
     AuthHolderService,
 } from '@openchannel/angular-common-services';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
 import { catchError, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { ActionButton, actionButtons, pageConfig } from 'assets/data/configData';
@@ -89,28 +89,18 @@ export class AppDetailComponent implements OnInit, OnDestroy {
         private siteContentService: SiteContentService,
         private authHolderService: AuthHolderService,
         private buttonActionService: ButtonActionService,
-    ) {}
+    ) {
+        this.router.events.subscribe(ev => {
+            if (ev instanceof NavigationStart) {
+                this.getAppPageData();
+            }
+        });
+    }
 
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
-
-        this.initCurrentUserId();
-
-        this.initAllowReviewsWithoutOwnershipProperty();
-
-        this.initReviewSortQueries();
-
-        this.getAppData();
-
-        this.initReviewSortQueries();
-
-        this.getRecommendedApps();
-
-        this.getSearchFilters();
-
-        this.router.routeReuseStrategy.shouldReuseRoute = () => {
-            return false;
-        };
+        this.initAppDetails();
+        this.getAppPageData();
     }
 
     initAllowReviewsWithoutOwnershipProperty(): void {
@@ -292,6 +282,19 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     goBack(): void {
         this.location.back();
+    }
+
+    private initAppDetails(): void {
+        this.initCurrentUserId();
+        this.initAllowReviewsWithoutOwnershipProperty();
+        this.initReviewSortQueries();
+        this.initReviewSortQueries();
+        this.getSearchFilters();
+    }
+
+    private getAppPageData(): void {
+        this.getAppData();
+        this.getRecommendedApps();
     }
 
     private getSearchFilters(): void {
