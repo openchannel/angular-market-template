@@ -10,9 +10,9 @@ import {
     SiteContentService,
     AuthHolderService,
 } from '@openchannel/angular-common-services';
-import { ActivatedRoute, Event, NavigationEnd, NavigationStart, Router, RouterEvent, RoutesRecognized } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
-import { catchError, filter, map, mergeMap, pairwise, takeUntil, tap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { ActionButton, actionButtons, pageConfig } from 'assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
