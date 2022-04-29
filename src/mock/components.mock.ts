@@ -172,6 +172,17 @@ export class MockAppGetStartedComponent {
 }
 
 @Component({
+    selector: 'oc-app-list-grid',
+    template: '',
+})
+export class MockOcAppListGridComponent {
+    @Input() appList: any;
+    @Input() baseLinkForOneApp: string = '';
+    @Input() appNavigationParam: string = '';
+    @Input() defaultAppIcon: string = '';
+}
+
+@Component({
     selector: 'oc-app-short-info',
     template: '',
 })

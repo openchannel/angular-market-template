@@ -583,6 +583,10 @@ export class MockAppsService {
     getAppBySafeName(...args: any): Observable<any> {
         return of('1');
     }
+
+    searchApp(): Observable<any> {
+        return of('1');
+    }
 }
 
 export class MockCmsContentService {
