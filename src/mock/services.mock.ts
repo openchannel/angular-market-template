@@ -169,7 +169,7 @@ export class MockAuthenticationService {
     }
 
     getAuthConfig(): Observable<any> {
-        return of({});
+        return of('1');
     }
 
     verifyCode(...args: any): Observable<any> {
@@ -344,8 +344,34 @@ export class MockUserRoleService {
     }
 }
 
+export class MockUserAccountTypesService {
+    getUserAccountType(type: any): Observable<any> {
+        return of(1);
+    }
+}
+
 export class MockInviteUserService {
     userInvites: MockPagination<InviteUserModel>;
+
+     mockInviteUserModelGoodResponse = {
+        userInviteId: '123123wwq2131',
+        userInviteTemplateId: '123123wwq2131',
+        userId: '123123wwq2131',
+        userAccountId: '123123wwq2131',
+        email: '123',
+        expireDate: 2133123123,
+        expireSeconds: 2133123123132,
+        createdDate: 2133123123132,
+        subject: '123',
+        body: '123',
+        name: '123',
+        type: '123',
+        customData: '123',
+        token: '123',
+        lastSent: 2133123123132,
+        roles: ['user'],
+        permissions: ['user'],
+    };
 
     constructor(userInvites?: InviteUserModel[]) {
         this.userInvites = new MockPagination<InviteUserModel>(userInvites);
@@ -361,6 +387,10 @@ export class MockInviteUserService {
 
     getUserInvites(pageNumber?: number, limit?: number, sort?: string, query?: string): Observable<Page<InviteUserModel>> {
         return of(this.userInvites.getByPaginate(pageNumber, limit));
+    }
+
+    getUserInviteInfoByToken(userToken: string): Observable<any> {
+        return of(this.mockInviteUserModelGoodResponse);
     }
 }
 
@@ -598,6 +628,10 @@ export class MockNativeLoginService {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 
+    signupByInvite():Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    };
+
     sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
@@ -764,6 +798,10 @@ export class MockLogOutService {
     }
     logOutAndRedirect(): void {
         // do nothing
+    }
+
+    logOut(): Observable<any> {
+        return of('1');
     }
 }
 
