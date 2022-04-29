@@ -1,21 +1,15 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 
 import { CompanyDetailsComponent } from './company-details.component';
-import {
-    MockButtonComponent,
-    MockFormComponent,
-    MockLoadingBarService,
-    MockPermissionDirective,
-    MockToastrService,
-    MockTypeMapperUtils,
-    MockUsersService,
-} from '../../../../../mock/mock';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { ToastrService } from 'ngx-toastr';
-import { UserCompanyModel, UsersService } from '@openchannel/angular-common-services';
+
+import { UserCompanyModel } from '@openchannel/angular-common-services';
 import { FormGroup } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { MockTypeMapperUtils, MockUsersService } from '../../../../../mock/services.mock';
+import { MockButtonComponent, MockFormComponent } from '../../../../../mock/components.mock';
+import { MockPermissionDirective } from '../../../../../mock/directives.mock';
+import { mockLoadingBarService, mockToastrService, mockUserServiceProvider } from '../../../../../mock/providers.mock';
 
 jest.doMock('@openchannel/angular-common-services', () => ({
     ...jest.requireActual('@openchannel/angular-common-services'),
@@ -36,11 +30,7 @@ describe('CompanyDetailsComponent', () => {
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [CompanyDetailsComponent, MockFormComponent, MockButtonComponent, MockPermissionDirective],
-                providers: [
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: ToastrService, useClass: MockToastrService },
-                    { provide: UsersService, useClass: MockUsersService },
-                ],
+                providers: [mockLoadingBarService(), mockToastrService(), mockUserServiceProvider()],
             }).compileComponents();
         }),
     );

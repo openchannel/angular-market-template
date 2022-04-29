@@ -24,9 +24,12 @@ import {
     UserSortChosen,
 } from '@openchannel/angular-common-components';
 import { get } from 'lodash';
+import { asyncScheduler, Observable, of, Subject } from 'rxjs';
+import { Page, SortResponse, Transaction, UserAccount } from '@openchannel/angular-common-services';
+import { Filter } from '@openchannel/angular-common-components';
 import { observeOn } from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+import { Router } from '@angular/router';
 
 class MockPagination<T> {
     private values: T[];
@@ -55,221 +58,17 @@ class MockPagination<T> {
         };
     }
 }
-
-@Component({
-    selector: 'mock-routing',
-    template: '',
-})
-export class MockRoutingComponent {}
-
-@Component({
-    selector: 'ngx-loading-bar',
-    template: '',
-})
-export class MockNgxLoadingBarComponent {
-    @Input() includeSpinner: boolean = false;
-}
-
-@Component({
-    selector: 'app-notification',
-    template: '',
-})
-export class MockNotificationComponent {}
-
-export class MockPrerenderRequestsWatcherService {
-    setPrerenderStatus(ready: boolean): void {
-        // do nothing.
+export class MockManagementModalService {
+    openDeleteInviteModal(): Observable<boolean> {
+        return null;
     }
-    create404MetaTag(): void {
-        // do nothing.
+
+    openDeleteCurrentUserAccountModal(): Observable<boolean> {
+        return null;
     }
-    remove404MetaTag(): void {
-        // do nothing.
-    }
-}
 
-@Component({
-    selector: 'oc-button',
-    template: '',
-})
-export class MockButtonComponent {
-    @Input() text: string = '';
-    @Input() disabled: boolean = false;
-    @Input() type: 'primary' | 'secondary' | 'link' = 'primary';
-    @Input() customClass: string;
-    @Input() style: string;
-    @Input() process: boolean;
-    @Input() customTemplate: TemplateRef<any>;
-}
-
-@Component({
-    selector: 'oc-featured-apps',
-    template: '',
-})
-export class MockFeaturedAppsComponent {
-    @Input() data: any[] = [];
-    @Input() label: string = 'Featured';
-    @Input() headingTag: string = 'h2';
-    @Input() appHeadingTag: string = 'h3';
-    @Input() emptyDataMessage: string = 'No Featured App';
-    @Input() customClasses: string = '';
-    @Input() customFeaturedAppCardTemplate: TemplateRef<any>;
-    @Input() mainRouterLink: string = '';
-    @Input() navigationParam: string;
-}
-
-@Component({
-    selector: 'oc-text-search',
-    template: '',
-})
-export class MockTextSearchComponent {
-    @Input() clearAllButtonType: string = 'link';
-    @Input() showClearAllTagsButton: boolean = true;
-    @Input() searchText: string;
-    @Input() placeHolder: string = 'Search';
-    @Input() hasMagnifier: boolean = true;
-    @Input() hasClearTextControl: boolean = false;
-    @Input() clearButtonText: string = 'Clear';
-    @Input() searchButtonText: string = 'Search';
-    @Input() clearTagsButtonText: string = 'Clear all';
-    @Input() tagsTitles: string[] = [];
-    @Output() readonly searchTextChange: EventEmitter<string> = new EventEmitter();
-    @Output() readonly enterSearch: EventEmitter<string> = new EventEmitter<string>();
-    @Output() readonly tagDeleted: EventEmitter<number> = new EventEmitter<number>();
-    @Output() readonly allTagsDeleted: EventEmitter<void> = new EventEmitter<void>();
-}
-
-@Component({
-    selector: 'app-collapse-with-title',
-    template: '',
-})
-export class MockCollapseWithTitleComponent {
-    @Input() titleForClose: string;
-    @Input() titleForOpen: string;
-    @Input() collapsed = true;
-    @Output() readonly collapseChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
-}
-
-@Component({
-    selector: 'oc-sidebar',
-    template: '',
-})
-export class MockSidebarComponent {
-    @Input() title: string;
-    @Input() titleHeadingTag: string = 'h2';
-    @Input() sidebarModel: any;
-    @Input() toggleIconDown: string = '';
-    @Input() toggleIconUp: string = '';
-    @Input() baseNavigation: string;
-    @Input() threshold: number = 10;
-    @Input() expandText: string = 'Show more';
-    @Input() collapseText: string = 'Show less';
-    @Input() toggleListButtonType: 'primary' | 'link' = 'link';
-    @Input() ngbCollapse: any;
-    @Output() readonly sidebarChange: EventEmitter<any> = new EventEmitter<any>();
-}
-
-@Component({
-    selector: 'oc-app-categories',
-    template: '',
-})
-export class MockAppCategoriesComponent {
-    @Input() data: any[] = [];
-    @Input() categoryHeaderTitle: string = '';
-    @Input() categoryRouterLink: string = '';
-}
-
-@Component({
-    selector: 'oc-app-gallery',
-    template: '',
-})
-export class MockAppGalleryComponent {
-    @Input() appsArr: any[] = [];
-    @Input() noAppMessage: string = '';
-    @Input() moreAppsTitle: string = 'More';
-    @Input() appGalleryTitle: string = '';
-    @Input() appGalleryDescription: string = '';
-    @Input() routerIcon: string = '';
-    @Input() customAppCardTemplate: TemplateRef<any>;
-    @Input() seeAllUrl: string | any[];
-    @Input() routerLinkForOneApp: string;
-    @Input() appNavigationParam: string = 'appId';
-    @Input() headingTag: string = 'h2';
-    @Output() readonly clickMoreApps: EventEmitter<void> = new EventEmitter<void>();
-}
-
-@Component({
-    selector: 'oc-app-get-started',
-    template: '',
-})
-export class MockAppGetStartedComponent {
-    @Input() getStartedImage: string = '';
-    @Input() getStartedHeader: string = 'List Your App in our App Store';
-    @Input() getStartedHeadingTag: string = 'h3';
-    @Input() getStartedDescription: string = '';
-    @Input() getStartedButtonText: string = '';
-    @Input() getStartedType: 'home' | 'search' = 'home';
-    @Output() readonly getStarted: EventEmitter<void> = new EventEmitter<void>();
-}
-
-@Component({
-    selector: 'oc-menu-user-grid',
-    template: '',
-})
-export class MockOcMenuUserGridComponent {
-    @Input() properties: ComponentsUsersGridParametersModel;
-    @Input() menuUrl: string = 'assets/angular-common-components/dots-menu.svg';
-    @Input() sortIcon: string;
-    @Input() sortOptions: UserGridSortOrder;
-    @Output() readonly menuClicked: EventEmitter<ComponentsUserGridActionModel> = new EventEmitter<ComponentsUserGridActionModel>();
-    @Output() readonly pageScrolled: EventEmitter<number> = new EventEmitter<number>();
-    @Output() readonly sortChosen: EventEmitter<SortField> = new EventEmitter<SortField>();
-    @Output() readonly sortOptionsChosen: EventEmitter<UserSortChosen> = new EventEmitter<UserSortChosen>();
-}
-
-@Component({
-    selector: 'oc-invite-modal',
-    template: '',
-})
-export class MockOcInviteModalComponent {
-    @Input() modalData: ModalInviteUserModel | ModalUpdateUserModel;
-    @Input() formId: ErrorMessageFormId = null;
-}
-
-@Component({
-    selector: 'oc-confirmation-modal',
-    template: '',
-})
-export class OcConfirmationModalComponent {
-    @Input() modalTitle: string = '';
-    @Input() modalText: string = '';
-    @Input() confirmButtonText: string = 'Ok';
-    @Input() confirmButtonType: 'primary' | 'secondary' | 'link' | 'danger' = 'primary';
-    @Input() confirmButtonHide: boolean = false;
-    @Input() rejectButtonText = 'No, cancel';
-    @Input() rejectButtonType: 'primary' | 'secondary' | 'link' | 'danger' = 'secondary';
-    @Input() rejectButtonHide: boolean = false;
-    @Input() confirmButtonClass: string = '';
-}
-
-export class MockLoadingBarState {
-    complete(): void {
-        // do nothing.
-    }
-    start(): void {
-        // do nothing.
-    }
-    stop(): void {
-        // do nothing.
-    }
-}
-
-export class MockLoadingBarService {
-    useRef(): MockLoadingBarState {
-        return new MockLoadingBarState();
-    }
-}
-
+    openDeleteAnotherUserAccountModal(): Observable<boolean> {
+        return null;
 export class MockSiteContentService {
     getAllContent(): Observable<any> {
         return of({}).pipe(observeOn(asyncScheduler));
@@ -365,79 +164,14 @@ export class MockAppsService {
     }
 }
 
-export class MockCmsContentService {
-    static CMS_DATA = {
-        site: {
-            title: 'App Directory',
-            favicon: 'assets/img/favicon.png',
-        },
-        'default-header': {
-            logo: 'assets/img/logo-company.png',
-            menu: {
-                items: [
-                    {
-                        label: 'Browse',
-                        location: '',
-                    },
-                    {
-                        label: 'My apps',
-                        location: 'my-apps',
-                    },
-                ],
-            },
-        },
-        'big-hero': {
-            title: 'Your App Directory',
-            subtext: 'A default design template for implementing your app directory with OpenChannel',
-        },
-        'content-callout': {
-            title: 'List your app in our app directory',
-            body: 'Register as an app developer and submit your app easily with our Developer Portal',
-            button: {
-                text: 'Get started as an app developer',
-                location: '',
-            },
-            image: 'assets/img/get-started.svg',
-        },
-        'default-footer': {
-            menu: {
-                items: [
-                    {
-                        label: '',
-                        location: '',
-                        items: [
-                            {
-                                label: '',
-                                location: '',
-                            },
-                        ],
-                    },
-                ],
-            },
-            logo: 'assets/img/logo-company.png',
-        },
-        login: {
-            logo: 'assets/img/logo-company.png',
-        },
-    };
-
-    getContentDefault(): any {
-        return MockCmsContentService.CMS_DATA;
+    openEditUserAccountModal(userAccount: UserAccount): Observable<boolean> {
+        return null;
     }
 
-    getContentFromAPI(): Observable<any> {
-        return of(MockCmsContentService.CMS_DATA);
-    }
-
-    getContentByPaths(paths: any): Observable<any> {
-        Object.entries(paths).forEach(([name, path]) => {
-            paths[name] = get(MockCmsContentService.CMS_DATA, path);
-        });
-
-        return of(paths);
+    openEditUserInviteModal(userInvite: UserAccount): Observable<boolean> {
+        return null;
     }
 }
-
 export class MockFrontendService {
     static MOCK_FILTER_VALUE = {
         id: 'allApps',
@@ -552,92 +286,17 @@ export class MockAuthenticationService {
     initCsrf(): Observable<any> {
         return of('1');
     }
-}
 
-@Component({
-    selector: 'oc-dropdown',
-    template: '',
-})
-export class MockDropdownComponent {
-    @Input() selected: any;
-    @Input() title: string = 'Sort by';
-    @Input() options: any[];
-    @Output() readonly selectedChange: EventEmitter<any> = new EventEmitter<any>();
-}
-
-@Component({
-    selector: 'oc-app-short-info',
-    template: '',
-})
-export class MockAppShortInfoComponent {
-    @Input() app: any;
-    @Input() priceModelIndex: number = 0;
-    @Input() customDropdown: TemplateRef<any>;
-    @Input() defaultAppIcon: string = 'assets/angular-common-components/standard-app-icon.svg';
-    @Output() readonly clickByAppCard: EventEmitter<any> = new EventEmitter<any>();
-}
-
-@Directive({
-    selector: 'infiniteScroll',
-})
-export class MockInfiniteScrollDirective {
-    @Output() readonly scrolled: EventEmitter<any> = new EventEmitter<any>();
-}
-
-@Directive({
-    selector: 'ngbDropdown',
-})
-export class MockNgbDropdownDirective {
-    @Input() placement: string = '';
-}
-
-@Directive({
-    selector: 'ngbDropdownToggle',
-})
-export class MockNgbDropdownToggleDirective {}
-
-@Directive({
-    selector: 'ngbDropdownMenu',
-})
-export class MockNgbDropdownMenuDirective {}
-
-@Directive({
-    selector: 'ngbDropdownItem',
-})
-export class MockNgbDropdownItemDirective {}
-
-export class MockNgbModalRef {
-    result = new Promise((resolve, reject) => {
-        this.resolve = resolve;
-        this.reject = reject;
-    });
-    resolve: any;
-    reject: any;
-
-    componentInstance: any = {};
-
-    dismiss(): void {
-        this.removeActiveModal();
-        this.reject();
+    getAuthConfig(): Observable<any> {
+        return of('1');
     }
 
-    close(): void {
-        this.removeActiveModal();
-        this.resolve();
+    verifyCode(...args: any): Observable<any> {
+        return of({});
     }
 
-    private removeActiveModal(): void {
-        MockNgbModal.ACTIVE_MODALS.pop();
-    }
-}
-
-export class MockNgbModal {
-    static ACTIVE_MODALS: MockNgbModalRef[] = [];
-
-    open(): any {
-        const newModal = new MockNgbModalRef();
-        MockNgbModal.ACTIVE_MODALS.push(newModal);
-        return newModal;
+    login(...args: any): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
     }
 }
 
@@ -652,11 +311,28 @@ export class MockToastrService {
 
 export class MockAuthHolderService {
     static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
+    readonly REFRESH_TOKEN_KEY = 'refreshToken';
+
+    userDetails = {
+        isSSO: false,
+    };
 
     userDetails = {};
 
     hasAnyPermission(): boolean {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
+    }
+
+    persist(...args: any): void {
+        // do nothing
+    }
+
+    isLoggedInUser(...args: any): boolean {
+        return true;
+    }
+
+    refreshToken(): string {
+        return this.REFRESH_TOKEN_KEY;
     }
 }
 
@@ -789,8 +465,34 @@ export class MockUserRoleService {
     }
 }
 
+export class MockUserAccountTypesService {
+    getUserAccountType(type: any): Observable<any> {
+        return of(1);
+    }
+}
+
 export class MockInviteUserService {
     userInvites: MockPagination<InviteUserModel>;
+
+     mockInviteUserModelGoodResponse = {
+        userInviteId: '123123wwq2131',
+        userInviteTemplateId: '123123wwq2131',
+        userId: '123123wwq2131',
+        userAccountId: '123123wwq2131',
+        email: '123',
+        expireDate: 2133123123,
+        expireSeconds: 2133123123132,
+        createdDate: 2133123123132,
+        subject: '123',
+        body: '123',
+        name: '123',
+        type: '123',
+        customData: '123',
+        token: '123',
+        lastSent: 2133123123132,
+        roles: ['user'],
+        permissions: ['user'],
+    };
 
     constructor(userInvites?: InviteUserModel[]) {
         this.userInvites = new MockPagination<InviteUserModel>(userInvites);
@@ -806,6 +508,10 @@ export class MockInviteUserService {
 
     getUserInvites(pageNumber?: number, limit?: number, sort?: string, query?: string): Observable<Page<InviteUserModel>> {
         return of(this.userInvites.getByPaginate(pageNumber, limit));
+    }
+
+    getUserInviteInfoByToken(userToken: string): Observable<any> {
+        return of(this.mockInviteUserModelGoodResponse);
     }
 }
 
@@ -913,80 +619,103 @@ export class MockUsersService {
     }
 }
 
-@Component({
-    selector: 'app-page-title',
-    template: '',
-})
-export class MockPageTitleComponent {
-    @Input() pageTitle: string;
-    @Input() navigateText: string;
-    @Input() buttonText: string;
-    @Output() readonly navigateClick: EventEmitter<void> = new EventEmitter<void>();
-    @Output() readonly buttonClick: EventEmitter<void> = new EventEmitter<void>();
+export class MockPrerenderRequestsWatcherService {
+    setPrerenderStatus(ready: boolean): void {
+        // do nothing.
+    }
+    create404MetaTag(): void {
+        // do nothing.
+    }
+    remove404MetaTag(): void {
+        // do nothing.
+    }
 }
 
-@Component({
-    selector: 'app-company-details',
-    template: '',
-})
-export class MockCompanyDetailsComponent {}
-
-@Component({
-    selector: 'app-management',
-    template: '',
-})
-export class MockManagementComponent {}
-
-export class MockModalInviteUserModel {}
-
-@Component({
-    selector: 'oc-invite-modal',
-    template: '',
-})
-export class MockInviteModalComponent {
-    @Input() modalData: any;
-    @Input() formId: any = null;
-    formConfig: any = {};
-    formGroup: any;
-    formData: any;
-    inProcess = false;
+export class MockLoadingBarState {
+    complete(): void {
+        // do nothing.
+    }
+    start(): void {
+        // do nothing.
+    }
+    stop(): void {
+        // do nothing.
+    }
 }
 
-@Directive({
-    selector: '[appPermissions]',
-})
-export class MockPermissionDirective {
-    @Input('appPermissions') permission: Permission[];
+export class MockLoadingBarService {
+    useRef(): MockLoadingBarState {
+        return new MockLoadingBarState();
+    }
 }
 
-@Component({
-    selector: 'oc-form',
-    template: '',
-})
-export class MockFormComponent {
-    @Input() formJsonData: any;
-    @Input() showButton: boolean = true;
-    @Input() buttonPosition: 'center' | 'left' | 'right' | 'justify' = 'left';
-    @Input() successButtonText: string = 'Submit';
-    @Input() labelPosition: 'top' | 'left' | 'right' = 'top';
-    @Input() process: boolean = false;
-    @Input() generatedForm: any;
-    @Output() readonly formSubmitted: EventEmitter<any> = new EventEmitter();
-    @Output() readonly cancelSubmit: EventEmitter<void> = new EventEmitter();
-    @Output() readonly formDataUpdated: EventEmitter<any> = new EventEmitter();
-    @Output() readonly isFormInvalid: EventEmitter<boolean> = new EventEmitter();
-    @Output() readonly createdForm: EventEmitter<any> = new EventEmitter();
-    @Input() displayType: any = 'page';
-    @Input() additionalButton: TemplateRef<any>;
-    @Input() currentStep: number = 1;
-    @Input() maxStepsToShow: number = 0;
-    @Input() formId: any = null;
-    @Output() readonly currentStepChange = new EventEmitter<number>();
-    @Input() showSubmitButton: boolean = true;
-    @Input() showGroupHeading: boolean = true;
-    @Input() showGroupDescription: boolean = true;
-    @Input() showProgressBar: boolean = true;
-    @Input() setFormErrors: boolean = false;
+export class MockAppsService {
+    static MOCK_APP = {
+        allow: {},
+        access: [],
+        created: 1639656082091,
+        rating: 425,
+        restrict: {},
+        submittedDate: 1639656081882,
+        type: 'downloadable',
+        version: 1,
+        lastUpdated: 1639656081714,
+        name: 'API Plus Connect',
+        attributes: {},
+        customData: {
+            summary: '',
+            images: [],
+            description: '',
+            categories: ['Developer Tools', 'File Management'],
+        },
+        developerId: 'erp-above',
+        isLive: true,
+        reviewCount: 2,
+        appId: '61bb2a918e9d83275b715c7b',
+        model: [
+            {
+                license: 'single',
+                modelId: '61bb2a918e9d83275b715c79',
+                price: 0,
+                currency: 'USD',
+                modelType: null,
+                type: 'free',
+                trial: 0,
+            },
+        ],
+        safeName: ['api-plus-connect'],
+        status: {
+            lastUpdated: 1639656081951,
+            reason: '',
+            modifiedBy: 'administrator',
+            value: 'approved',
+        },
+    };
+
+    static MOCK_APPS_PAGE = {
+        count: 1,
+        pages: 1,
+        pageNumber: 1,
+        list: [MockAppsService.MOCK_APP, MockAppsService.MOCK_APP, MockAppsService.MOCK_APP],
+    };
+
+    getApps(): Observable<any> {
+        return of(MockAppsService.MOCK_APPS_PAGE);
+    }
+}
+
+export class MockCmsContentService {
+    getContentDefault(): any {
+        return of('1');
+    }
+
+    getContentFromAPI(): Observable<any> {
+        return of('1');
+    }
+
+    getContentByPaths(...args: any): Observable<any> {
+        return of(args);
+    }
 }
 
 export class MockTypeMapperUtils {
@@ -1055,7 +784,31 @@ export class MockNativeLoginService {
     signup(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
+
+    changePassword(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+
+    signupByInvite():Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    };
+
     sendActivationCode(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+
+    signIn(...args: any): Observable<any> {
+        return of({});
+    }
+
+    activate(): Observable<any> {
+        return of(null).pipe(observeOn(asyncScheduler));
+    }
+
+    resetPassword(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+    sendResetCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 }
@@ -1129,37 +882,6 @@ export class MockEditUserTypeService {
     }
 }
 
-@Component({
-    selector: 'oc-app-table',
-    template: '',
-})
-export class MockAppTableComponent {
-    @Input() properties: any;
-    @Input() noAppMessage: string = 'You have no apps in your list';
-    @Input() menuUrl: string = 'assets/angular-common-components/dots-menu.svg';
-    @Input() ascendingSortIcon: string = '';
-    @Input() descendingSortIcon: string = '';
-    @Input() defaultAppIcon: string = '';
-    @Input() activeColumns: any[] = [];
-    @Input() modifyColumns: any = {};
-    @Input() sortOptions: any;
-    @Input() tableBottomRowTemplate: TemplateRef<any>;
-    @Input() selectAppFieldByPathConfig: any;
-    @Output() readonly menuClicked: EventEmitter<any> = new EventEmitter<any>();
-    @Output() readonly pageScrolled: EventEmitter<number> = new EventEmitter<number>();
-    @Output() readonly sortChosen: EventEmitter<any> = new EventEmitter<any>();
-    @Output() readonly sortOptionsChosen: EventEmitter<any> = new EventEmitter<any>();
-}
-
-@Pipe({
-    name: 'transactionAmount',
-})
-export class MockTransactionAmountPipe implements PipeTransform {
-    transform(s: string): string {
-        return s;
-    }
-}
-
 export class MockTransactionsService {
     static MOCK_TRANSACTION: Transaction = {
         transactionId: '61d4035a8ebc4e5af2cfdbc6',
@@ -1190,6 +912,14 @@ export class MockTransactionsService {
     }
 }
 
+export class MockLoginRequest {
+    idToken: string;
+    accessToken: string;
+
+    constructor(idToken: string, accessToken: string) {
+        this.idToken = idToken;
+        this.accessToken = accessToken;
+    }
 export class MockAppVersionService {
     getAppByVersion(): Observable<any> {
         return of({}).pipe(observeOn(asyncScheduler));
@@ -1238,39 +968,29 @@ export class MockEditUserFormComponent {
     @Output() readonly createdFormGroup = new EventEmitter<any>();
 }
 
-@Component({
-    selector: 'app-general-profile',
-    template: '',
-})
-export class MockGeneralProfileComponent {}
+export class MockOAuthService {
+    events: Subject<any> = new Subject<any>();
+    state = {};
 
-@Component({
-    selector: 'app-change-password',
-    template: '',
-})
-export class MockChangePasswordComponent {}
+    logOut(...args: any): void {
+        // do nothing
+    }
 
-@Component({
-    selector: 'app-billing',
-    template: '',
-})
-export class MockBillingComponent {}
+    loadDiscoveryDocumentAndLogin(...args: any): Promise<any> {
+        return Promise.resolve({});
+    }
 
-@Component({
-    selector: 'app-billing-history',
-    template: '',
-})
-export class MockBillingHistoryComponent {}
+    configure(...args: any): void {
+        // do nothing
+    }
 
-@Component({
-    selector: 'app-button-action',
-    template: '',
-})
-export class MockButtonActionComponent {
-    @Input() buttonAction: any;
-    @Input() appData: any;
-    @Input() viewType: string = 'button';
-    @Output() readonly updateAppData: EventEmitter<void> = new EventEmitter<void>();
+    getIdToken(): string {
+        return '';
+    }
+
+    getAccessToken(): string {
+        return '';
+    }
 }
 
 @Component({
@@ -1394,26 +1114,33 @@ export class MockButtonActionService {
 }
 
 export class MockLogOutService {
-    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {}
+    removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
+        // do nothing
+    }
+    logOutAndRedirect(): void {
+        // do nothing
+    }
+
+    logOut(): Observable<any> {
+        return of('1');
+    }
 }
 
-// providers
-export function mockUserServiceProvider(): Provider {
-    return { provide: UsersService, useClass: MockUsersService };
-}
+export const createMockedBrowserStorage = () => {
+    let store = {};
 
-export function mockInviteUserServiceProvider(userInvites?: InviteUserModel[]): Provider {
-    return { provide: InviteUserService, useFactory: () => new MockInviteUserService(userInvites) };
-}
-
-export function mockInviteUserAccountServiceProvider(currentUserAccount: UserAccount, otherUserAccounts: UserAccount[]): Provider {
-    return { provide: UserAccountService, useFactory: () => new MockUserAccountService(currentUserAccount, otherUserAccounts) };
-}
-
-export function mockUserRoleServiceProvider(): Provider {
-    return { provide: UserRoleService, useClass: MockUserRoleService };
-}
-
-export function mockToastrService(): Provider {
-    return { provide: ToastrService, useClass: MockToastrService };
-}
+    return {
+        getItem(key: string): any {
+            return store[key] || null;
+        },
+        setItem(key: string, value: any): void {
+            store[key] = value.toString();
+        },
+        removeItem(key: string): void {
+            delete store[key];
+        },
+        clear(): void {
+            store = {};
+        },
+    };
+};
