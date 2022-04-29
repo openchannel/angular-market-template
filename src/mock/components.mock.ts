@@ -122,6 +122,13 @@ export class MockAppBillingForm {
 }
 
 @Component({
+    selector: 'oc-profile-navbar',
+    template: '',
+})
+export class MockOcProfileNavbar {
+    @Input() username: string;
+}
+@Component({
     selector: 'oc-app-categories',
     template: '',
 })
@@ -517,6 +524,16 @@ export class MockNgbModalRef {
     private removeActiveModal(): void {
         MockNgbModal.ACTIVE_MODALS.pop();
     }
+}
+
+@Component({
+    selector: 'svg-icon',
+    template: '',
+})
+export class MockSvgIconComponent {
+    @Input() src: string;
+    @Input() svgClass: string;
+    @Input() ngbTooltip: string;
 }
 
 export class MockNgbModal {
