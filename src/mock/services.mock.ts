@@ -3,6 +3,7 @@ import { Page, SortResponse, Transaction, UserAccount } from '@openchannel/angul
 import { Filter } from '@openchannel/angular-common-components';
 import { observeOn } from 'rxjs/operators';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
+import { Router } from '@angular/router';
 
 class MockPagination<T> {
     private values: T[];
@@ -192,6 +193,10 @@ export class MockToastrService {
 export class MockAuthHolderService {
     static MOCK_HAS_ANY_PERMISSION_RESPONSE = true;
     readonly REFRESH_TOKEN_KEY = 'refreshToken';
+
+    userDetails = {
+        isSSO: false,
+    };
 
     hasAnyPermission(): boolean {
         return MockAuthHolderService.MOCK_HAS_ANY_PERMISSION_RESPONSE;
@@ -789,6 +794,9 @@ export class MockButtonActionService {
 
 export class MockLogOutService {
     removeSpecificParamKeyFromTheUrlForSaml2Logout(): void {
+        // do nothing
+    }
+    logOutAndRedirect(): void {
         // do nothing
     }
 
