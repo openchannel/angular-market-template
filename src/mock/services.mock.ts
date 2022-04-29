@@ -1,10 +1,8 @@
 import { asyncScheduler, Observable, of, Subject } from 'rxjs';
-import { Page, SortResponse, StripeService, Transaction, UserAccount } from '@openchannel/angular-common-services';
+import { Page, SortResponse, Transaction, UserAccount } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
 import { observeOn } from 'rxjs/operators';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
-import { StripeLoaderService } from '@core/services/stripe-loader.service';
-import { Router } from '@angular/router';
 
 class MockPagination<T> {
     private values: T[];
@@ -354,7 +352,7 @@ export class MockUserAccountTypesService {
 export class MockInviteUserService {
     userInvites: MockPagination<InviteUserModel>;
 
-     mockInviteUserModelGoodResponse = {
+    mockInviteUserModelGoodResponse = {
         userInviteId: '123123wwq2131',
         userInviteTemplateId: '123123wwq2131',
         userId: '123123wwq2131',
@@ -632,9 +630,9 @@ export class MockNativeLoginService {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 
-    signupByInvite():Observable<any> {
+    signupByInvite(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
-    };
+    }
 
     sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
