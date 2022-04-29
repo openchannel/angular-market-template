@@ -1,24 +1,27 @@
 import { Provider } from '@angular/core';
 import {
-    AppsService,
+    AppsService, AppVersionService,
     AuthenticationService,
     AuthHolderService,
     FrontendService,
     InviteUserService,
     NativeLoginService,
+    ReviewsService,
     SiteConfigService,
+    SiteContentService,
+    StatisticService,
     TitleService,
     TransactionsService,
     UserAccount,
     UserAccountService,
     UserAccountTypesService,
     UserRoleService,
-    UsersService,
-} from '@openchannel/angular-common-services';
+    UsersService
+} from "@openchannel/angular-common-services";
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 import { ToastrService } from 'ngx-toastr';
 import {
-    MockAppsService,
+    MockAppsService, MockAppVersionService,
     MockAuthenticationService,
     MockAuthHolderService,
     MockButtonActionService,
@@ -29,17 +32,21 @@ import {
     MockLoadingBarService,
     MockLogOutService,
     MockManagementModalService,
+    MockMarketMetaTagService,
     MockNativeLoginService,
     MockOAuthService,
+    MockReviewsService,
     MockSiteConfigService,
+    MockSiteContentService,
+    MockStatisticService,
     MockTitleService,
     MockToastrService,
     MockTransactionsService,
     MockUserAccountService,
     MockUserAccountTypesService,
     MockUserRoleService,
-    MockUsersService,
-} from './services.mock';
+    MockUsersService
+} from "./services.mock";
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MockNgbActiveModal, MockNgbModal } from './components.mock';
@@ -49,6 +56,7 @@ import { LogOutService } from '@core/services/logout-service/log-out.service';
 import { ButtonActionService } from '@features/button-action/button-action.service';
 import { ManagementModalService } from '../app/pages/account-management/my-company/management/management-modal.service';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 
 export function mockUserServiceProvider(): Provider {
     return { provide: UsersService, useClass: MockUsersService };
@@ -140,4 +148,24 @@ export function mockAuthHolderService(): Provider {
 
 export function mockOAuthService(): Provider {
     return { provide: OAuthService, useClass: MockOAuthService };
+}
+
+export function mockReviewsService(): Provider {
+    return { provide: ReviewsService, useClass: MockReviewsService };
+}
+
+export function mockSiteContentService(): Provider {
+    return { provide: SiteContentService, useClass: MockSiteContentService };
+}
+
+export function mockMarketMetaTagService(): Provider {
+    return { provide: MarketMetaTagService, useClass: MockMarketMetaTagService };
+}
+
+export function mockStatisticService(): Provider {
+    return { provide: StatisticService, useClass: MockStatisticService };
+}
+
+export function mockAppVersionService(): Provider {
+    return { provide: AppVersionService, useClass: MockAppVersionService };
 }

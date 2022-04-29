@@ -1,31 +1,6 @@
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing';
 
 import { AppDetailComponent } from './app-detail.component';
-import {
-    MockAppsService,
-    MockAppVersionService,
-    MockAuthHolderService,
-    MockButtonActionComponent,
-    MockButtonActionService,
-    MockButtonComponent,
-    MockDropdownComponent,
-    MockFrontendService,
-    MockLoadingBarService,
-    MockMarketMetaTagService,
-    MockOcAppDescriptionComponent,
-    MockOcImageGalleryComponent,
-    MockOcOverallRatingComponent,
-    MockOcRatingComponent,
-    MockOcRecomendedAppsComponent,
-    MockOcReviewComponent,
-    MockOcReviewListComponent,
-    MockOcVideoComponent,
-    MockReviewsService,
-    MockRoutingComponent,
-    MockSiteContentService,
-    MockStatisticService,
-    MockTitleService,
-} from '../../../../mock/mock';
 import {
     AppsService,
     AppVersionService,
@@ -35,19 +10,43 @@ import {
     ReviewsService,
     SiteContentService,
     StatisticService,
-    TitleService,
 } from '@openchannel/angular-common-services';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
-import { ButtonActionService } from '@features/button-action/button-action.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { asyncScheduler, of, throwError } from 'rxjs';
 import { observeOn } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { Filter, OCReviewDetails, OverallRatingSummary, Review } from '@openchannel/angular-common-components';
+import { Filter, OCReviewDetails, OverallRatingSummary } from '@openchannel/angular-common-components';
 import { Location } from '@angular/common';
 import { FullAppData } from '@openchannel/angular-common-components/src/lib/common-components';
 import { pageConfig } from '../../../../assets/data/configData';
+import {
+    MockButtonActionComponent,
+    MockButtonComponent,
+    MockDropdownComponent,
+    MockOcAppDescriptionComponent,
+    MockOcImageGalleryComponent,
+    MockOcOverallRatingComponent,
+    MockOcRatingComponent,
+    MockOcRecomendedAppsComponent,
+    MockOcReviewComponent,
+    MockOcReviewListComponent,
+    MockOcVideoComponent,
+    MockRoutingComponent,
+} from '../../../../mock/components.mock';
+import {
+    mockAppsService,
+    mockAppVersionService,
+    mockAuthHolderService,
+    mockButtonActionService,
+    mockFrontendService,
+    mockLoadingBarService,
+    mockMarketMetaTagService,
+    mockReviewsService,
+    mockSiteContentService,
+    mockStatisticService,
+    mockTitleService,
+} from '../../../../mock/providers.mock';
+import { MockAppsService, MockFrontendService } from '../../../../mock/services.mock';
 
 const mockReviewsDetailsPage: Page<OCReviewDetails> = {
     count: 1,
@@ -129,7 +128,7 @@ const mockFullAppData: FullAppData = {
     isLive: false,
 };
 
-const mockReview: Review = {
+const mockReview: any = {
     reviewId: 'reviewId',
     headline: 'headline',
     description: 'description',
@@ -172,17 +171,17 @@ describe('AppDetailComponent', () => {
                     MockOcRecomendedAppsComponent,
                 ],
                 providers: [
-                    { provide: AppsService, useClass: MockAppsService },
-                    { provide: AppVersionService, useClass: MockAppVersionService },
-                    { provide: FrontendService, useClass: MockFrontendService },
-                    { provide: LoadingBarService, useClass: MockLoadingBarService },
-                    { provide: TitleService, useClass: MockTitleService },
-                    { provide: StatisticService, useClass: MockStatisticService },
-                    { provide: MarketMetaTagService, useClass: MockMarketMetaTagService },
-                    { provide: SiteContentService, useClass: MockSiteContentService },
-                    { provide: AuthHolderService, useClass: MockAuthHolderService },
-                    { provide: ButtonActionService, useClass: MockButtonActionService },
-                    { provide: ReviewsService, useClass: MockReviewsService },
+                    mockAppsService(),
+                    mockAppVersionService(),
+                    mockFrontendService(),
+                    mockLoadingBarService(),
+                    mockTitleService(),
+                    mockStatisticService(),
+                    mockMarketMetaTagService(),
+                    mockSiteContentService(),
+                    mockAuthHolderService(),
+                    mockButtonActionService(),
+                    mockReviewsService(),
                 ],
                 imports: [
                     RouterTestingModule.withRoutes([
@@ -225,56 +224,73 @@ describe('AppDetailComponent', () => {
         should call siteContentService.getSecuritySettings() and set allowReviewsWithoutOwnership
         if the user is logged in and security settings allows reviews without ownership (initAllowReviewsWithoutOwnershipProperty())
       `, fakeAsync(() => {
+        const siteContentService = TestBed.inject(SiteContentService);
+        const authHolderService = TestBed.inject(AuthHolderService);
+
         component.allowReviewsWithoutOwnership = false;
 
-        const mockSecuritySettings = jest
-            .spyOn((component as any).siteContentService, 'getSecuritySettings')
-            .mockReturnValue(of({ allowReviewsWithoutOwnership: true }).pipe(observeOn(asyncScheduler)));
-        (component as any).authHolderService.isLoggedInUser = jest.fn().mockReturnValue(true);
+        jest.spyOn(siteContentService, 'getSecuritySettings').mockReturnValue(
+            of({ allowReviewsWithoutOwnership: true, maxCharacters: 100 }).pipe(observeOn(asyncScheduler)),
+        );
+        jest.spyOn(authHolderService, 'isLoggedInUser').mockReturnValue(true);
 
         component.initAllowReviewsWithoutOwnershipProperty();
+
         tick();
-        expect(mockSecuritySettings).toHaveBeenCalled();
+
+        expect(siteContentService.getSecuritySettings).toHaveBeenCalled();
         expect(component.allowReviewsWithoutOwnership).toBeTruthy();
 
-        mockSecuritySettings.mockReturnValue(of({ allowReviewsWithoutOwnership: false }));
+        flush();
+
+        jest.spyOn(siteContentService, 'getSecuritySettings').mockReturnValue(
+            of({ allowReviewsWithoutOwnership: false, maxCharacters: 100 }),
+        );
 
         component.initAllowReviewsWithoutOwnershipProperty();
+
         tick();
+
         expect(component.allowReviewsWithoutOwnership).toBeFalsy();
     }));
 
     it('should call frontendService.getSorts() and set reviewsSorts (initReviewSortQueries())', fakeAsync(() => {
+        const frontendService = TestBed.inject(FrontendService);
         component.reviewsSorts = null;
-        const mockGetSorts = jest
-            .spyOn((component as any).frontendService, 'getSorts')
-            .mockReturnValue(of({ list: [{ values: [{ ...mockSort }] }] }).pipe(observeOn(asyncScheduler)));
+
+        jest.spyOn(frontendService, 'getSorts').mockReturnValue(of(MockFrontendService.MOCK_SORTS_PAGE).pipe(observeOn(asyncScheduler)));
 
         component.initReviewSortQueries();
         tick();
 
-        expect(mockGetSorts).toHaveBeenCalled();
+        expect(frontendService.getSorts).toHaveBeenCalled();
         expect(component.reviewsSorts).not.toBeNull();
     }));
 
     it('should set currentUserId (initCurrentUserId())', () => {
+        const authHolderService = TestBed.inject(AuthHolderService);
         const userId = 'user-id';
+
         component.currentUserId = null;
-        (component as any).authHolderService.userDetails.organizationId = userId;
+        authHolderService.userDetails.organizationId = userId;
 
         component.initCurrentUserId();
         expect(component.currentUserId).toBe(userId);
     });
 
     it('should call reviewsService.getReviewsByAppId() with correct arguments (loadReviews())', () => {
+        const reviewsService = TestBed.inject(ReviewsService);
         component.app = { ...mockFullAppData };
         component.selectedFilter = { ...mockFilter };
         component.selectedSort = { ...mockSort };
 
-        const mockGetUserApp = jest.spyOn((component as any).reviewsService, 'getReviewsByAppId');
+        jest.spyOn(reviewsService, 'getReviewsByAppId');
 
         component.loadReviews();
-        expect(mockGetUserApp).toHaveBeenCalledWith(component.app.appId, component.selectedSort.value, [component.selectedFilter.value]);
+
+        expect(reviewsService.getReviewsByAppId).toHaveBeenCalledWith(component.app.appId, component.selectedSort.value, [
+            component.selectedFilter.value,
+        ]);
     });
 
     it('should set reviewsPage (loadReviews())', fakeAsync(() => {
@@ -282,172 +298,223 @@ describe('AppDetailComponent', () => {
         component.reviewsPage = null;
 
         component.loadReviews();
+
         tick();
+
         expect(component.reviewsPage).not.toBeNull();
     }));
 
     it('should call makeCurrentUserReviewFirst() if no sort is applied and currentUserId is set (loadReviews())', fakeAsync(() => {
         component.app = { ...mockFullAppData };
 
-        const mockMakeUserReviewFirst = jest.spyOn(component as any, 'makeCurrentUserReviewFirst').mockImplementation();
+        jest.spyOn(component as any, 'makeCurrentUserReviewFirst').mockImplementation();
 
         // currentUserId is set and no sort applied
         component.currentUserId = '123';
         component.selectedSort = null;
         component.selectedFilter = { ...mockFilter, value: null };
         component.loadReviews();
-        tick();
-        expect(mockMakeUserReviewFirst).toHaveBeenCalled();
 
-        mockMakeUserReviewFirst.mockReset();
+        tick();
+
+        expect((component as any).makeCurrentUserReviewFirst).toHaveBeenCalled();
+
+        (component as any).makeCurrentUserReviewFirst.mockReset();
 
         // currentUserId is set and sort applied
         component.selectedSort = { ...mockSort };
         component.selectedFilter = { ...mockFilter, value: '123' };
         component.loadReviews();
-        tick();
-        expect(mockMakeUserReviewFirst).not.toHaveBeenCalled();
 
-        mockMakeUserReviewFirst.mockReset();
+        tick();
+
+        expect((component as any).makeCurrentUserReviewFirst).not.toHaveBeenCalled();
+
+        (component as any).makeCurrentUserReviewFirst.mockReset();
 
         // currentUserId is not set and sort applied
         component.currentUserId = null;
         component.loadReviews();
+
         tick();
-        expect(mockMakeUserReviewFirst).not.toHaveBeenCalled();
+
+        expect((component as any).makeCurrentUserReviewFirst).not.toHaveBeenCalled();
     }));
 
     it('should call countRating() if overall rating is equal to 0 (loadReviews())', fakeAsync(() => {
         component.app = { ...mockFullAppData };
 
-        const mockMakeUserReviewFirst = jest.spyOn(component as any, 'countRating').mockImplementation();
+        jest.spyOn(component as any, 'countRating').mockImplementation();
 
         component.overallRating.rating = 0;
         component.loadReviews();
+
         tick();
-        expect(mockMakeUserReviewFirst).toHaveBeenCalled();
+
+        expect((component as any).countRating).toHaveBeenCalled();
     }));
 
     it('should set selectedSort and call loadReviews() (onReviewSortChange())', () => {
         component.selectedSort = null;
+
         jest.spyOn(component, 'loadReviews').mockImplementation();
 
         component.onReviewSortChange({ ...mockSort });
+
         expect(component.selectedSort).toEqual({ ...mockSort });
         expect(component.loadReviews).toHaveBeenCalled();
     });
 
     it('should set selectedFilter and call loadReviews() (onReviewFilterChange())', () => {
         component.selectedFilter = null;
+
         jest.spyOn(component, 'loadReviews').mockImplementation();
 
         component.onReviewFilterChange({ ...mockFilter });
+
         expect(component.selectedFilter).toEqual({ ...mockFilter });
         expect(component.loadReviews).toHaveBeenCalled();
     });
 
     it('should set recommendedApps and call appService.getApps() (getRecommendedApps())', fakeAsync(() => {
-        const mockGetApps = jest.spyOn((component as any).appService, 'getApps');
+        const appService = TestBed.inject(AppsService);
+
+        jest.spyOn(appService, 'getApps');
+
         component.recommendedApps = null;
 
         component.getRecommendedApps();
+
         tick();
-        expect(mockGetApps).toHaveBeenCalled();
+
+        expect(appService.getApps).toHaveBeenCalled();
         expect(component.recommendedApps).not.toBeNull();
     }));
 
     it('should call window.close() (closeWindow())', () => {
         jest.spyOn(global, 'close');
+
         component.closeWindow();
+
         expect(window.close).toHaveBeenCalled();
     });
 
     it('should call getApp() with correct args (getAppData())', () => {
-        const mockGetApp = jest.spyOn(component as any, 'getApp').mockReturnValue(of({}));
+        jest.spyOn(component as any, 'getApp').mockReturnValue(of({}));
         activatedRoute.snapshot.params = { appId: mockAppId, appVersion: mockAppVersion, safeName: mockSafeName };
 
         component.getAppData();
-        expect(mockGetApp).toHaveBeenCalledWith(mockSafeName, mockAppId, mockAppVersion);
+
+        expect((component as any).getApp).toHaveBeenCalledWith(mockSafeName, mockAppId, mockAppVersion);
     });
 
     it('should call statisticService.recordVisitToApp() with appId, loadReviews() and set appListingActions (getAppData())', fakeAsync(() => {
+        const statisticService = TestBed.inject(StatisticService);
+
         component.app = { ...mockFullAppData };
         component.appListingActions = null;
+
         jest.spyOn(component as any, 'getApp').mockReturnValue(of({}));
-        jest.spyOn((component as any).statisticService, 'recordVisitToApp');
+        jest.spyOn(statisticService, 'recordVisitToApp');
         jest.spyOn(component, 'loadReviews').mockImplementation();
 
         component.getAppData();
+
         tick();
+
         expect(component.appListingActions).not.toBeNull();
-        expect((component as any).statisticService.recordVisitToApp).toHaveBeenCalledWith(component.app.appId, expect.anything());
+        expect(statisticService.recordVisitToApp).toHaveBeenCalledWith(component.app.appId, expect.anything());
         expect(component.loadReviews).toHaveBeenCalled();
     }));
 
     it('should set isWritingReview to true (onNewReview())', () => {
         component.isWritingReview = false;
+
         component.onNewReview();
+
         expect(component.isWritingReview).toBeTruthy();
     });
 
     it('should call reviewsService methods according to current user review existence (onReviewSubmit())', fakeAsync(() => {
+        const reviewsService = TestBed.inject(ReviewsService);
         component.app = { ...mockFullAppData };
-        const mockUpdateReview = jest.spyOn((component as any).reviewsService, 'updateReview');
-        const mockCreateReview = jest.spyOn((component as any).reviewsService, 'createReview');
-        const mockReloadReview = jest.spyOn(component as any, 'reloadReview');
+
+        jest.spyOn(reviewsService, 'updateReview');
+        jest.spyOn(reviewsService, 'createReview');
+        jest.spyOn(component as any, 'reloadReview');
 
         component.userReview = { ...mockReview };
         component.onReviewSubmit({ ...mockReview });
-        expect(mockUpdateReview).toHaveBeenCalledWith({
+
+        expect(reviewsService.updateReview).toHaveBeenCalledWith({
             ...mockReview,
             reviewId: component.userReview.reviewId,
             appId: component.app.appId,
         });
-        tick();
-        expect(mockReloadReview).toHaveBeenCalled();
 
-        mockReloadReview.mockReset();
+        tick();
+
+        expect((component as any).reloadReview).toHaveBeenCalled();
+
+        (component as any).reloadReview.mockReset();
 
         component.userReview = null;
         component.onReviewSubmit({ ...mockReview });
-        expect(mockCreateReview).toHaveBeenCalledWith({ ...mockReview, appId: component.app.appId });
+
+        expect(reviewsService.createReview).toHaveBeenCalledWith({ ...mockReview, appId: component.app.appId });
+
         tick();
-        expect(mockReloadReview).toHaveBeenCalled();
+
+        expect(reviewsService.createReview).toHaveBeenCalled();
     }));
 
     it('should correctly set reviewSubmitInProgress (onReviewSubmit())', fakeAsync(() => {
-        jest.spyOn((component as any).reviewsService, 'updateReview').mockReturnValue(throwError('Error').pipe(observeOn(asyncScheduler)));
-        jest.spyOn((component as any).reviewsService, 'createReview').mockReturnValue(throwError('Error').pipe(observeOn(asyncScheduler)));
+        const reviewsService = TestBed.inject(ReviewsService);
+
+        jest.spyOn(reviewsService, 'updateReview').mockReturnValue(throwError('Error').pipe(observeOn(asyncScheduler)));
+        jest.spyOn(reviewsService, 'createReview').mockReturnValue(throwError('Error').pipe(observeOn(asyncScheduler)));
+
         component.app = { ...mockFullAppData };
         component.userReview = { ...mockReview };
+
         jest.spyOn(component as any, 'reloadReview').mockImplementation();
 
         component.onReviewSubmit({ ...mockReview });
+
         expect(component.reviewSubmitInProgress).toBeTruthy();
+
         tick();
+
         expect(component.reviewSubmitInProgress).toBeFalsy();
 
         component.onReviewSubmit({ ...mockReview });
+
         expect(component.reviewSubmitInProgress).toBeTruthy();
+
         tick();
+
         expect(component.reviewSubmitInProgress).toBeFalsy();
     }));
 
     it('should set isWritingReview to false (onCancelReview())', () => {
         component.isWritingReview = true;
+
         component.onCancelReview();
+
         expect(component.isWritingReview).toBeFalsy();
     });
 
     it('should call correct option according to passed option (onChosenReviewActon())', () => {
-        const mockEditReview = jest.spyOn(component as any, 'editReview').mockImplementation();
-        const mockDeleteReview = jest.spyOn(component as any, 'deleteReview').mockImplementation();
+        jest.spyOn(component as any, 'editReview').mockImplementation();
+        jest.spyOn(component as any, 'deleteReview').mockImplementation();
 
         component.onChosenReviewActon('EDIT');
-        expect(mockEditReview).toHaveBeenCalled();
+
+        expect((component as any).editReview).toHaveBeenCalled();
 
         component.onChosenReviewActon('DELETE');
-        expect(mockDeleteReview).toHaveBeenCalled();
+
+        expect((component as any).deleteReview).toHaveBeenCalled();
     });
 
     it('should not navigate if the filter with passed category does not exist (goToSearchPageWithSelectedCategory())', fakeAsync(() => {
@@ -455,7 +522,9 @@ describe('AppDetailComponent', () => {
         const initialPath = location.path();
 
         component.goToSearchPageWithSelectedCategory('not-existing-category-label');
+
         tick();
+
         expect(initialPath).toBe(location.path());
     }));
 
@@ -465,24 +534,32 @@ describe('AppDetailComponent', () => {
         const selectedFilter = component.searchFilters[0];
 
         component.goToSearchPageWithSelectedCategory(selectedCategory.label);
+
         tick();
 
         expect(location.path()).toBe(`/browse/${selectedFilter.id}/${selectedCategory.id}`);
     }));
 
     it('should call location.back() (goBack())', () => {
-        const mockLocationBack = jest.spyOn((component as any).location, 'back');
+        jest.spyOn((component as any).location, 'back');
+
         component.goBack();
-        expect(mockLocationBack).toHaveBeenCalled();
+
+        expect((component as any).location.back).toHaveBeenCalled();
     });
 
     it('should call frontendService.getFilters() and set searchFilters (getSearchFilters())', fakeAsync(() => {
-        const mockGetFilters = jest.spyOn((component as any).frontendService, 'getFilters');
+        const frontendService = TestBed.inject(FrontendService);
+
+        jest.spyOn(frontendService, 'getFilters');
+
         component.searchFilters = null;
 
         (component as any).getSearchFilters();
+
         tick();
-        expect(mockGetFilters).toHaveBeenCalled();
+
+        expect(frontendService.getFilters).toHaveBeenCalled();
         expect(component.searchFilters).toEqual(MockFrontendService.MOCK_FILTERS_PAGE.list);
     }));
 
@@ -492,39 +569,48 @@ describe('AppDetailComponent', () => {
         const initialReviewsPage = component.reviewsPage;
 
         (component as any).makeCurrentUserReviewFirst();
+
         expect(initialReviewsPage).toEqual(component.reviewsPage);
     });
 
     it('should call reviewsService.getOneReview(), set userReview and isWritingReview (editReview())', fakeAsync(() => {
-        const mockGetOneReview = jest
-            .spyOn((component as any).reviewsService, 'getOneReview')
-            .mockReturnValue(of(mockReview).pipe(observeOn(asyncScheduler)));
+        const reviewsService = TestBed.inject(ReviewsService);
+
+        jest.spyOn(reviewsService, 'getOneReview').mockReturnValue(of(mockReview).pipe(observeOn(asyncScheduler)));
+
         component.isWritingReview = false;
         component.userReview = mockReview;
 
         (component as any).editReview();
         component.userReview = null;
+
         tick();
-        expect(mockGetOneReview).toHaveBeenCalled();
+
+        expect(reviewsService.getOneReview).toHaveBeenCalled();
         expect(component.isWritingReview).toBeTruthy();
         expect(component.userReview).toEqual(mockReview);
     }));
 
     it('should call method to get app according to safeName existence (getApp())', () => {
-        const mockGetBySafeName = jest.spyOn((component as any).appService, 'getAppBySafeName');
-        const mockGetByVersion = jest.spyOn((component as any).appVersionService, 'getAppByVersion');
+        const appService = TestBed.inject(AppsService);
+        const appVersionService = TestBed.inject(AppVersionService);
+
+        jest.spyOn(appService, 'getAppBySafeName');
+        jest.spyOn(appVersionService, 'getAppByVersion');
 
         (component as any).getApp('safeName', 'id', 'version');
-        expect(mockGetBySafeName).toHaveBeenCalled();
+
+        expect(appService.getAppBySafeName).toHaveBeenCalled();
 
         (component as any).getApp(null, 'id', 'version');
-        expect(mockGetByVersion).toHaveBeenCalled();
+
+        expect(appVersionService.getAppByVersion).toHaveBeenCalled();
     });
 
     it('should navigate to the 404 page if getAppBySafeName returns 404 (getApp())', fakeAsync(() => {
-        jest.spyOn((component as any).appService, 'getAppBySafeName').mockReturnValue(
-            throwError({ status: 404 }).pipe(observeOn(asyncScheduler)),
-        );
+        const appService = TestBed.inject(AppsService);
+
+        jest.spyOn(appService, 'getAppBySafeName').mockReturnValue(throwError({ status: 404 }).pipe(observeOn(asyncScheduler)));
 
         try {
             (component as any).getApp('safeName', 'id', 'version').subscribe();
@@ -534,46 +620,63 @@ describe('AppDetailComponent', () => {
     }));
 
     it('should call metaTagService.pushSelectedFieldsToTempPageData() and titleService.setSpecialTitle() (getApp())', fakeAsync(() => {
-        jest.spyOn((component as any).appService, 'getAppBySafeName').mockReturnValue(of(MockAppsService.MOCK_APP));
+        const appService = TestBed.inject(AppsService);
+
+        jest.spyOn(appService, 'getAppBySafeName');
+
         const mockPushFields = jest.spyOn((component as any).metaTagService, 'pushSelectedFieldsToTempPageData');
         const mockSetTitle = jest.spyOn((component as any).titleService, 'setSpecialTitle');
 
         (component as any).getApp('safeName', 'id', 'version').subscribe();
+
         tick();
+
         expect(mockPushFields).toHaveBeenCalledWith({ app: MockAppsService.MOCK_APP });
         expect(mockSetTitle).toHaveBeenCalledWith(MockAppsService.MOCK_APP.name);
     }));
 
     it('should set app and correctly map it (getApp())', fakeAsync(() => {
+        const appService = TestBed.inject(AppsService);
+
         const app = { ...MockAppsService.MOCK_APP };
         const mappedApp = new FullAppData(app, pageConfig.fieldMappings);
-        jest.spyOn((component as any).appService, 'getAppBySafeName').mockReturnValue(of(app));
+
+        jest.spyOn(appService, 'getAppBySafeName');
 
         (component as any).getApp('safeName', 'id', 'version').subscribe();
+
         tick();
+
         expect(component.app).toEqual(mappedApp);
     }));
 
     it('should call loadReviews() and set reviewSubmitInProgress, isWritingReview to false (reloadReview())', () => {
-        const mockLoadReviews = jest.spyOn(component, 'loadReviews').mockImplementation();
+        jest.spyOn(component, 'loadReviews').mockImplementation();
+
         component.reviewSubmitInProgress = true;
         component.isWritingReview = true;
 
         (component as any).reloadReview();
-        expect(mockLoadReviews).toHaveBeenCalled();
+
+        expect(component.loadReviews).toHaveBeenCalled();
         expect(component.reviewSubmitInProgress).toBeFalsy();
         expect(component.isWritingReview).toBeFalsy();
     });
 
     it('should call reviewsService.deleteReview() and loadReviews() after deleting (deleteReview())', fakeAsync(() => {
-        const mockDeleteReview = jest.spyOn((component as any).reviewsService, 'deleteReview');
-        const mockLoadReviews = jest.spyOn(component, 'loadReviews').mockImplementation();
+        const reviewsService = TestBed.inject(ReviewsService);
+
+        jest.spyOn(reviewsService, 'deleteReview');
+        jest.spyOn(component, 'loadReviews').mockImplementation();
+
         component.userReview = { ...mockReview };
 
         (component as any).deleteReview();
+
         tick();
-        expect(mockDeleteReview).toHaveBeenCalledWith(component.userReview.reviewId);
-        expect(mockLoadReviews).toHaveBeenCalled();
+
+        expect(reviewsService.deleteReview).toHaveBeenCalledWith(component.userReview.reviewId);
+        expect(component.loadReviews).toHaveBeenCalled();
     }));
 
     it('should correctly set overallRating (countRating())', () => {
@@ -585,6 +688,7 @@ describe('AppDetailComponent', () => {
         approvedReviews.forEach(review => expectedRating[Math.floor(review.rating / 100)]++);
 
         (component as any).countRating();
+
         expect(component.overallRating).toEqual(expectedRating);
     });
 
@@ -598,11 +702,13 @@ describe('AppDetailComponent', () => {
             'getRecommendedApps',
             'getSearchFilters',
         ];
+
         expectedMethodsToCall.forEach(method => {
             jest.spyOn(component, method as any).mockImplementation();
         });
 
         fixture.detectChanges();
+
         expectedMethodsToCall.forEach(method => {
             expect(component[method]).toHaveBeenCalled();
         });
