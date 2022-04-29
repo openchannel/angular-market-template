@@ -102,6 +102,25 @@ export class MockOcActivationComponent {
     @Output() readonly buttonClick: EventEmitter<any> = new EventEmitter<any>();
     @Input() headingTag: HeadingTag = 'h1';
 }
+
+@Component({
+    selector: 'app-billing-form',
+    template: '',
+})
+export class MockAppBillingForm {
+    @Input() goBackOnCancel: boolean = false;
+    @Input() successButtonText: string = '';
+    @Input() categoryRouterLink: string = '';
+    @Input() successToasterMessage: string = '';
+    @Input() additionalFieldsTemplate: TemplateRef<any>;
+    @Input() process: any;
+    @Input() additionalButtonLock: boolean = false;
+
+    @Output() readonly cardDataLoaded: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly successButtonPressed: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly successAction: EventEmitter<any> = new EventEmitter<any>();
+}
+
 @Component({
     selector: 'oc-profile-navbar',
     template: '',
@@ -215,6 +234,15 @@ export class OcConfirmationModalComponent {
     @Input() rejectButtonType: 'primary' | 'secondary' | 'link' | 'danger' = 'secondary';
     @Input() rejectButtonHide: boolean = false;
     @Input() confirmButtonClass: string = '';
+}
+
+@Component({
+    selector: 'oc-consent',
+    template: '',
+})
+export class MockOcConsentComponent {
+    @Input() policyUrl: string = '';
+    @Input() termsUrl: string = '';
 }
 
 @Component({

@@ -8,3 +8,11 @@ export class MockTransactionAmountPipe implements PipeTransform {
         return s;
     }
 }
+@Pipe({
+    name: 'checkoutPrice',
+})
+export class MockCheckoutPricePipe implements PipeTransform {
+    transform(s: string): string {
+        return s;
+    }
+}

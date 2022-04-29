@@ -3,7 +3,6 @@ import { Page, SortResponse, Transaction, UserAccount } from '@openchannel/angul
 import { Filter } from '@openchannel/angular-common-components';
 import { observeOn } from 'rxjs/operators';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
-import { Router } from '@angular/router';
 
 class MockPagination<T> {
     private values: T[];
@@ -353,7 +352,7 @@ export class MockUserAccountTypesService {
 export class MockInviteUserService {
     userInvites: MockPagination<InviteUserModel>;
 
-     mockInviteUserModelGoodResponse = {
+    mockInviteUserModelGoodResponse = {
         userInviteId: '123123wwq2131',
         userInviteTemplateId: '123123wwq2131',
         userId: '123123wwq2131',
@@ -581,6 +580,9 @@ export class MockAppsService {
     getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
+    getAppBySafeName(...args: any): Observable<any> {
+        return of('1');
+    }
 }
 
 export class MockCmsContentService {
@@ -628,9 +630,9 @@ export class MockNativeLoginService {
         return of('1').pipe(observeOn(asyncScheduler));
     }
 
-    signupByInvite():Observable<any> {
+    signupByInvite(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
-    };
+    }
 
     sendActivationCode(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
@@ -801,6 +803,28 @@ export class MockLogOutService {
     }
 
     logOut(): Observable<any> {
+        return of('1');
+    }
+}
+
+export class MockAppVersionService {
+    getAppByVersion(...args: any): Observable<any> {
+        return of('1');
+    }
+}
+
+export class MockStripeLoaderService {
+    loadStripe(): void {
+        // do nothing
+    }
+}
+
+export class MockStripeService {
+    getTaxesAndPayment(...args: any): Observable<any> {
+        return of('1');
+    }
+
+    makePurchase(...args: any): Observable<any> {
         return of('1');
     }
 }
