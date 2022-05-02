@@ -82,7 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.isCollapsed = true;
     }
 
-    checkIncludesUrl(url1, url2?): boolean {
+    checkIncludesUrl(url1: string, url2?: string): boolean {
         return this.router.url.includes(url1) || (url2 && this.router.url.includes(url2));
     }
 
@@ -94,7 +94,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         return routerPath;
     }
 
-    initCMSData(): void {
+    private initCMSData(): void {
         this.cmsService
             .getContentByPaths({
                 headerLogoURL: 'default-header.logo',
