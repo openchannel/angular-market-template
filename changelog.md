@@ -1,3 +1,10 @@
+## Release notes - template3-marketsite-frontend - Version 1.66.6 (5/3/2022)<br>
+### Bug<br>
+AT-1787 - [Market] Change app details page loading strategy<br>
+AT-1782 - Image uploader allow to upload unsupported file<br>
+## Release notes - template3-marketsite-frontend - Version 1.66.5 (4/20/2022)<br>
+### Bug<br>
+AT-1786 - SAML2 not working for customers<br>
 ## Release notes - template3-marketsite-frontend - Version 1.66.4 (4/5/2022)<br>
 ### Bug<br>
 AT-1769 - [Libs] Fix storybook build<br>
