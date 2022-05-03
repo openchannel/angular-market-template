@@ -615,15 +615,12 @@ export class MockAppsService {
     getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
-    getAppBySafeName(...args: any): Observable<any> {
-        return of('1');
-    }
 
     searchApp(): Observable<any> {
         return of('1');
     }
 
-    getAppBySafeName(): Observable<any> {
+    getAppBySafeName(...args: any): Observable<any> {
         return of(MockAppsService.MOCK_APP);
     }
 }
@@ -878,12 +875,6 @@ export class MockLogOutService {
     }
 }
 
-export class MockAppVersionService {
-    getAppByVersion(...args: any): Observable<any> {
-        return of('1');
-    }
-}
-
 export class MockStripeLoaderService {
     loadStripe(): void {
         // do nothing
@@ -927,12 +918,6 @@ export class MockFileUploadDownloadService {
 
     getFileUrl(): Observable<any> {
         return of('1');
-    }
-}
-
-export class MockStatisticService {
-    record(): Observable<any> {
-        return of().pipe( catchError(error => throwError(error)));
     }
 }
 

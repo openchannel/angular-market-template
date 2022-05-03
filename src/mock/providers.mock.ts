@@ -1,6 +1,7 @@
 import { Provider } from '@angular/core';
 import {
-    AppFormService,AppsService, AppVersionService,
+    AppFormService,
+    AppsService,
     AuthenticationService,
     AuthHolderService,
     FileUploadDownloadService,
@@ -13,22 +14,20 @@ import {
     SiteContentService,
     StatisticService,
     StripeService,
-    StatisticService,
     TitleService,
     TransactionsService,
     UserAccount,
     UserAccountService,
     UserAccountTypesService,
     UserRoleService,
-    UsersService
-} from "@openchannel/angular-common-services";
+    UsersService,
+    AppVersionService,
+} from '@openchannel/angular-common-services';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 import { ToastrService } from 'ngx-toastr';
 import {
     MockAppFormService,
     MockAppsService,
-    MockAppVersionService,
-    MockAppsService, MockAppVersionService,
     MockAuthenticationService,
     MockAuthHolderService,
     MockButtonActionService,
@@ -48,7 +47,6 @@ import {
     MockSiteConfigService,
     MockSiteContentService,
     MockStatisticService,
-    MockStatisticService,
     MockStripeLoaderService,
     MockStripeService,
     MockTitleService,
@@ -57,8 +55,9 @@ import {
     MockUserAccountService,
     MockUserAccountTypesService,
     MockUserRoleService,
-    MockUsersService
-} from "./services.mock";
+    MockUsersService,
+    MockAppVersionService,
+} from './services.mock';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MockNgbActiveModal, MockNgbModal } from './components.mock';
@@ -189,14 +188,6 @@ export function mockSiteContentService(): Provider {
 
 export function mockMarketMetaTagService(): Provider {
     return { provide: MarketMetaTagService, useClass: MockMarketMetaTagService };
-}
-
-export function mockStatisticService(): Provider {
-    return { provide: StatisticService, useClass: MockStatisticService };
-}
-
-export function mockAppVersionService(): Provider {
-    return { provide: AppVersionService, useClass: MockAppVersionService };
 }
 
 export function mockAppVersionService(): Provider {

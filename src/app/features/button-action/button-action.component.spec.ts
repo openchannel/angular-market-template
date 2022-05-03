@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick, flush } from '@angular/core/testing';
+import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { ButtonActionComponent } from './button-action.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MockNgbModal, MockRoutingComponent, MockButtonComponent } from '../../../mock/components.mock';
@@ -10,28 +10,14 @@ import {
     OwnershipService,
     StatisticService,
 } from '@openchannel/angular-common-services';
-import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { By } from '@angular/platform-browser';
-import { ResendActivationComponent } from '../../pages/general/resend-activation/resend-activation.component';
 import { Location } from '@angular/common';
-import {
-    ActionButton,
-    actionButtons,
-    buyNowButton,
-    contactUsButton,
-    downloadButton,
-    installButton,
-    InstallButtonType,
-    uninstallButton,
-} from '../../../assets/data/configData';
-import { OcButtonType } from '@openchannel/angular-common-components/src/lib/common-components/model/components-basic.model';
-import { Action } from 'rxjs/internal/scheduler/Action';
+import { buyNowButton, contactUsButton, downloadButton, installButton, uninstallButton } from '../../../assets/data/configData';
 import { FullAppData, OcConfirmationModalComponent } from '@openchannel/angular-common-components';
 import { asyncScheduler, Observable, throwError } from 'rxjs';
-import { observeOn, catchError } from 'rxjs/operators';
-import { AppFormFieldResponse, AppFormModelResponse } from '@openchannel/angular-common-services/lib/model/api/app-form-model';
+import { observeOn } from 'rxjs/operators';
+import { AppFormModelResponse } from '@openchannel/angular-common-services/lib/model/api/app-form-model';
 import {
     mockAppFormService,
     mockAuthHolderService,
@@ -380,6 +366,8 @@ describe('ButtonActionComponent', () => {
         expect(statisticService.record).toHaveBeenCalled();
         expect(fileUploadDownloadService.downloadFileDetails).toHaveBeenCalled();
         expect(fileUploadDownloadService.getFileUrl).toHaveBeenCalled();
+
+        discardPeriodicTasks();
     }));
 
     it('should show toastrService error message if click download and get error 403', fakeAsync(() => {

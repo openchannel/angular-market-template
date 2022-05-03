@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { of, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { MockFrontendService } from '../../../../mock/services.mock';
 import { AppsService } from '@openchannel/angular-common-services';
 
@@ -75,16 +75,17 @@ describe('AppSearchComponent', () => {
         expect(component.isHideFilter).toBeFalsy();
     });
 
-    it('should check .filter-container view with mocked data', () => {
+    it('should check .filter-container view with mocked data', fakeAsync(() => {
         const mockSidebarModel = {
             parent: { expanded: false, icon: '' },
         };
         const mockFilter = MockFrontendService.MOCK_FILTERS_PAGE;
 
-        fixture.detectChanges();
-
-        component.loadFilters$ = of(MockFrontendService.MOCK_FILTERS_PAGE);
         component.filters = mockFilter.list;
+
+        fixture.detectChanges();
+        tick();
+        fixture.detectChanges();
 
         const filterContainer = fixture.debugElement.query(By.css('.filter-container'));
         const ocSidebar = mockOcSidebarDE();
@@ -100,9 +101,9 @@ describe('AppSearchComponent', () => {
 
         expect(component.onSingleFilterChange).toBeCalledWith(mockFilter.list[0], mockSidebarModel);
         expect(component.updateFilterValues).toBeCalledWith(true, mockFilter.list[0], mockSidebarModel);
-    });
+    }));
 
-    it('should check injected values and event emitters in oc-text-search', () => {
+    it('should check injected values and event emitters in oc-text-search', fakeAsync(() => {
         const activatedRoute = TestBed.inject(ActivatedRoute);
 
         jest.spyOn(activatedRoute.snapshot.queryParamMap, 'get').mockReturnValueOnce('mock');
@@ -113,6 +114,8 @@ describe('AppSearchComponent', () => {
         jest.spyOn(component, 'disableFilterValue');
         jest.spyOn(component, 'clearAllSearchConditions');
 
+        fixture.detectChanges();
+        tick();
         fixture.detectChanges();
 
         const ocTextSearchComponent = mockOcTextSearchDE().componentInstance;
@@ -149,9 +152,9 @@ describe('AppSearchComponent', () => {
 
         expect(component.clearAllSearchConditions).toBeCalled();
         expect(component.clearSearchText).toBeCalled();
-    });
+    }));
 
-    it('should check injected values in oc-app-list-grid', () => {
+    it('should check injected values in oc-app-list-grid', fakeAsync(() => {
         component.appPage = {
             pages: 0,
             count: 0,
@@ -160,6 +163,8 @@ describe('AppSearchComponent', () => {
         };
 
         fixture.detectChanges();
+        tick();
+        fixture.detectChanges();
 
         const ocAppListGridComponent = mockOcAppListGridDE().componentInstance;
 
@@ -167,7 +172,7 @@ describe('AppSearchComponent', () => {
         expect(ocAppListGridComponent.baseLinkForOneApp).toBe('/details');
         expect(ocAppListGridComponent.appNavigationParam).toBe('safeName[0]');
         expect(ocAppListGridComponent.defaultAppIcon).toBe('./assets/img/default-app-icon.svg');
-    });
+    }));
 
     it('should check getData() method', fakeAsync(() => {
         fixture.detectChanges();
