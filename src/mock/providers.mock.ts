@@ -1,14 +1,18 @@
 import { Provider } from '@angular/core';
 import {
-    AppsService, AppVersionService,
+    AppFormService,AppsService, AppVersionService,
     AuthenticationService,
     AuthHolderService,
+    FileUploadDownloadService,
     FrontendService,
     InviteUserService,
     NativeLoginService,
     ReviewsService,
+    OwnershipService,
     SiteConfigService,
     SiteContentService,
+    StatisticService,
+    StripeService,
     StatisticService,
     TitleService,
     TransactionsService,
@@ -21,12 +25,16 @@ import {
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 import { ToastrService } from 'ngx-toastr';
 import {
+    MockAppFormService,
+    MockAppsService,
+    MockAppVersionService,
     MockAppsService, MockAppVersionService,
     MockAuthenticationService,
     MockAuthHolderService,
     MockButtonActionService,
     MockCmsContentService,
     MockEditUserTypeService,
+    MockFileUploadDownloadService,
     MockFrontendService,
     MockInviteUserService,
     MockLoadingBarService,
@@ -36,9 +44,13 @@ import {
     MockNativeLoginService,
     MockOAuthService,
     MockReviewsService,
+    MockOwnershipService,
     MockSiteConfigService,
     MockSiteContentService,
     MockStatisticService,
+    MockStatisticService,
+    MockStripeLoaderService,
+    MockStripeService,
     MockTitleService,
     MockToastrService,
     MockTransactionsService,
@@ -57,6 +69,7 @@ import { ButtonActionService } from '@features/button-action/button-action.servi
 import { ManagementModalService } from '../app/pages/account-management/my-company/management/management-modal.service';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
+import { StripeLoaderService } from '@core/services/stripe-loader.service';
 
 export function mockUserServiceProvider(): Provider {
     return { provide: UsersService, useClass: MockUsersService };
@@ -80,6 +93,10 @@ export function mockToastrService(): Provider {
 
 export function mockLoadingBarService(): Provider {
     return { provide: LoadingBarService, useClass: MockLoadingBarService };
+}
+
+export function mockAppFormService(): Provider {
+    return { provide: AppFormService, useClass: MockAppFormService };
 }
 
 export function mockNgbModal(): Provider {
@@ -142,6 +159,18 @@ export function mockManagementModalService(): Provider {
     return { provide: ManagementModalService, useClass: MockManagementModalService };
 }
 
+export function mockOwnershipService(): Provider {
+    return { provide: OwnershipService, useClass: MockOwnershipService };
+}
+
+export function mockFileUploadDownloadService(): Provider {
+    return { provide: FileUploadDownloadService, useClass: MockFileUploadDownloadService };
+}
+
+export function mockStatisticService(): Provider {
+    return { provide: StatisticService, useClass: MockStatisticService };
+}
+
 export function mockAuthHolderService(): Provider {
     return { provide: AuthHolderService, useClass: MockAuthHolderService };
 }
@@ -168,4 +197,16 @@ export function mockStatisticService(): Provider {
 
 export function mockAppVersionService(): Provider {
     return { provide: AppVersionService, useClass: MockAppVersionService };
+}
+
+export function mockAppVersionService(): Provider {
+    return { provide: AppVersionService, useClass: MockAppVersionService };
+}
+
+export function mockStripeLoaderService(): Provider {
+    return { provide: StripeLoaderService, useClass: MockStripeLoaderService };
+}
+
+export function mockStripeService(): Provider {
+    return { provide: StripeService, useClass: MockStripeService };
 }
