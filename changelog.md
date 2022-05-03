@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.66.5 (4/20/2022)<br>
+### Bug<br>
+AT-1786 - SAML2 not working for customers<br>
 ## Release notes - template3-marketsite-frontend - Version 1.66.4 (4/5/2022)<br>
 ### Bug<br>
 AT-1769 - [Libs] Fix storybook build<br>
