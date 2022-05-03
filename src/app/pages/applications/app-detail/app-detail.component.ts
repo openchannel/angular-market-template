@@ -10,9 +10,9 @@ import {
     SiteContentService,
     AuthHolderService,
 } from '@openchannel/angular-common-services';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, Observable, of } from 'rxjs';
-import { catchError, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { ActionButton, actionButtons, pageConfig } from 'assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -93,24 +93,15 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.loader = this.loadingBar.useRef();
-
-        this.initCurrentUserId();
-
-        this.initAllowReviewsWithoutOwnershipProperty();
-
-        this.initReviewSortQueries();
-
-        this.getAppData();
-
-        this.initReviewSortQueries();
-
-        this.getRecommendedApps();
-
-        this.getSearchFilters();
-
-        this.router.routeReuseStrategy.shouldReuseRoute = () => {
-            return false;
-        };
+        this.initPageData();
+        let currentId = this.route.snapshot.url[0].path;
+        this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+            const nextId = event.url.split('/')[2];
+            if (currentId !== nextId) {
+                this.loadAppPageData();
+                currentId = nextId;
+            }
+        });
     }
 
     initAllowReviewsWithoutOwnershipProperty(): void {
@@ -292,6 +283,19 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     goBack(): void {
         this.location.back();
+    }
+
+    private initPageData(): void {
+        this.initCurrentUserId();
+        this.initAllowReviewsWithoutOwnershipProperty();
+        this.initReviewSortQueries();
+        this.getSearchFilters();
+        this.loadAppPageData();
+    }
+
+    private loadAppPageData(): void {
+        this.getAppData();
+        this.getRecommendedApps();
     }
 
     private getSearchFilters(): void {

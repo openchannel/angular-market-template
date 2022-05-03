@@ -106,6 +106,7 @@ describe('ChangePasswordComponent', () => {
         const ocButtonMock = getOcButtonDE().componentInstance;
         ocButtonMock.click.emit();
         tick();
+
         expect(window.localStorage.getItem('accessToken')).not.toBe('access');
         expect(window.localStorage.getItem('refreshToken')).not.toBe('refresh');
         expect(component.isSaveInProcess).toBeFalsy();
