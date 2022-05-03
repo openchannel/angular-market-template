@@ -1,14 +1,18 @@
 import { Provider } from '@angular/core';
 import {
+    AppFormService,
     AppsService,
     AppVersionService,
     AuthenticationService,
     AuthHolderService,
+    FileUploadDownloadService,
     FrontendService,
     InviteUserService,
     NativeLoginService,
+    OwnershipService,
     SiteConfigService,
     StripeService,
+    StatisticService,
     TitleService,
     TransactionsService,
     UserAccount,
@@ -20,6 +24,7 @@ import {
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 import { ToastrService } from 'ngx-toastr';
 import {
+    MockAppFormService,
     MockAppsService,
     MockAppVersionService,
     MockAuthenticationService,
@@ -27,6 +32,7 @@ import {
     MockButtonActionService,
     MockCmsContentService,
     MockEditUserTypeService,
+    MockFileUploadDownloadService,
     MockFrontendService,
     MockInviteUserService,
     MockLoadingBarService,
@@ -34,7 +40,9 @@ import {
     MockManagementModalService,
     MockNativeLoginService,
     MockOAuthService,
+    MockOwnershipService,
     MockSiteConfigService,
+    MockStatisticService,
     MockStripeLoaderService,
     MockStripeService,
     MockTitleService,
@@ -78,6 +86,10 @@ export function mockToastrService(): Provider {
 
 export function mockLoadingBarService(): Provider {
     return { provide: LoadingBarService, useClass: MockLoadingBarService };
+}
+
+export function mockAppFormService(): Provider {
+    return { provide: AppFormService, useClass: MockAppFormService };
 }
 
 export function mockNgbModal(): Provider {
@@ -138,6 +150,18 @@ export function mockButtonActionService(): Provider {
 
 export function mockManagementModalService(): Provider {
     return { provide: ManagementModalService, useClass: MockManagementModalService };
+}
+
+export function mockOwnershipService(): Provider {
+    return { provide: OwnershipService, useClass: MockOwnershipService };
+}
+
+export function mockFileUploadDownloadService(): Provider {
+    return { provide: FileUploadDownloadService, useClass: MockFileUploadDownloadService };
+}
+
+export function mockStatisticService(): Provider {
+    return { provide: StatisticService, useClass: MockStatisticService };
 }
 
 export function mockAuthHolderService(): Provider {

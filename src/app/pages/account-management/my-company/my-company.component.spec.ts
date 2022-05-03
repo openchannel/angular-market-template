@@ -226,7 +226,7 @@ describe('MyCompanyComponent', () => {
         (component as any).appManagement.getAllUsers = jest.fn();
 
         component.openInviteModal();
-        MockNgbModal.ACTIVE_MODALS[MockNgbModal.ACTIVE_MODALS.length - 1].close();
+            MockNgbModal.ACTIVE_MODALS[MockNgbModal.ACTIVE_MODALS.length - 1].close();
         tick();
 
         expect((component as any).toaster.success).toHaveBeenCalled();

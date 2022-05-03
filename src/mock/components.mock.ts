@@ -527,9 +527,14 @@ export class MockNgbModalRef {
         this.reject();
     }
 
-    close(): void {
+    dismissAll():void{
         this.removeActiveModal();
-        this.resolve();
+        this.reject();
+    };
+
+    close(data?:any): void {
+        this.removeActiveModal();
+        this.resolve(data);
     }
 
     private removeActiveModal(): void {
@@ -555,7 +560,15 @@ export class MockNgbModal {
         MockNgbModal.ACTIVE_MODALS.push(newModal);
         return newModal;
     }
-}
+
+    dismissAll():any{
+        return true;
+    }
+
+    hasOpenModals():any{
+        return true;
+    }
+}   
 export class MockNgbActiveModal {
     close(...args: any): void {
         // do nothing

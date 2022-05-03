@@ -1,7 +1,7 @@
-import { asyncScheduler, Observable, of, Subject } from 'rxjs';
+import { asyncScheduler, Observable, of, Subject, throwError } from 'rxjs';
 import { Page, SortResponse, Transaction, UserAccount } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
-import { observeOn } from 'rxjs/operators';
+import { observeOn, catchError } from 'rxjs/operators';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 
 class MockPagination<T> {
@@ -830,6 +830,42 @@ export class MockStripeService {
 
     makePurchase(...args: any): Observable<any> {
         return of('1');
+    }
+}
+
+export class MockAppFormService {
+    getForm(): Observable<any> {
+        return of(1).pipe(observeOn(asyncScheduler));
+    }
+    createFormSubmission(): Observable<any> {
+        console.log('createFormSubmission trigger');
+        return of(1).pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockOwnershipService {
+    installOwnership(): Observable<any> {
+        return of('1');
+    }
+
+    uninstallOwnership(): Observable<any> {
+        return of('1');
+    }
+}
+
+export class MockFileUploadDownloadService {
+    downloadFileDetails(): Observable<any> {
+        return of('1');
+    }
+
+    getFileUrl(): Observable<any> {
+        return of('1');
+    }
+}
+
+export class MockStatisticService {
+    record(): Observable<any> {
+        return of().pipe( catchError(error => throwError(error)));
     }
 }
 
