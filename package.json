@@ -1,6 +1,6 @@
 {
   "name": "template3-marketsite",
-  "version": "1.66.0",
+  "version": "1.66.6",
   "scripts": {
     "ng": "ng",
     "start": "./node_modules/.bin/ng serve",
