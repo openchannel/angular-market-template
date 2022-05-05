@@ -655,13 +655,19 @@ export class MockSvgIconRegistryService {}
 
 export class MockStripeService {
     getMarketplaceStripeSettings(): Observable<any> {
-        return of('1').pipe(observeOn(asyncScheduler));
+        return of({}).pipe(observeOn(asyncScheduler));
     }
     updateUserCreditCard(): Observable<any> {
-        return of('1').pipe(observeOn(asyncScheduler));
+        return of({}).pipe(observeOn(asyncScheduler));
     }
     deleteUserCreditCard(): Observable<any> {
-        return of('1').pipe(observeOn(asyncScheduler));
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    addUserCreditCard(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    getUserCreditCards(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
     }
 }
 
