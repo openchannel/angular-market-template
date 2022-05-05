@@ -298,17 +298,4 @@ describe('BillingFormComponent', () => {
         expect(component.cardDataLoaded.emit).toHaveBeenCalledWith(component.cardData);
         expect((component as any).fillCardForm).toHaveBeenCalled();
     }));
-
-    // it('should disable states field if country has no states', () => {
-    //     const countryModel = {
-    //         name: 'Test country',
-    //         Iso2: 'Test iso',
-    //     };
-    //     component.emptyStates = false;
-    //     (component as any).countryStateService.getStates = jest.fn().mockReturnValue(throwError('Error'));
-    //     fixture.detectChanges();
-    //     component.onCountriesChange(countryModel);
-    //     expect(component.billingStates).toEqual([]);
-    //     expect(component.formBillingAddress.get('address_state').disabled).toBeTruthy();
-    // });
 });
