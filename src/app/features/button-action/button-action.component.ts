@@ -101,7 +101,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                         this.inProcess = false;
 
                         // open modal with this form
-                        this.openFormModal(form.name, form.fields, result => {
+                            this.openFormModal(form.name, form.fields, result => {
                             if (result) {
                                 // create submission by this form
                                 this.processAction(
@@ -170,6 +170,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
                         },
                         new HttpHeaders({ 'x-handle-error': '403, 500' }),
                     )
+
                     .pipe(mergeMap(actionAfterInstall)),
                 error => this.handleOwnershipResponseError(error, 'You don’t have permission to install this app'),
             );
@@ -188,6 +189,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             modalRef.componentInstance.modalText = 'Are you sure you want to delete this app?';
             modalRef.componentInstance.confirmButtonText = 'Delete';
             modalRef.componentInstance.confirmButtonType = 'danger';
+            console.log(modalRef.componentInstance);
             modalRef.result.then(result => {
                 if (result) {
                     this.processAction(
@@ -242,7 +244,6 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
     private openFormModal(modalTitle: string, formFields: any, callback: (formData: any) => void): void {
         if (!this.modal.hasOpenModals()) {
             this.modal.dismissAll('Opening a new button action modal');
-
             const modalRef = this.modal.open(OcFormModalComponent, { size: 'sm', backdrop: 'static' });
             modalRef.componentInstance.modalTitle = modalTitle;
             modalRef.componentInstance.confirmButton = this.confirmButton;
@@ -250,6 +251,7 @@ export class ButtonActionComponent implements OnInit, OnDestroy {
             modalRef.componentInstance.formJsonData = {
                 fields: formFields,
             };
+
             modalRef.result.then(callback);
         }
     }

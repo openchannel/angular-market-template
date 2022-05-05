@@ -179,6 +179,32 @@ export class MockOcActivationComponent {
     @Output() readonly buttonClick: EventEmitter<any> = new EventEmitter<any>();
     @Input() headingTag: HeadingTag = 'h1';
 }
+
+@Component({
+    selector: 'app-billing-form',
+    template: '',
+})
+export class MockAppBillingForm {
+    @Input() goBackOnCancel: boolean = false;
+    @Input() successButtonText: string = '';
+    @Input() categoryRouterLink: string = '';
+    @Input() successToasterMessage: string = '';
+    @Input() additionalFieldsTemplate: TemplateRef<any>;
+    @Input() process: any;
+    @Input() additionalButtonLock: boolean = false;
+
+    @Output() readonly cardDataLoaded: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly successButtonPressed: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly successAction: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Component({
+    selector: 'oc-profile-navbar',
+    template: '',
+})
+export class MockOcProfileNavbar {
+    @Input() username: string;
+}
 @Component({
     selector: 'oc-app-categories',
     template: '',
@@ -220,6 +246,17 @@ export class MockAppGetStartedComponent {
     @Input() getStartedButtonText: string = '';
     @Input() getStartedType: 'home' | 'search' = 'home';
     @Output() readonly getStarted: EventEmitter<void> = new EventEmitter<void>();
+}
+
+@Component({
+    selector: 'oc-app-list-grid',
+    template: '',
+})
+export class MockOcAppListGridComponent {
+    @Input() appList: any;
+    @Input() baseLinkForOneApp: string = '';
+    @Input() appNavigationParam: string = '';
+    @Input() defaultAppIcon: string = '';
 }
 
 @Component({
@@ -285,6 +322,15 @@ export class OcConfirmationModalComponent {
     @Input() rejectButtonType: 'primary' | 'secondary' | 'link' | 'danger' = 'secondary';
     @Input() rejectButtonHide: boolean = false;
     @Input() confirmButtonClass: string = '';
+}
+
+@Component({
+    selector: 'oc-consent',
+    template: '',
+})
+export class MockOcConsentComponent {
+    @Input() policyUrl: string = '';
+    @Input() termsUrl: string = '';
 }
 
 @Component({
@@ -558,14 +604,29 @@ export class MockNgbModalRef {
         this.reject();
     }
 
-    close(): void {
+    dismissAll():void{
         this.removeActiveModal();
-        this.resolve();
+        this.reject();
+    };
+
+    close(data?:any): void {
+        this.removeActiveModal();
+        this.resolve(data);
     }
 
     private removeActiveModal(): void {
         MockNgbModal.ACTIVE_MODALS.pop();
     }
+}
+
+@Component({
+    selector: 'svg-icon',
+    template: '',
+})
+export class MockSvgIconComponent {
+    @Input() src: string;
+    @Input() svgClass: string;
+    @Input() ngbTooltip: string;
 }
 
 export class MockNgbModal {
@@ -576,7 +637,15 @@ export class MockNgbModal {
         MockNgbModal.ACTIVE_MODALS.push(newModal);
         return newModal;
     }
-}
+
+    dismissAll():any{
+        return true;
+    }
+
+    hasOpenModals():any{
+        return true;
+    }
+}   
 export class MockNgbActiveModal {
     close(...args: any): void {
         // do nothing
