@@ -327,7 +327,7 @@ describe('LoginComponent', () => {
     });
 
     it('should open new window in the current tab with correct saml login url (processSamlLogin())', () => {
-        const authConfig = { singleSignOnUrl: 'test.com' };
+        const authConfig = { singleSignOnUrl: 'http://test.com' };
         Object.defineProperty(window, 'location', {
             value: {
                 href: 'test2.com',
@@ -336,7 +336,11 @@ describe('LoginComponent', () => {
         window.open = jest.fn();
 
         (component as any).processSamlLogin(authConfig as SiteAuthConfig);
-        expect(window.open).toHaveBeenCalledWith(`${authConfig.singleSignOnUrl}?RelayState=${window.location.href}`, '_self');
+        expect(window.open).toHaveBeenCalledWith(`${authConfig.singleSignOnUrl}/?RelayState=${window.location.href}`, '_self');
+
+        const authConfigWithQueryParam = { singleSignOnUrl: 'http://test.com/?hello=world' };
+        (component as any).processSamlLogin(authConfigWithQueryParam as SiteAuthConfig);
+        expect(window.open).toHaveBeenCalledWith(`${authConfigWithQueryParam.singleSignOnUrl}&RelayState=${window.location.href}`, '_self');
     });
 
     it('should return access and refresh saml jwt tokens from the queryParamMap (getSamlJwtTokens())', fakeAsync(() => {
