@@ -15,6 +15,7 @@ import {
 } from '../../../../../mock/providers.mock';
 import { MockUserRoleService } from '../../../../../mock/services.mock';
 import { MockOcMenuUserGridComponent } from '../../../../../mock/components.mock';
+import { ManagementModalService } from './management-modal.service';
 
 describe('ManagementComponent', () => {
     let component: ManagementComponent;
@@ -273,9 +274,11 @@ describe('ManagementComponent', () => {
     });
 
     it('Open edit user account modal.', () => {
+        const managementModalService = TestBed.inject(ManagementModalService);
+
         fixture.detectChanges();
 
-        jest.spyOn((component as any).managementModalService, 'openEditUserAccountModal').mockReturnValue(toModalResult(true));
+        jest.spyOn(managementModalService, 'openEditUserAccountModal').mockReturnValue(toModalResult(true));
 
         component.userAction({
             userId,
