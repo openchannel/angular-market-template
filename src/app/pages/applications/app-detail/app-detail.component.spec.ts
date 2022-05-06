@@ -169,6 +169,7 @@ describe('AppDetailComponent', () => {
                     MockOcReviewComponent,
                     MockDropdownComponent,
                     MockOcRecomendedAppsComponent,
+                    MockRoutingComponent,
                 ],
                 providers: [
                     mockAppsService(),
