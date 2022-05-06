@@ -291,7 +291,7 @@ describe('BillingFormComponent', () => {
         (component as any).getFormsValidity = jest.fn().mockReturnValue(true);
         countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
         stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
-        stripeService.deleteUserCreditCard = jest.fn().mockReturnValue(of({}));
+        // stripeService.deleteUserCreditCard = jest.fn().mockReturnValue(of({}));
         stripeService.addUserCreditCard = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
         countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
         fixture.detectChanges();
