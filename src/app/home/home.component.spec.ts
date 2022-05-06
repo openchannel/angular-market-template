@@ -259,8 +259,12 @@ describe('HomeComponent', () => {
     });
 
     it('should pass filterCollapsed to app-collapse-with-title and oc-sidebar', () => {
+        component.sidebarFilters = [{ name: '', ...MockFrontendService.MOCK_FILTER_VALUE }];
+
+        fixture.detectChanges();
+
         const collapseWithTitleInstance = fixture.debugElement.query(By.directive(MockCollapseWithTitleComponent)).componentInstance;
-        const sidebarInstance = fixture.debugElement.query(By.directive(MockSidebarComponent)).componentInstance;
+        const sidebarInstance = fixture.debugElement.queryAll(By.directive(MockSidebarComponent))[0].componentInstance;
 
         component.filterCollapsed = true;
         fixture.detectChanges();
@@ -274,6 +278,10 @@ describe('HomeComponent', () => {
     });
 
     it('should render filters according to sidebarFilters', () => {
+        component.sidebarFilters = [{ name: '', ...MockFrontendService.MOCK_FILTER_VALUE }];
+
+        fixture.detectChanges();
+
         const sidebars = fixture.debugElement.queryAll(By.directive(MockSidebarComponent));
         const firstSidebarInstance = sidebars[0].componentInstance;
         const firstFilter = component.sidebarFilters[0];
@@ -312,6 +320,18 @@ describe('HomeComponent', () => {
     });
 
     it('should render oc-app-gallery according to gallery property', () => {
+        component.gallery = [
+            {
+                filterId: '',
+                valueId: '',
+                label: '',
+                description: '',
+                data: MockAppsService.MOCK_APPS_PAGE.list.map(app => new FullAppData(app, pageConfig.fieldMappings)),
+            },
+        ];
+
+        fixture.detectChanges();
+
         const galleryList = fixture.debugElement.queryAll(By.directive(MockAppGalleryComponent));
         const firstGalleryItemInstance = galleryList[0].componentInstance;
         const firstGallery = component.gallery[0];
