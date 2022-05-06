@@ -47,6 +47,7 @@ import {
     mockTitleService,
 } from '../../../../mock/providers.mock';
 import { MockAppsService, MockFrontendService } from '../../../../mock/services.mock';
+import {MockPricePipe} from "../../../../mock/pipes.mock";
 
 const mockReviewsDetailsPage: Page<OCReviewDetails> = {
     count: 1,
@@ -167,6 +168,7 @@ describe('AppDetailComponent', () => {
                     MockOcOverallRatingComponent,
                     MockOcReviewListComponent,
                     MockOcReviewComponent,
+                    MockPricePipe,
                     MockDropdownComponent,
                     MockOcRecomendedAppsComponent,
                     MockRoutingComponent,
