@@ -81,16 +81,6 @@ export class MockInputComponent implements ControlValueAccessor {
 }
 
 @Component({
-    selector: 'svg-icon',
-    template: '',
-})
-export class MockSvgIconComponent {
-    @Input() src: string;
-    @Input() svgClass: string;
-    @Input() ngbTooltip: string;
-}
-
-@Component({
     selector: 'app-billing',
     template: '',
 })

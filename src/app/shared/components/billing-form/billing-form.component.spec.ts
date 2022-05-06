@@ -9,20 +9,19 @@ import {
     MockSelectComponent,
     MockSvgIconComponent,
 } from '../../../../mock/components.mock';
-import {
-    MockCountryStateService,
-    MockStripeLoaderService,
-    MockStripeService,
-    MockSvgIconRegistryService,
-    MockToastrService,
-} from '../../../../mock/services.mock';
-import { StripeLoaderService } from '@core/services/stripe-loader.service';
-import { CountryStateService, StripeService } from '@openchannel/angular-common-services';
-import { ToastrService } from 'ngx-toastr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
-import { SvgIconRegistryService } from 'angular-svg-icon';
+import {
+    mockStripeService,
+    mockStripeLoaderService,
+    mockCountryStateService,
+    mockToastrService,
+    mockSvgIconRegistryService,
+} from '../../../../mock/providers.mock';
+import { CountryStateService, StripeService } from '@openchannel/angular-common-services';
+import { ToastrService } from 'ngx-toastr';
+import { StripeLoaderService } from '@core/services/stripe-loader.service';
 
 class MockStripe {
     createToken(): Promise<any> {
@@ -51,6 +50,10 @@ class MockStripeElement {
 describe('BillingFormComponent', () => {
     let component: BillingFormComponent;
     let fixture: ComponentFixture<BillingFormComponent>;
+    let countryStateService: CountryStateService;
+    let toastrService: ToastrService;
+    let stripeService: StripeService;
+    let stripeLoaderService: StripeLoaderService;
 
     const getOcButtonDE = () => fixture.debugElement.query(By.directive(MockButtonComponent));
     const standardMockCardsInfo = {
@@ -105,13 +108,17 @@ describe('BillingFormComponent', () => {
                 ],
                 imports: [FormsModule, ReactiveFormsModule],
                 providers: [
-                    { provide: StripeLoaderService, useClass: MockStripeLoaderService },
-                    { provide: StripeService, useClass: MockStripeService },
-                    { provide: CountryStateService, useClass: MockCountryStateService },
-                    { provide: ToastrService, useClass: MockToastrService },
-                    { provide: SvgIconRegistryService, useClass: MockSvgIconRegistryService },
+                    mockStripeLoaderService(),
+                    mockStripeService(),
+                    mockCountryStateService(),
+                    mockToastrService(),
+                    mockSvgIconRegistryService(),
                 ],
             }).compileComponents();
+            countryStateService = TestBed.inject(CountryStateService);
+            toastrService = TestBed.inject(ToastrService);
+            stripeService = TestBed.inject(StripeService);
+            stripeLoaderService = TestBed.inject(StripeLoaderService);
         }),
     );
 
@@ -168,10 +175,10 @@ describe('BillingFormComponent', () => {
             error: '',
             message: '',
         };
-        (component as any).stripeLoader.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
-        (component as any).countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        (component as any).stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
-        (component as any).countryStateService.getStates = jest.fn().mockReturnValue(of(mockStatesResponse));
+        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
+        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
+        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
+        countryStateService.getStates = jest.fn().mockReturnValue(of(mockStatesResponse));
         fixture.detectChanges();
         component.onCountriesChange(countryModel);
         tick();
@@ -191,10 +198,10 @@ describe('BillingFormComponent', () => {
             address_country: 'Test iso 2',
         });
         component.emptyStates = false;
-        (component as any).stripeLoader.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
-        (component as any).countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        (component as any).countryStateService.getStates = jest.fn().mockReturnValue(throwError('Error'));
-        (component as any).stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
+        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
+        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
+        countryStateService.getStates = jest.fn().mockReturnValue(throwError('Error'));
+        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
         fixture.detectChanges();
         component.onCountriesChange(countryModel);
         tick();
@@ -206,7 +213,7 @@ describe('BillingFormComponent', () => {
     it('should call billing action and update billing data', fakeAsync(() => {
         jest.spyOn(component, 'billingAction');
         jest.spyOn(component as any, 'updateBillingData');
-        jest.spyOn((component as any).toaster, 'success');
+        jest.spyOn(toastrService, 'success');
         jest.spyOn(component.cardDataLoaded, 'emit');
         jest.spyOn(component.successAction, 'emit');
         const mockStripe = new MockStripe();
@@ -254,17 +261,17 @@ describe('BillingFormComponent', () => {
             address_city: 'Address city',
             address_zip: 'Address zip',
         });
-        (component as any).stripeLoader.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
-        (component as any).stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(mockCardsInfoWithId.cardsInfo));
-        (component as any).countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        (component as any).countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
-        (component as any).stripeService.updateUserCreditCard = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
+        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
+        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(mockCardsInfoWithId.cardsInfo));
+        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
+        countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
+        stripeService.updateUserCreditCard = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
         fixture.detectChanges();
         ocButtonMock.click.emit();
         tick();
         expect(component.billingAction).toHaveBeenCalled();
         expect((component as any).updateBillingData).toHaveBeenCalled();
-        expect((component as any).toaster.success).toHaveBeenCalled();
+        expect(toastrService.success).toHaveBeenCalled();
         expect(component.cardDataLoaded.emit).toHaveBeenCalledWith(component.cardData);
         expect(component.successAction.emit).toHaveBeenCalled();
     }));
@@ -274,19 +281,19 @@ describe('BillingFormComponent', () => {
         jest.spyOn(component as any, 'updateOrDeleteCard');
         jest.spyOn(component as any, 'deleteCurrentCard');
         jest.spyOn(component as any, 'createStripeCardWithToken');
-        jest.spyOn((component as any).toaster, 'success');
+        jest.spyOn(toastrService, 'success');
         jest.spyOn(component.cardDataLoaded, 'emit');
         jest.spyOn(component as any, 'fillCardForm');
         const mockStripe = new MockStripe();
         const ocButtonMock = getOcButtonDE().componentInstance;
         component.hideCardFormElements = false;
-        (component as any).stripeLoader.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
+        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
         (component as any).getFormsValidity = jest.fn().mockReturnValue(true);
-        (component as any).countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        (component as any).stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
-        (component as any).stripeService.deleteUserCreditCard = jest.fn().mockReturnValue(of({}));
-        (component as any).stripeService.addUserCreditCard = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
-        (component as any).countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
+        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
+        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
+        stripeService.deleteUserCreditCard = jest.fn().mockReturnValue(of({}));
+        stripeService.addUserCreditCard = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
+        countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
         fixture.detectChanges();
         ocButtonMock.click.emit();
         tick();
@@ -294,8 +301,12 @@ describe('BillingFormComponent', () => {
         expect((component as any).updateOrDeleteCard).toHaveBeenCalled();
         expect((component as any).deleteCurrentCard).toHaveBeenCalledWith(true);
         expect((component as any).createStripeCardWithToken).toHaveBeenCalled();
-        expect((component as any).toaster.success).toHaveBeenCalled();
+        expect(toastrService.success).toHaveBeenCalled();
         expect(component.cardDataLoaded.emit).toHaveBeenCalledWith(component.cardData);
         expect((component as any).fillCardForm).toHaveBeenCalled();
     }));
+
+    it('should ...', () => {
+        expect(component).toBeTruthy();
+    });
 });
