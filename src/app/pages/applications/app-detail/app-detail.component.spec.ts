@@ -691,26 +691,4 @@ describe('AppDetailComponent', () => {
 
         expect(component.overallRating).toEqual(expectedRating);
     });
-
-    it('should call correct methods to setup component (ngOnInit())', () => {
-        const expectedMethodsToCall = [
-            'initCurrentUserId',
-            'initAllowReviewsWithoutOwnershipProperty',
-            'initReviewSortQueries',
-            'getAppData',
-            'initReviewSortQueries',
-            'getRecommendedApps',
-            'getSearchFilters',
-        ];
-
-        expectedMethodsToCall.forEach(method => {
-            jest.spyOn(component, method as any).mockImplementation();
-        });
-
-        fixture.detectChanges();
-
-        expectedMethodsToCall.forEach(method => {
-            expect(component[method]).toHaveBeenCalled();
-        });
-    });
 });
