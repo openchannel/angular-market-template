@@ -111,17 +111,19 @@
                     (writeAReview)="onNewReview()"
                     (chosenAction)="onChosenReviewActon($event)"
                     reviewListTitle="Most recent reviews">
-                    <div>
+                    <div class="filter-container" >
+                        <oc-dropdown
+                            [options]="reviewsFilter"
+                            title="Show"
+                            (selectedChange)="onReviewFilterChange($event)"
+                            [selected]="selectedFilter"
+                            class="mr-5 "></oc-dropdown>
                         <oc-dropdown
                             [options]="reviewsSorts"
                             [selected]="selectedSort"
                             (selectedChange)="onReviewSortChange($event)"
                             class="mr-5"></oc-dropdown>
-                        <oc-dropdown
-                            [options]="reviewsFilter"
-                            title="Show"
-                            (selectedChange)="onReviewFilterChange($event)"
-                            [selected]="selectedFilter"></oc-dropdown>
+
                     </div>
                 </oc-review-list>
                 <oc-review
