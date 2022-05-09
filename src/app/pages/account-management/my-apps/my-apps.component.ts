@@ -111,7 +111,6 @@ export class MyAppsComponent implements OnInit, OnDestroy {
                             app =>
                                 new LocalFullAppData(app, pageConfig.fieldMappings, [
                                     ...this.buttonActionService.canBeShow(app, actionButtons),
-                                    uninstallButton,
                                 ]),
                         ),
                     ];

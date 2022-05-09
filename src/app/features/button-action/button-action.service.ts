@@ -8,7 +8,7 @@ export class ButtonActionService {
     canBeShow(app: AppResponse, buttons: ActionButton[]): ActionButton[] {
         const availableButtons = buttons.filter(button => this.defaultButtonFilter(app, button));
 
-        if (!app?.model?.length || (app.model[0].type === 'free') || this.isActiveOwnership(app)) {
+        if (!app?.model?.length || app.model[0].type === 'free' || this.isActiveOwnership(app)) {
             // 1. when price models is empty.
             // 2. when first price model with 'free' type.
             // 3. when user have ownership (bought).
