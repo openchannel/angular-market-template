@@ -628,14 +628,15 @@ export class MockNgbModal {
         return newModal;
     }
 
-    dismissAll():any{
+    dismissAll(): any {
         return true;
     }
 
-    hasOpenModals():any{
+    hasOpenModals(): any {
         return true;
     }
-}   
+}
+
 export class MockNgbActiveModal {
     close(...args: any): void {
         // do nothing
