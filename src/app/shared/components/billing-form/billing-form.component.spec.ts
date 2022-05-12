@@ -95,6 +95,9 @@ describe('BillingFormComponent', () => {
             ],
         },
     };
+    const mockEmptyCardsData = {
+        cards: [],
+    };
 
     beforeEach(
         waitForAsync(() => {
@@ -129,6 +132,11 @@ describe('BillingFormComponent', () => {
         jest.clearAllMocks();
         fixture = TestBed.createComponent(BillingFormComponent);
         component = fixture.componentInstance;
+        const mockStripe = new MockStripe();
+        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
+        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
+        countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
+        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
     });
 
     it('should create', () => {
@@ -161,7 +169,6 @@ describe('BillingFormComponent', () => {
                 code: 'Initial code',
             },
         ];
-        const mockStripe = new MockStripe();
         const countryModel = {
             name: 'Test country',
             Iso2: 'Test iso',
@@ -178,11 +185,10 @@ describe('BillingFormComponent', () => {
             error: '',
             message: '',
         };
-        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
-        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
         countryStateService.getStates = jest.fn().mockReturnValue(of(mockStatesResponse));
         fixture.detectChanges();
+        tick();
+        component.emptyStates = true;
         component.onCountriesChange(countryModel);
         tick();
         expect(component.getStates).toHaveBeenCalled();
@@ -196,15 +202,11 @@ describe('BillingFormComponent', () => {
             name: 'Test country',
             Iso2: 'Test iso',
         };
-        const mockStripe = new MockStripe();
         component.formBillingAddress.patchValue({
             address_country: 'Test iso 2',
         });
         component.emptyStates = false;
-        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
-        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
         countryStateService.getStates = jest.fn().mockReturnValue(throwError('Error'));
-        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
         fixture.detectChanges();
         component.onCountriesChange(countryModel);
         tick();
@@ -219,7 +221,6 @@ describe('BillingFormComponent', () => {
         jest.spyOn(toastrService, 'success');
         jest.spyOn(component.cardDataLoaded, 'emit');
         jest.spyOn(component.successAction, 'emit');
-        const mockStripe = new MockStripe();
         const ocButtonMock = getOcButtonDE().componentInstance;
         const mockCardsInfoWithId = {
             countries: {
@@ -264,10 +265,7 @@ describe('BillingFormComponent', () => {
             address_city: 'Address city',
             address_zip: 'Address zip',
         });
-        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
         stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(mockCardsInfoWithId.cardsInfo));
-        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
         stripeService.updateUserCreditCard = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
         fixture.detectChanges();
         ocButtonMock.click.emit();
@@ -287,15 +285,10 @@ describe('BillingFormComponent', () => {
         jest.spyOn(toastrService, 'success');
         jest.spyOn(component.cardDataLoaded, 'emit');
         jest.spyOn(component as any, 'fillCardForm');
-        const mockStripe = new MockStripe();
         const ocButtonMock = getOcButtonDE().componentInstance;
         component.hideCardFormElements = false;
-        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
         (component as any).getFormsValidity = jest.fn().mockReturnValue(true);
-        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
         stripeService.addUserCreditCard = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
-        countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
         fixture.detectChanges();
         ocButtonMock.click.emit();
         tick();
@@ -308,13 +301,40 @@ describe('BillingFormComponent', () => {
         expect((component as any).fillCardForm).toHaveBeenCalled();
     }));
 
-    it('should clear changes', fakeAsync(() => {
+    it('should call billing action and createStripeCardWithToken', fakeAsync(() => {
+        jest.spyOn(component, 'billingAction');
+        jest.spyOn(component as any, 'createStripeCardWithToken');
+        jest.spyOn(toastrService, 'error');
+        const ocButtonMock = getOcButtonDE().componentInstance;
+        (component as any).getFormsValidity = jest.fn().mockReturnValue(true);
+        stripeService.addUserCreditCard = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
+        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(mockEmptyCardsData));
+        fixture.detectChanges();
+        ocButtonMock.click.emit();
+        tick();
+        expect(component.billingAction).toHaveBeenCalled();
+        expect((component as any).createStripeCardWithToken).toHaveBeenCalled();
+    }));
+
+    it('should call billing action and show toaster error', fakeAsync(() => {
+        jest.spyOn(component, 'billingAction');
+        jest.spyOn(component as any, 'createStripeCardWithToken');
+        jest.spyOn(toastrService, 'error');
+        jest.spyOn(stripeService, 'addUserCreditCard').mockReturnValue(throwError('Error'));
+        const ocButtonMock = getOcButtonDE().componentInstance;
+        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(mockEmptyCardsData));
+        (component as any).getFormsValidity = jest.fn().mockReturnValue(true);
+        fixture.detectChanges();
+        ocButtonMock.click.emit();
+        tick();
+        expect(component.billingAction).toHaveBeenCalled();
+        expect((component as any).createStripeCardWithToken).toHaveBeenCalled();
+        expect(toastrService.error).toHaveBeenCalled();
+        expect(component.process).toEqual(false);
+    }));
+
+    it('should clear changes and fill card form', fakeAsync(() => {
         jest.spyOn(component as any, 'fillCardForm');
-        const mockStripe = new MockStripe();
-        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
-        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
-        countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
         fixture.detectChanges();
         component.clearChanges();
         tick();
@@ -328,17 +348,46 @@ describe('BillingFormComponent', () => {
         });
     }));
 
+    it('should clear changes and reset address form and clear stripe elements', () => {
+        jest.spyOn(component as any, 'fillCardForm');
+        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(mockEmptyCardsData));
+        fixture.detectChanges();
+        component.clearChanges();
+        expect(component.formBillingAddress.controls.name.value).toEqual(null);
+    });
+
+    it('should show stripe form on input click', () => {
+        component.hideCardFormElements = true;
+        component.showStripeForm();
+        expect(component.hideCardFormElements).toEqual(false);
+        expect(component.formBillingAddress.controls.name.value).toEqual('');
+    });
+
+    it('should get forms validity', () => {
+        component.cardForm.cardNumber.changeStatus.empty = false;
+        component.cardForm.cardNumber.changeStatus.complete = true;
+        component.cardForm.cardExpiration.changeStatus.empty = false;
+        component.cardForm.cardExpiration.changeStatus.complete = true;
+        component.cardForm.cardCvc.changeStatus.empty = false;
+        component.cardForm.cardCvc.changeStatus.complete = true;
+        component.formBillingAddress.patchValue({
+            name: 'test form name',
+            address_line1: 'address_line1',
+            address_country: 'address_country',
+            address_state: 'address_state',
+            address_city: 'address_city',
+            address_zip: 'address_zip',
+        });
+        const formValidity = (component as any).getFormsValidity();
+        expect(formValidity).toBe(true);
+    });
+
     it('should call billing action, updateOrDeleteCard and open confirmation modal', fakeAsync(() => {
         jest.spyOn(component, 'billingAction');
         jest.spyOn(component as any, 'updateOrDeleteCard');
         jest.spyOn((component as any).modal, 'open');
-        const mockStripe = new MockStripe();
         const ocButtonMock = getOcButtonDE().componentInstance;
         component.hideCardFormElements = false;
-        stripeLoaderService.loadStripe = jest.fn().mockReturnValue(of(mockStripe));
-        countryStateService.getCountries = jest.fn().mockReturnValue(of(standardMockCardsInfo.countries));
-        countryStateService.getStates = jest.fn().mockReturnValue(of(standardMockCardsInfo.mockStates));
-        stripeService.getUserCreditCards = jest.fn().mockReturnValue(of(standardMockCardsInfo.cardsInfo));
         (component as any).getFormsValidity = jest.fn().mockReturnValue(false);
         fixture.detectChanges();
         ocButtonMock.click.emit();
