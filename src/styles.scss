@@ -330,13 +330,30 @@ app-not-found header {
 
 .checkout__billing-form {
     .billing__actions {
-        display: flex;
-        flex-direction: row-reverse;
-        justify-content: space-between;
-        .billing__actions-button {
-            width: 20rem;
-           &_margin-top {
-                margin-top: 0;
+        @media (min-width: 350px) {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+
+            .billing__actions-button {
+                width: 20rem;
+
+                &_margin-top {
+                    margin-top: 0;
+                }
+            }
+        }
+        @media (max-width: 350px) {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .billing__actions-button {
+                width: 100%;
+
+                &_margin-top {
+                    margin-top: 0;
+                }
             }
         }
     }
@@ -350,11 +367,13 @@ app-not-found header {
             border-radius: 4px;
         }
     }
+
     .app-options-dropdown-menu {
         .dropdown-item {
             height: min-content;
             margin: auto 0 auto 0;
             padding: 0;
+
             .button-action {
                 .button-action__simple {
                     font-size: 14px;
@@ -363,8 +382,10 @@ app-not-found header {
             }
         }
     }
+
     .dropdown-button__menu {
         width: 120px;
+
         &-item {
             height: 50px;
             display: flex;

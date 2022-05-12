@@ -2,7 +2,6 @@
 @import '~assets/styles/theme';
 
 .billing {
-
     &__header {
         @include font-size-lg();
         margin-bottom: 2rem;
@@ -24,6 +23,7 @@
             &_hidden {
                 display: none;
             }
+
             display: block;
         }
 
@@ -37,6 +37,7 @@
 
             &-expiration {
                 width: 50%;
+
                 &-group {
                     position: relative;
                 }
@@ -81,19 +82,17 @@
         margin-top: 4rem;
 
         &-form {
-
             &-label {
                 display: block;
                 line-height: 18px;
                 margin-bottom: 1rem;
 
                 &_disabled {
-                    opacity: .5;
+                    opacity: 0.5;
                 }
             }
 
             &-field {
-
                 & + .billing__address-form-field {
                     margin-top: 2rem;
                 }
@@ -102,13 +101,24 @@
     }
 
     &__actions {
-        margin-top: 5rem;
+        @media (min-width: 350px) {
+            margin-top: 5rem;
 
-        &-button {
-            display: block;
+            &-button {
+                &_margin-top {
+                    margin-top: 2rem;
+                }
+            }
+        }
+        @media (max-width: 350px) {
+            margin-top: 5rem;
+            &-button {
+                width: 100%;
+                margin-bottom: 10px;
 
-            &_margin-top {
-                margin-top: 2rem;
+                &_margin-top {
+                    margin-top: 2rem;
+                }
             }
         }
     }
