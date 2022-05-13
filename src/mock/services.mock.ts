@@ -1,7 +1,7 @@
-import { asyncScheduler, Observable, of, Subject, throwError } from 'rxjs';
+import { asyncScheduler, Observable, of, Subject } from 'rxjs';
 import { Page, SortResponse, Transaction, UserAccount } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
-import { observeOn, catchError } from 'rxjs/operators';
+import { observeOn } from 'rxjs/operators';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 
 class MockPagination<T> {
@@ -661,6 +661,51 @@ export class MockTypeMapperUtils {
     }
 }
 
+export class MockCountryStateService {
+    getCountries(): any {
+        return of('1');
+    }
+    getStates(): any {
+        return of({
+            data: {
+                states: [],
+            },
+        });
+    }
+}
+
+export class MockSvgIconRegistryService {}
+
+export class MockStripeService {
+    getTaxesAndPayment(...args: any): Observable<any> {
+        return of('1');
+    }
+    makePurchase(...args: any): Observable<any> {
+        return of('1');
+    }
+    getMarketplaceStripeSettings(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    updateUserCreditCard(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    deleteUserCreditCard(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    addUserCreditCard(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    getUserCreditCards(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockStripeLoaderService {
+    loadStripe(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
+    }
+}
+
 export class MockNativeLoginService {
     signup(): Observable<any> {
         return of('1').pipe(observeOn(asyncScheduler));
@@ -875,28 +920,11 @@ export class MockLogOutService {
     }
 }
 
-export class MockStripeLoaderService {
-    loadStripe(): void {
-        // do nothing
-    }
-}
-
-export class MockStripeService {
-    getTaxesAndPayment(...args: any): Observable<any> {
-        return of('1');
-    }
-
-    makePurchase(...args: any): Observable<any> {
-        return of('1');
-    }
-}
-
 export class MockAppFormService {
     getForm(): Observable<any> {
         return of(1).pipe(observeOn(asyncScheduler));
     }
     createFormSubmission(): Observable<any> {
-        console.log('createFormSubmission trigger');
         return of(1).pipe(observeOn(asyncScheduler));
     }
 }
