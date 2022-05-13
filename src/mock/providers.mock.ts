@@ -21,6 +21,7 @@ import {
     UserAccountTypesService,
     UserRoleService,
     UsersService,
+    CountryStateService,
     AppVersionService,
 } from '@openchannel/angular-common-services';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
@@ -32,6 +33,7 @@ import {
     MockAuthHolderService,
     MockButtonActionService,
     MockCmsContentService,
+    MockCountryStateService,
     MockEditUserTypeService,
     MockFileUploadDownloadService,
     MockFrontendService,
@@ -49,6 +51,7 @@ import {
     MockStatisticService,
     MockStripeLoaderService,
     MockStripeService,
+    MockSvgIconRegistryService,
     MockTitleService,
     MockToastrService,
     MockTransactionsService,
@@ -69,6 +72,7 @@ import { ManagementModalService } from '../app/pages/account-management/my-compa
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
+import { SvgIconRegistryService } from 'angular-svg-icon';
 
 export function mockUserServiceProvider(): Provider {
     return { provide: UsersService, useClass: MockUsersService };
@@ -200,4 +204,12 @@ export function mockStripeLoaderService(): Provider {
 
 export function mockStripeService(): Provider {
     return { provide: StripeService, useClass: MockStripeService };
+}
+
+export function mockCountryStateService(): Provider {
+    return { provide: CountryStateService, useClass: MockCountryStateService };
+}
+
+export function mockSvgIconRegistryService(): Provider {
+    return { provide: SvgIconRegistryService, useClass: MockSvgIconRegistryService };
 }

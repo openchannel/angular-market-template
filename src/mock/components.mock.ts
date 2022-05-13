@@ -1,17 +1,84 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef, forwardRef } from '@angular/core';
 import {
     ComponentsUserActivationModel,
     ComponentsUserGridActionModel,
     ComponentsUsersGridParametersModel,
+    ErrorMessage,
     ErrorMessageFormId,
     HeadingTag,
     ModalInviteUserModel,
     ModalUpdateUserModel,
     SocialLink,
     SortField,
+    TransformTextType,
     UserGridSortOrder,
     UserSortChosen,
 } from '@openchannel/angular-common-components';
+import { AbstractControl, AbstractControlDirective, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
+
+@Component({
+    selector: 'oc-error',
+    template: '',
+})
+export class MockErrorComponent {
+    @Input() control: AbstractControlDirective | AbstractControl | NgModel;
+    @Input() field: string;
+    @Input() formId: ErrorMessageFormId;
+    @Input() modifyErrors: string;
+    @Input() updateMessages: ErrorMessage;
+}
+
+@Component({
+    selector: 'oc-select',
+    template: '',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MockSelectComponent),
+            multi: true,
+        },
+    ],
+})
+export class MockSelectComponent implements ControlValueAccessor {
+    @Input() selectValArr: any | object[] = [];
+    @Input() form: FormControl;
+    @Input() formControl: AbstractControl;
+    @Input() transformText: TransformTextType;
+    registerOnChange(fn: any): void {}
+    registerOnTouched(fn: any): void {}
+    writeValue(obj: any): void {}
+}
+
+@Component({
+    selector: 'oc-label',
+    template: '',
+})
+export class MockLabelComponent {
+    /** Label text */
+    @Input() text: string = '';
+    /** Show indicator of required field */
+    @Input() required: boolean = false;
+    /** Set global classes for label */
+    @Input() class: string = '';
+}
+
+@Component({
+    selector: 'oc-input',
+    template: '',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MockInputComponent),
+            multi: true,
+        },
+    ],
+})
+export class MockInputComponent implements ControlValueAccessor {
+    @Input() placeholder: string = '';
+    registerOnChange(fn: any): void {}
+    registerOnTouched(fn: any): void {}
+    writeValue(obj: any): void {}
+}
 
 @Component({
     selector: 'app-billing',
@@ -561,14 +628,15 @@ export class MockNgbModal {
         return newModal;
     }
 
-    dismissAll():any{
+    dismissAll(): any {
         return true;
     }
 
-    hasOpenModals():any{
+    hasOpenModals(): any {
         return true;
     }
-}   
+}
+
 export class MockNgbActiveModal {
     close(...args: any): void {
         // do nothing
