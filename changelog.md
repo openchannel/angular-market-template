@@ -1,3 +1,10 @@
+## Release notes - template3-marketsite-frontend - Version 1.66.7 (5/26/2022)<br>
+### Bug<br>
+AT-1795 - [portal] DFA Save buttons in out of screen on mobile <br>
+AT-1793 - [Market] Checkout buttons in out of screen on mobile<br>
+AT-1792 -  [Market] "Sort by" block display error for reviews on mobile<br>
+AT-1791 - [Market] Write review block is out of screen on mobile<br>
+AT-1790 - [Market] App has two delete buttons on My Apps page<br>
 ## Release notes - template3-marketsite-frontend - Version 1.66.6 (5/3/2022)<br>
 ### Bug<br>
 AT-1787 - [Market] Change app details page loading strategy<br>
