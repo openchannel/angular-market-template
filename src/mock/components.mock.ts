@@ -1,17 +1,84 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef, forwardRef } from '@angular/core';
 import {
     ComponentsUserActivationModel,
     ComponentsUserGridActionModel,
     ComponentsUsersGridParametersModel,
+    ErrorMessage,
     ErrorMessageFormId,
     HeadingTag,
     ModalInviteUserModel,
     ModalUpdateUserModel,
     SocialLink,
     SortField,
+    TransformTextType,
     UserGridSortOrder,
     UserSortChosen,
 } from '@openchannel/angular-common-components';
+import { AbstractControl, AbstractControlDirective, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
+
+@Component({
+    selector: 'oc-error',
+    template: '',
+})
+export class MockErrorComponent {
+    @Input() control: AbstractControlDirective | AbstractControl | NgModel;
+    @Input() field: string;
+    @Input() formId: ErrorMessageFormId;
+    @Input() modifyErrors: string;
+    @Input() updateMessages: ErrorMessage;
+}
+
+@Component({
+    selector: 'oc-select',
+    template: '',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MockSelectComponent),
+            multi: true,
+        },
+    ],
+})
+export class MockSelectComponent implements ControlValueAccessor {
+    @Input() selectValArr: any | object[] = [];
+    @Input() form: FormControl;
+    @Input() formControl: AbstractControl;
+    @Input() transformText: TransformTextType;
+    registerOnChange(fn: any): void {}
+    registerOnTouched(fn: any): void {}
+    writeValue(obj: any): void {}
+}
+
+@Component({
+    selector: 'oc-label',
+    template: '',
+})
+export class MockLabelComponent {
+    /** Label text */
+    @Input() text: string = '';
+    /** Show indicator of required field */
+    @Input() required: boolean = false;
+    /** Set global classes for label */
+    @Input() class: string = '';
+}
+
+@Component({
+    selector: 'oc-input',
+    template: '',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MockInputComponent),
+            multi: true,
+        },
+    ],
+})
+export class MockInputComponent implements ControlValueAccessor {
+    @Input() placeholder: string = '';
+    registerOnChange(fn: any): void {}
+    registerOnTouched(fn: any): void {}
+    writeValue(obj: any): void {}
+}
 
 @Component({
     selector: 'app-billing',
@@ -561,17 +628,132 @@ export class MockNgbModal {
         return newModal;
     }
 
-    dismissAll():any{
+    dismissAll(): any {
         return true;
     }
 
-    hasOpenModals():any{
+    hasOpenModals(): any {
         return true;
     }
-}   
+}
+
 export class MockNgbActiveModal {
     close(...args: any): void {
         // do nothing
     }
 }
 export class MockModalInviteUserModel {}
+
+@Component({
+    selector: 'oc-rating',
+    template: '',
+})
+export class MockOcRatingComponent {
+    @Input() type: 'single-star' | 'multi-star' = 'single-star';
+    @Input() rating: number;
+    @Input() reviewCount: number = 0;
+    @Input() label: string = '';
+    @Input() labelClass: string = 'medium md';
+    @Input() disabled: boolean = false;
+}
+
+@Component({
+    selector: 'oc-video',
+    template: '',
+})
+export class MockOcVideoComponent {
+    @Input() videoUrl: string = '';
+}
+
+@Component({
+    selector: 'oc-image-gallery',
+    template: '',
+})
+export class MockOcImageGalleryComponent {
+    @Input() gallery: any = [];
+    @Input() maxItems: number = 3;
+    @Input() displayDetails: boolean = true;
+    @Input() allowArrowControllers: boolean = false;
+    @Input() mediaDimensions: any = {};
+    @Input() expandOnClick: boolean = false;
+    @Input() carouselOptions: any = {};
+    @Input() componentIconsPath: any = {};
+    @Input() imageModalIconsPath: any = {};
+    @Input() isShowCounterInImageModal: boolean = false;
+}
+
+@Component({
+    selector: 'oc-app-description',
+    template: '',
+})
+export class MockOcAppDescriptionComponent {
+    @Input() appDescription: string = '';
+    @Input() header: string = '';
+    @Input() headerTag: any = 'h4';
+    @Input() showFullDescription: boolean = false;
+    @Input() headerClass: string;
+    @Input() enableTruncateTextLogic: boolean = true;
+    @Input() truncateTextLength: number = 800;
+    @Input() showMoreDescriptionText: string = 'Show more';
+    @Input() showLessDescriptionText: string = 'Show less';
+}
+
+@Component({
+    selector: 'oc-overall-rating',
+    template: '',
+})
+export class MockOcOverallRatingComponent {
+    @Input() overallReviewLabel: string = 'Overall rating';
+    @Input() allReviewSummary: any = {};
+}
+
+@Component({
+    selector: 'oc-review-list',
+    template: '',
+})
+export class MockOcReviewListComponent {
+    @Input() reviewListTitle: string = 'Most recent reviews';
+    @Input() headingTag: any = 'h2';
+    @Input() reviewHeadingTag: any = 'h3';
+    @Input() totalReview: number;
+    @Input() maxReviewDisplay: number = 3;
+    @Input() noReviewMessage: string = 'There is no review for this app.';
+    @Input() reviewsList: any = [];
+    @Input() allowWriteReview: boolean = true;
+    @Input() menuUrl: string = 'assets/angular-common-components/dots-menu.svg';
+    @Input() currentUserId: string = '';
+    @Output() readonly writeAReview: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly chosenAction: EventEmitter<any> = new EventEmitter<any>();
+}
+
+@Component({
+    selector: 'oc-review',
+    template: '',
+})
+export class MockOcReviewComponent {
+    @Input() heading: string = '';
+    @Input() enableButtons: boolean = false;
+    @Input() cancelButtonText: string = 'Cancel';
+    @Input() submitButtonText: string = 'Submit';
+    @Input() hidCancelButton: boolean = false;
+    @Input() reviewData: any;
+    @Input() submitInProgress: boolean = false;
+    @Output() readonly reviewFormData: EventEmitter<any> = new EventEmitter<any>();
+    @Output() readonly cancelReview: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() readonly isFormInvalid: EventEmitter<boolean> = new EventEmitter<boolean>();
+}
+
+@Component({
+    selector: 'oc-recommended-apps',
+    template: '',
+})
+export class MockOcRecomendedAppsComponent {
+    @Input() appList: any[] = [];
+    @Input() noAppMessage: string = '';
+    @Input() recommendedAppTitle: string = 'Recommended Apps';
+    @Input() headingTag: any = 'h2';
+    @Input() customAppCardTemplate: TemplateRef<any>;
+    @Input() routerLinkForOneApp: string | any;
+    @Input() appNavigationParam: string;
+    @Output() readonly clickByAppCard: EventEmitter<any> = new EventEmitter<any>();
+}

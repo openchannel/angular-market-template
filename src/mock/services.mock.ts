@@ -1,7 +1,7 @@
-import { asyncScheduler, Observable, of, Subject, throwError } from 'rxjs';
+import { asyncScheduler, Observable, of, Subject } from 'rxjs';
 import { Page, SortResponse, Transaction, UserAccount } from '@openchannel/angular-common-services';
 import { Filter } from '@openchannel/angular-common-components';
-import { observeOn, catchError } from 'rxjs/operators';
+import { observeOn } from 'rxjs/operators';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 
 class MockPagination<T> {
@@ -44,14 +44,49 @@ export class MockManagementModalService {
         return null;
     }
 
-    openEditUserAccountModal(userAccount: UserAccount): Observable<boolean> {
-        return null;
+    openEditUserInviteModal(): Observable<any> {
+        return of('1');
     }
-
-    openEditUserInviteModal(userInvite: UserAccount): Observable<boolean> {
-        return null;
+    openEditUserAccountModal(): Observable<any> {
+        return of('1');
     }
 }
+export class MockSiteContentService {
+    getAllContent(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    getSecuritySettings(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockMarketMetaTagService {
+    getMetaTagsConfig(): any {
+        return {};
+    }
+
+    initDefaultPageDataForAllPages(): { [name: string]: any } {
+        return {
+            windowUrl: 'url',
+        };
+    }
+
+    pushSelectedFieldsToTempPageData(): void {
+        // do nothing.
+    }
+}
+
+export class MockStatisticService {
+    recordVisitToApp(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    record(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
 export class MockFrontendService {
     static MOCK_FILTER_VALUE = {
         id: 'allApps',
@@ -124,7 +159,7 @@ export class MockFrontendService {
     };
 
     getFilters(): Observable<any> {
-        return of(MockFrontendService.MOCK_FILTERS_PAGE);
+        return of(MockFrontendService.MOCK_FILTERS_PAGE).pipe(observeOn(asyncScheduler));
     }
 
     getSorts(): Observable<any> {
@@ -580,12 +615,13 @@ export class MockAppsService {
     getApps(): Observable<any> {
         return of(MockAppsService.MOCK_APPS_PAGE);
     }
-    getAppBySafeName(...args: any): Observable<any> {
-        return of('1');
-    }
 
     searchApp(): Observable<any> {
         return of('1');
+    }
+
+    getAppBySafeName(...args: any): Observable<any> {
+        return of(MockAppsService.MOCK_APP);
     }
 }
 
@@ -622,6 +658,51 @@ export class MockTypeMapperUtils {
 
     static mergeTwoData(): any {
         return {};
+    }
+}
+
+export class MockCountryStateService {
+    getCountries(): any {
+        return of('1');
+    }
+    getStates(): any {
+        return of({
+            data: {
+                states: [],
+            },
+        });
+    }
+}
+
+export class MockSvgIconRegistryService {}
+
+export class MockStripeService {
+    getTaxesAndPayment(...args: any): Observable<any> {
+        return of('1');
+    }
+    makePurchase(...args: any): Observable<any> {
+        return of('1');
+    }
+    getMarketplaceStripeSettings(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    updateUserCreditCard(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    deleteUserCreditCard(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    addUserCreditCard(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+    getUserCreditCards(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockStripeLoaderService {
+    loadStripe(): Observable<any> {
+        return of('1').pipe(observeOn(asyncScheduler));
     }
 }
 
@@ -767,6 +848,34 @@ export class MockLoginRequest {
     }
 }
 
+export class MockAppVersionService {
+    getAppByVersion(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
+export class MockReviewsService {
+    getReviewsByAppId(): Observable<any> {
+        return of({ list: [] }).pipe(observeOn(asyncScheduler));
+    }
+
+    updateReview(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    createReview(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    getOneReview(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+
+    deleteReview(): Observable<any> {
+        return of({}).pipe(observeOn(asyncScheduler));
+    }
+}
+
 export class MockOAuthService {
     events: Subject<any> = new Subject<any>();
     state = {};
@@ -811,34 +920,11 @@ export class MockLogOutService {
     }
 }
 
-export class MockAppVersionService {
-    getAppByVersion(...args: any): Observable<any> {
-        return of('1');
-    }
-}
-
-export class MockStripeLoaderService {
-    loadStripe(): void {
-        // do nothing
-    }
-}
-
-export class MockStripeService {
-    getTaxesAndPayment(...args: any): Observable<any> {
-        return of('1');
-    }
-
-    makePurchase(...args: any): Observable<any> {
-        return of('1');
-    }
-}
-
 export class MockAppFormService {
     getForm(): Observable<any> {
         return of(1).pipe(observeOn(asyncScheduler));
     }
     createFormSubmission(): Observable<any> {
-        console.log('createFormSubmission trigger');
         return of(1).pipe(observeOn(asyncScheduler));
     }
 }
@@ -860,12 +946,6 @@ export class MockFileUploadDownloadService {
 
     getFileUrl(): Observable<any> {
         return of('1');
-    }
-}
-
-export class MockStatisticService {
-    record(): Observable<any> {
-        return of().pipe( catchError(error => throwError(error)));
     }
 }
 

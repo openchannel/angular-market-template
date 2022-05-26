@@ -221,8 +221,8 @@ export class BillingFormComponent implements OnInit, OnDestroy {
     /**
      * Gets currentCountry on country change.
      */
-    onCountriesChange(country: CountryModel): void {
-        if (country.Iso2 !== this.formBillingAddress.controls.address_country.value) {
+    onCountriesChange(country?: CountryModel): void {
+        if (country && country.Iso2 !== this.formBillingAddress.controls.address_country.value) {
             this.getStates(country.name);
         }
     }

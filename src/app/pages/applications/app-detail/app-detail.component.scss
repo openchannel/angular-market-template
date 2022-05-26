@@ -184,3 +184,9 @@
         padding-right: 3rem;
     }
 }
+
+.filter-container{
+    @media (max-width: 400px) {
+        text-align: center
+    }
+}

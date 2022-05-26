@@ -2,17 +2,18 @@ import { Provider } from '@angular/core';
 import {
     AppFormService,
     AppsService,
-    AppVersionService,
     AuthenticationService,
     AuthHolderService,
     FileUploadDownloadService,
     FrontendService,
     InviteUserService,
     NativeLoginService,
+    ReviewsService,
     OwnershipService,
     SiteConfigService,
-    StripeService,
+    SiteContentService,
     StatisticService,
+    StripeService,
     TitleService,
     TransactionsService,
     UserAccount,
@@ -20,17 +21,19 @@ import {
     UserAccountTypesService,
     UserRoleService,
     UsersService,
+    CountryStateService,
+    AppVersionService,
 } from '@openchannel/angular-common-services';
 import { InviteUserModel } from '@openchannel/angular-common-services/lib/model/api/invite-user.model';
 import { ToastrService } from 'ngx-toastr';
 import {
     MockAppFormService,
     MockAppsService,
-    MockAppVersionService,
     MockAuthenticationService,
     MockAuthHolderService,
     MockButtonActionService,
     MockCmsContentService,
+    MockCountryStateService,
     MockEditUserTypeService,
     MockFileUploadDownloadService,
     MockFrontendService,
@@ -38,13 +41,17 @@ import {
     MockLoadingBarService,
     MockLogOutService,
     MockManagementModalService,
+    MockMarketMetaTagService,
     MockNativeLoginService,
     MockOAuthService,
+    MockReviewsService,
     MockOwnershipService,
     MockSiteConfigService,
+    MockSiteContentService,
     MockStatisticService,
     MockStripeLoaderService,
     MockStripeService,
+    MockSvgIconRegistryService,
     MockTitleService,
     MockToastrService,
     MockTransactionsService,
@@ -52,6 +59,7 @@ import {
     MockUserAccountTypesService,
     MockUserRoleService,
     MockUsersService,
+    MockAppVersionService,
 } from './services.mock';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -62,7 +70,9 @@ import { LogOutService } from '@core/services/logout-service/log-out.service';
 import { ButtonActionService } from '@features/button-action/button-action.service';
 import { ManagementModalService } from '../app/pages/account-management/my-company/management/management-modal.service';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { MarketMetaTagService } from '@core/services/meta-tag-service/meta-tag-service.service';
 import { StripeLoaderService } from '@core/services/stripe-loader.service';
+import { SvgIconRegistryService } from 'angular-svg-icon';
 
 export function mockUserServiceProvider(): Provider {
     return { provide: UsersService, useClass: MockUsersService };
@@ -172,6 +182,18 @@ export function mockOAuthService(): Provider {
     return { provide: OAuthService, useClass: MockOAuthService };
 }
 
+export function mockReviewsService(): Provider {
+    return { provide: ReviewsService, useClass: MockReviewsService };
+}
+
+export function mockSiteContentService(): Provider {
+    return { provide: SiteContentService, useClass: MockSiteContentService };
+}
+
+export function mockMarketMetaTagService(): Provider {
+    return { provide: MarketMetaTagService, useClass: MockMarketMetaTagService };
+}
+
 export function mockAppVersionService(): Provider {
     return { provide: AppVersionService, useClass: MockAppVersionService };
 }
@@ -182,4 +204,12 @@ export function mockStripeLoaderService(): Provider {
 
 export function mockStripeService(): Provider {
     return { provide: StripeService, useClass: MockStripeService };
+}
+
+export function mockCountryStateService(): Provider {
+    return { provide: CountryStateService, useClass: MockCountryStateService };
+}
+
+export function mockSvgIconRegistryService(): Provider {
+    return { provide: SvgIconRegistryService, useClass: MockSvgIconRegistryService };
 }

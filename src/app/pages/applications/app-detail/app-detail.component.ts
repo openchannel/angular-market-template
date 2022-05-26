@@ -11,7 +11,7 @@ import {
     AuthHolderService,
 } from '@openchannel/angular-common-services';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, throwError, of } from 'rxjs';
 import { catchError, filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { ActionButton, actionButtons, pageConfig } from 'assets/data/configData';
 import { LoadingBarState } from '@ngx-loading-bar/core/loading-bar.state';
