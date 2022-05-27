@@ -25,6 +25,8 @@ import { CmsContentService } from '@core/services/cms-content-service/cms-conten
 export class LoginComponent implements OnInit, OnDestroy {
     private readonly SAML_JWT_ACCESS_TOKEN_KEY = 'jwtAccessToken';
     private readonly SAML_JWT_REFRESH_TOKEN_KEY = 'jwtRefreshToken';
+    // For SP initiated flow use 'SP'
+    private readonly SAML_AUTH_INITIATED_FLOW = 'IDP';
 
     signupUrl = '/signup';
     forgotPwdUrl = '/forgot-password';
@@ -212,9 +214,18 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     private processSamlLogin(authConfig: SiteAuthConfig): void {
         this.loader.complete();
-        const samlLoginUrl = new URL(authConfig.singleSignOnUrl);
-        samlLoginUrl.searchParams.append('RelayState', window.location.href);
-        window.open(samlLoginUrl.toString(), '_self');
+        if (this.SAML_AUTH_INITIATED_FLOW === 'IDP') {
+            const samlLoginUrl = new URL(authConfig.singleSignOnUrl);
+            samlLoginUrl.searchParams.append('RelayState', window.location.href);
+            window.open(samlLoginUrl.toString(), '_self');
+        } else {
+            this.openIdAuthService
+                .authRequest(window.location.href)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(url => {
+                    window.open(url, '_self');
+                });
+        }
     }
 
     private getSamlJwtTokens(): LoginResponse {
