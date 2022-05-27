@@ -1,3 +1,6 @@
+## Release notes - template3-marketsite-frontend - Version 1.67.0 (5/27/2022)<br>
+### Task<br>
+AT-1799 - Implement SP initiated flow for SAML<br>
 ## Release notes - template3-marketsite-frontend - Version 1.66.7 (5/26/2022)<br>
 ### Bug<br>
 AT-1795 - [portal] DFA Save buttons in out of screen on mobile <br>
